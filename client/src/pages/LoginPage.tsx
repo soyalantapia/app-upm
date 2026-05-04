@@ -45,15 +45,17 @@ export function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-[100svh] place-items-center bg-primary-50 px-4 py-10">
-      <div className="w-full max-w-md">
+    <div className="bg-grid-pattern grid min-h-[100svh] place-items-center bg-primary-50 px-4 py-10">
+      <div className="animate-fade-up w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
-          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-primary-500 text-white shadow-sm">
+          <div className="grid h-14 w-14 place-items-center rounded-2xl bg-primary-500 text-white shadow-cta">
             <ScanLine size={26} />
           </div>
           <div>
-            <p className="text-sm font-semibold text-neutral-400">Bartender · Deenex</p>
-            <h1 className="mt-1 text-2xl font-bold text-neutral-900 sm:text-3xl">
+            <p className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+              Bartender · Deenex
+            </p>
+            <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
               {step === 'email' ? 'Entrá a tu turno' : 'Revisá tu mail'}
             </h1>
           </div>
@@ -62,7 +64,7 @@ export function LoginPage() {
         {step === 'email' ? (
           <form
             onSubmit={submit}
-            className="flex flex-col gap-5 rounded-3xl bg-white p-6 shadow-sm sm:p-7"
+            className="flex flex-col gap-5 rounded-3xl bg-white p-6 shadow-card sm:p-7"
           >
             <p className="text-sm text-neutral-500">
               Te mandamos un link mágico al mail. Lo tocás y entrás —{' '}
@@ -89,13 +91,13 @@ export function LoginPage() {
                     if (error) setError(null)
                   }}
                   placeholder="vos@deenex.com"
-                  className="w-full rounded-2xl bg-primary-50 py-3.5 pl-11 pr-4 text-base text-neutral-900 ring-1 ring-transparent placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-400"
+                  className="w-full rounded-2xl bg-primary-50 py-3.5 pl-11 pr-4 text-base text-neutral-900 ring-1 ring-transparent transition-all duration-200 placeholder:text-neutral-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-400 focus:shadow-card"
                 />
               </div>
             </label>
 
             {error && (
-              <div className="flex items-center gap-2 rounded-2xl bg-[#fff0f0] p-3 text-sm font-medium text-[#b13030]">
+              <div className="animate-fade-in flex items-center gap-2 rounded-2xl bg-[#fff0f0] p-3 text-sm font-medium text-[#b13030]">
                 <AlertCircle size={16} className="shrink-0" />
                 {error}
               </div>
@@ -103,7 +105,7 @@ export function LoginPage() {
 
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-6 py-4 text-base font-semibold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 active:scale-[0.99]"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-6 py-4 text-base font-semibold text-white shadow-cta transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-600 hover:shadow-floating active:translate-y-0 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2"
             >
               Mandame el link <ArrowRight size={18} />
             </button>
@@ -119,7 +121,7 @@ export function LoginPage() {
         <div className="mt-6 text-center">
           <Link
             to="/"
-            className="text-xs font-semibold text-neutral-400 transition-colors hover:text-neutral-700"
+            className="text-xs font-semibold text-neutral-400 transition-colors duration-150 hover:text-neutral-700"
           >
             Volver al inicio
           </Link>
@@ -144,9 +146,9 @@ function SentStep({
   const link = `${window.location.origin}/auth/magic?token=${token}&email=${encodeURIComponent(email)}`
 
   return (
-    <div className="flex flex-col gap-5 rounded-3xl bg-white p-6 shadow-sm sm:p-7">
-      <div className="grid h-16 w-16 place-self-center rounded-3xl bg-secondary text-[#3f6a35]">
-        <Inbox className="m-auto" size={28} />
+    <div className="animate-fade-up flex flex-col gap-5 rounded-3xl bg-white p-6 shadow-card sm:p-7">
+      <div className="grid h-16 w-16 place-self-center place-items-center rounded-3xl bg-secondary text-[#3f6a35] shadow-card">
+        <Inbox size={28} />
       </div>
 
       <div className="text-center">
@@ -160,13 +162,13 @@ function SentStep({
       <button
         type="button"
         onClick={() => navigate(`/auth/magic?token=${token}&email=${encodeURIComponent(email)}`)}
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-6 py-4 text-base font-semibold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 active:scale-[0.99]"
+        className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-6 py-4 text-base font-semibold text-white shadow-cta transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-600 hover:shadow-floating active:translate-y-0 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2"
       >
         Simular click en el link <ArrowRight size={18} />
       </button>
 
       <div className="rounded-2xl bg-primary-50 p-4">
-        <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
           Demo · link generado
         </p>
         <p className="mt-1 break-all font-mono text-xs text-neutral-600">{link}</p>
@@ -176,14 +178,14 @@ function SentStep({
         <button
           type="button"
           onClick={onBack}
-          className="font-semibold text-neutral-500 hover:text-neutral-900"
+          className="rounded-full px-2 py-1 font-semibold text-neutral-500 transition-colors duration-150 hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-primary-400"
         >
           Cambiar email
         </button>
         <button
           type="button"
           onClick={onResend}
-          className="inline-flex items-center gap-1.5 font-semibold text-neutral-500 hover:text-neutral-900"
+          className="inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-semibold text-neutral-500 transition-colors duration-150 hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-primary-400"
         >
           <RefreshCw size={14} /> Reenviar
         </button>

@@ -31,6 +31,17 @@
   --color-status-warning: #ffd148;
 
   --font-sans: 'Satoshi', system-ui, -apple-system, sans-serif;
+
+  --shadow-card: 0 1px 2px rgba(15, 15, 15, 0.04), 0 1px 1px rgba(15, 15, 15, 0.03);
+  --shadow-card-hover: 0 1px 2px rgba(15, 15, 15, 0.04),
+    0 8px 24px -12px rgba(15, 15, 15, 0.12);
+  --shadow-floating: 0 2px 8px -2px rgba(15, 15, 15, 0.08),
+    0 16px 32px -12px rgba(15, 15, 15, 0.18);
+  --shadow-cta: 0 1px 2px rgba(15, 15, 15, 0.06),
+    0 8px 16px -8px rgba(58, 56, 58, 0.45);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 :root {
@@ -41,12 +52,6 @@
   :root {
     color-scheme: light !important;
   }
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
 }
 
 html,
@@ -82,4 +87,96 @@ button,
 textarea,
 select {
   font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: none;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scan-line {
+  0%,
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(100%);
+    opacity: 0.6;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.92;
+    transform: scale(1.02);
+  }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 400ms var(--ease-out-expo) both;
+}
+
+@utility animate-fade-in {
+  animation: fade-in 250ms ease-out both;
+}
+
+@utility animate-scan-line {
+  animation: scan-line 2.4s var(--ease-out-expo) infinite;
+}
+
+@utility animate-pulse-soft {
+  animation: pulse-soft 2.4s ease-in-out infinite;
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+@utility shadow-card-hover {
+  box-shadow: var(--shadow-card-hover);
+}
+@utility shadow-floating {
+  box-shadow: var(--shadow-floating);
+}
+@utility shadow-cta {
+  box-shadow: var(--shadow-cta);
+}
+
+.bg-grid-pattern {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(15, 15, 15, 0.04) 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
 }

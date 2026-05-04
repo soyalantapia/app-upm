@@ -19,18 +19,21 @@ export function ProductRow({ product, selected, onChange }: Props) {
   const remaining = product.total - product.retrieved
   const Icon = icons[product.category] ?? Coffee
   const isFull = remaining === 0
+  const hasSelection = selected > 0
 
   return (
     <div
       className={cn(
-        'flex flex-col gap-4 rounded-3xl bg-white p-4 transition-all duration-200 sm:flex-row sm:items-center sm:justify-between sm:p-5',
-        isFull ? 'opacity-70' : 'shadow-sm hover:shadow-md',
+        'flex flex-col gap-4 rounded-3xl bg-white p-4 transition-all duration-300 ease-out sm:flex-row sm:items-center sm:justify-between sm:p-5',
+        isFull && 'opacity-70',
+        !isFull && hasSelection && 'shadow-card-hover ring-2 ring-primary-300',
+        !isFull && !hasSelection && 'shadow-card hover:-translate-y-0.5 hover:shadow-card-hover',
       )}
     >
       <div className="flex min-w-0 items-center gap-4">
         <div
           className={cn(
-            'grid h-12 w-12 shrink-0 place-items-center rounded-2xl',
+            'grid h-12 w-12 shrink-0 place-items-center rounded-2xl transition-all duration-300',
             isFull ? 'bg-secondary text-[#3f6a35]' : 'bg-primary-100 text-neutral-700',
           )}
         >

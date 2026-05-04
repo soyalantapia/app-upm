@@ -20,10 +20,11 @@ export function AppShell() {
     : ''
 
   return (
-    <div className="flex min-h-[100svh] flex-col bg-primary-50 text-neutral-900 lg:flex-row">
-      <aside className="hidden shrink-0 border-r border-neutral-100 bg-white lg:flex lg:w-64 lg:flex-col">
+    <div className="flex min-h-[100svh] flex-col bg-primary-50 text-neutral-900 md:flex-row">
+      {/* Sidebar (md+) */}
+      <aside className="hidden shrink-0 border-r border-neutral-100 bg-white md:flex md:w-60 md:flex-col lg:w-64">
         <div className="flex items-center gap-3 px-6 py-7">
-          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary-500 text-white shadow-sm">
+          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary-500 text-white shadow-cta">
             <ScanLine size={22} />
           </div>
           <div>
@@ -40,6 +41,7 @@ export function AppShell() {
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200',
+                  'focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white',
                   isActive
                     ? 'bg-primary-100 text-neutral-900'
                     : 'text-neutral-500 hover:bg-primary-100/60 hover:text-neutral-800',
@@ -55,7 +57,7 @@ export function AppShell() {
         {operator && (
           <div className="mt-auto border-t border-neutral-100 p-3">
             <div className="flex items-center gap-3 rounded-2xl bg-primary-100 p-3">
-              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-500 text-sm font-bold text-white">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary-500 text-sm font-bold text-white ring-2 ring-white">
                 {initials}
               </div>
               <div className="min-w-0 flex-1">
@@ -66,7 +68,7 @@ export function AppShell() {
                 type="button"
                 onClick={signOut}
                 aria-label="Cerrar sesión"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-neutral-500 transition-colors hover:bg-white hover:text-[#b13030]"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-neutral-500 transition-all duration-200 hover:bg-white hover:text-[#b13030] focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2"
               >
                 <LogOut size={16} />
               </button>
@@ -75,9 +77,10 @@ export function AppShell() {
         )}
       </aside>
 
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-neutral-100 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
+      {/* Mobile header */}
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-neutral-100 bg-white/85 px-4 py-3 backdrop-blur-md md:hidden">
         <div className="flex items-center gap-2.5">
-          <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary-500 text-white">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary-500 text-white shadow-cta">
             <ScanLine size={18} />
           </div>
           <div>
@@ -89,9 +92,10 @@ export function AppShell() {
           <button
             type="button"
             onClick={signOut}
-            className="flex items-center gap-2 rounded-full bg-primary-100 py-1.5 pl-1.5 pr-3 text-xs font-semibold text-neutral-700 transition-colors active:scale-95"
+            aria-label="Cerrar sesión"
+            className="flex h-11 items-center gap-2 rounded-full bg-primary-100 py-1.5 pl-1.5 pr-3 text-xs font-semibold text-neutral-700 transition-all duration-150 active:scale-95 focus-visible:ring-2 focus-visible:ring-primary-400"
           >
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-primary-500 text-[11px] font-bold text-white">
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-500 text-[11px] font-bold text-white ring-2 ring-white">
               {initials}
             </span>
             <LogOut size={14} className="text-neutral-500" />
@@ -99,11 +103,15 @@ export function AppShell() {
         )}
       </header>
 
-      <main className="flex-1 overflow-x-hidden pb-24 lg:pb-0">
+      <main className="flex-1 overflow-x-hidden pb-32 md:pb-0">
         <Outlet />
       </main>
 
-      <nav className="fixed inset-x-3 bottom-3 z-30 rounded-3xl bg-primary-100 p-1.5 shadow-lg lg:hidden">
+      {/* Mobile bottom nav */}
+      <nav
+        className="fixed inset-x-3 bottom-3 z-30 rounded-3xl bg-white p-1.5 shadow-floating md:hidden"
+        style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+      >
         <div className="flex items-center justify-around">
           {links.map(({ to, label, icon: Icon, end }) => (
             <NavLink
@@ -113,9 +121,7 @@ export function AppShell() {
               className={({ isActive }) =>
                 cn(
                   'flex flex-1 flex-col items-center gap-0.5 rounded-2xl py-2.5 text-[11px] font-semibold transition-all duration-200',
-                  isActive
-                    ? 'bg-primary-500 text-white shadow-md'
-                    : 'text-neutral-600',
+                  isActive ? 'bg-primary-500 text-white shadow-cta' : 'text-neutral-500',
                 )
               }
             >

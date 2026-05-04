@@ -40,8 +40,8 @@ export function MagicLinkPage() {
   }, [state, navigate])
 
   return (
-    <div className="grid min-h-[100svh] place-items-center bg-primary-50 px-4 py-10">
-      <div className="flex w-full max-w-md flex-col items-center gap-5 rounded-3xl bg-white p-8 text-center shadow-sm">
+    <div className="bg-grid-pattern grid min-h-[100svh] place-items-center bg-primary-50 px-4 py-10">
+      <div className="animate-fade-up flex w-full max-w-md flex-col items-center gap-5 rounded-3xl bg-white p-8 text-center shadow-card">
         {state === 'verifying' && (
           <>
             <div className="grid h-16 w-16 place-items-center rounded-3xl bg-primary-100 text-primary-700">
@@ -56,8 +56,9 @@ export function MagicLinkPage() {
 
         {state === 'ok' && (
           <>
-            <div className="grid h-16 w-16 place-items-center rounded-3xl bg-secondary text-[#3f6a35]">
-              <CheckCircle2 size={32} />
+            <div className="relative grid h-16 w-16 place-items-center rounded-3xl bg-secondary text-[#3f6a35] shadow-card">
+              <div className="absolute inset-0 animate-pulse-soft rounded-3xl bg-secondary opacity-60" />
+              <CheckCircle2 size={32} className="relative" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-neutral-900">¡Listo!</h1>
@@ -79,7 +80,7 @@ export function MagicLinkPage() {
             </div>
             <Link
               to="/login"
-              className="rounded-full bg-primary-500 px-6 py-3 text-sm font-semibold text-white hover:bg-primary-600"
+              className="rounded-full bg-primary-500 px-6 py-3 text-sm font-semibold text-white shadow-cta transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-600 hover:shadow-floating focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2"
             >
               Volver al login
             </Link>
