@@ -1,0 +1,85 @@
+@import 'tailwindcss';
+@import 'https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700,900&display=swap';
+
+@theme {
+  --color-primary-50: #f9f9f9;
+  --color-primary-100: #f6f5f6;
+  --color-primary-200: #e7e6e7;
+  --color-primary-300: #d2cfd1;
+  --color-primary-400: #b2aeb1;
+  --color-primary-500: #8b8589;
+  --color-primary-600: #757173;
+  --color-primary-700: #5a5659;
+  --color-primary-800: #3f3c3e;
+  --color-primary-900: #323133;
+
+  --color-neutral-50: #f6f5f6;
+  --color-neutral-100: #e7e6e7;
+  --color-neutral-200: #d2cfd1;
+  --color-neutral-300: #b2aeb1;
+  --color-neutral-400: #8b8589;
+  --color-neutral-500: #706a6e;
+  --color-neutral-600: #605a5e;
+  --color-neutral-700: #514d4f;
+  --color-neutral-800: #474345;
+  --color-neutral-900: #333132;
+  --color-neutral-950: #272526;
+
+  --color-secondary: #f3f7f1;
+  --color-status-success: #56bb69;
+  --color-status-error: #ff5656;
+  --color-status-warning: #ffd148;
+
+  --font-sans: 'Satoshi', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  color-scheme: light !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light !important;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  background: var(--color-primary-50);
+  color: var(--color-neutral-900);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
