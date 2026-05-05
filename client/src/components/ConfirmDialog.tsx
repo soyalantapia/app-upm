@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { AlertTriangle, AlertCircle, Info } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
@@ -51,19 +51,29 @@ export function ConfirmDialog({
 }: Props) {
   const cfg = variantConfig[variant]
   const Icon = cfg.Icon
+  const confirmRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCancel()
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        onCancel()
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        onConfirm()
+      }
     }
     document.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
+    // Focus confirm button for keyboard users (but Enter requires deliberate press)
+    const t = window.setTimeout(() => confirmRef.current?.focus(), 50)
     return () => {
       document.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
+      window.clearTimeout(t)
     }
-  }, [open, onCancel])
+  }, [open, onCancel, onConfirm])
 
   if (!open) return null
 
@@ -107,6 +117,7 @@ export function ConfirmDialog({
 
         <div className="mt-6 flex flex-col gap-2 sm:flex-row-reverse">
           <button
+            ref={confirmRef}
             type="button"
             onClick={onConfirm}
             className={cn(

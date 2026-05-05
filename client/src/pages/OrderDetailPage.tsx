@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -11,11 +11,8 @@ import {
   Hourglass,
   RefreshCw,
 } from 'lucide-react'
-import {
-  findOrderByToken,
-  computeOrderStatus,
-  type OrderProduct,
-} from '@/data/mockOrders'
+import { computeOrderStatus, type OrderProduct } from '@/data/mockOrders'
+import { ordersStore, useOrder } from '@/lib/ordersStore'
 import { ProductRow } from '@/components/ProductRow'
 import { StatusBadge } from '@/components/StatusBadge'
 import { ConfirmDialog } from '@/components/ConfirmDialog'
@@ -29,22 +26,28 @@ export function OrderDetailPage() {
   const navigate = useNavigate()
   const toast = useToast()
   const { operator } = useAuth()
-  const result = useMemo(() => findOrderByToken(token), [token])
+  const result = useOrder(token)
   const order = result.ok ? result.order : null
 
   const [selection, setSelection] = useState<Record<string, number>>({})
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [completedShown, setCompletedShown] = useState(false)
+
+  // Reset selection when order updates externally (e.g., after retrieve)
+  useEffect(() => {
+    setSelection({})
+  }, [order?.history.length])
 
   useEffect(() => {
-    if (order && order.status === 'completed') {
+    if (order && order.status === 'completed' && !completedShown) {
+      setCompletedShown(true)
       toast.warning(
         'Pedido ya completado',
-        'No queda nada por entregar. Podés revisar el detalle igual.',
+        'No queda nada por entregar. Podés revisar el detalle.',
       )
     }
-  }, [order, toast])
+  }, [order, completedShown, toast])
 
-  // Error: QR expirado
   if (!result.ok && result.error === 'expired') {
     return (
       <ErrorState
@@ -56,7 +59,6 @@ export function OrderDetailPage() {
     )
   }
 
-  // Error: not found
   if (!result.ok) {
     return (
       <ErrorState
@@ -82,7 +84,6 @@ export function OrderDetailPage() {
       })),
     ) === 'completed'
 
-  // Concurrencia: si hay historial reciente (<5min) de OTRO operador, alertar
   const recentOtherRetrieve = order!.history.find((ev) => {
     if (operator && ev.operator === operator.name) return false
     const elapsed = Date.now() - new Date(ev.at).getTime()
@@ -114,12 +115,27 @@ export function OrderDetailPage() {
 
   const finalizeDelivery = () => {
     setConfirmOpen(false)
+
+    const result = ordersStore.retrieveProducts({
+      token: order!.token,
+      operator: operator?.name ?? 'Operador',
+      point: order!.pickupPoint ?? 'Mostrador',
+      selection,
+    })
+
+    if (!result.ok) {
+      toast.error('No pudimos confirmar', result.reason)
+      return
+    }
+
+    const totalDelivered = result.event.items.reduce((s, i) => s + i.qty, 0)
     toast.success(
-      `Entregaste ${selectedItems} producto${selectedItems === 1 ? '' : 's'}`,
+      `Entregaste ${totalDelivered} producto${totalDelivered === 1 ? '' : 's'}`,
       wouldComplete ? 'El pedido quedó completo.' : 'Quedan productos por retirar.',
     )
+
     navigate(
-      `/pedidos/${encodeURIComponent(order!.token)}/confirmacion?items=${selectedItems}&done=${wouldComplete ? '1' : '0'}`,
+      `/pedidos/${encodeURIComponent(order!.token)}/confirmacion?items=${totalDelivered}&done=${wouldComplete ? '1' : '0'}`,
     )
   }
 
@@ -194,7 +210,6 @@ export function OrderDetailPage() {
           </div>
         </div>
 
-        {/* Alerta de concurrencia */}
         {recentOtherRetrieve && !isCompleted && (
           <div className="animate-fade-in flex items-start gap-3 rounded-2xl bg-status-info-bg p-4 text-status-info-fg ring-1 ring-status-info/20">
             <RefreshCw size={18} className="mt-0.5 shrink-0 text-status-info" />

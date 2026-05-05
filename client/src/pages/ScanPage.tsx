@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Html5Qrcode } from 'html5-qrcode'
-import { Camera, Keyboard, ScanLine, Sparkles, ShieldAlert } from 'lucide-react'
-import { mockOrders } from '@/data/mockOrders'
+import {
+  Camera,
+  Keyboard,
+  ScanLine,
+  Sparkles,
+  ShieldAlert,
+  RefreshCcw,
+} from 'lucide-react'
+import { useOrders, ordersStore } from '@/lib/ordersStore'
 import { cn } from '@/lib/cn'
 import { useToast } from '@/components/Toast'
 
@@ -11,6 +18,7 @@ type Mode = 'idle' | 'camera' | 'manual'
 export function ScanPage() {
   const navigate = useNavigate()
   const toast = useToast()
+  const orders = useOrders()
   const [mode, setMode] = useState<Mode>('idle')
   const [manualToken, setManualToken] = useState('')
   const scannerRef = useRef<Html5Qrcode | null>(null)
@@ -56,6 +64,11 @@ export function ScanPage() {
       return
     }
     navigate(`/pedidos/${encodeURIComponent(trimmed)}`)
+  }
+
+  const resetDemo = () => {
+    ordersStore.resetToDemo()
+    toast.success('Demo reseteada', 'Los pedidos volvieron al estado inicial.')
   }
 
   return (
@@ -146,7 +159,6 @@ export function ScanPage() {
         </form>
       )}
 
-      {/* Tip card */}
       <div className="flex items-start gap-3 rounded-2xl bg-accent-50 p-4 text-accent-800 ring-1 ring-accent-100">
         <ShieldAlert size={18} className="mt-0.5 shrink-0 text-accent-500" />
         <p className="text-xs font-medium">
@@ -161,10 +173,17 @@ export function ScanPage() {
             <Sparkles size={14} className="text-accent-500" />
             <p className="text-sm font-bold text-neutral-800">Pedidos de prueba</p>
           </div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">demo</p>
+          <button
+            type="button"
+            onClick={resetDemo}
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-neutral-400 transition-colors hover:bg-primary-100 hover:text-accent-700 focus-visible:ring-2 focus-visible:ring-accent-400"
+            aria-label="Resetear datos de demo"
+          >
+            <RefreshCcw size={11} /> Reset
+          </button>
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
-          {mockOrders.map((o) => (
+          {orders.map((o) => (
             <button
               key={o.id}
               type="button"
