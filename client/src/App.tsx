@@ -18,6 +18,7 @@ import { ComparePage } from '@/pages/Compare'
 import { ProfilePage } from '@/pages/Profile'
 import { AgendaPage } from '@/pages/Agenda'
 import { ForumsPage } from '@/pages/Forums'
+import { AdminPage } from '@/pages/Admin'
 
 function OnboardingGate({ children }: { children: React.ReactNode }) {
   const onboarded = useStore(s => s.onboarded)
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="agenda" element={<AgendaPage />} />
             <Route path="foros" element={<ForumsPage />} />
             <Route path="comparativa" element={<ComparePage />} />
+            <Route path="admin" element={<AdminPage />} />
             <Route path="perfil" element={<ProfilePage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

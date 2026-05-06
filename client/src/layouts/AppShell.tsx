@@ -12,11 +12,13 @@ import {
   User,
   GitCompare,
   LogOut,
+  ShieldCheck,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useAuth } from '@/lib/auth'
 import { BrandLockup, BrandMark } from '@/components/Brand'
+import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
 
 type NavItem = {
   to: string
@@ -36,6 +38,7 @@ const NAV: NavItem[] = [
   { to: '/agenda', label: 'Agenda', icon: Calendar },
   { to: '/foros', label: 'Foros', icon: Users },
   { to: '/comparativa', label: 'vs ChatGPT', icon: GitCompare },
+  { to: '/admin', label: 'Admin UPM', icon: ShieldCheck },
   { to: '/perfil', label: 'Perfil', icon: User, primary: true },
 ]
 
@@ -159,6 +162,8 @@ export function FullBleedShell({ children }: { children: React.ReactNode }) {
     <div className="bg-deep-mesh relative min-h-[100svh] overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.10),transparent_60%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_78%,rgba(220,235,250,0.10),transparent_60%)]" />
+      <SouthAmericaBackdrop tone="dark" className="right-[-3%] top-1/2 hidden h-[120%] w-[55%] -translate-y-1/2 lg:block" />
+      <SouthAmericaBackdrop tone="dark" className="-right-12 -top-8 h-72 w-72 lg:hidden" />
       <div className="absolute left-6 top-6 z-10 hidden md:block">
         <div className="flex items-center gap-2.5 text-white">
           <BrandMark size={36} />

@@ -20,6 +20,7 @@ import { useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
 import { AGENDA, DOSSIERS, NEWS, countryByCode, topicById } from '@/lib/data'
 import { Badge, Button, Card, Chip, Eyebrow, PageHeader, Stat } from '@/components/ui'
+import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
 
 const RELEVANCE: Record<string, { label: string; tone: 'danger' | 'warning' | 'info' }> = {
   alta: { label: 'Relevancia alta', tone: 'danger' },
@@ -70,6 +71,7 @@ export function HomePage() {
           <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-upm-500/30 blur-3xl" />
           <div className="absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-upm-400/20 blur-3xl" />
         </div>
+        <SouthAmericaBackdrop tone="dark" className="-right-6 -top-6 h-[140%] w-[55%] opacity-70" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/85 ring-1 ring-white/20">

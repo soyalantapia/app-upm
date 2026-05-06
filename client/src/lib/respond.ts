@@ -168,6 +168,126 @@ const PATTERNS: Pattern[] = [
       'Estimadas y estimados colegas. Hoy nos toca pensar la integración como un trabajo cotidiano. La región necesita decisiones con respaldo, herramientas con continuidad y diálogo permanente entre nuestros parlamentos.\n\n' +
       'Desde la UPM tenemos memoria institucional, marcos comunes y voluntad política. Sigamos construyendo cooperación efectiva, transparente y útil para nuestras sociedades.',
   },
+  {
+    match: q => /(comunicado|prensa|gacetilla)/i.test(q),
+    isInstitutional: false,
+    body:
+      '**Borrador de comunicado de prensa**\n\n' +
+      'La UPM acompaña los avances regionales en materia de integración legislativa y reafirma su compromiso con la cooperación entre parlamentos.\n\n' +
+      'En este marco, las y los legisladores miembros destacan la importancia de profundizar mecanismos de trabajo conjunto, fortalecer la memoria institucional regional y avanzar en agendas comunes con respaldo técnico.\n\n' +
+      'La UPM continuará impulsando espacios de diálogo, intercambio de buenas prácticas y construcción de acuerdos.',
+  },
+  {
+    match: q => /(mercosur|integraci[oó]n)/i.test(q),
+    isInstitutional: true,
+    sources: ['d4', 'd9', 'd10'],
+    body:
+      '**Síntesis — Integración MERCOSUR**\n\n' +
+      'Los ejes activos de la agenda son:\n\n' +
+      '1. **Cooperación aduanera**: criterios comunes y procesos coordinados.\n' +
+      '2. **Coordinación legislativa digital**: nueva etapa impulsada por UPM.\n' +
+      '3. **Marcos sectoriales**: ambiente, energía y corredores con tratamiento conjunto.\n\n' +
+      '**Riesgos y oportunidades**\n\n' +
+      '- Heterogeneidad normativa entre estados parte.\n' +
+      '- Oportunidad de armonización vía dictámenes UPM.\n' +
+      '- Espacio para acuerdos breves y efectivos.\n\n' +
+      '**Recomendación:** abrir un dossier MERCOSUR comparado y trabajarlo en el Foro de Integración Regional.',
+  },
+  {
+    match: q => /(r[ií]o uruguay|cuenca)/i.test(q),
+    isInstitutional: true,
+    sources: ['d6', 'd11'],
+    body:
+      '**Síntesis — Río Uruguay**\n\n' +
+      'Tema bilateral con marco institucional consolidado y novedades recientes:\n\n' +
+      '- Ajustes a criterios de monitoreo y reporte.\n' +
+      '- Coordinación binacional sobre cuenca.\n' +
+      '- Foro UPM activo con minuta reciente.\n\n' +
+      '**Próximos pasos sugeridos:** revisar minuta del foro, articular posición técnica y preparar agenda conjunta.',
+  },
+  {
+    match: q => /(g[eé]nero|paridad)/i.test(q),
+    isInstitutional: false,
+    body:
+      '**Síntesis — Género y paridad**\n\n' +
+      'La región avanza en marcos de paridad y representación. Hay un proyecto reciente en Paraguay sobre paridad en listas y organismos públicos.\n\n' +
+      '- Foro UPM activo, con miembros de toda la región.\n' +
+      '- Posibilidad de elaborar dictamen comparado.\n' +
+      '- Espacio para articular agenda común con organismos especializados.',
+  },
+  {
+    match: q => /(salud|sanitaria)/i.test(q),
+    isInstitutional: false,
+    body:
+      '**Síntesis — Salud regional**\n\n' +
+      'Hay una nueva ley marco en Bolivia con foco en zonas fronterizas y poblaciones vulnerables.\n\n' +
+      '- Oportunidad de articular criterios comunes con países limítrofes.\n' +
+      '- Antecedentes en Argentina, Brasil y Uruguay.\n' +
+      '- Posible trabajo conjunto vía Foro UPM correspondiente.',
+  },
+  {
+    match: q => /(educaci[oó]n)/i.test(q),
+    isInstitutional: true,
+    sources: ['d7'],
+    body:
+      '**Síntesis — Educación pública regional**\n\n' +
+      'Hay un informe técnico comparativo reciente sobre financiamiento entre países del cono sur.\n\n' +
+      '- Asimetrías de financiamiento.\n' +
+      '- Oportunidades de cooperación académica regional.\n' +
+      '- Aporte académico al Foro UPM.\n\n' +
+      '**Recomendación:** abrir minuta de discusión y compartir con foro académico.',
+  },
+  {
+    match: q => /(seguridad|fronterizo|fronteriza)/i.test(q),
+    isInstitutional: false,
+    body:
+      '**Síntesis — Seguridad y zonas fronterizas**\n\n' +
+      'Tema con sensibilidad institucional alta. Recomendable trabajarlo en marco de cooperación regional, no como decisión aislada.\n\n' +
+      '- Coordinación entre organismos.\n' +
+      '- Información técnica con respaldo.\n' +
+      '- Espacios formales de articulación.\n\n' +
+      'Sugerido: dossier interno y consulta con Foro de Relaciones Internacionales.',
+  },
+  {
+    match: q => /(econom[ií]a|aduanera|comercio)/i.test(q),
+    isInstitutional: true,
+    sources: ['d9', 'd4'],
+    body:
+      '**Síntesis — Economía regional**\n\n' +
+      'Eje con avances recientes en cooperación aduanera MERCOSUR y trabajo del Foro de Integración Regional.\n\n' +
+      '- Acuerdos sobre criterios y procesos comunes.\n' +
+      '- Espacio para profundizar coordinación.\n' +
+      '- Oportunidad de articular agenda con corredores bioceánicos.',
+  },
+  {
+    match: q => /(rrii|relaciones internacionales|tratado)/i.test(q),
+    isInstitutional: false,
+    body:
+      '**Síntesis — Relaciones internacionales**\n\n' +
+      'Hay un decreto reciente en Perú sobre coordinación entre cancillería y comisiones legislativas para tratados regionales.\n\n' +
+      '- Relevancia institucional clara.\n' +
+      '- Espacio para trabajo conjunto vía Foro UPM de RRII.\n' +
+      '- Oportunidad de comparativa regional.',
+  },
+  {
+    match: q => /(minuta|reuni[oó]n.*foro)/i.test(q),
+    isInstitutional: true,
+    sources: ['d6', 'd1'],
+    body:
+      '**Borrador de minuta**\n\n' +
+      '**Tema:** [insertar tema]\n' +
+      '**Fecha:** [insertar fecha]\n' +
+      '**Participantes:** [legisladores y referentes técnicos]\n\n' +
+      '**Puntos tratados**\n\n' +
+      '1. Encuadre regional del tema.\n' +
+      '2. Marco normativo y antecedentes.\n' +
+      '3. Discusión sobre criterios comunes.\n' +
+      '4. Acuerdos preliminares.\n\n' +
+      '**Próximos pasos**\n\n' +
+      '- Convocar próxima reunión técnica.\n' +
+      '- Compartir minuta con Foro UPM correspondiente.\n' +
+      '- Elevar dictamen a comisión.',
+  },
 ]
 
 export function generateAssistantResponse(question: string, options?: { force?: 'institucional' | 'general' }): ChatMessage {
