@@ -40,15 +40,15 @@ export function Drawer({
       <button
         aria-label="Cerrar"
         onClick={onClose}
-        className="animate-fade-in absolute inset-0 bg-upm-900/40 backdrop-blur-sm"
+        className="animate-fade-in absolute inset-0 bg-upm-900/65 backdrop-blur"
       />
       <div
         className={cn(
-          'animate-slide-in-right absolute inset-y-0 right-0 flex w-full flex-col bg-bg shadow-floating',
+          'animate-slide-in-right absolute inset-y-0 right-0 flex w-full flex-col bg-white shadow-floating ring-1 ring-ink-100',
           widthCls,
         )}
       >
-        <div className="flex items-start justify-between gap-3 border-b border-ink-100 bg-white/80 px-5 py-4 backdrop-blur">
+        <div className="flex items-start justify-between gap-3 border-b border-ink-100 bg-white px-5 py-4">
           <div className="min-w-0 flex-1">
             {title && <div className="text-[16px] font-bold tracking-tight text-ink-900">{title}</div>}
             {description && <div className="mt-0.5 text-[12.5px] text-ink-500">{description}</div>}
@@ -61,7 +61,7 @@ export function Drawer({
             <X size={16} />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
+        <div className="flex-1 overflow-y-auto bg-bg px-5 py-5" style={{ backgroundColor: '#f6f8fb' }}>{children}</div>
       </div>
     </div>
   )

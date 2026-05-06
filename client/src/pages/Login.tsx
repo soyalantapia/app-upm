@@ -155,7 +155,16 @@ export function LoginPage() {
 
           <div className="flex flex-col gap-1 text-center text-[11.5px] text-ink-500">
             <span>Acceso exclusivo para miembros y autoridades autorizadas.</span>
-            <button type="button" className="font-semibold text-upm-700 hover:text-upm-800">
+            <button
+              type="button"
+              onClick={() => {
+                store.pushToast(
+                  'info',
+                  'Tu solicitud fue registrada. La Secretaría UPM la revisará en 48hs.',
+                )
+              }}
+              className="font-semibold text-upm-700 hover:text-upm-800"
+            >
               Solicitar acceso institucional
             </button>
           </div>

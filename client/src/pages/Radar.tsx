@@ -67,13 +67,30 @@ export function RadarPage() {
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase()
-    let items = NEWS.filter(n =>
-      (term === '' || (n.title + ' ' + n.excerpt).toLowerCase().includes(term)) &&
-      (country === 'all' || n.country === country) &&
-      (topic === 'all' || n.topic === topic) &&
-      (type === 'all' || n.type === type) &&
-      (relevance === 'all' || n.relevance === relevance),
-    )
+    let items = NEWS.filter(n => {
+      if (term !== '') {
+        const t = topicById(n.topic)
+        const c = countryByCode(n.country)
+        const haystack = [
+          n.title,
+          n.excerpt,
+          n.source,
+          n.type,
+          t.label,
+          t.shortLabel,
+          c.name,
+        ]
+          .join(' ')
+          .toLowerCase()
+        if (!haystack.includes(term)) return false
+      }
+      return (
+        (country === 'all' || n.country === country) &&
+        (topic === 'all' || n.topic === topic) &&
+        (type === 'all' || n.type === type) &&
+        (relevance === 'all' || n.relevance === relevance)
+      )
+    })
     if (sort === 'fecha-desc') items = [...items].sort((a, b) => b.date.localeCompare(a.date))
     if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
     if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)

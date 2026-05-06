@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Bell, BellRing, Check, FileStack, FileText, Newspaper, Sparkles } from 'lucide-react'
 import { Badge } from './ui'
 import { cn } from '@/lib/cn'
@@ -21,10 +21,15 @@ const TONE: Record<Notification['type'], string> = {
 
 export function NotificationsBell({ compact }: { compact?: boolean }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const notifications = useStore(s => s.notifications)
   const unreadCount = notifications.filter(n => n.unread).length
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
     if (!open) return

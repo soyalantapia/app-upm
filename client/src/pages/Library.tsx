@@ -70,13 +70,31 @@ export function LibraryPage() {
 
   const results = useMemo(
     () =>
-      DOCUMENTS.filter(d =>
-        (q.trim() === '' || (d.title + ' ' + d.excerpt).toLowerCase().includes(q.toLowerCase())) &&
-        matchesCategory(d, category) &&
-        (status === 'all' || d.status === status) &&
-        (country === 'all' || d.country === country) &&
-        (topic === 'all' || d.topic === topic),
-      ),
+      DOCUMENTS.filter(d => {
+        const term = q.trim().toLowerCase()
+        if (term) {
+          const t = topicById(d.topic)
+          const c = d.country ? countryByCode(d.country) : null
+          const haystack = [
+            d.title,
+            d.excerpt,
+            d.type,
+            d.forum ?? '',
+            t.label,
+            t.shortLabel,
+            c?.name ?? '',
+          ]
+            .join(' ')
+            .toLowerCase()
+          if (!haystack.includes(term)) return false
+        }
+        return (
+          matchesCategory(d, category) &&
+          (status === 'all' || d.status === status) &&
+          (country === 'all' || d.country === country) &&
+          (topic === 'all' || d.topic === topic)
+        )
+      }),
     [q, category, country, status, topic],
   )
 
