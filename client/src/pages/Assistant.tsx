@@ -1,24 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  ArrowUp,
-  Bookmark,
-  Check,
-  Clock4,
-  Copy,
-  FileStack,
-  History,
-  Layers,
-  ListChecks,
-  MessageSquareQuote,
-  PenLine,
-  Plus,
-  RefreshCw,
-  ScrollText,
-  ShieldCheck,
-  Share2,
-  Sparkles,
-  Trash2,
-} from 'lucide-react'
+import { ArrowUp, Bookmark, Check, Copy, FileStack, History, Plus, RefreshCw, ScrollText, Share2, Sparkles, Trash2 } from 'lucide-react'
 import { Badge, Button, Card, Eyebrow, PageHeader } from '@/components/ui'
 import { Markdown } from '@/components/Markdown'
 import { SourceCard } from '@/components/SourceCard'
@@ -27,7 +8,6 @@ import { store, useStore } from '@/lib/store'
 import { copyToClipboard, shareLink } from '@/lib/share'
 import { useUI } from '@/lib/ui-provider'
 import type { ChatMessage } from '@/lib/types'
-import { useNavigate } from 'react-router-dom'
 
 const SUGGESTIONS = [
   'Explicame las novedades de ambiente de esta semana.',
@@ -35,45 +15,6 @@ const SUGGESTIONS = [
   'Resumí el último informe en 1 página.',
   '¿Qué puntos debería revisar antes de la comisión?',
   'Armame preguntas para una reunión con Brasil y Uruguay.',
-]
-
-const USE_CATEGORIES: { id: string; label: string; icon: typeof PenLine; tone: string; items: { label: string; q: string }[] }[] = [
-  {
-    id: 'redaccion',
-    label: 'Redacción',
-    icon: PenLine,
-    tone: 'from-upm-500 to-upm-700',
-    items: [
-      { label: 'Discurso institucional', q: 'Borrador de discurso sobre integración regional' },
-      { label: 'Comunicado de prensa', q: 'Borrador de comunicado UPM sobre cooperación legislativa' },
-      { label: 'Mensaje institucional', q: 'Mensaje institucional para apertura de foro' },
-      { label: 'Puntos para entrevista', q: 'Preparame puntos para entrevista sobre integración regional' },
-    ],
-  },
-  {
-    id: 'preparacion',
-    label: 'Preparación',
-    icon: ListChecks,
-    tone: 'from-upm-600 to-upm-800',
-    items: [
-      { label: 'Brief para reunión', q: 'Preparame un brief para una reunión sobre corredores bioceánicos' },
-      { label: 'Preguntas para comisión', q: 'Preguntas para comisión sobre ambiente' },
-      { label: 'Resumen de novedades', q: 'Explicame las novedades de ambiente de esta semana' },
-      { label: 'Qué cambió', q: '¿Qué cambió respecto al marco anterior?' },
-    ],
-  },
-  {
-    id: 'organizacion',
-    label: 'Organización',
-    icon: MessageSquareQuote,
-    tone: 'from-upm-700 to-upm-900',
-    items: [
-      { label: 'Minuta de trabajo', q: 'Borrador de minuta de reunión técnica' },
-      { label: 'Lista de pendientes', q: 'Resumí pendientes legislativos sobre MERCOSUR' },
-      { label: 'Próximos pasos', q: '¿Cuáles son los próximos pasos sugeridos?' },
-      { label: 'Síntesis ejecutiva', q: 'Resumí en 10 líneas el tema corredores' },
-    ],
-  },
 ]
 
 const INITIAL: ChatMessage = {
@@ -105,7 +46,6 @@ function deriveTitle(messages: ChatMessage[]) {
 export function AssistantPage() {
   const { openCreateMinuta, openCreateBrief, openDocument } = useUI()
   const conversations = useStore(s => s.conversations)
-  const navigate = useNavigate()
   const [messages, setMessages] = useState<ChatMessage[]>([INITIAL])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
@@ -167,7 +107,7 @@ export function AssistantPage() {
   }
 
   const lastAssistant = useMemo(
-    () => [...messages].reverse().find(m => m.role === 'assistant'),
+    () => [...messages].reverse().find(m => m.role === 'assistant' && m.id !== 'init'),
     [messages],
   )
 
@@ -192,11 +132,10 @@ export function AssistantPage() {
   const lastAssistantTitle = lastAssistant?.content.split('\n')[0].replace(/\*\*/g, '').slice(0, 80) ?? ''
 
   return (
-    <div className="animate-fade-up mx-auto flex h-full w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
+    <div className="animate-fade-up mx-auto flex h-full w-full max-w-[860px] flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
-        eyebrow={<Eyebrow icon={<Sparkles size={11} />}>Corazón del producto</Eyebrow>}
+        eyebrow={<Eyebrow icon={<Sparkles size={11} />}>Asistente AI UPM</Eyebrow>}
         title="Asistente del Legislador"
-        description="Pregunta, resume y prepara. Convierte información en un brief listo para usar — con fuentes verificables cuando las usás."
         actions={
           <>
             <Button size="sm" variant="ghost" onClick={() => setHistoryOpen(v => !v)}>
@@ -206,20 +145,14 @@ export function AssistantPage() {
             <Button size="sm" variant="secondary" onClick={newConversation}>
               <Plus size={14} /> Nueva
             </Button>
-            <Badge tone="success">
-              <ShieldCheck size={11} /> Modo institucional
-            </Badge>
           </>
         }
       />
 
-      {/* Historial */}
       {historyOpen && (
         <Card className="animate-fade-in">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
-              <Clock4 size={12} /> Conversaciones recientes
-            </div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">Conversaciones recientes</div>
             <Badge tone="ghost">{conversations.length}</Badge>
           </div>
           {conversations.length === 0 ? (
@@ -230,9 +163,6 @@ export function AssistantPage() {
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {conversations.map(c => (
                 <div key={c.id} className="flex items-start gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100">
-                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-upm-50 text-upm-700">
-                    <MessageSquareQuote size={14} />
-                  </div>
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-[12.5px] font-semibold text-ink-900">{c.title}</div>
                     <div className="text-[11px] text-ink-500 tabular-nums">
@@ -263,194 +193,106 @@ export function AssistantPage() {
         </Card>
       )}
 
-      {/* Categorías de uso */}
-      <div className="grid gap-2.5 sm:grid-cols-3">
-        {USE_CATEGORIES.map(cat => (
-          <div
-            key={cat.id}
-            className="rounded-3xl bg-white p-4 ring-1 ring-ink-100 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover hover:ring-upm-100"
-          >
-            <div className="flex items-center gap-2">
-              <div className={`grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br ${cat.tone} text-white shadow-cta`}>
-                <cat.icon size={16} />
+      {/* Chat — única columna */}
+      <div className="flex min-h-0 flex-1 flex-col rounded-3xl bg-white ring-1 ring-ink-100 shadow-card">
+        <div ref={scrollerRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-6" style={{ maxHeight: 'calc(100svh - 260px)' }}>
+          {messages.map(m => (
+            <ChatBubble
+              key={m.id}
+              message={m}
+              onCopy={async () => {
+                const ok = await copyToClipboard(m.content)
+                if (ok) store.pushToast('success', 'Copiado al portapapeles')
+              }}
+              onOpenSource={openDocument}
+            />
+          ))}
+          {thinking && (
+            <div className="flex items-center gap-2 px-1 text-[12.5px] text-ink-500">
+              <div className="flex gap-1">
+                {[0, 1, 2].map(i => (
+                  <span
+                    key={i}
+                    className="block h-1.5 w-1.5 animate-pulse-soft rounded-full bg-upm-400"
+                    style={{ animationDelay: `${i * 0.15}s` }}
+                  />
+                ))}
               </div>
-              <div className="text-[14px] font-bold text-ink-900">{cat.label}</div>
+              Buscando fuentes UPM…
             </div>
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {cat.items.map(it => (
+          )}
+        </div>
+
+        {messages.length <= 1 && (
+          <div className="border-t border-ink-100 px-4 py-3 sm:px-6">
+            <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Probá con</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {SUGGESTIONS.map(s => (
                 <button
-                  key={it.label}
-                  onClick={() => send(it.q)}
-                  className="rounded-full bg-upm-50 px-2.5 py-1 text-[11.5px] font-semibold text-upm-800 ring-1 ring-upm-100 transition hover:-translate-y-0.5 hover:bg-upm-100"
+                  key={s}
+                  onClick={() => send(s)}
+                  className="rounded-full bg-upm-50 px-3 py-1.5 text-[12.5px] font-semibold text-upm-800 ring-1 ring-upm-100 transition hover:-translate-y-0.5 hover:bg-upm-100"
                 >
-                  {it.label}
+                  {s}
                 </button>
               ))}
             </div>
           </div>
-        ))}
-      </div>
+        )}
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-        {/* Chat */}
-        <div className="flex min-h-0 flex-col rounded-3xl bg-white ring-1 ring-ink-100 shadow-card">
-          <div ref={scrollerRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-6" style={{ maxHeight: 'calc(100svh - 320px)' }}>
-            {messages.map(m => (
-              <ChatBubble
-                key={m.id}
-                message={m}
-                onCopy={async () => {
-                  const ok = await copyToClipboard(m.content)
-                  if (ok) store.pushToast('success', 'Copiado al portapapeles')
-                }}
-                onOpenSource={openDocument}
-              />
-            ))}
-            {thinking && (
-              <div className="flex items-center gap-2 px-1 text-[12.5px] text-ink-500">
-                <div className="flex gap-1">
-                  {[0, 1, 2].map(i => (
-                    <span
-                      key={i}
-                      className="block h-1.5 w-1.5 animate-pulse-soft rounded-full bg-upm-400"
-                      style={{ animationDelay: `${i * 0.15}s` }}
-                    />
-                  ))}
-                </div>
-                Buscando fuentes UPM…
-              </div>
-            )}
-          </div>
-
-          {/* Sugerencias */}
-          {messages.length <= 1 && (
-            <div className="border-t border-ink-100 px-4 py-3 sm:px-6">
-              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Probá con</div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {SUGGESTIONS.map(s => (
-                  <button
-                    key={s}
-                    onClick={() => send(s)}
-                    className="rounded-full bg-upm-50 px-3 py-1.5 text-[12.5px] font-semibold text-upm-800 ring-1 ring-upm-100 transition hover:-translate-y-0.5 hover:bg-upm-100"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Input */}
-          <form
-            onSubmit={e => {
-              e.preventDefault()
-              send()
-            }}
-            className="flex items-end gap-2 border-t border-ink-100 bg-white p-3 sm:p-4"
-          >
-            <textarea
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  send()
-                }
-              }}
-              rows={1}
-              placeholder="Pregunta, redactá, resumí, preparate una reunión…"
-              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl bg-upm-50/40 px-4 py-3 text-[14.5px] text-ink-900 ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
+        {/* Quick actions sobre la última respuesta */}
+        {lastAssistant && (
+          <div className="flex flex-wrap items-center gap-1.5 border-t border-ink-100 px-4 py-2.5 sm:px-6">
+            <span className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-500 mr-1">Acciones</span>
+            <QuickButton icon={Copy} label="Copiar" onClick={copyLastAssistant} />
+            <QuickButton icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />
+            <QuickButton
+              icon={FileStack}
+              label="Brief"
+              onClick={() => openCreateBrief({ title: `Brief — ${lastAssistantTitle}`, body: lastAssistantBody })}
             />
-            {messages.some(m => m.role === 'user') && (
-              <Button type="button" size="md" variant="secondary" onClick={regenerate} disabled={thinking}>
-                <RefreshCw size={14} />
-              </Button>
-            )}
-            <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3">
-              <ArrowUp size={17} />
-            </Button>
-          </form>
-        </div>
+            <QuickButton
+              icon={ScrollText}
+              label="Minuta"
+              onClick={() => openCreateMinuta({ title: `Minuta — ${lastAssistantTitle}`, body: lastAssistantBody })}
+            />
+            <QuickButton icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />
+            <QuickButton icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />
+            <QuickButton icon={Trash2} label="Nueva" onClick={newConversation} tone="danger" />
+          </div>
+        )}
 
-        {/* Sidebar lateral */}
-        <div className="flex flex-col gap-4">
-          <Card>
-            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
-              <ScrollText size={12} /> Acciones sobre la última respuesta
-            </div>
-            <div className="mt-3 flex flex-col gap-2">
-              <ActionButton icon={Copy} label="Copiar respuesta" onClick={copyLastAssistant} disabled={!lastAssistant} />
-              <ActionButton icon={Bookmark} label="Guardar en mi carpeta" onClick={saveLastAssistant} disabled={!lastAssistant} />
-              <ActionButton
-                icon={FileStack}
-                label="Crear brief"
-                onClick={() => openCreateBrief({ title: `Brief — ${lastAssistantTitle}`, body: lastAssistantBody })}
-                disabled={!lastAssistant}
-              />
-              <ActionButton
-                icon={ScrollText}
-                label="Crear minuta"
-                onClick={() => openCreateMinuta({ title: `Minuta — ${lastAssistantTitle}`, body: lastAssistantBody })}
-                disabled={!lastAssistant}
-              />
-              <ActionButton
-                icon={Share2}
-                label="Compartir conversación"
-                onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')}
-                disabled={!lastAssistant}
-              />
-              <ActionButton
-                icon={RefreshCw}
-                label="Regenerar última respuesta"
-                onClick={regenerate}
-                disabled={!messages.some(m => m.role === 'user') || thinking}
-              />
-              <ActionButton
-                icon={Trash2}
-                label="Empezar nueva conversación"
-                tone="danger"
-                onClick={newConversation}
-              />
-            </div>
-          </Card>
-
-          <Card>
-            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
-              <Layers size={12} /> Fuentes utilizadas
-            </div>
-            <div className="mt-3 flex flex-col gap-2">
-              {lastAssistant?.sources?.length ? (
-                lastAssistant.sources.map(s => (
-                  <button key={s.id} onClick={() => openDocument(s.id)} className="text-left">
-                    <SourceCard title={s.title} type={s.type} status="oficial" />
-                  </button>
-                ))
-              ) : (
-                <div className="rounded-2xl bg-ink-50 px-3 py-3 text-[12.5px] text-ink-500">
-                  Activá una pregunta institucional para que aparezcan las fuentes UPM utilizadas.
-                </div>
-              )}
-            </div>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-upm-700 to-upm-900 text-white ring-white/10">
-            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-upm-200">Atajos</div>
-            <ul className="mt-2 flex flex-col gap-1 text-[12px] text-white/85">
-              <li>⌘K · buscar en UPM</li>
-              <li>Enter · enviar pregunta</li>
-              <li>Shift+Enter · nueva línea</li>
-            </ul>
-            <Button size="sm" variant="secondary" className="mt-3 w-full" onClick={() => navigate('/biblioteca')}>
-              Explorar Biblioteca UPM
-            </Button>
-          </Card>
-        </div>
+        {/* Input */}
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            send()
+          }}
+          className="flex items-end gap-2 border-t border-ink-100 bg-white p-3 sm:p-4"
+        >
+          <textarea
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                send()
+              }
+            }}
+            rows={1}
+            placeholder="Pregunta, redactá, resumí, preparate una reunión…"
+            className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl bg-upm-50/40 px-4 py-3 text-[14.5px] text-ink-900 ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
+          />
+          <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3">
+            <ArrowUp size={17} />
+          </Button>
+        </form>
       </div>
     </div>
   )
 }
 
-function ActionButton({
+function QuickButton({
   icon: Icon,
   label,
   onClick,
@@ -468,17 +310,14 @@ function ActionButton({
       onClick={onClick}
       disabled={disabled}
       className={
-        'flex items-center justify-between rounded-2xl bg-white px-3.5 py-2.5 ring-1 shadow-card transition disabled:opacity-50 disabled:cursor-not-allowed ' +
+        'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11.5px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ' +
         (tone === 'danger'
-          ? 'ring-danger-bg/60 hover:bg-danger-bg/30 text-danger-fg'
-          : 'ring-ink-100 hover:-translate-y-0.5 hover:ring-upm-100 text-ink-900')
+          ? 'bg-white text-danger-fg ring-1 ring-danger-bg hover:bg-danger-bg/30'
+          : 'bg-white text-upm-800 ring-1 ring-upm-100 hover:bg-upm-50')
       }
     >
-      <span className="flex items-center gap-2 text-[13px] font-semibold">
-        <Icon size={14} className={tone === 'danger' ? 'text-danger' : 'text-upm-600'} />
-        {label}
-      </span>
-      <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-300">→</span>
+      <Icon size={11} />
+      {label}
     </button>
   )
 }

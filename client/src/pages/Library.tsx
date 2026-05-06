@@ -50,7 +50,11 @@ function matchesCategory(doc: { type: DocType; status: DocStatus }, category: Ca
 
 export function LibraryPage() {
   const { openDocument } = useUI()
-  const savedRefs = useStore(s => new Set(s.saved.map(i => i.ref).filter(Boolean) as string[]))
+  const saved = useStore(s => s.saved)
+  const savedRefs = useMemo(
+    () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
+    [saved],
+  )
   const [q, setQ] = useState('')
   const [category, setCategory] = useState<CategoryKey>('all')
   const [country, setCountry] = useState<CountryCode | 'all'>('all')

@@ -13,7 +13,6 @@ const ROUTES = [
   { label: 'Hablar con leyes', path: '/leyes', desc: 'Consultá artículos directos' },
   { label: 'Biblioteca UPM', path: '/biblioteca', desc: 'Memoria institucional' },
   { label: 'Mi carpeta', path: '/carpetas', desc: 'Tus guardados privados' },
-  { label: 'Admin UPM', path: '/admin', desc: 'Panel institucional' },
   { label: 'Perfil', path: '/perfil', desc: 'Preferencias y membresía' },
 ]
 

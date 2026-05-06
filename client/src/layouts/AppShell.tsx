@@ -9,7 +9,6 @@ import {
   FolderClosed,
   User,
   LogOut,
-  ShieldCheck,
   Search,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -34,7 +33,6 @@ const NAV: NavItem[] = [
   { to: '/leyes', label: 'Leyes', icon: ScrollText },
   { to: '/biblioteca', label: 'Biblioteca', icon: Library, primary: true },
   { to: '/carpetas', label: 'Mi carpeta', icon: FolderClosed, primary: true },
-  { to: '/admin', label: 'Admin UPM', icon: ShieldCheck },
   { to: '/perfil', label: 'Perfil', icon: User },
 ]
 

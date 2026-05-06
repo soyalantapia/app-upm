@@ -46,7 +46,11 @@ const SORT_OPTIONS: { id: Sort; label: string }[] = [
 export function RadarPage() {
   const navigate = useNavigate()
   const { openCreateBrief } = useUI()
-  const savedRefs = useStore(s => new Set(s.saved.map(i => i.ref).filter(Boolean) as string[]))
+  const saved = useStore(s => s.saved)
+  const savedRefs = useMemo(
+    () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
+    [saved],
+  )
   const [q, setQ] = useState('')
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
   const [topic, setTopic] = useState<Topic | 'all'>('all')
