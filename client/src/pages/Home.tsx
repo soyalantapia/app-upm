@@ -17,10 +17,11 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
-import { useStore } from '@/lib/store'
+import { store, useStore } from '@/lib/store'
 import { DOCUMENTS, NEWS, countryByCode, topicById } from '@/lib/data'
 import { Badge, Button, Card, Chip, Eyebrow, PageHeader, Stat } from '@/components/ui'
 import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
+import { useUI } from '@/lib/ui-provider'
 
 const RELEVANCE: Record<string, { label: string; tone: 'danger' | 'warning' | 'info' }> = {
   alta: { label: 'Relevancia alta', tone: 'danger' },
@@ -51,6 +52,7 @@ export function HomePage() {
   const prefs = useStore(s => s.prefs)
   const saved = useStore(s => s.saved)
   const navigate = useNavigate()
+  const { openDocument } = useUI()
 
   const greeting = (() => {
     const hour = new Date().getHours()
@@ -146,10 +148,31 @@ export function HomePage() {
                       <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{n.title}</h3>
                       <p className="mt-1 text-[13.5px] leading-relaxed text-ink-500 line-clamp-2">{n.excerpt}</p>
                       <div className="mt-3 flex flex-wrap gap-2">
-                        <Button size="sm" variant="soft">
+                        <Button
+                          size="sm"
+                          variant="soft"
+                          onClick={e => {
+                            e.stopPropagation()
+                            navigate(`/radar/${n.id}`)
+                          }}
+                        >
                           <Sparkles size={13} /> Explicámelo simple
                         </Button>
-                        <Button size="sm" variant="ghost">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={e => {
+                            e.stopPropagation()
+                            store.saveItem({
+                              id: 'sav-news-' + n.id,
+                              type: 'novedad',
+                              title: n.title,
+                              ref: n.id,
+                              meta: { country: n.country, topic: n.topic, type: n.type },
+                            })
+                            store.pushToast('success', 'Novedad guardada en tu carpeta')
+                          }}
+                        >
                           <Bookmark size={13} /> Guardar
                         </Button>
                       </div>
@@ -203,8 +226,8 @@ export function HomePage() {
                 <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{recommendedDoc.title}</h3>
                 <p className="mt-1 text-[13.5px] leading-relaxed text-ink-500 line-clamp-2">{recommendedDoc.excerpt}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Button size="sm" variant="soft" onClick={() => navigate('/leyes')}>
-                    <FlaskConical size={13} /> Hablar con el documento
+                  <Button size="sm" variant="soft" onClick={() => openDocument(recommendedDoc)}>
+                    <FlaskConical size={13} /> Abrir documento
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => navigate('/biblioteca')}>
                     <Library size={13} /> Ver en Biblioteca

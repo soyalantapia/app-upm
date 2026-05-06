@@ -1,10 +1,24 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Bookmark, FileStack, Filter, Radar, ScrollText, Sparkles, Tag, Wand2 } from 'lucide-react'
+import {
+  ArrowDownUp,
+  ArrowRight,
+  Bookmark,
+  BookmarkCheck,
+  FileStack,
+  Filter,
+  Radar,
+  ScrollText,
+  Search,
+  Sparkles,
+  Tag,
+  Wand2,
+} from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
 import { COUNTRIES, NEWS, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
-import { store } from '@/lib/store'
+import { store, useStore } from '@/lib/store'
+import { useUI } from '@/lib/ui-provider'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -15,36 +29,73 @@ const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'acta', label: 'Acta' },
 ]
 
-const RELEVANCE: Record<Relevance, { label: string; tone: 'danger' | 'warning' | 'info'; dot: string }> = {
-  alta: { label: 'Alta', tone: 'danger', dot: 'bg-danger' },
-  media: { label: 'Media', tone: 'warning', dot: 'bg-warning' },
-  baja: { label: 'Baja', tone: 'info', dot: 'bg-info' },
+const RELEVANCE: Record<Relevance, { label: string; tone: 'danger' | 'warning' | 'info'; dot: string; weight: number }> = {
+  alta: { label: 'Alta', tone: 'danger', dot: 'bg-danger', weight: 3 },
+  media: { label: 'Media', tone: 'warning', dot: 'bg-warning', weight: 2 },
+  baja: { label: 'Baja', tone: 'info', dot: 'bg-info', weight: 1 },
 }
+
+type Sort = 'fecha-desc' | 'fecha-asc' | 'relevancia'
+
+const SORT_OPTIONS: { id: Sort; label: string }[] = [
+  { id: 'fecha-desc', label: 'Más recientes' },
+  { id: 'fecha-asc', label: 'Más antiguas' },
+  { id: 'relevancia', label: 'Mayor relevancia' },
+]
 
 export function RadarPage() {
   const navigate = useNavigate()
+  const { openCreateBrief } = useUI()
+  const savedRefs = useStore(s => new Set(s.saved.map(i => i.ref).filter(Boolean) as string[]))
+  const [q, setQ] = useState('')
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
   const [topic, setTopic] = useState<Topic | 'all'>('all')
   const [type, setType] = useState<DocType | 'all'>('all')
   const [relevance, setRelevance] = useState<Relevance | 'all'>('all')
+  const [sort, setSort] = useState<Sort>('fecha-desc')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setLoading(true)
     const id = setTimeout(() => setLoading(false), 420)
     return () => clearTimeout(id)
-  }, [country, topic, type, relevance])
+  }, [country, topic, type, relevance, q, sort])
 
-  const filtered = useMemo(
-    () =>
-      NEWS.filter(n =>
-        (country === 'all' || n.country === country) &&
-        (topic === 'all' || n.topic === topic) &&
-        (type === 'all' || n.type === type) &&
-        (relevance === 'all' || n.relevance === relevance),
-      ),
-    [country, topic, type, relevance],
-  )
+  const filtered = useMemo(() => {
+    const term = q.trim().toLowerCase()
+    let items = NEWS.filter(n =>
+      (term === '' || (n.title + ' ' + n.excerpt).toLowerCase().includes(term)) &&
+      (country === 'all' || n.country === country) &&
+      (topic === 'all' || n.topic === topic) &&
+      (type === 'all' || n.type === type) &&
+      (relevance === 'all' || n.relevance === relevance),
+    )
+    if (sort === 'fecha-desc') items = [...items].sort((a, b) => b.date.localeCompare(a.date))
+    if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
+    if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)
+    return items
+  }, [q, country, topic, type, relevance, sort])
+
+  const handleSave = (n: typeof NEWS[number]) => {
+    const id = 'sav-news-' + n.id
+    const isSaved = savedRefs.has(n.id)
+    if (isSaved) {
+      const item = store.getSnapshot().saved.find(i => i.ref === n.id)
+      if (item) {
+        store.removeSaved(item.id)
+        store.pushToast('info', 'Eliminado de tu carpeta')
+      }
+    } else {
+      store.saveItem({
+        id,
+        type: 'novedad',
+        title: n.title,
+        ref: n.id,
+        meta: { country: n.country, topic: n.topic, relevance: n.relevance, date: n.date },
+      })
+      store.pushToast('success', 'Novedad guardada en tu carpeta')
+    }
+  }
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
@@ -59,8 +110,32 @@ export function RadarPage() {
         }
       />
 
-      {/* Filtros */}
+      {/* Search + Sort */}
       <div className="flex flex-col gap-3 rounded-3xl bg-white p-4 ring-1 ring-ink-100 shadow-card">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <label className="flex flex-1 items-center gap-3 rounded-2xl bg-upm-50/40 px-4 py-2.5 ring-1 ring-upm-100 focus-within:bg-white focus-within:ring-upm-400">
+            <Search size={16} className="text-upm-600" />
+            <input
+              value={q}
+              onChange={e => setQ(e.target.value)}
+              placeholder="Buscar por palabra (ej: ambiente, brasil, acuerdo)…"
+              className="flex-1 bg-transparent text-[14px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
+            />
+          </label>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-ink-500">
+              <ArrowDownUp size={11} className="mr-0.5 inline" /> Ordenar
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {SORT_OPTIONS.map(s => (
+                <Chip key={s.id} size="sm" active={sort === s.id} onClick={() => setSort(s.id)}>
+                  {s.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <FilterRow label="País">
           <Chip active={country === 'all'} onClick={() => setCountry('all')} size="sm">Todos</Chip>
           {COUNTRIES.map(c => (
@@ -136,8 +211,9 @@ export function RadarPage() {
         <div className="flex flex-col gap-3">
           {filtered.map((n, i) => {
             const country = countryByCode(n.country)
-            const topic = topicById(n.topic)
+            const topicMeta = topicById(n.topic)
             const rel = RELEVANCE[n.relevance]
+            const isSaved = savedRefs.has(n.id)
             return (
               <Card
                 key={n.id}
@@ -153,20 +229,47 @@ export function RadarPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <Badge tone="brand">{country.flag} {country.name}</Badge>
-                      <Badge tone="ghost">{topic.shortLabel}</Badge>
+                      <Badge tone="ghost">{topicMeta.shortLabel}</Badge>
                       <Badge tone={rel.tone}>Relevancia {rel.label}</Badge>
                       <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{n.date}</span>
+                      {isSaved && <Badge tone="success">Guardado</Badge>}
                     </div>
                     <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{n.title}</h3>
                     <p className="mt-1 text-[13.5px] leading-relaxed text-ink-500 line-clamp-2">{n.excerpt}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <Button size="sm" variant="soft" onClick={e => { e.stopPropagation(); navigate(`/radar/${n.id}`) }}>
+                      <Button
+                        size="sm"
+                        variant="soft"
+                        onClick={e => {
+                          e.stopPropagation()
+                          navigate(`/radar/${n.id}`)
+                        }}
+                      >
                         <Wand2 size={13} /> Explicámelo simple
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={e => { e.stopPropagation(); store.pushToast('success', 'Guardado en tu carpeta'); store.saveItem({ id: 'sav-' + n.id, type: 'novedad', title: n.title, ref: n.id }) }}>
-                        <Bookmark size={13} /> Guardar
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={e => {
+                          e.stopPropagation()
+                          handleSave(n)
+                        }}
+                      >
+                        {isSaved ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
+                        {isSaved ? 'Guardado' : 'Guardar'}
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={e => { e.stopPropagation(); store.pushToast('info', 'Brief en preparación') }}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={e => {
+                          e.stopPropagation()
+                          openCreateBrief({
+                            title: `Brief — ${n.title}`,
+                            body: `**Contexto**\n\n${n.excerpt}\n\n**País:** ${country.name}\n**Tema:** ${topicMeta.label}\n**Relevancia:** ${rel.label}\n\n**Fuente:** ${n.source}`,
+                            ref: n.id,
+                          })
+                        }}
+                      >
                         <FileStack size={13} /> Armar brief
                       </Button>
                       <span className="ml-auto inline-flex items-center gap-1 text-[12px] font-semibold text-upm-700">

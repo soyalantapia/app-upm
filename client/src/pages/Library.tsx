@@ -16,7 +16,8 @@ import type { LucideIcon } from 'lucide-react'
 import { Badge, Card, Chip, EmptyState, Eyebrow, PageHeader } from '@/components/ui'
 import { COUNTRIES, DOCUMENTS, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocStatus, DocType, Topic } from '@/lib/types'
-import { store } from '@/lib/store'
+import { useUI } from '@/lib/ui-provider'
+import { useStore } from '@/lib/store'
 
 type CategoryKey = 'all' | 'convenios' | 'actas' | 'comunicados' | 'informes' | 'documentos-base' | 'normativa' | 'academico'
 
@@ -48,6 +49,8 @@ function matchesCategory(doc: { type: DocType; status: DocStatus }, category: Ca
 }
 
 export function LibraryPage() {
+  const { openDocument } = useUI()
+  const savedRefs = useStore(s => new Set(s.saved.map(i => i.ref).filter(Boolean) as string[]))
   const [q, setQ] = useState('')
   const [category, setCategory] = useState<CategoryKey>('all')
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
@@ -201,7 +204,7 @@ export function LibraryPage() {
                 interactive
                 style={{ animationDelay: `${i * 35}ms` }}
                 className="animate-fade-up"
-                onClick={() => store.pushToast('info', `Abriendo "${d.title}"`)}
+                onClick={() => openDocument(d)}
               >
                 <div className="flex items-start gap-3">
                   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-upm-50 text-upm-700">
@@ -214,6 +217,7 @@ export function LibraryPage() {
                       {d.status === 'curado' && <Badge tone="info">Curado por UPM</Badge>}
                       {d.status === 'aporte' && <Badge tone="warning">Aporte de foro</Badge>}
                       {c && <Badge tone="ghost">{c.flag} {c.name}</Badge>}
+                      {savedRefs.has(d.id) && <Badge tone="success">Guardado</Badge>}
                     </div>
                     <h3 className="mt-2 text-[15px] font-bold leading-snug text-ink-900">{d.title}</h3>
                     <p className="mt-1 text-[12.5px] leading-relaxed text-ink-500 line-clamp-2">{d.excerpt}</p>

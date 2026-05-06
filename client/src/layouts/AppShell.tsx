@@ -1,4 +1,5 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   Home,
   Sparkles,
@@ -9,12 +10,15 @@ import {
   User,
   LogOut,
   ShieldCheck,
+  Search,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useAuth } from '@/lib/auth'
 import { BrandLockup, BrandMark } from '@/components/Brand'
 import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
+import { NotificationsBell } from '@/components/NotificationsBell'
+import { GlobalSearch } from '@/components/GlobalSearch'
 
 type NavItem = {
   to: string
@@ -39,29 +43,73 @@ const MOBILE_NAV = NAV.filter(n => n.primary).slice(0, 5)
 export function AppShell() {
   const { operator, signOut } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [searchOpen, setSearchOpen] = useState(false)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+      if (e.key === '/' && document.activeElement && (document.activeElement as HTMLElement).tagName !== 'INPUT' && (document.activeElement as HTMLElement).tagName !== 'TEXTAREA') {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  // Scroll-to-top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [location.pathname])
 
   return (
     <div className="bg-network-mesh min-h-[100svh]">
       {/* Mobile header */}
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/40 bg-white/80 px-4 py-3 backdrop-blur md:hidden">
         <BrandLockup compact />
-        <button
-          onClick={() => navigate('/perfil')}
-          className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-upm-500 to-upm-700 text-[13px] font-bold text-white shadow-cta"
-          aria-label="Perfil"
-        >
-          {operator?.name.split(' ').slice(-1)[0]?.charAt(0) ?? 'L'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink-700 ring-1 ring-ink-100 shadow-card hover:bg-upm-50"
+            aria-label="Buscar"
+          >
+            <Search size={15} />
+          </button>
+          <NotificationsBell />
+          <button
+            onClick={() => navigate('/perfil')}
+            className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-upm-500 to-upm-700 text-[13px] font-bold text-white shadow-cta"
+            aria-label="Perfil"
+          >
+            {operator?.name.split(' ').slice(-1)[0]?.charAt(0) ?? 'L'}
+          </button>
+        </div>
       </header>
 
       <div className="mx-auto flex w-full max-w-[1480px] gap-0 md:gap-6 md:px-4 md:py-6">
         {/* Sidebar desktop */}
         <aside className="sticky top-6 hidden h-[calc(100svh-3rem)] w-[260px] shrink-0 flex-col rounded-3xl bg-white/85 p-4 ring-1 ring-white/60 shadow-glass backdrop-blur md:flex">
-          <div className="px-2 pb-3">
+          <div className="flex items-center justify-between px-2 pb-3">
             <BrandLockup />
+            <NotificationsBell />
           </div>
 
-          <nav className="mt-2 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="mt-1 flex w-full items-center gap-2 rounded-2xl bg-upm-50/60 px-3 py-2 text-[12.5px] text-ink-500 ring-1 ring-upm-100 hover:bg-upm-50 hover:text-upm-800"
+          >
+            <Search size={14} className="text-upm-600" />
+            <span className="flex-1 text-left">Buscar…</span>
+            <span className="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-bold text-ink-500 ring-1 ring-ink-100">
+              ⌘K
+            </span>
+          </button>
+
+          <nav className="mt-3 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
             {NAV.map(item => (
               <NavLink
                 key={item.to}
@@ -145,6 +193,8 @@ export function AppShell() {
           </NavLink>
         ))}
       </nav>
+
+      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   )
 }

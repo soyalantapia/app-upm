@@ -4,7 +4,9 @@ import { Badge, Button, Card, Chip, Eyebrow, PageHeader } from '@/components/ui'
 import { Markdown } from '@/components/Markdown'
 import { DOCUMENTS } from '@/lib/data'
 import { generateAssistantResponse } from '@/lib/respond'
-import { store } from '@/lib/store'
+import { store, useStore } from '@/lib/store'
+import { useUI } from '@/lib/ui-provider'
+import { shareLink } from '@/lib/share'
 import type { ChatMessage, Document } from '@/lib/types'
 
 const LAWS = DOCUMENTS.filter(d => ['ley', 'decreto', 'reglamento', 'informe'].includes(d.type))
@@ -51,7 +53,9 @@ const QUESTIONS = [
 ]
 
 export function LawsPage() {
+  const { openDocument, openCreateBrief, openCreateMinuta } = useUI()
   const [active, setActive] = useState<Document>(LAWS[0])
+  const isSaved = useStore(s => s.saved.some(i => i.ref === active.id))
   const [highlight, setHighlight] = useState<number | null>(2)
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -149,16 +153,60 @@ export function LawsPage() {
               ))}
             </div>
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="soft" onClick={() => store.pushToast('success', 'Guardado en dossier')}>
-                <FileStack size={13} /> Guardar en dossier
+              <Button size="sm" variant="soft" onClick={() => openDocument(active)}>
+                <BookOpen size={13} /> Ver detalle
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => store.pushToast('success', 'Brief generado')}>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  if (isSaved) {
+                    const item = store.getSnapshot().saved.find(i => i.ref === active.id)
+                    if (item) {
+                      store.removeSaved(item.id)
+                      store.pushToast('info', 'Eliminado de tu carpeta')
+                    }
+                  } else {
+                    store.saveItem({
+                      id: 'sav-doc-' + active.id,
+                      type: 'documento',
+                      title: active.title,
+                      ref: active.id,
+                      meta: { type: active.type, status: active.status, date: active.date },
+                    })
+                    store.pushToast('success', 'Documento guardado en tu carpeta')
+                  }
+                }}
+              >
+                <FileStack size={13} /> {isSaved ? 'Guardado' : 'Guardar'}
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() =>
+                  openCreateBrief({
+                    title: `Brief — ${active.title}`,
+                    body: `**Resumen**\n\n${active.excerpt}\n\n**Articulado clave**\n\n${ARTICLES.map(a => `${a.n}. ${a.title} — ${a.body}`).join('\n')}`,
+                    ref: active.id,
+                  })
+                }
+              >
                 <Sparkles size={13} /> Crear brief
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => store.pushToast('info', 'Comparativa en preparación')}>
-                <GitCompare size={13} /> Comparar con otro país
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() =>
+                  openCreateMinuta({
+                    title: `Minuta — ${active.title}`,
+                    body: '1. Tema\n2. Participantes\n3. Puntos tratados\n4. Acuerdos\n5. Próximos pasos',
+                    ref: active.id,
+                  })
+                }
+              >
+                <GitCompare size={13} /> Crear minuta
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => store.pushToast('info', 'Enlace copiado')}>
+              <Button size="sm" variant="ghost" onClick={() => shareLink(active.title, '/leyes')}>
                 <Share2 size={13} /> Compartir
               </Button>
             </div>

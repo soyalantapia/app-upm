@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
   Bookmark,
+  BookmarkCheck,
   CalendarPlus,
   FileStack,
   HelpCircle,
@@ -16,7 +17,9 @@ import { Badge, Card, Eyebrow } from '@/components/ui'
 import { Markdown } from '@/components/Markdown'
 import { NEWS, countryByCode, topicById } from '@/lib/data'
 import { generateAssistantResponse } from '@/lib/respond'
-import { store } from '@/lib/store'
+import { store, useStore } from '@/lib/store'
+import { useUI } from '@/lib/ui-provider'
+import { shareLink } from '@/lib/share'
 import type { ChatMessage } from '@/lib/types'
 
 const QUESTIONS = [
@@ -32,6 +35,9 @@ export function NewsConversationPage() {
   const news = useMemo(() => NEWS.find(n => n.id === id) ?? NEWS[0], [id])
   const country = countryByCode(news.country)
   const topic = topicById(news.topic)
+  const isSaved = useStore(s => s.saved.some(i => i.ref === news.id))
+  const { openCreateBrief, openCreateMinuta } = useUI()
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'init',
@@ -59,6 +65,30 @@ export function NewsConversationPage() {
     }, 700)
   }
 
+  const handleSave = () => {
+    if (isSaved) {
+      const item = store.getSnapshot().saved.find(i => i.ref === news.id)
+      if (item) {
+        store.removeSaved(item.id)
+        store.pushToast('info', 'Eliminado de tu carpeta')
+      }
+    } else {
+      store.saveItem({
+        id: 'sav-news-' + news.id,
+        type: 'novedad',
+        title: news.title,
+        ref: news.id,
+        meta: { country: news.country, topic: news.topic, relevance: news.relevance, date: news.date },
+      })
+      store.pushToast('success', 'Novedad guardada en tu carpeta')
+    }
+  }
+
+  const lastAssistant = useMemo(
+    () => [...messages].reverse().find(m => m.role === 'assistant' && m.id !== 'init'),
+    [messages],
+  )
+
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1240px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
       <div className="flex items-center justify-between">
@@ -83,6 +113,7 @@ export function NewsConversationPage() {
             <Badge tone={news.relevance === 'alta' ? 'danger' : news.relevance === 'media' ? 'warning' : 'info'}>
               Relevancia {news.relevance}
             </Badge>
+            {isSaved && <Badge tone="success">Guardado</Badge>}
           </div>
           <div className="mt-3 rounded-2xl bg-upm-50/60 p-3 ring-1 ring-upm-100">
             <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">Fuente institucional</div>
@@ -140,12 +171,50 @@ export function NewsConversationPage() {
             <Wand2 size={12} /> Acciones sobre la novedad
           </div>
           <div className="mt-3 flex flex-col gap-2">
-            <ActionRow icon={Bookmark} label="Guardar en carpeta" onClick={() => { store.saveItem({ id: 'sav-' + news.id, type: 'novedad', title: news.title, ref: news.id }); store.pushToast('success', 'Guardado en tu carpeta') }} />
-            <ActionRow icon={Share2} label="Compartir con equipo" onClick={() => store.pushToast('info', 'Enlace copiado')} />
-            <ActionRow icon={FileStack} label="Crear brief" onClick={() => store.pushToast('success', 'Brief preparado por el Asistente')} />
-            <ActionRow icon={FileStack} label="Agregar a dossier" onClick={() => store.pushToast('success', 'Sumado al dossier abierto')} />
-            <ActionRow icon={HelpCircle} label="Crear preguntas para comisión" onClick={() => ask('Preguntas para comisión sobre ambiente')} />
-            <ActionRow icon={CalendarPlus} label="Agregar a agenda" onClick={() => store.pushToast('info', 'Recordatorio creado en Agenda')} />
+            <ActionRow
+              icon={isSaved ? BookmarkCheck : Bookmark}
+              label={isSaved ? 'Quitar de carpeta' : 'Guardar en carpeta'}
+              onClick={handleSave}
+            />
+            <ActionRow
+              icon={Share2}
+              label="Compartir enlace"
+              onClick={() => shareLink(news.title, `/radar/${news.id}`)}
+            />
+            <ActionRow
+              icon={FileStack}
+              label="Crear brief"
+              onClick={() =>
+                openCreateBrief({
+                  title: `Brief — ${news.title}`,
+                  body:
+                    `**Contexto**\n\n${news.excerpt}\n\n` +
+                    `**País:** ${country.name}\n**Tema:** ${topic.label}\n**Relevancia:** ${news.relevance}\n\n` +
+                    `**Última respuesta del Asistente**\n\n${lastAssistant?.content ?? '—'}`,
+                  ref: news.id,
+                })
+              }
+            />
+            <ActionRow
+              icon={ScrollText}
+              label="Crear minuta"
+              onClick={() =>
+                openCreateMinuta({
+                  title: `Minuta — ${news.title}`,
+                  body: lastAssistant?.content ?? '',
+                  ref: news.id,
+                })
+              }
+            />
+            <ActionRow
+              icon={HelpCircle}
+              label="Crear preguntas para comisión"
+              onClick={() => ask('Preguntas para comisión sobre ambiente')}
+            />
+            <ActionRow icon={CalendarPlus} label="Recordatorio" onClick={() => {
+              store.pushNotification({ type: 'sistema', title: 'Recordatorio creado', description: news.title })
+              store.pushToast('success', 'Recordatorio agregado a tus notificaciones')
+            }} />
           </div>
         </Card>
       </div>

@@ -1,6 +1,7 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, RequireAuth, useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
+import { UIProvider } from '@/lib/ui-provider'
 import { AppShell } from '@/layouts/AppShell'
 import { Toasts } from '@/components/Toasts'
 import { LoginPage } from '@/pages/Login'
@@ -27,6 +28,7 @@ export default function App() {
   return (
     <AuthProvider>
       <HashRouter>
+        <UIProvider>
         <Toasts />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -59,6 +61,7 @@ export default function App() {
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </UIProvider>
       </HashRouter>
     </AuthProvider>
   )

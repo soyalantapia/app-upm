@@ -21,6 +21,7 @@ import { Badge, Button, Card, Chip, Eyebrow, PageHeader, Stat } from '@/componen
 import { COUNTRIES, DOCUMENTS, FORUMS, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { DocStatus } from '@/lib/types'
 import { store } from '@/lib/store'
+import { useUI } from '@/lib/ui-provider'
 
 type Tab = 'documentos' | 'miembros' | 'moderacion' | 'metricas'
 
@@ -105,6 +106,7 @@ export function AdminPage() {
 }
 
 function DocumentsTab() {
+  const { openDocument } = useUI()
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
       <Card>
@@ -114,9 +116,13 @@ function DocumentsTab() {
         <div className="mt-3 flex flex-col divide-y divide-ink-100">
           {DOCUMENTS.slice(0, 8).map(d => (
             <div key={d.id} className="flex items-center gap-3 py-3">
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-upm-50 text-upm-700">
+              <button
+                onClick={() => openDocument(d)}
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-upm-50 text-upm-700 hover:bg-upm-100"
+                aria-label="Abrir detalle"
+              >
                 <Library size={15} />
-              </div>
+              </button>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-1">
                   <Badge tone="brand">{d.type}</Badge>
@@ -127,14 +133,30 @@ function DocumentsTab() {
                     </Badge>
                   )}
                 </div>
-                <div className="mt-1 truncate text-[13px] font-semibold text-ink-900">{d.title}</div>
+                <button onClick={() => openDocument(d)} className="text-left">
+                  <div className="mt-1 truncate text-[13px] font-semibold text-ink-900 hover:text-upm-700">{d.title}</div>
+                </button>
                 <div className="text-[11px] text-ink-500 tabular-nums">{d.date}</div>
               </div>
               <div className="flex flex-col gap-1 sm:flex-row">
-                <Button size="sm" variant="ghost" onClick={() => store.pushToast('success', 'Marcado como Oficial UPM')}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    store.pushNotification({ type: 'documento', title: 'Documento marcado Oficial', description: d.title })
+                    store.pushToast('success', `"${d.title.slice(0, 28)}…" → Oficial UPM`)
+                  }}
+                >
                   <Stamp size={12} /> Oficial
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => store.pushToast('info', 'Marcado como Curado')}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    store.pushNotification({ type: 'documento', title: 'Documento marcado Curado', description: d.title })
+                    store.pushToast('info', `"${d.title.slice(0, 28)}…" → Curado`)
+                  }}
+                >
                   <CheckCircle2 size={12} /> Curado
                 </Button>
               </div>
@@ -241,6 +263,8 @@ function MembersTab() {
 }
 
 function ModerationTab() {
+  const [archived, setArchived] = useState<Set<string>>(new Set())
+  const [approved, setApproved] = useState<Set<string>>(new Set())
   return (
     <div className="grid gap-4">
       <Card>
@@ -252,33 +276,69 @@ function ModerationTab() {
         </div>
 
         <div className="mt-3 flex flex-col gap-2.5">
-          {PENDING.map(p => (
-            <div
-              key={p.id}
-              className="flex flex-col gap-2 rounded-2xl bg-white p-3.5 ring-1 ring-ink-100 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="text-[13.5px] font-semibold text-ink-900">{p.title}</div>
-                <div className="text-[11.5px] text-ink-500">{p.source}</div>
-                <div className="text-[11px] text-ink-500 tabular-nums">{p.date}</div>
+          {PENDING.map(p => {
+            const isArchived = archived.has(p.id)
+            const isApproved = approved.has(p.id)
+            return (
+              <div
+                key={p.id}
+                className={
+                  'flex flex-col gap-2 rounded-2xl p-3.5 ring-1 sm:flex-row sm:items-center sm:justify-between transition ' +
+                  (isArchived
+                    ? 'bg-ink-50 ring-ink-100 opacity-60'
+                    : isApproved
+                    ? 'bg-success-bg/30 ring-success-bg'
+                    : 'bg-white ring-ink-100')
+                }
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[13.5px] font-semibold text-ink-900">{p.title}</span>
+                    {isApproved && <Badge tone="success">Aprobado</Badge>}
+                    {isArchived && <Badge tone="neutral">Archivado</Badge>}
+                  </div>
+                  <div className="text-[11.5px] text-ink-500">{p.source}</div>
+                  <div className="text-[11px] text-ink-500 tabular-nums">{p.date}</div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="soft"
+                    disabled={isArchived || isApproved}
+                    onClick={() => {
+                      setApproved(s => new Set(s).add(p.id))
+                      store.pushNotification({ type: 'foro', title: 'Aporte aprobado', description: p.title })
+                      store.pushToast('success', 'Aprobado y publicado')
+                    }}
+                  >
+                    <FileCheck2 size={13} /> Aprobar
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={isArchived}
+                    onClick={() => {
+                      store.pushNotification({ type: 'documento', title: 'Marcado como Oficial UPM', description: p.title })
+                      store.pushToast('info', 'Marcado como Oficial UPM')
+                    }}
+                  >
+                    <Stamp size={13} /> Marcar Oficial
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    disabled={isArchived}
+                    onClick={() => {
+                      setArchived(s => new Set(s).add(p.id))
+                      store.pushToast('warning', 'Aporte archivado')
+                    }}
+                  >
+                    Archivar
+                  </Button>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Button size="sm" variant="soft" onClick={() => store.pushToast('success', 'Aprobado y publicado')}>
-                  <FileCheck2 size={13} /> Aprobar
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => store.pushToast('info', 'Marcado como Oficial UPM')}
-                >
-                  <Stamp size={13} /> Marcar Oficial
-                </Button>
-                <Button size="sm" variant="danger" onClick={() => store.pushToast('warning', 'Aporte archivado')}>
-                  Archivar
-                </Button>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </Card>
 
