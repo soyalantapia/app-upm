@@ -5,41 +5,37 @@ import { VitePWA } from 'vite-plugin-pwa'
 import path from 'node:path'
 
 export default defineConfig({
-  base: '/bartender-app/',
+  base: '/app-upm/',
   plugins: [
     react(),
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: false,
+      injectRegister: 'auto',
       devOptions: { enabled: false },
       manifest: {
-        name: 'Bartender App — Deenex',
-        short_name: 'Bartender',
-        description: 'Retiro de productos por QR — Deenex',
-        theme_color: '#695ede',
-        background_color: '#f9f9f9',
+        name: 'Asistente AI UPM',
+        short_name: 'UPM',
+        description: 'Asesor 24h con conocimiento institucional y normativo para legisladores.',
+        theme_color: '#062B4D',
+        background_color: '#F6F8FB',
         display: 'standalone',
-        orientation: 'any',
-        start_url: '/bartender-app/',
+        start_url: '/app-upm/',
+        scope: '/app-upm/',
         icons: [
-          { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
       },
     }),
   ],
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+    alias: { '@': path.resolve(__dirname, './src') },
   },
   server: {
-    port: 5180,
+    port: 5181,
     host: '127.0.0.1',
+    strictPort: false,
   },
 })

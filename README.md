@@ -1,30 +1,39 @@
-# Bartender App
+# Asistente AI UPM
 
-App PWA del ecosistema Deenex para gestionar el retiro parcial o total de productos por QR. El operador escanea el código del cliente, ve los productos pendientes y confirma la entrega.
-
-## Estructura
-
-- `client/` — Frontend React 19 + Vite 7 + TypeScript + Tailwind 4 + React Router 7 + html5-qrcode (PWA)
+Demo institucional sin backend para legisladores. Construida sobre el stack frontend Deenex con paleta institucional UPM.
 
 ## Stack
 
-Mismo stack que `deenex-supervisor` (Vite + React + Tailwind + Mongo en backend cuando exista).
+- Vite 7 + React 19 + TypeScript
+- Tailwind CSS v4 (`@theme inline`)
+- React Router DOM 7 (HashRouter para deploy estático)
+- vite-plugin-pwa (offline + install)
+- Inter (Fontshare), Lucide icons
+- Estado en `localStorage` con `useSyncExternalStore`
 
-### Tema
-- Light theme (`color-scheme: light` forzado)
-- Paleta `primary` / `neutral` heredada de `palta-app-frontend`
-- Tipografía Satoshi (Fontshare)
+## Pantallas
 
-## Desarrollo
+Login, Onboarding, Inicio, Asistente AI, Radar normativo, Conversación con novedades, Hablar con leyes e informes, Biblioteca UPM, Mi carpeta, Dossiers (lista + detalle), Agenda, Foros, Comparativa vs ChatGPT, Perfil.
+
+## Cómo correr
 
 ```bash
 cd client
 npm install
-npm run dev          # http://localhost:5180
+npm run dev
 ```
 
-## Estado actual
+URL local: http://127.0.0.1:5181/app-upm/
 
-- Frontend con flujos: escaneo (cámara + manual), detalle de pedido con selector de cantidades, confirmación de entrega y listado de pedidos
-- Datos en mock (`src/data/mockOrders.ts`)
-- Backend pendiente
+## Cómo buildear
+
+```bash
+cd client
+npx vite build
+```
+
+Output en `client/dist/`.
+
+## Deploy a GitHub Pages
+
+La rama `gh-pages` sirve `client/dist/` con `.nojekyll`. URL pública: https://soyalantapia.github.io/app-upm/

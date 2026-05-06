@@ -1,11 +1,7 @@
 node_modules
 dist
-dev-dist
 .DS_Store
 *.local
+.vite
 .env
-.env.*
-!.env.example
-.vscode/*
-!.vscode/extensions.json
-.idea
+.env.local

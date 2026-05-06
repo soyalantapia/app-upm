@@ -1,117 +1,176 @@
-import { Outlet, NavLink } from 'react-router-dom'
-import { ScanLine, ListChecks } from 'lucide-react'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import {
+  Home,
+  Sparkles,
+  Radar,
+  ScrollText,
+  Library,
+  FolderClosed,
+  FileStack,
+  Calendar,
+  Users,
+  User,
+  GitCompare,
+  LogOut,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useAuth } from '@/lib/auth'
-import { OfflineBanner } from '@/components/OfflineBanner'
-import { UserMenu } from '@/components/UserMenu'
+import { BrandLockup, BrandMark } from '@/components/Brand'
 
-const links = [
-  { to: '/', label: 'Escanear', icon: ScanLine, end: true },
-  { to: '/pedidos', label: 'Pedidos', icon: ListChecks, end: false },
+type NavItem = {
+  to: string
+  label: string
+  icon: LucideIcon
+  primary?: boolean
+}
+
+const NAV: NavItem[] = [
+  { to: '/', label: 'Inicio', icon: Home, primary: true },
+  { to: '/asistente', label: 'Asistente AI', icon: Sparkles, primary: true },
+  { to: '/radar', label: 'Radar', icon: Radar, primary: true },
+  { to: '/leyes', label: 'Leyes', icon: ScrollText },
+  { to: '/biblioteca', label: 'Biblioteca', icon: Library },
+  { to: '/carpetas', label: 'Mi carpeta', icon: FolderClosed, primary: true },
+  { to: '/dossiers', label: 'Dossiers', icon: FileStack },
+  { to: '/agenda', label: 'Agenda', icon: Calendar },
+  { to: '/foros', label: 'Foros', icon: Users },
+  { to: '/comparativa', label: 'vs ChatGPT', icon: GitCompare },
+  { to: '/perfil', label: 'Perfil', icon: User, primary: true },
 ]
 
+const MOBILE_NAV = NAV.filter(n => n.primary).slice(0, 5)
+
 export function AppShell() {
-  const { operator } = useAuth()
+  const { operator, signOut } = useAuth()
+  const navigate = useNavigate()
 
   return (
-    <div className="flex min-h-[100svh] flex-col bg-primary-50 text-neutral-900 md:flex-row">
-      {/* Sidebar (md+) */}
-      <aside className="hidden shrink-0 border-r border-neutral-100 bg-white md:flex md:w-60 md:flex-col lg:w-64">
-        <div className="flex items-center gap-3 px-6 py-7">
-          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-accent-400 to-accent-600 text-white shadow-cta">
-            <ScanLine size={22} />
-          </div>
-          <div>
-            <p className="text-base font-bold text-neutral-900">Bartender</p>
-            <p className="text-xs font-medium text-neutral-400">por Deenex</p>
-          </div>
-        </div>
-        <nav className="flex flex-col gap-1 px-3">
-          {links.map(({ to, label, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) =>
-                cn(
-                  'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200',
-                  'focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white',
-                  isActive
-                    ? 'bg-accent-50 text-accent-700'
-                    : 'text-neutral-500 hover:bg-primary-100/60 hover:text-neutral-800',
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <Icon
-                    size={18}
-                    className={cn(
-                      'transition-colors',
-                      isActive
-                        ? 'text-accent-500'
-                        : 'text-neutral-400 group-hover:text-neutral-700',
-                    )}
-                  />
-                  {label}
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
-
-        {operator && (
-          <div className="mt-auto border-t border-neutral-100 p-3">
-            <UserMenu variant="sidebar" />
-          </div>
-        )}
-      </aside>
-
+    <div className="bg-network-mesh min-h-[100svh]">
       {/* Mobile header */}
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-neutral-100 bg-white/85 px-4 py-3 backdrop-blur-md md:hidden">
-        <div className="flex items-center gap-2.5">
-          <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-accent-400 to-accent-600 text-white shadow-cta">
-            <ScanLine size={18} />
-          </div>
-          <div>
-            <p className="text-sm font-bold leading-tight text-neutral-900">Bartender</p>
-            <p className="text-[11px] font-medium leading-tight text-neutral-400">por Deenex</p>
-          </div>
-        </div>
-        {operator && <UserMenu variant="header" />}
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/40 bg-white/80 px-4 py-3 backdrop-blur md:hidden">
+        <BrandLockup compact />
+        <button
+          onClick={() => navigate('/perfil')}
+          className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-upm-500 to-upm-700 text-[13px] font-bold text-white shadow-cta"
+          aria-label="Perfil"
+        >
+          {operator?.name.split(' ').slice(-1)[0]?.charAt(0) ?? 'L'}
+        </button>
       </header>
 
-      <main className="flex-1 overflow-x-hidden pb-32 md:pb-0">
-        <OfflineBanner />
-        <Outlet />
-      </main>
+      <div className="mx-auto flex w-full max-w-[1480px] gap-0 md:gap-6 md:px-4 md:py-6">
+        {/* Sidebar desktop */}
+        <aside className="sticky top-6 hidden h-[calc(100svh-3rem)] w-[260px] shrink-0 flex-col rounded-3xl bg-white/85 p-4 ring-1 ring-white/60 shadow-glass backdrop-blur md:flex">
+          <div className="px-2 pb-3">
+            <BrandLockup />
+          </div>
 
-      {/* Mobile bottom nav */}
+          <nav className="mt-2 flex flex-1 flex-col gap-1 overflow-y-auto pr-1">
+            {NAV.map(item => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                className={({ isActive }) =>
+                  cn(
+                    'group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-[13.5px] font-semibold transition-all duration-200',
+                    isActive
+                      ? 'bg-upm-50 text-upm-800 ring-1 ring-upm-100 shadow-card'
+                      : 'text-ink-700 hover:bg-upm-50/70 hover:text-upm-800',
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <item.icon
+                      size={17}
+                      strokeWidth={isActive ? 2.4 : 2}
+                      className={isActive ? 'text-upm-600' : 'text-ink-500 group-hover:text-upm-600'}
+                    />
+                    <span>{item.label}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="mt-3 flex items-center gap-3 rounded-2xl bg-upm-50/60 p-3 ring-1 ring-upm-100">
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-upm-500 to-upm-700 text-[12px] font-bold text-white">
+              {operator?.name.split(' ').slice(-1)[0]?.charAt(0) ?? 'L'}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-[12.5px] font-semibold text-ink-900">{operator?.name}</div>
+              <div className="truncate text-[10.5px] uppercase tracking-[0.14em] text-ink-500">{operator?.cargo}</div>
+            </div>
+            <button
+              onClick={() => {
+                signOut()
+                navigate('/login', { replace: true })
+              }}
+              className="rounded-full p-1.5 text-ink-500 hover:bg-white hover:text-danger"
+              aria-label="Cerrar sesión"
+            >
+              <LogOut size={15} />
+            </button>
+          </div>
+        </aside>
+
+        {/* Main */}
+        <main className="min-w-0 flex-1 pb-32 md:pb-6">
+          <Outlet />
+        </main>
+      </div>
+
+      {/* Bottom nav mobile */}
       <nav
-        className="fixed inset-x-3 bottom-3 z-30 rounded-3xl bg-white p-1.5 shadow-floating md:hidden"
+        className="fixed inset-x-3 bottom-3 z-40 flex items-center justify-between gap-1 rounded-3xl bg-white/95 p-1.5 shadow-floating ring-1 ring-white/70 backdrop-blur md:hidden"
         style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="flex items-center justify-around">
-          {links.map(({ to, label, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) =>
-                cn(
-                  'flex flex-1 flex-col items-center gap-0.5 rounded-2xl py-2.5 text-[11px] font-semibold transition-all duration-200',
-                  isActive
-                    ? 'bg-gradient-to-br from-accent-400 to-accent-600 text-white shadow-cta'
-                    : 'text-neutral-500',
-                )
-              }
-            >
-              <Icon size={20} />
-              {label}
-            </NavLink>
-          ))}
-        </div>
+        {MOBILE_NAV.map(item => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.to === '/'}
+            className={({ isActive }) =>
+              cn(
+                'flex flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl py-2 text-[10px] font-semibold transition-all duration-200',
+                isActive
+                  ? 'bg-gradient-to-br from-upm-500 to-upm-700 text-white shadow-cta'
+                  : 'text-ink-500 hover:text-upm-700',
+              )
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <item.icon size={19} strokeWidth={isActive ? 2.4 : 2} />
+                <span>{item.label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
       </nav>
+    </div>
+  )
+}
+
+export function FullBleedShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-deep-mesh relative min-h-[100svh] overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(255,255,255,0.10),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_78%,rgba(220,235,250,0.10),transparent_60%)]" />
+      <div className="absolute left-6 top-6 z-10 hidden md:block">
+        <div className="flex items-center gap-2.5 text-white">
+          <BrandMark size={36} />
+          <div className="flex flex-col leading-tight">
+            <span className="text-[15px] font-bold tracking-tight">Asistente AI UPM</span>
+            <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">Acceso institucional</span>
+          </div>
+        </div>
+      </div>
+      <div className="relative z-10 flex min-h-[100svh] items-center justify-center px-4 py-10">
+        {children}
+      </div>
     </div>
   )
 }

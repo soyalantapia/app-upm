@@ -1,10 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-
-export type Operator = {
-  email: string
-  name: string
-  loggedAt: string
-}
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
+import type { CountryCode, Operator } from './types'
+import { DEMO_OPERATOR } from './data'
 
 type AuthContextValue = {
   operator: Operator | null
@@ -13,18 +10,30 @@ type AuthContextValue = {
   signOut: () => void
 }
 
-const STORAGE_KEY = 'bartender.session'
-const PENDING_KEY = 'bartender.pendingMagicLink'
+const AUTH_KEY = 'upm.app.operator'
 
-const AuthContext = createContext<AuthContextValue | null>(null)
+const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-function deriveName(email: string): string {
-  const local = email.split('@')[0] ?? ''
-  return local
-    .split(/[._-]+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-    .join(' ') || 'Operador'
+function readOperator(): Operator | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = window.localStorage.getItem(AUTH_KEY)
+    if (!raw) return null
+    return JSON.parse(raw) as Operator
+  } catch {
+    return null
+  }
+}
+
+function deriveName(email: string): { name: string; cargo: string; pais: CountryCode } {
+  if (!email) return { name: DEMO_OPERATOR.name, cargo: DEMO_OPERATOR.cargo, pais: DEMO_OPERATOR.pais }
+  if (email.toLowerCase().includes('martin') || email.toLowerCase().includes('pereira')) {
+    return { name: DEMO_OPERATOR.name, cargo: DEMO_OPERATOR.cargo, pais: DEMO_OPERATOR.pais }
+  }
+  const handle = email.split('@')[0] ?? ''
+  const parts = handle.split(/[.\-_]+/).filter(Boolean)
+  const name = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') || 'Legislador'
+  return { name: `Dr. ${name}`, cargo: 'Legislador', pais: 'UY' }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -32,76 +41,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) setOperator(JSON.parse(raw) as Operator)
-    } catch {
-      /* ignore */
-    }
+    setOperator(readOperator())
     setReady(true)
   }, [])
 
-  const signIn = (email: string): Operator => {
+  const signIn = useCallback((email: string) => {
+    const { name, cargo, pais } = deriveName(email)
     const op: Operator = {
-      email: email.toLowerCase().trim(),
-      name: deriveName(email),
+      email: email || DEMO_OPERATOR.email,
+      name,
+      cargo,
+      pais,
       loggedAt: new Date().toISOString(),
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(op))
+    window.localStorage.setItem(AUTH_KEY, JSON.stringify(op))
     setOperator(op)
     return op
-  }
+  }, [])
 
-  const signOut = () => {
-    localStorage.removeItem(STORAGE_KEY)
-    localStorage.removeItem(PENDING_KEY)
+  const signOut = useCallback(() => {
+    window.localStorage.removeItem(AUTH_KEY)
     setOperator(null)
-  }
+  }, [])
 
-  return (
-    <AuthContext.Provider value={{ operator, ready, signIn, signOut }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  const value = useMemo(() => ({ operator, ready, signIn, signOut }), [operator, ready, signIn, signOut])
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export function useAuth(): AuthContextValue {
+export function useAuth() {
   const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth fuera de <AuthProvider>')
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
   return ctx
 }
 
-export type PendingMagicLink = {
-  email: string
-  token: string
-  requestedAt: string
-}
-
-export function savePendingMagicLink(email: string): PendingMagicLink {
-  const pending: PendingMagicLink = {
-    email: email.toLowerCase().trim(),
-    token: cryptoToken(),
-    requestedAt: new Date().toISOString(),
-  }
-  localStorage.setItem(PENDING_KEY, JSON.stringify(pending))
-  return pending
-}
-
-export function readPendingMagicLink(): PendingMagicLink | null {
-  try {
-    const raw = localStorage.getItem(PENDING_KEY)
-    return raw ? (JSON.parse(raw) as PendingMagicLink) : null
-  } catch {
-    return null
-  }
-}
-
-export function clearPendingMagicLink() {
-  localStorage.removeItem(PENDING_KEY)
-}
-
-function cryptoToken(): string {
-  const arr = new Uint8Array(16)
-  crypto.getRandomValues(arr)
-  return Array.from(arr, (b) => b.toString(16).padStart(2, '0')).join('')
+export function RequireAuth({ children }: { children: ReactNode }) {
+  const { operator, ready } = useAuth()
+  const location = useLocation()
+  if (!ready) return null
+  if (!operator) return <Navigate to="/login" state={{ from: location }} replace />
+  return <>{children}</>
 }
