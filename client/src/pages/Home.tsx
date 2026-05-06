@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
 import {
+  AlertTriangle,
   ArrowRight,
   ArrowUpRight,
   BookOpen,
   Bookmark,
   CalendarDays,
-  FileStack,
   FlaskConical,
   Library,
   MessageSquareText,
@@ -18,7 +18,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
-import { AGENDA, DOSSIERS, NEWS, countryByCode, topicById } from '@/lib/data'
+import { DOCUMENTS, NEWS, countryByCode, topicById } from '@/lib/data'
 import { Badge, Button, Card, Chip, Eyebrow, PageHeader, Stat } from '@/components/ui'
 import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
 
@@ -60,8 +60,11 @@ export function HomePage() {
   })()
 
   const lastName = operator?.name.split(' ').slice(-1)[0] ?? 'Legislador'
-  const visibleNews = NEWS.slice(0, 3)
-  const upcomingEvent = AGENDA[0]
+
+  const highlightedNews = NEWS.slice(0, 3)
+  const recommendedDoc = DOCUMENTS.find(d => d.status === 'oficial' && d.type === 'informe') ?? DOCUMENTS[1]
+  const priorityAlert = NEWS.find(n => n.relevance === 'alta' && n.topic === 'ambiente') ?? NEWS[0]
+  const alertTopic = topicById(priorityAlert.topic)
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
@@ -82,7 +85,7 @@ export function HomePage() {
             </h1>
             <p className="mt-1 max-w-2xl text-[14.5px] text-white/75">
               Tenés <span className="font-bold text-white">{NEWS.length} novedades relevantes</span> y{' '}
-              <span className="font-bold text-white">{DOSSIERS.length} dossiers activos</span>. El radar UPM se actualizó hace minutos.
+              <span className="font-bold text-white">1 alerta prioritaria</span>. El radar UPM se actualizó hace minutos.
             </p>
           </div>
           <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
@@ -99,9 +102,9 @@ export function HomePage() {
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Novedades hoy" value={NEWS.length} hint="Filtradas por tus temas" />
-        <Stat label="Dossiers activos" value={DOSSIERS.length} hint="Listos para reunión" />
-        <Stat label="Documentos guardados" value={saved.length} hint="Privado del legislador" />
-        <Stat label="Próximo evento" value={upcomingEvent ? upcomingEvent.date.slice(5) : '—'} hint={upcomingEvent?.title ?? 'Sin agenda'} />
+        <Stat label="Alta relevancia" value={NEWS.filter(n => n.relevance === 'alta').length} hint="Para revisar primero" />
+        <Stat label="Documentos UPM" value={DOCUMENTS.length} hint="Biblioteca activa" />
+        <Stat label="Mis guardados" value={saved.length} hint="En tu carpeta privada" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -113,8 +116,12 @@ export function HomePage() {
             description="Novedades, alertas y materiales priorizados por tus temas y países."
           />
 
+          {/* 3 novedades destacadas */}
+          <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-ink-500">
+            Novedades normativas relevantes
+          </div>
           <div className="flex flex-col gap-3">
-            {visibleNews.map((n, i) => {
+            {highlightedNews.map((n, i) => {
               const country = countryByCode(n.country)
               const topic = topicById(n.topic)
               const rel = RELEVANCE[n.relevance]
@@ -145,9 +152,6 @@ export function HomePage() {
                         <Button size="sm" variant="ghost">
                           <Bookmark size={13} /> Guardar
                         </Button>
-                        <Button size="sm" variant="ghost">
-                          <FileStack size={13} /> Armar brief
-                        </Button>
                       </div>
                     </div>
                   </div>
@@ -155,6 +159,60 @@ export function HomePage() {
               )
             })}
           </div>
+
+          {/* Alerta prioritaria */}
+          <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-ink-500">
+            Alerta de tema prioritario
+          </div>
+          <Card className="animate-fade-up bg-gradient-to-br from-warning-bg/40 to-white ring-warning-bg">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-warning-bg text-warning-fg">
+                <AlertTriangle size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge tone="warning">Alerta UPM</Badge>
+                  <Badge tone="ghost">{alertTopic.shortLabel}</Badge>
+                </div>
+                <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{priorityAlert.title}</h3>
+                <p className="mt-1 text-[13.5px] leading-relaxed text-ink-500 line-clamp-2">{priorityAlert.excerpt}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button size="sm" onClick={() => navigate(`/radar/${priorityAlert.id}`)}>
+                    Abrir conversación <ArrowRight size={13} />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Documento recomendado */}
+          <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-ink-500">
+            Documento recomendado
+          </div>
+          <Card className="animate-fade-up bg-gradient-to-br from-upm-50/70 to-white ring-upm-100">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-upm-100 text-upm-700">
+                <BookOpen size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge tone="brand">{recommendedDoc.type}</Badge>
+                  <Badge tone="success">Oficial UPM</Badge>
+                  <Badge tone="ghost">{topicById(recommendedDoc.topic).shortLabel}</Badge>
+                </div>
+                <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{recommendedDoc.title}</h3>
+                <p className="mt-1 text-[13.5px] leading-relaxed text-ink-500 line-clamp-2">{recommendedDoc.excerpt}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button size="sm" variant="soft" onClick={() => navigate('/leyes')}>
+                    <FlaskConical size={13} /> Hablar con el documento
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => navigate('/biblioteca')}>
+                    <Library size={13} /> Ver en Biblioteca
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
 
           <Link
             to="/radar"
@@ -172,8 +230,8 @@ export function HomePage() {
               <QuickAction to="/asistente" icon={MessageSquareText} title="Preguntar al Asistente" desc="Brief, resumen, redacción" />
               <QuickAction to="/radar" icon={Radar} title="Ver Radar" desc="Novedades por país y tema" />
               <QuickAction to="/leyes" icon={BookOpen} title="Hablar con una ley" desc="Preguntá al documento" />
-              <QuickAction to="/dossiers" icon={FileStack} title="Crear dossier" desc="Paquete listo para reunión" />
               <QuickAction to="/biblioteca" icon={Library} title="Buscar en Biblioteca UPM" desc="Memoria institucional" />
+              <QuickAction to="/carpetas" icon={Bookmark} title="Mi carpeta" desc="Tus guardados privados" />
             </div>
           </div>
 
@@ -189,23 +247,21 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-gradient-to-br from-upm-50 to-white p-5 ring-1 ring-upm-100 shadow-card">
-            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
-              <CalendarDays size={12} /> Próximo evento UPM
+          <div className="rounded-3xl bg-gradient-to-br from-upm-700 to-upm-900 p-5 text-white shadow-floating ring-1 ring-white/10">
+            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-upm-200">Tip institucional</div>
+            <p className="mt-2 text-[13px] leading-relaxed text-white/85">
+              El Asistente UPM trabaja sobre <span className="font-bold text-white">biblioteca y normativa cargada por la institución</span>. Cuando responde con respaldo lo verás marcado como "Con fuentes UPM".
+            </p>
+            <Button size="sm" variant="secondary" className="mt-3" onClick={() => navigate('/asistente')}>
+              <Sparkles size={13} /> Probar el Asistente
+            </Button>
+          </div>
+
+          <div className="rounded-3xl bg-white p-4 ring-1 ring-ink-100 shadow-card">
+            <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
+              <CalendarDays size={11} /> Última actualización
             </div>
-            {upcomingEvent ? (
-              <>
-                <div className="mt-2 text-[15.5px] font-bold leading-snug text-ink-900">{upcomingEvent.title}</div>
-                <div className="mt-1 text-[12.5px] text-ink-500 tabular-nums">
-                  {upcomingEvent.date} · {upcomingEvent.documents} documentos
-                </div>
-                <Button size="sm" variant="soft" className="mt-3" onClick={() => navigate('/agenda')}>
-                  <FlaskConical size={13} /> Preparar reunión
-                </Button>
-              </>
-            ) : (
-              <div className="mt-2 text-[13px] text-ink-500">Sin eventos por ahora.</div>
-            )}
+            <div className="mt-1.5 text-[13px] text-ink-700">Radar UPM · hace 8 minutos</div>
           </div>
         </div>
       </div>

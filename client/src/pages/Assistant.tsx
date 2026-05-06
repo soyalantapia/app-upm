@@ -5,7 +5,10 @@ import {
   CalendarPlus,
   FileStack,
   Layers,
+  ListChecks,
+  MessageSquareQuote,
   MessagesSquare,
+  PenLine,
   ScrollText,
   ShieldCheck,
   Share2,
@@ -25,6 +28,45 @@ const SUGGESTIONS = [
   'Resumí el último informe en 1 página.',
   '¿Qué puntos debería revisar antes de la comisión?',
   'Armame preguntas para una reunión con Brasil y Uruguay.',
+]
+
+const USE_CATEGORIES: { id: string; label: string; icon: typeof PenLine; tone: string; items: { label: string; q: string }[] }[] = [
+  {
+    id: 'redaccion',
+    label: 'Redacción',
+    icon: PenLine,
+    tone: 'from-upm-500 to-upm-700',
+    items: [
+      { label: 'Discurso institucional', q: 'Borrador de discurso sobre integración regional' },
+      { label: 'Comunicado de prensa', q: 'Borrador de comunicado UPM sobre cooperación legislativa' },
+      { label: 'Mensaje institucional', q: 'Mensaje institucional para apertura de foro' },
+      { label: 'Puntos para entrevista', q: 'Preparame puntos para entrevista sobre integración regional' },
+    ],
+  },
+  {
+    id: 'preparacion',
+    label: 'Preparación',
+    icon: ListChecks,
+    tone: 'from-upm-600 to-upm-800',
+    items: [
+      { label: 'Brief para reunión', q: 'Preparame un brief para una reunión sobre corredores bioceánicos' },
+      { label: 'Preguntas para comisión', q: 'Preguntas para comisión sobre ambiente' },
+      { label: 'Resumen de novedades', q: 'Explicame las novedades de ambiente de esta semana' },
+      { label: 'Qué cambió', q: '¿Qué cambió respecto al marco anterior?' },
+    ],
+  },
+  {
+    id: 'organizacion',
+    label: 'Organización',
+    icon: MessageSquareQuote,
+    tone: 'from-upm-700 to-upm-900',
+    items: [
+      { label: 'Minuta de trabajo', q: 'Borrador de minuta de reunión técnica' },
+      { label: 'Lista de pendientes', q: 'Resumí pendientes legislativos sobre MERCOSUR' },
+      { label: 'Próximos pasos', q: '¿Cuáles son los próximos pasos sugeridos?' },
+      { label: 'Síntesis ejecutiva', q: 'Resumí en 10 líneas el tema corredores' },
+    ],
+  },
 ]
 
 const ACTION_BUTTONS: { label: string; icon: typeof Bookmark; tone: 'success' | 'info' | 'brand' }[] = [
@@ -95,6 +137,34 @@ export function AssistantPage() {
           </Badge>
         }
       />
+
+      {/* Categorías de uso */}
+      <div className="grid gap-2.5 sm:grid-cols-3">
+        {USE_CATEGORIES.map(cat => (
+          <div
+            key={cat.id}
+            className="rounded-3xl bg-white p-4 ring-1 ring-ink-100 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover hover:ring-upm-100"
+          >
+            <div className="flex items-center gap-2">
+              <div className={`grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br ${cat.tone} text-white shadow-cta`}>
+                <cat.icon size={16} />
+              </div>
+              <div className="text-[14px] font-bold text-ink-900">{cat.label}</div>
+            </div>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {cat.items.map(it => (
+                <button
+                  key={it.label}
+                  onClick={() => send(it.q)}
+                  className="rounded-full bg-upm-50 px-2.5 py-1 text-[11.5px] font-semibold text-upm-800 ring-1 ring-upm-100 transition hover:-translate-y-0.5 hover:bg-upm-100"
+                >
+                  {it.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* Chat */}

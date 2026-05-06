@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth'
 import { useStore, store } from '@/lib/store'
 import { DEMO_OPERATOR } from '@/lib/data'
 import { BrandMark } from '@/components/Brand'
+import { PhoneMockup } from '@/components/PhoneMockup'
 
 export function LoginPage() {
   const { operator, signIn } = useAuth()
@@ -46,31 +47,35 @@ export function LoginPage() {
 
   return (
     <FullBleedShell>
-      <div className="grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:items-center">
+      <div className="grid w-full max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,300px)_minmax(0,400px)] lg:items-center">
         {/* Pitch lateral (desktop) */}
-        <div className="hidden flex-col gap-8 text-white lg:flex">
+        <div className="hidden flex-col gap-7 text-white lg:flex">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 ring-1 ring-white/20">
               <Sparkles size={13} /> Asesor AI 24 horas
             </div>
-            <h1 className="text-[44px] font-bold leading-[1.05] tracking-tight">
+            <h1 className="text-[40px] font-bold leading-[1.05] tracking-tight">
               Una plataforma que <span className="text-upm-200">informa, ordena y prepara</span> el trabajo del legislador.
             </h1>
-            <p className="max-w-lg text-[15px] leading-relaxed text-white/75">
+            <p className="max-w-md text-[14.5px] leading-relaxed text-white/75">
               Radar normativo regional, biblioteca institucional UPM y un asistente AI que convierte cada tema en un brief listo para usar — con fuentes verificables.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5">
             {[
               { icon: Radar, title: 'Radar normativo', desc: 'Por país, tema y tipo' },
               { icon: FileStack, title: 'Biblioteca UPM', desc: 'Memoria institucional' },
               { icon: ShieldCheck, title: 'Con respaldo', desc: 'Fuentes verificables' },
             ].map(item => (
-              <div key={item.title} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur">
-                <item.icon size={18} className="text-upm-200" />
-                <div className="mt-2.5 text-[13px] font-bold">{item.title}</div>
-                <div className="text-[12px] text-white/65">{item.desc}</div>
+              <div key={item.title} className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 ring-1 ring-white/10 backdrop-blur">
+                <div className="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-upm-200 ring-1 ring-white/15">
+                  <item.icon size={16} />
+                </div>
+                <div>
+                  <div className="text-[13px] font-bold">{item.title}</div>
+                  <div className="text-[11.5px] text-white/65">{item.desc}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -78,6 +83,11 @@ export function LoginPage() {
           <div className="text-[12px] text-white/55">
             Ecosistema cerrado — UPM. Acceso institucional para miembros y autoridades autorizadas.
           </div>
+        </div>
+
+        {/* Phone mockup */}
+        <div className="hidden lg:block">
+          <PhoneMockup />
         </div>
 
         {/* Card login */}

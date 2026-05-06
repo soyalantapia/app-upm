@@ -12,12 +12,7 @@ import { NewsConversationPage } from '@/pages/NewsConversation'
 import { LawsPage } from '@/pages/Laws'
 import { LibraryPage } from '@/pages/Library'
 import { FoldersPage } from '@/pages/Folders'
-import { DossierPage } from '@/pages/Dossier'
-import { DossiersListPage } from '@/pages/DossiersList'
-import { ComparePage } from '@/pages/Compare'
 import { ProfilePage } from '@/pages/Profile'
-import { AgendaPage } from '@/pages/Agenda'
-import { ForumsPage } from '@/pages/Forums'
 import { AdminPage } from '@/pages/Admin'
 
 function OnboardingGate({ children }: { children: React.ReactNode }) {
@@ -59,11 +54,6 @@ export default function App() {
             <Route path="leyes" element={<LawsPage />} />
             <Route path="biblioteca" element={<LibraryPage />} />
             <Route path="carpetas" element={<FoldersPage />} />
-            <Route path="dossiers" element={<DossiersListPage />} />
-            <Route path="dossiers/:id" element={<DossierPage />} />
-            <Route path="agenda" element={<AgendaPage />} />
-            <Route path="foros" element={<ForumsPage />} />
-            <Route path="comparativa" element={<ComparePage />} />
             <Route path="admin" element={<AdminPage />} />
             <Route path="perfil" element={<ProfilePage />} />
           </Route>

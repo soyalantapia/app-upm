@@ -6,11 +6,7 @@ import {
   ScrollText,
   Library,
   FolderClosed,
-  FileStack,
-  Calendar,
-  Users,
   User,
-  GitCompare,
   LogOut,
   ShieldCheck,
 } from 'lucide-react'
@@ -32,14 +28,10 @@ const NAV: NavItem[] = [
   { to: '/asistente', label: 'Asistente AI', icon: Sparkles, primary: true },
   { to: '/radar', label: 'Radar', icon: Radar, primary: true },
   { to: '/leyes', label: 'Leyes', icon: ScrollText },
-  { to: '/biblioteca', label: 'Biblioteca', icon: Library },
+  { to: '/biblioteca', label: 'Biblioteca', icon: Library, primary: true },
   { to: '/carpetas', label: 'Mi carpeta', icon: FolderClosed, primary: true },
-  { to: '/dossiers', label: 'Dossiers', icon: FileStack },
-  { to: '/agenda', label: 'Agenda', icon: Calendar },
-  { to: '/foros', label: 'Foros', icon: Users },
-  { to: '/comparativa', label: 'vs ChatGPT', icon: GitCompare },
   { to: '/admin', label: 'Admin UPM', icon: ShieldCheck },
-  { to: '/perfil', label: 'Perfil', icon: User, primary: true },
+  { to: '/perfil', label: 'Perfil', icon: User },
 ]
 
 const MOBILE_NAV = NAV.filter(n => n.primary).slice(0, 5)

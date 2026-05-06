@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Bookmark, FileStack, Filter, Radar, ScrollText, Sparkles, Tag, Wand2 } from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
@@ -27,6 +27,13 @@ export function RadarPage() {
   const [topic, setTopic] = useState<Topic | 'all'>('all')
   const [type, setType] = useState<DocType | 'all'>('all')
   const [relevance, setRelevance] = useState<Relevance | 'all'>('all')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setLoading(true)
+    const id = setTimeout(() => setLoading(false), 420)
+    return () => clearTimeout(id)
+  }, [country, topic, type, relevance])
 
   const filtered = useMemo(
     () =>
@@ -91,8 +98,35 @@ export function RadarPage() {
         </FilterRow>
       </div>
 
+      <div className="flex items-center gap-2 text-[12.5px] font-semibold text-ink-500">
+        {loading ? (
+          <>
+            <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
+            Buscando fuentes UPM…
+          </>
+        ) : (
+          `${filtered.length} ${filtered.length === 1 ? 'novedad' : 'novedades'} encontradas`
+        )}
+      </div>
+
       {/* Resultados */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
+              <div className="flex items-start gap-3">
+                <div className="skeleton h-11 w-11 rounded-2xl" />
+                <div className="flex-1 space-y-2">
+                  <div className="skeleton h-3 w-1/3 rounded" />
+                  <div className="skeleton h-4 w-3/4 rounded" />
+                  <div className="skeleton h-3 w-2/3 rounded" />
+                  <div className="skeleton h-3 w-1/2 rounded" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
         <EmptyState
           icon={<Filter size={22} />}
           title="No encontramos novedades"
