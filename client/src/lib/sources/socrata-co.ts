@@ -1,85 +1,134 @@
-import type { NewsItem, Relevance, Topic } from '@/lib/types'
+import type { NewsItem, Topic } from '@/lib/types'
 import { fetchWithCorsFallback } from './cors-fetch'
 
-// Datos abiertos del gobierno colombiano (plataforma Socrata).
-// Hay datasets de proyectos de ley, normograma, decretos. URL ejemplo abajo.
-// Docs: https://dev.socrata.com/foundry/www.datos.gov.co
+// Datos abiertos del gobierno colombiano vía Socrata API.
+// Dataset 'feim-cysj': Proyectos de ley del Senado de la República de Colombia.
+// CORS: ✅ Access-Control-Allow-Origin: *
 //
-// Dataset elegido: "Proyectos de Ley - Senado de Colombia"
-// (Este dataset puede cambiar; tomamos uno público de proyectos legislativos)
-//
-// Si la URL no responde, el agregador hará fallback a mock automáticamente.
+// Schema:
+// - n_senado: número del proyecto en el Senado
+// - n_camara: número en Cámara de Representantes (opcional)
+// - titulo: título completo del proyecto
+// - autor: lista de autores
+// - f_presentado: fecha de presentación (formato variable: ISO o m/d/Y)
+// - comision: comisión asignada
+// - estado: ARCHIVADO, LEY, PENDIENTE..., etc.
 
-const ENDPOINT = 'https://www.datos.gov.co/resource/yhfm-pnf2.json'
+const ENDPOINT = 'https://www.datos.gov.co/resource/feim-cysj.json'
 
-type SocrataRow = {
-  numero?: string
-  numero_proyecto?: string
-  ano?: string
-  fecha?: string
-  fecha_radicacion?: string
+type SenadoCoRow = {
+  n_senado?: string
+  n_camara?: string
   titulo?: string
-  asunto?: string
-  estado?: string
   autor?: string
+  f_presentado?: string
+  comision?: string
+  estado?: string
 }
 
 function detectTopic(text: string): Topic {
   const t = (text || '').toLowerCase()
-  if (/ambient|sosteni|clima|polución|conservac/i.test(t)) return 'ambiente'
-  if (/integra|mercosur|cooperación|regional/i.test(t)) return 'integracion-regional'
-  if (/género|paridad|mujer|equidad/i.test(t)) return 'genero'
-  if (/salud|sanitar|hospital/i.test(t)) return 'salud'
-  if (/educa/i.test(t)) return 'educacion'
-  if (/energ/i.test(t)) return 'energia'
-  if (/segur|público|fronter/i.test(t)) return 'seguridad'
-  if (/comercio|tribut|fiscal|aduan|impuesto/i.test(t)) return 'economia-regional'
+  if (/ambient|sustent|clima|conserv|biodivers/i.test(t)) return 'ambiente'
+  if (/integra|mercosur|cooperaci|regional/i.test(t)) return 'integracion-regional'
+  if (/género|paridad|mujer|equidad|feminin/i.test(t)) return 'genero'
+  if (/educac|escolar|universidad/i.test(t)) return 'educacion'
+  if (/salud|sanitar|hospital|epps/i.test(t)) return 'salud'
+  if (/energ|el[ée]ctric|combust/i.test(t)) return 'energia'
+  if (/seguridad|defens|polic|fronteri/i.test(t)) return 'seguridad'
+  if (/comerci|tribut|fiscal|impuesto|presupuest/i.test(t)) return 'economia-regional'
+  if (/internacional|tratado|extradic/i.test(t)) return 'rrii'
+  if (/corredor|infraestructur|vial/i.test(t)) return 'corredores-bioceanicos'
   return 'integracion-regional'
 }
 
-function detectRelevance(estado: string | undefined): Relevance {
+function detectRelevance(estado: string): 'alta' | 'media' | 'baja' {
   const e = (estado || '').toLowerCase()
-  if (/sancion|aprobad|ley/i.test(e)) return 'alta'
-  if (/segundo|comisión|tercer/i.test(e)) return 'media'
-  return 'baja'
+  if (/ley\b/i.test(e)) return 'alta'
+  if (/sancion|aprobad|tercer/i.test(e)) return 'alta'
+  if (/segundo|comisión|primer debate/i.test(e)) return 'media'
+  if (/archivado|retirad|fallida/i.test(e)) return 'baja'
+  return 'media'
 }
 
-function pad(date: string | undefined): string {
-  if (!date) return new Date().toISOString().slice(0, 10)
-  // Socrata fechas vienen como "2025-04-15T00:00:00.000"
-  return date.slice(0, 10)
+// Normaliza fecha: puede venir como "2022-07-21" o "7/31/2019"
+function normalizeDate(d?: string): string {
+  if (!d) return new Date().toISOString().slice(0, 10)
+  if (/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0, 10)
+  // Formato m/d/yyyy o m/d/yy
+  const parts = d.split('/')
+  if (parts.length === 3) {
+    const [m, day, y] = parts
+    const year = y.length === 2 ? '20' + y : y
+    return `${year}-${m.padStart(2, '0')}-${day.padStart(2, '0')}`
+  }
+  return d.slice(0, 10)
 }
 
-export async function fetchProyectosColombia(opts?: {
-  limit?: number
-  signal?: AbortSignal
-}): Promise<NewsItem[]> {
+// Trae proyectos en trámite (NO sancionados) — para el Radar
+export async function fetchProyectosColombia(opts?: { limit?: number; signal?: AbortSignal }): Promise<NewsItem[]> {
   const limit = opts?.limit ?? 20
+  // Solo proyectos con título válido y estado distinto de LEY (los sancionados van a Leyes)
   const params = new URLSearchParams({
     $limit: String(limit),
-    $order: 'fecha_radicacion DESC',
+    $where: "titulo IS NOT NULL AND estado != 'LEY' AND estado IS NOT NULL",
+    $order: 'f_presentado DESC',
   })
-  const url = `${ENDPOINT}?${params.toString()}`
-  const res = await fetchWithCorsFallback(url, {
+  const res = await fetchWithCorsFallback(`${ENDPOINT}?${params.toString()}`, {
     signal: opts?.signal,
     headers: { Accept: 'application/json' },
   })
-  if (!res.ok) throw new Error(`Socrata CO API error: ${res.status}`)
-  const rows = (await res.json()) as SocrataRow[]
+  if (!res.ok) throw new Error(`Socrata CO error: ${res.status}`)
+  const data = (await res.json()) as SenadoCoRow[]
+  if (!Array.isArray(data)) return []
+  return data.map(r => mapRow(r, 'proyecto')).filter((x): x is NewsItem => x !== null)
+}
 
-  return rows.map((r, i) => {
-    const titulo = (r.titulo ?? r.asunto ?? `Proyecto ${r.numero_proyecto ?? r.numero ?? ''}`).trim()
-    const ementa = (r.asunto ?? r.titulo ?? '').trim()
-    return {
-      id: 'co-senado-' + (r.numero_proyecto ?? r.numero ?? i),
-      title: titulo.length > 100 ? titulo.slice(0, 97) + '…' : titulo,
-      country: 'CO',
-      topic: detectTopic(titulo + ' ' + ementa),
-      type: 'ley',
-      date: pad(r.fecha_radicacion ?? r.fecha),
-      relevance: detectRelevance(r.estado),
-      excerpt: ementa.length > 280 ? ementa.slice(0, 277) + '…' : (ementa || titulo),
-      source: 'Senado de Colombia · datos.gov.co',
-    }
+// Trae proyectos que YA fueron sancionados como ley — para Leyes
+export async function fetchLeyesColombia(opts?: { limit?: number; signal?: AbortSignal }): Promise<NewsItem[]> {
+  const limit = opts?.limit ?? 50
+  const params = new URLSearchParams({
+    $limit: String(limit),
+    $where: "estado = 'LEY' AND titulo IS NOT NULL",
+    $order: 'f_presentado DESC',
   })
+  const res = await fetchWithCorsFallback(`${ENDPOINT}?${params.toString()}`, {
+    signal: opts?.signal,
+    headers: { Accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`Socrata CO leyes error: ${res.status}`)
+  const data = (await res.json()) as SenadoCoRow[]
+  if (!Array.isArray(data)) return []
+  return data.map(r => mapRow(r, 'ley')).filter((x): x is NewsItem => x !== null)
+}
+
+function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
+  const titulo = (r.titulo ?? '').trim().replace(/^"|"$/g, '')
+  if (!titulo) return null
+  const numero = r.n_senado ?? r.n_camara ?? ''
+  const ident = numero ? `Proyecto ${numero}` : 'Proyecto Senado CO'
+  const autor = (r.autor ?? '').trim().replace(/^"|"$/g, '')
+  const estado = (r.estado ?? '').trim()
+  const fecha = normalizeDate(r.f_presentado)
+  const isLaw = kind === 'ley'
+  const titleClean = titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo
+  return {
+    id: (isLaw ? 'co-ley-' : 'co-proyecto-') + (numero || Math.random().toString(36).slice(2, 9)),
+    title: isLaw
+      ? `${ident} (sancionado) — ${titleClean}`
+      : `${ident} — ${titleClean}`,
+    country: 'CO',
+    topic: detectTopic(titulo),
+    type: 'ley',
+    date: fecha,
+    relevance: detectRelevance(estado),
+    excerpt: titulo.length > 280 ? titulo.slice(0, 277) + '…' : titulo,
+    source: isLaw
+      ? `Senado de la República de Colombia · Sancionada como ley`
+      : `Senado de la República de Colombia · ${estado || 'En trámite'}`,
+    fullText: titulo,
+    authors: autor || undefined,
+    status: estado || undefined,
+    tipoDocumento: numero ? `Proyecto ${numero}` : undefined,
+    keywords: r.comision ? [`Comisión ${r.comision}`] : undefined,
+  }
 }

@@ -29,7 +29,10 @@ import type { NewsItem } from '@/lib/types'
 // son leyes ya sancionadas. Los items de Brasil (br-camara-*, br-senado-*)
 // son proyectos en trámite, NO leyes — se excluyen de esta vista.
 function isSanctionedLaw(item: NewsItem): boolean {
+  // Argentina: 1194 leyes nacionales sancionadas
   if (item.id.startsWith('ar-ley-')) return true
+  // Colombia: proyectos del Senado con estado='LEY' (ya sancionados)
+  if (item.id.startsWith('co-ley-')) return true
   return false
 }
 

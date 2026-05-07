@@ -3,6 +3,7 @@ import { NEWS as MOCK_NEWS } from '@/lib/data'
 import { fetchCamaraProposicoes } from './camara-br'
 import { fetchSenadoBR } from './senado-br'
 import { fetchHcdnArgentina } from './hcdn-ar'
+import { fetchProyectosColombia, fetchLeyesColombia } from './socrata-co'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -88,6 +89,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'senado-br', label: 'Senado Federal Brasil', country: 'BR', fn: ({ signal }) => fetchSenadoBR({ limit: 30, signal }) },
   { id: 'camara-br', label: 'Câmara dos Deputados', country: 'BR', fn: ({ signal }) => fetchCamaraProposicoes({ limit: 30, signal }) },
   { id: 'hcdn-ar', label: 'HCDN Argentina', country: 'AR', fn: ({ signal }) => fetchHcdnArgentina({ limit: 20, signal }) },
+  { id: 'senado-co', label: 'Senado Colombia', country: 'CO', fn: ({ signal }) => fetchProyectosColombia({ limit: 25, signal }) },
+  { id: 'leyes-co', label: 'Leyes Sancionadas Colombia', country: 'CO', fn: ({ signal }) => fetchLeyesColombia({ limit: 30, signal }) },
 ]
 
 // Si hay un Worker desplegado (variable VITE_UPM_API_URL), preferirlo.
