@@ -37,7 +37,7 @@ export function Modal({
   const sizeCls = size === 'sm' ? 'max-w-sm' : size === 'lg' ? 'max-w-2xl' : 'max-w-lg'
 
   return (
-    <div role="dialog" aria-modal="true" className="fixed inset-0 z-[90] grid place-items-center px-4 py-6">
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-[90] flex items-center justify-center px-4 py-6">
       <button
         aria-label="Cerrar"
         onClick={onClose}
