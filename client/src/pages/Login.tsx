@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { ArrowRight, Lock, Sparkles, ShieldCheck, Radar, FileStack } from 'lucide-react'
+import { ArrowRight, Lock, Sparkles, ShieldCheck, Radar, FileStack, UserPlus } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
 import { useAuth } from '@/lib/auth'
@@ -143,23 +143,22 @@ export function LoginPage() {
             )}
           </Button>
 
+          <Link
+            to="/registro"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-[15px] font-semibold text-upm-800 ring-2 ring-upm-200 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-upm-50 hover:ring-upm-400 hover:shadow-card-hover active:translate-y-0 active:scale-[0.98]"
+          >
+            <UserPlus size={17} /> Crear cuenta
+          </Link>
+
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-ink-100" />
             <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-300">o</span>
             <div className="h-px flex-1 bg-ink-100" />
           </div>
 
-          <Button type="button" variant="secondary" size="lg" onClick={onDemo} disabled={loading} className="w-full">
+          <Button type="button" variant="ghost" size="md" onClick={onDemo} disabled={loading} className="w-full">
             Entrar con cuenta demo
           </Button>
-
-          <Link
-            to="/registro"
-            className="flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-br from-upm-50 to-upm-100 px-4 py-3 text-[13px] font-semibold text-upm-800 ring-1 ring-upm-200 transition hover:-translate-y-0.5 hover:from-upm-100 hover:to-upm-200"
-          >
-            ¿No tenés cuenta? <span className="font-bold">Crear cuenta institucional</span>
-            <ArrowRight size={13} />
-          </Link>
 
           <div className="flex flex-col gap-1 text-center text-[11.5px] text-ink-500">
             <span>Acceso exclusivo para miembros y autoridades autorizadas.</span>
