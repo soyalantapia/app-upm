@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Bell, BellRing, Check, FileStack, FileText, Newspaper, Sparkles } from 'lucide-react'
 import { Badge } from './ui'
@@ -25,16 +26,24 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
   const notifications = useStore(s => s.notifications)
   const unreadCount = notifications.filter(n => n.unread).length
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 })
 
+  // Cerrar al cambiar de ruta
   useEffect(() => {
     setOpen(false)
   }, [location.pathname])
 
+  // Click outside / Escape
   useEffect(() => {
     if (!open) return
     const onClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      const t = e.target as Node
+      if (
+        buttonRef.current && !buttonRef.current.contains(t) &&
+        dropdownRef.current && !dropdownRef.current.contains(t)
+      ) {
         setOpen(false)
       }
     }
@@ -48,6 +57,34 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
       window.removeEventListener('keydown', onKey)
     }
   }, [open])
+
+  // Calcular posición cuando se abre o cambia el viewport
+  useLayoutEffect(() => {
+    if (!open || !buttonRef.current) return
+    const update = () => {
+      if (!buttonRef.current) return
+      const rect = buttonRef.current.getBoundingClientRect()
+      const dropdownWidth = 330
+      const margin = 12
+      const viewportW = window.innerWidth
+      // En sidebar (no compact) abrir hacia la derecha alineado al borde izquierdo del bell.
+      // En mobile/header (compact) abrir alineado al borde derecho del bell.
+      let left = compact
+        ? rect.right - dropdownWidth
+        : rect.left
+      // Clamp para no salirse de la pantalla
+      if (left + dropdownWidth + margin > viewportW) left = viewportW - dropdownWidth - margin
+      if (left < margin) left = margin
+      setPos({ top: rect.bottom + 8, left })
+    }
+    update()
+    window.addEventListener('resize', update)
+    window.addEventListener('scroll', update, true)
+    return () => {
+      window.removeEventListener('resize', update)
+      window.removeEventListener('scroll', update, true)
+    }
+  }, [open, compact])
 
   const handleClick = (n: Notification) => {
     store.markNotificationRead(n.id)
@@ -66,8 +103,9 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
   const Icon = unreadCount ? BellRing : Bell
 
   return (
-    <div ref={ref} className="relative">
+    <>
       <button
+        ref={buttonRef}
         onClick={() => setOpen(v => !v)}
         className={cn(
           'relative grid place-items-center rounded-full transition-all',
@@ -85,8 +123,12 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
         )}
       </button>
 
-      {open && (
-        <div className="animate-toast-in absolute right-0 top-12 z-50 w-[330px] rounded-3xl bg-white p-3 shadow-toast ring-1 ring-ink-100">
+      {open && createPortal(
+        <div
+          ref={dropdownRef}
+          style={{ position: 'fixed', top: pos.top, left: pos.left, width: 330 }}
+          className="animate-toast-in z-[200] rounded-3xl bg-white p-3 shadow-toast ring-1 ring-ink-100"
+        >
           <div className="flex items-center justify-between px-2 pb-2">
             <div>
               <div className="text-[14px] font-bold tracking-tight text-ink-900">Notificaciones</div>
@@ -142,8 +184,9 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
               })
             )}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
-    </div>
+    </>
   )
 }
