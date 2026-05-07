@@ -5,6 +5,9 @@ import { UIProvider } from '@/lib/ui-provider'
 import { AppShell } from '@/layouts/AppShell'
 import { Toasts } from '@/components/Toasts'
 import { LoginPage } from '@/pages/Login'
+import { SignupPage } from '@/pages/Signup'
+import { CheckoutPage } from '@/pages/Checkout'
+import { AccountActivatedPage } from '@/pages/AccountActivated'
 import { OnboardingPage } from '@/pages/Onboarding'
 import { HomePage } from '@/pages/Home'
 import { AssistantPage } from '@/pages/Assistant'
@@ -31,6 +34,9 @@ export default function App() {
         <Toasts />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/registro" element={<SignupPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/cuenta-activada" element={<AccountActivatedPage />} />
           <Route
             path="/onboarding"
             element={

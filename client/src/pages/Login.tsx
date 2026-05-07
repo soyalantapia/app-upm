@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { ArrowRight, Lock, Sparkles, ShieldCheck, Radar, FileStack } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
@@ -153,20 +153,16 @@ export function LoginPage() {
             Entrar con cuenta demo
           </Button>
 
+          <Link
+            to="/registro"
+            className="flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-br from-upm-50 to-upm-100 px-4 py-3 text-[13px] font-semibold text-upm-800 ring-1 ring-upm-200 transition hover:-translate-y-0.5 hover:from-upm-100 hover:to-upm-200"
+          >
+            ¿No tenés cuenta? <span className="font-bold">Crear cuenta institucional</span>
+            <ArrowRight size={13} />
+          </Link>
+
           <div className="flex flex-col gap-1 text-center text-[11.5px] text-ink-500">
             <span>Acceso exclusivo para miembros y autoridades autorizadas.</span>
-            <button
-              type="button"
-              onClick={() => {
-                store.pushToast(
-                  'info',
-                  'Tu solicitud fue registrada. La Secretaría UPM la revisará en 48hs.',
-                )
-              }}
-              className="font-semibold text-upm-700 hover:text-upm-800"
-            >
-              Solicitar acceso institucional
-            </button>
           </div>
         </form>
       </div>
