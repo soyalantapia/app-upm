@@ -1,5 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowUp, Bookmark, Check, Copy, FileStack, History, Plus, RefreshCw, ScrollText, Share2, Sparkles, Trash2 } from 'lucide-react'
+import {
+  ArrowUp,
+  Bookmark,
+  Check,
+  Copy,
+  FileStack,
+  History,
+  Library,
+  ListChecks,
+  PenLine,
+  Plus,
+  RefreshCw,
+  ScrollText,
+  Share2,
+  Sparkles,
+  Trash2,
+} from 'lucide-react'
 import { Badge, Button, Card, Eyebrow, PageHeader } from '@/components/ui'
 import { Markdown } from '@/components/Markdown'
 import { SourceCard } from '@/components/SourceCard'
@@ -13,6 +29,13 @@ const SUGGESTIONS = [
   'Explicame las novedades de ambiente de esta semana.',
   'Preparame un brief para una reunión sobre corredores bioceánicos.',
   '¿Qué puntos debería revisar antes de la comisión?',
+]
+
+const CAPABILITIES: { icon: typeof PenLine; label: string; desc: string }[] = [
+  { icon: PenLine, label: 'Redactá', desc: 'Discursos, comunicados, mensajes institucionales' },
+  { icon: ListChecks, label: 'Prepará', desc: 'Briefs de reunión, preguntas para comisión' },
+  { icon: ScrollText, label: 'Resumí', desc: 'Leyes y novedades en 1 página o 10 líneas' },
+  { icon: Library, label: 'Consultá', desc: 'Biblioteca UPM con fuentes verificables' },
 ]
 
 const INITIAL: ChatMessage = {
@@ -222,8 +245,22 @@ export function AssistantPage() {
         </div>
 
         {messages.length <= 1 && (
-          <div className="border-t border-ink-100 px-4 py-3 sm:px-6">
-            <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Probá con</div>
+          <div className="border-t border-ink-100 px-4 py-4 sm:px-6">
+            <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Qué puedo hacer</div>
+            <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
+              {CAPABILITIES.map(c => (
+                <div key={c.label} className="flex items-start gap-2.5 rounded-2xl bg-upm-50/40 p-2.5 ring-1 ring-upm-100">
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-upm-500 to-upm-700 text-white shadow-cta">
+                    <c.icon size={14} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[12.5px] font-bold leading-tight text-ink-900">{c.label}</div>
+                    <div className="text-[11px] leading-snug text-ink-500">{c.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Probá con</div>
             <div className="mt-2 flex flex-wrap gap-2">
               {SUGGESTIONS.map(s => (
                 <button

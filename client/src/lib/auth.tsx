@@ -8,6 +8,7 @@ type AuthContextValue = {
   ready: boolean
   signIn: (email: string) => Operator
   signOut: () => void
+  updateOperator: (patch: Partial<Operator>) => void
 }
 
 const AUTH_KEY = 'upm.app.operator'
@@ -64,7 +65,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setOperator(null)
   }, [])
 
-  const value = useMemo(() => ({ operator, ready, signIn, signOut }), [operator, ready, signIn, signOut])
+  const updateOperator = useCallback((patch: Partial<Operator>) => {
+    setOperator(prev => {
+      if (!prev) return prev
+      const next = { ...prev, ...patch }
+      window.localStorage.setItem(AUTH_KEY, JSON.stringify(next))
+      return next
+    })
+  }, [])
+
+  const value = useMemo(
+    () => ({ operator, ready, signIn, signOut, updateOperator }),
+    [operator, ready, signIn, signOut, updateOperator],
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

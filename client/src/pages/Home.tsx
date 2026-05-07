@@ -101,12 +101,20 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats — clickeables */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Novedades hoy" value={NEWS.length} hint="Filtradas por tus temas" />
-        <Stat label="Alta relevancia" value={NEWS.filter(n => n.relevance === 'alta').length} hint="Para revisar primero" />
-        <Stat label="Documentos UPM" value={DOCUMENTS.length} hint="Biblioteca activa" />
-        <Stat label="Mis guardados" value={saved.length} hint="En tu carpeta privada" />
+        <button onClick={() => navigate('/radar')} className="text-left transition hover:-translate-y-0.5">
+          <Stat label="Novedades hoy" value={NEWS.length} hint="Filtradas por tus temas" />
+        </button>
+        <button onClick={() => navigate('/radar')} className="text-left transition hover:-translate-y-0.5">
+          <Stat label="Alta relevancia" value={NEWS.filter(n => n.relevance === 'alta').length} hint="Para revisar primero" />
+        </button>
+        <button onClick={() => navigate('/biblioteca')} className="text-left transition hover:-translate-y-0.5">
+          <Stat label="Documentos UPM" value={DOCUMENTS.length} hint="Biblioteca activa" />
+        </button>
+        <button onClick={() => navigate('/carpetas')} className="text-left transition hover:-translate-y-0.5">
+          <Stat label="Mis guardados" value={saved.length} hint="En tu carpeta privada" />
+        </button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -281,12 +289,19 @@ export function HomePage() {
             </Button>
           </div>
 
-          <div className="rounded-3xl bg-white p-4 ring-1 ring-ink-100 shadow-card">
-            <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
-              <CalendarDays size={11} /> Última actualización
+          <button
+            onClick={() => navigate('/radar')}
+            className="group flex items-center gap-3 rounded-3xl bg-white p-4 text-left ring-1 ring-ink-100 shadow-card transition hover:-translate-y-0.5 hover:ring-upm-100 hover:shadow-card-hover"
+          >
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-success-bg text-success-fg">
+              <CalendarDays size={16} />
             </div>
-            <div className="mt-1.5 text-[13px] text-ink-700">Radar UPM · hace 8 minutos</div>
-          </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">Radar al día</div>
+              <div className="mt-0.5 text-[12.5px] text-ink-700">Actualizado hace 8 minutos · {NEWS.length} novedades</div>
+            </div>
+            <ArrowRight size={14} className="shrink-0 text-ink-300 group-hover:text-upm-600" />
+          </button>
         </div>
       </div>
     </div>

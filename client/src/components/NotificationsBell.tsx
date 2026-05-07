@@ -151,7 +151,15 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
 
           <div className="flex max-h-[420px] flex-col gap-1 overflow-y-auto pr-1">
             {notifications.length === 0 ? (
-              <div className="px-3 py-8 text-center text-[12.5px] text-ink-500">Sin notificaciones</div>
+              <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-success-bg text-success-fg">
+                  <Check size={20} strokeWidth={2.4} />
+                </div>
+                <div className="text-[13px] font-bold text-ink-900">Tu radar está al día</div>
+                <div className="text-[11.5px] leading-relaxed text-ink-500">
+                  Te avisaremos cuando haya novedades relevantes para tus temas y países.
+                </div>
+              </div>
             ) : (
               notifications.map(n => {
                 const NIcon = ICONS[n.type]
