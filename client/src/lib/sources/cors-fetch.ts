@@ -5,6 +5,8 @@
 // con datos sensibles porque pasan por un tercero.
 
 const PROXIES = [
+  // codetabs primero porque acepta payloads grandes (>1MB) y suele responder rápido
+  (u: string) => `https://api.codetabs.com/v1/proxy?quest=${u}`,
   (u: string) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
   (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ]
