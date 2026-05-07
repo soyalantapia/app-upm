@@ -13,7 +13,6 @@ import {
 } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
-import { BrandMark } from '@/components/Brand'
 import { COUNTRIES, countryByCode } from '@/lib/data'
 import type { CountryCode } from '@/lib/types'
 
@@ -98,14 +97,6 @@ export function CheckoutPage() {
   return (
     <FullBleedShell>
       <div className="relative z-10 mx-auto w-full max-w-5xl px-4 py-10 lg:py-14">
-        <div className="absolute left-6 top-6 hidden items-center gap-2.5 lg:flex">
-          <BrandMark size={36} />
-          <div className="flex flex-col leading-tight text-white">
-            <span className="text-[15px] font-bold tracking-tight">Asistente AI UPM</span>
-            <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">Confirmar suscripción</span>
-          </div>
-        </div>
-
         <Link
           to="/registro"
           className="mb-4 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-white/85 hover:text-white"

@@ -18,7 +18,6 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
-import { BrandMark } from '@/components/Brand'
 import { COUNTRIES } from '@/lib/data'
 
 const BENEFITS: { icon: LucideIcon; title: string; desc: string }[] = [
@@ -59,26 +58,15 @@ export function SignupPage() {
   return (
     <FullBleedShell>
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 py-6 sm:py-10 lg:py-14">
-        {/* Top bar */}
-        <div className="mb-6 flex items-center justify-between gap-3 lg:mb-8">
-          <div className="flex items-center gap-2.5 text-white">
-            <BrandMark size={32} />
-            <div className="flex flex-col leading-tight">
-              <span className="text-[14px] font-bold tracking-tight">Asistente AI UPM</span>
-              <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/65">
-                Crear cuenta
-              </span>
-            </div>
-          </div>
-          <Link
-            to="/login"
-            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-[11.5px] font-semibold text-white/90 ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15"
-          >
-            <ArrowLeft size={11} /> Ingresar
-          </Link>
-        </div>
+        {/* Botón Ingresar flotante arriba derecha (desktop). El brand viene del FullBleedShell. */}
+        <Link
+          to="/login"
+          className="absolute right-4 top-6 z-20 inline-flex shrink-0 items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-[11.5px] font-semibold text-white/90 ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 lg:right-6"
+        >
+          <ArrowLeft size={11} /> Ingresar
+        </Link>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-start lg:gap-8">
+        <div className="grid gap-6 pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-start lg:gap-8 lg:pt-0">
           {/* Pitch — visible mobile y desktop, layout adaptativo */}
           <div className="flex flex-col gap-5 text-white">
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/85 ring-1 ring-white/20">

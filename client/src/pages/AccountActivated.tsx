@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight, BadgeCheck, CheckCircle2, Mail, Sparkles } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
-import { BrandMark } from '@/components/Brand'
 import { useAuth } from '@/lib/auth'
 import { store } from '@/lib/store'
 import { countryByCode } from '@/lib/data'
@@ -59,13 +58,6 @@ export function AccountActivatedPage() {
   return (
     <FullBleedShell>
       <div className="relative z-10 mx-auto w-full max-w-xl px-4">
-        <div className="absolute -top-12 left-1/2 hidden -translate-x-1/2 items-center gap-2.5 sm:flex">
-          <BrandMark size={36} />
-          <div className="flex flex-col leading-tight text-white">
-            <span className="text-[14px] font-bold tracking-tight">Asistente AI UPM</span>
-          </div>
-        </div>
-
         <div className="glass-strong animate-fade-up flex flex-col items-center gap-5 rounded-3xl p-7 ring-1 ring-white/40 sm:p-9 text-center">
           <div className="grid h-16 w-16 place-items-center rounded-3xl bg-gradient-to-br from-success to-emerald-700 text-white shadow-floating">
             <CheckCircle2 size={32} strokeWidth={2.4} />
