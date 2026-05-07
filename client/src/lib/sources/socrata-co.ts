@@ -1,4 +1,5 @@
 import type { NewsItem, Relevance, Topic } from '@/lib/types'
+import { fetchWithCorsFallback } from './cors-fetch'
 
 // Datos abiertos del gobierno colombiano (plataforma Socrata).
 // Hay datasets de proyectos de ley, normograma, decretos. URL ejemplo abajo.
@@ -59,7 +60,7 @@ export async function fetchProyectosColombia(opts?: {
     $order: 'fecha_radicacion DESC',
   })
   const url = `${ENDPOINT}?${params.toString()}`
-  const res = await fetch(url, {
+  const res = await fetchWithCorsFallback(url, {
     signal: opts?.signal,
     headers: { Accept: 'application/json' },
   })

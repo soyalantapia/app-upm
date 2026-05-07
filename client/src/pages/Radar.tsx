@@ -149,12 +149,12 @@ export function RadarPage() {
       <PageHeader
         eyebrow={<Eyebrow icon={<Radar size={11} />}>Radar normativo</Eyebrow>}
         title="Te avisa lo importante por país y tema"
-        description="Sin perder horas revisando fuentes. Filtros, novedades y acciones inmediatas para convertir cada novedad en trabajo útil."
+        description="Sin perder horas revisando fuentes. Datos en vivo de fuentes oficiales del MERCOSUR ampliado, refrescados automáticamente."
         actions={
           <>
             {liveStatus === 'live' && (
               <Badge tone="success">
-                <Wifi size={11} /> En vivo · {liveSources.filter(s => s.ok).map(s => s.id.split('-')[1]?.toUpperCase()).join(' · ')}
+                <Wifi size={11} /> En vivo
               </Badge>
             )}
             {liveStatus === 'mixed' && (
@@ -173,6 +173,35 @@ export function RadarPage() {
           </>
         }
       />
+
+      {/* Stats por fuente */}
+      {liveSources.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card">
+          <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Fuentes</span>
+          {liveSources.map(s => (
+            <button
+              key={s.id}
+              onClick={() => setCountry(s.country)}
+              className={
+                'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition ' +
+                (s.ok
+                  ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
+                  : 'bg-ink-50 text-ink-400 ring-1 ring-ink-100')
+              }
+              title={s.error ?? `${s.count} ítems desde ${s.label}`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${s.ok ? 'bg-success' : 'bg-ink-300'}`} />
+              {countryByCode(s.country).flag} {s.label}
+              <span className="ml-0.5 rounded bg-white/60 px-1 text-[10px] tabular-nums">{s.count}</span>
+            </button>
+          ))}
+          {feed?.fetchedAt && (
+            <span className="ml-auto text-[10.5px] text-ink-400 tabular-nums">
+              Actualizado {new Date(feed.fetchedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Search + Sort + Toggle filtros — todo en una sola fila */}
       <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">

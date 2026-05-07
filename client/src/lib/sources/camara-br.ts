@@ -1,4 +1,5 @@
 import type { DocType, NewsItem, Relevance, Topic } from '@/lib/types'
+import { fetchWithCorsFallback } from './cors-fetch'
 
 // API pública de la Câmara dos Deputados de Brasil
 // Docs: https://dadosabertos.camara.leg.br/swagger/api.html
@@ -78,7 +79,7 @@ export async function fetchCamaraProposicoes(opts?: {
   })
   const url = `${BASE}/proposicoes?${params.toString()}`
 
-  const res = await fetch(url, {
+  const res = await fetchWithCorsFallback(url, {
     signal: opts?.signal,
     headers: { Accept: 'application/json' },
   })

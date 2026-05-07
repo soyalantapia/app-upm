@@ -1,0 +1,16 @@
+name = "upm-feed"
+main = "src/index.ts"
+compatibility_date = "2025-05-01"
+
+[vars]
+CACHE_TTL_SECONDS = "1800"
+
+# Para sumar fuentes que requieren scraping (UY/PY/BO/PE) usás KV cache:
+# wrangler kv:namespace create UPM_CACHE
+# y descomentás:
+# [[kv_namespaces]]
+# binding = "UPM_CACHE"
+# id = "..."
+
+[observability]
+enabled = true
