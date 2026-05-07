@@ -9,18 +9,21 @@ import {
   FileStack,
   Filter,
   Radar,
+  RefreshCw,
   ScrollText,
   Search,
-  Sparkles,
   Tag,
   Wand2,
+  Wifi,
+  WifiOff,
   X,
 } from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
-import { COUNTRIES, NEWS, TOPICS, countryByCode, topicById } from '@/lib/data'
+import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
 import { store, useStore } from '@/lib/store'
 import { useUI } from '@/lib/ui-provider'
+import { useLiveFeed } from '@/lib/use-live-feed'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -53,6 +56,10 @@ export function RadarPage() {
     () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
     [saved],
   )
+  const { feed, loading: feedLoading, refresh } = useLiveFeed()
+  const NEWS = feed?.items ?? []
+  const liveStatus = feed?.status ?? 'mock'
+  const liveSources = feed?.sources ?? []
   const [q, setQ] = useState('')
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
   const [topic, setTopic] = useState<Topic | 'all'>('all')
@@ -80,6 +87,9 @@ export function RadarPage() {
     const id = setTimeout(() => setLoading(false), 420)
     return () => clearTimeout(id)
   }, [country, topic, type, relevance, q, sort])
+
+  // Loading inicial mientras se trae el feed real
+  const isLoadingInitial = feedLoading && !feed
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase()
@@ -111,7 +121,7 @@ export function RadarPage() {
     if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
     if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)
     return items
-  }, [q, country, topic, type, relevance, sort])
+  }, [NEWS, q, country, topic, type, relevance, sort])
 
   const handleSave = (n: typeof NEWS[number]) => {
     const id = 'sav-news-' + n.id
@@ -141,9 +151,26 @@ export function RadarPage() {
         title="Te avisa lo importante por país y tema"
         description="Sin perder horas revisando fuentes. Filtros, novedades y acciones inmediatas para convertir cada novedad en trabajo útil."
         actions={
-          <Badge tone="brand">
-            <Sparkles size={11} /> Actualización: hace 8 minutos
-          </Badge>
+          <>
+            {liveStatus === 'live' && (
+              <Badge tone="success">
+                <Wifi size={11} /> En vivo · {liveSources.filter(s => s.ok).map(s => s.id.split('-')[1]?.toUpperCase()).join(' · ')}
+              </Badge>
+            )}
+            {liveStatus === 'mixed' && (
+              <Badge tone="info">
+                <Wifi size={11} /> Vivo + muestra
+              </Badge>
+            )}
+            {liveStatus === 'mock' && (
+              <Badge tone="warning">
+                <WifiOff size={11} /> Datos de muestra
+              </Badge>
+            )}
+            <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
+              <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} /> Actualizar
+            </Button>
+          </>
         }
       />
 
@@ -271,10 +298,10 @@ export function RadarPage() {
       </div>
 
       <div className="flex items-center gap-2 text-[12.5px] font-semibold text-ink-500">
-        {loading ? (
+        {loading || isLoadingInitial ? (
           <>
             <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
-            Buscando fuentes UPM…
+            {isLoadingInitial ? 'Trayendo novedades en vivo de fuentes oficiales…' : 'Buscando fuentes UPM…'}
           </>
         ) : (
           `${filtered.length} ${filtered.length === 1 ? 'novedad' : 'novedades'} encontradas`
@@ -282,7 +309,7 @@ export function RadarPage() {
       </div>
 
       {/* Resultados */}
-      {loading ? (
+      {loading || isLoadingInitial ? (
         <div className="flex flex-col gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">

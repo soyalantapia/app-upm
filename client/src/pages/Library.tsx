@@ -10,15 +10,20 @@ import {
   Handshake,
   Library,
   Megaphone,
+  RefreshCw,
   Search,
   Stamp,
+  Wifi,
+  WifiOff,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { Badge, Card, Chip, EmptyState, Eyebrow, PageHeader } from '@/components/ui'
+import { useNavigate } from 'react-router-dom'
+import { Badge, Button, Card, Chip, EmptyState, Eyebrow, PageHeader } from '@/components/ui'
 import { COUNTRIES, DOCUMENTS, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocStatus, DocType, Topic } from '@/lib/types'
 import { useUI } from '@/lib/ui-provider'
 import { store, useStore } from '@/lib/store'
+import { useLiveFeed } from '@/lib/use-live-feed'
 
 type CategoryKey = 'all' | 'convenios' | 'actas' | 'comunicados' | 'informes' | 'documentos-base' | 'normativa' | 'academico'
 
@@ -50,12 +55,19 @@ function matchesCategory(doc: { type: DocType; status: DocStatus }, category: Ca
 }
 
 export function LibraryPage() {
+  const navigate = useNavigate()
   const { openDocument } = useUI()
   const saved = useStore(s => s.saved)
   const savedRefs = useMemo(
     () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
     [saved],
   )
+  const { feed, loading: feedLoading, refresh } = useLiveFeed()
+  const liveLaws = useMemo(
+    () => (feed?.items ?? []).filter(i => i.type === 'ley' || i.type === 'decreto' || i.type === 'reglamento').slice(0, 6),
+    [feed],
+  )
+  const liveStatus = feed?.status ?? 'mock'
   const [q, setQ] = useState('')
   const [category, setCategory] = useState<CategoryKey>('all')
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
@@ -105,7 +117,71 @@ export function LibraryPage() {
         eyebrow={<Eyebrow icon={<Library size={11} />}>Biblioteca UPM</Eyebrow>}
         title="Memoria institucional, accesible y trabajable"
         description="Documentos institucionales, convenios, actas, informes y materiales por foro. Buscá por tema, país o palabra."
+        actions={
+          <>
+            {liveStatus === 'live' && (
+              <Badge tone="success">
+                <Wifi size={11} /> En vivo
+              </Badge>
+            )}
+            {liveStatus === 'mixed' && (
+              <Badge tone="info">
+                <Wifi size={11} /> Vivo + muestra
+              </Badge>
+            )}
+            {liveStatus === 'mock' && (
+              <Badge tone="warning">
+                <WifiOff size={11} /> Datos de muestra
+              </Badge>
+            )}
+            <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
+              <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} /> Actualizar
+            </Button>
+          </>
+        }
       />
+
+      {/* Banner de proyectos en vivo */}
+      {liveLaws.length > 0 && (
+        <div className="rounded-3xl bg-gradient-to-br from-success-bg to-white p-5 ring-1 ring-success-bg">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">
+                <Wifi size={11} /> En vivo · Proyectos legislativos
+              </div>
+              <div className="mt-1 text-[14px] font-bold text-ink-900">
+                {liveLaws.length} proyectos recientes traídos directo de fuentes oficiales
+              </div>
+              <div className="text-[12px] text-ink-500">Brasil (Câmara dos Deputados) · Colombia (Senado)</div>
+            </div>
+            <Button size="sm" variant="soft" onClick={() => navigate('/radar')}>
+              Ver en Radar
+            </Button>
+          </div>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {liveLaws.slice(0, 4).map(item => {
+              const c = countryByCode(item.country)
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(`/radar/${item.id}`)}
+                  className="flex items-start gap-2 rounded-2xl bg-white px-3 py-2.5 text-left ring-1 ring-success-bg/60 transition hover:-translate-y-0.5 hover:ring-success"
+                >
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-success-bg text-success-fg">
+                    <FileText size={14} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-success-fg">
+                      {c.flag} {c.name} · En vivo
+                    </span>
+                    <span className="mt-0.5 block truncate text-[12.5px] font-semibold text-ink-900">{item.title}</span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Categorías destacadas */}
       <div>
