@@ -74,8 +74,8 @@ function mapItem(p: SenadoProcesso): NewsItem | null {
     type: 'ley',
     date,
     relevance: detectRelevance(tipoDoc),
-    excerpt: ementa.length > 280
-      ? ementa.slice(0, 277) + '…'
+    excerpt: ementa.length > 600
+      ? ementa.slice(0, 597) + '…'
       : ementa || `Materia ${ident} en trámite en el Senado Federal.`,
     source: 'Senado Federal — Brasil',
     // Detalle completo para mostrar en NewsConversation

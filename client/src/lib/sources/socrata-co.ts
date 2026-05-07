@@ -121,7 +121,7 @@ function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
     type: 'ley',
     date: fecha,
     relevance: detectRelevance(estado),
-    excerpt: titulo.length > 280 ? titulo.slice(0, 277) + '…' : titulo,
+    excerpt: titulo.length > 600 ? titulo.slice(0, 597) + '…' : titulo,
     source: isLaw
       ? `Senado de la República de Colombia · Sancionada como ley`
       : `Senado de la República de Colombia · ${estado || 'En trámite'}`,
@@ -129,6 +129,7 @@ function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
     authors: autor || undefined,
     status: estado || undefined,
     tipoDocumento: numero ? `Proyecto ${numero}` : undefined,
-    keywords: r.comision ? [`Comisión ${r.comision}`] : undefined,
+    comision: r.comision ? `Comisión ${r.comision}` : undefined,
+    dataPublicacao: r.f_presentado,
   }
 }

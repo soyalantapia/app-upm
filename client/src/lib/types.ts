@@ -62,6 +62,13 @@ export type Document = {
   excerpt: string
 }
 
+export type Tramitacion = {
+  fecha: string                 // YYYY-MM-DD o ISO
+  descripcion: string           // ej. "Aprovação do Parecer", "Remessa ao Plenário"
+  organo?: string               // ej. "PLEN", "CCJC", "Mesa Diretora"
+  despacho?: string             // detalle libre del despacho
+}
+
 export type NewsItem = {
   id: string
   title: string
@@ -84,6 +91,8 @@ export type NewsItem = {
   dataPublicacao?: string       // Fecha de publicación oficial
   dataAtualizacao?: string      // Última actualización
   apiDetailUrl?: string         // Endpoint para enriquecer con más detalle
+  comision?: string             // Comisión asignada (Senado CO)
+  tramitaciones?: Tramitacion[] // Cronología de pasos legislativos (últimos primero)
 }
 
 export type Dossier = {

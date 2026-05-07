@@ -4,6 +4,7 @@ import {
   BookOpen,
   Bookmark,
   BookmarkCheck,
+  CalendarDays,
   ExternalLink,
   Hash,
   MessageSquareText,
@@ -12,6 +13,7 @@ import {
   Search,
   Share2,
   Tag,
+  Users,
   Wifi,
   WifiOff,
 } from 'lucide-react'
@@ -163,7 +165,7 @@ export function LawsPage() {
                     key={l.id}
                     onClick={() => setActive(l)}
                     className={
-                      'flex flex-col gap-1 rounded-2xl border-2 p-3 text-left transition-all duration-200 ' +
+                      'flex flex-col gap-1.5 rounded-2xl border-2 p-3 text-left transition-all duration-200 ' +
                       (active?.id === l.id
                         ? 'border-upm-500 bg-upm-50'
                         : 'border-transparent bg-white ring-1 ring-ink-100 hover:border-upm-200')
@@ -176,6 +178,11 @@ export function LawsPage() {
                     <div className="text-[12.5px] font-semibold leading-snug text-ink-900 line-clamp-2">
                       {l.title.replace(/^Ley \d+\s*—\s*/, '')}
                     </div>
+                    {l.excerpt && l.excerpt !== l.title && (
+                      <p className="text-[11.5px] leading-relaxed text-ink-500 line-clamp-3">
+                        {l.excerpt}
+                      </p>
+                    )}
                   </button>
                 )
               })}
@@ -214,6 +221,46 @@ export function LawsPage() {
 
               {!active.fullText && (
                 <p className="text-[14.5px] leading-relaxed text-ink-700">{active.excerpt}</p>
+              )}
+
+              {/* Metadata: autoría, fecha, estado, comisión */}
+              {(active.authors || active.dataPublicacao || active.status || active.comision) && (
+                <div className="grid grid-cols-1 gap-3 rounded-2xl bg-upm-50/40 p-3.5 ring-1 ring-upm-100 sm:grid-cols-2">
+                  {active.authors && (
+                    <div className="sm:col-span-2">
+                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
+                        <Users size={10} /> Autoría
+                      </div>
+                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900">{active.authors}</div>
+                    </div>
+                  )}
+                  {active.dataPublicacao && (
+                    <div>
+                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
+                        <CalendarDays size={10} /> Presentación
+                      </div>
+                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900 tabular-nums">
+                        {active.dataPublicacao.slice(0, 10)}
+                      </div>
+                    </div>
+                  )}
+                  {active.status && (
+                    <div>
+                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
+                        <Hash size={10} /> Estado
+                      </div>
+                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900">{active.status}</div>
+                    </div>
+                  )}
+                  {active.comision && (
+                    <div>
+                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
+                        <ScrollText size={10} /> Comisión
+                      </div>
+                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900">{active.comision}</div>
+                    </div>
+                  )}
+                </div>
               )}
 
               {/* Keywords */}

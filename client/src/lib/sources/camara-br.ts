@@ -1,4 +1,4 @@
-import type { DocType, NewsItem, Relevance, Topic } from '@/lib/types'
+import type { DocType, NewsItem, Relevance, Topic, Tramitacion } from '@/lib/types'
 import { fetchWithCorsFallback } from './cors-fetch'
 
 // API pública de la Câmara dos Deputados de Brasil
@@ -93,7 +93,7 @@ function mapProposicao(p: CamaraProposicao): NewsItem {
   const tipo = SIGLA_FULL[p.siglaTipo] ?? p.siglaTipo
   const ementa = (p.ementa ?? '').trim()
   const title = `${tipo} ${p.numero}/${p.ano} — Brasil`
-  const excerpt = ementa.length > 280 ? ementa.slice(0, 277) + '…' : ementa
+  const excerpt = ementa.length > 600 ? ementa.slice(0, 597) + '…' : ementa
   const today = new Date().toISOString().slice(0, 10)
   return {
     id: 'br-camara-' + p.id,
@@ -123,15 +123,25 @@ type CamaraDetalle = {
 }
 type CamaraAutor = { nome?: string; siglaPartido?: string; siglaUf?: string }
 
+type CamaraTramitacao = {
+  dataHora?: string
+  siglaOrgao?: string
+  descricaoTramitacao?: string
+  descricaoSituacao?: string
+  despacho?: string
+}
+
 export async function enrichCamaraItem(item: NewsItem, signal?: AbortSignal): Promise<NewsItem> {
   if (!item.apiDetailUrl) return item
   try {
-    const [detRes, autRes] = await Promise.all([
+    const [detRes, autRes, tramRes] = await Promise.all([
       fetchWithCorsFallback(item.apiDetailUrl, { signal, headers: { Accept: 'application/json' } }),
       fetchWithCorsFallback(item.apiDetailUrl + '/autores', { signal, headers: { Accept: 'application/json' } }),
+      fetchWithCorsFallback(item.apiDetailUrl + '/tramitacoes', { signal, headers: { Accept: 'application/json' } }),
     ])
     const det = (await detRes.json()) as { dados?: CamaraDetalle }
     const aut = (await autRes.json()) as { dados?: CamaraAutor[] }
+    const tram = (await tramRes.json().catch(() => ({}))) as { dados?: CamaraTramitacao[] }
     const dados = det.dados ?? {}
     const autores = (aut.dados ?? [])
       .map(a => `${a.nome ?? ''}${a.siglaPartido ? ` (${a.siglaPartido}${a.siglaUf ? '/' + a.siglaUf : ''})` : ''}`)
@@ -142,6 +152,18 @@ export async function enrichCamaraItem(item: NewsItem, signal?: AbortSignal): Pr
       .split(/[,;]/)
       .map(k => k.trim())
       .filter(Boolean)
+    // Tramitacoes vienen del más antiguo al más reciente — invertimos y tomamos las últimas 10
+    const tramitaciones: Tramitacion[] = (tram.dados ?? [])
+      .slice()
+      .reverse()
+      .slice(0, 10)
+      .map(t => ({
+        fecha: (t.dataHora ?? '').slice(0, 16).replace('T', ' '),
+        descripcion: (t.descricaoTramitacao || t.descricaoSituacao || t.despacho || 'Tramitação').trim(),
+        organo: t.siglaOrgao,
+        despacho: t.despacho && t.despacho !== t.descricaoTramitacao ? t.despacho.trim() : undefined,
+      }))
+      .filter(t => t.descripcion.length > 0)
     return {
       ...item,
       fullText: fullText.length > 0 ? fullText : item.fullText,
@@ -151,6 +173,7 @@ export async function enrichCamaraItem(item: NewsItem, signal?: AbortSignal): Pr
       sourceUrl: dados.urlInteiroTeor || item.sourceUrl,
       pdfUrl: dados.urlInteiroTeor || item.pdfUrl,
       dataPublicacao: dados.dataApresentacao || item.dataPublicacao,
+      tramitaciones: tramitaciones.length > 0 ? tramitaciones : item.tramitaciones,
     }
   } catch {
     return item

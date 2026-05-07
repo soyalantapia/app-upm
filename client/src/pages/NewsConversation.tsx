@@ -1,6 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
+  Activity,
   Bookmark,
   BookmarkCheck,
   CalendarDays,
@@ -170,6 +171,41 @@ export function NewsConversationPage() {
                 </span>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Cronología de tramitación */}
+        {news.tramitaciones && news.tramitaciones.length > 0 && (
+          <div>
+            <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
+              <Activity size={11} /> Cronología de tramitación
+            </div>
+            <ol className="relative mt-3 space-y-3 border-l-2 border-upm-100 pl-4">
+              {news.tramitaciones.map((t, idx) => (
+                <li key={idx} className="relative">
+                  <span
+                    className={
+                      'absolute -left-[21px] top-1.5 grid h-3.5 w-3.5 place-items-center rounded-full ring-4 ring-white ' +
+                      (idx === 0 ? 'bg-upm-500' : 'bg-upm-300')
+                    }
+                  />
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {t.fecha && (
+                      <span className="text-[11px] font-bold tabular-nums text-ink-700">{t.fecha}</span>
+                    )}
+                    {t.organo && (
+                      <span className="rounded-md bg-ink-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-600 ring-1 ring-ink-100">
+                        {t.organo}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-[13px] leading-relaxed text-ink-800">{t.descripcion}</p>
+                  {t.despacho && (
+                    <p className="mt-1 text-[11.5px] leading-relaxed text-ink-500 line-clamp-3">{t.despacho}</p>
+                  )}
+                </li>
+              ))}
+            </ol>
           </div>
         )}
 

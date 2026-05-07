@@ -389,7 +389,23 @@ export function RadarPage() {
                       {isSaved && <Badge tone="success">Guardado</Badge>}
                     </div>
                     <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{n.title}</h3>
-                    <p className="mt-1 text-[13.5px] leading-relaxed text-ink-500 line-clamp-2">{n.excerpt}</p>
+                    <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-600 line-clamp-4">{n.excerpt}</p>
+                    {(n.authors || n.status) && (
+                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-ink-500">
+                        {n.authors && (
+                          <span className="inline-flex items-center gap-1">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-400">Autoría</span>
+                            <span className="font-semibold text-ink-700 line-clamp-1 max-w-[420px]">{n.authors}</span>
+                          </span>
+                        )}
+                        {n.status && (
+                          <span className="inline-flex items-center gap-1">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-400">Estado</span>
+                            <span className="font-semibold text-ink-700 line-clamp-1">{n.status}</span>
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <div className="mt-3 flex flex-wrap gap-2">
                       <Button
                         size="sm"

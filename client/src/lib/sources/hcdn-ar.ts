@@ -87,13 +87,13 @@ function mapLey(r: LeySumario): NewsItem | null {
     type: 'ley',
     date: today,
     relevance: detectRelevance(titulo + ' ' + sumario),
-    excerpt: sumario.length > 280 ? sumario.slice(0, 277) + '…' : (sumario || titulo),
+    excerpt: sumario.length > 600 ? sumario.slice(0, 597) + '…' : (sumario || titulo),
     source: leyNum
       ? `Ley Nacional ${leyNum} — Cámara de Diputados de Argentina`
       : 'HCDN — Argentina',
     fullText: sumario || titulo,
     tipoDocumento: leyNum ? `Ley ${leyNum}` : undefined,
-    keywords: keywords.length > 0 ? keywords.slice(0, 8) : undefined,
+    keywords: keywords.length > 0 ? keywords.slice(0, 16) : undefined,
     sourceUrl: leyNum ? `https://www.hcdn.gob.ar/proyectos/buscador2016-99.html?qBus=${leyNum}` : undefined,
   }
 }
