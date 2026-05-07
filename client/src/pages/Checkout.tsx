@@ -40,9 +40,9 @@ export function CheckoutPage() {
   const navigate = useNavigate()
   const [draft, setDraft] = useState<Draft | null>(null)
   const [holder, setHolder] = useState('')
-  const [card, setCard] = useState('')
-  const [expiry, setExpiry] = useState('')
-  const [cvv, setCvv] = useState('')
+  const [card, setCard] = useState('4242 4242 4242 4242')
+  const [expiry, setExpiry] = useState('12/28')
+  const [cvv, setCvv] = useState('123')
   const [billingCountry, setBillingCountry] = useState<CountryCode>('UY')
   const [processing, setProcessing] = useState(false)
 
