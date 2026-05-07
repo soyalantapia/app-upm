@@ -47,6 +47,12 @@ export function CheckoutPage() {
   const [billingCountry, setBillingCountry] = useState<CountryCode>('UY')
   const [processing, setProcessing] = useState(false)
 
+  const isFormValid =
+    holder.trim().length >= 3 &&
+    card.replace(/\s/g, '').length === 16 &&
+    expiry.length === 5 &&
+    cvv.length >= 3
+
   useEffect(() => {
     const raw = sessionStorage.getItem('upm.signup.draft')
     if (!raw) {
@@ -63,19 +69,34 @@ export function CheckoutPage() {
     }
   }, [navigate])
 
+  // Auto-confirmar cuando el usuario termina de tipear el CVV correctamente
+  // y todos los demás campos son válidos.
+  useEffect(() => {
+    if (!draft || !isFormValid || processing) return
+    const timer = setTimeout(() => {
+      setProcessing(true)
+      setTimeout(() => {
+        sessionStorage.setItem(
+          'upm.signup.completed',
+          JSON.stringify({
+            ...draft,
+            plan: 'UPM Premium',
+            amount: 100,
+            currency: 'USD',
+            activatedAt: new Date().toISOString(),
+          }),
+        )
+        sessionStorage.removeItem('upm.signup.draft')
+        navigate('/cuenta-activada', { replace: true })
+      }, 900)
+    }, 350)
+    return () => clearTimeout(timer)
+  }, [cvv, isFormValid, processing, draft, navigate])
+
   if (!draft) return null
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault()
-    if (processing) return
-    if (
-      holder.trim().length < 3 ||
-      card.replace(/\s/g, '').length !== 16 ||
-      expiry.length !== 5 ||
-      cvv.length < 3
-    ) {
-      return
-    }
+  const doConfirm = () => {
+    if (processing || !isFormValid) return
     setProcessing(true)
     setTimeout(() => {
       sessionStorage.setItem(
@@ -91,6 +112,11 @@ export function CheckoutPage() {
       sessionStorage.removeItem('upm.signup.draft')
       navigate('/cuenta-activada', { replace: true })
     }, 1400)
+  }
+
+  const submit = (e: FormEvent) => {
+    e.preventDefault()
+    doConfirm()
   }
 
   const country = countryByCode(draft.pais)
@@ -210,19 +236,29 @@ export function CheckoutPage() {
               </select>
             </Field>
 
-            <Button type="submit" size="lg" disabled={processing} className="w-full">
-              {processing ? (
-                <>
-                  <span className="inline-block h-3 w-3 animate-pulse-soft rounded-full bg-white/80" />
-                  Procesando pago…
-                </>
-              ) : (
-                <>
-                  <Lock size={15} /> Confirmar y activar — USD 100/mes
-                  <ArrowRight size={15} />
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => navigate('/registro')}
+                disabled={processing}
+                className="shrink-0 rounded-2xl bg-white px-3.5 py-2.5 text-[12px] font-semibold text-danger-fg ring-1 ring-danger-bg transition hover:bg-danger-bg/40 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <Button type="submit" size="lg" disabled={processing || !isFormValid} className="flex-1">
+                {processing ? (
+                  <>
+                    <span className="inline-block h-3 w-3 animate-pulse-soft rounded-full bg-white/80" />
+                    Procesando…
+                  </>
+                ) : (
+                  <>
+                    <Lock size={15} /> Confirmar canje — USD 100/mes
+                    <ArrowRight size={15} />
+                  </>
+                )}
+              </Button>
+            </div>
 
             <div className="flex items-center justify-center gap-2 text-[11px] text-ink-500">
               <ShieldCheck size={11} /> Conexión cifrada · Sin permanencia · Cancelás cuando quieras
