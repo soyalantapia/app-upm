@@ -69,49 +69,23 @@ export function CheckoutPage() {
     }
   }, [navigate])
 
-  // Auto-confirmar cuando el usuario termina de tipear el CVV correctamente
-  // y todos los demás campos son válidos.
-  useEffect(() => {
-    if (!draft || !isFormValid || processing) return
-    const timer = setTimeout(() => {
-      setProcessing(true)
-      setTimeout(() => {
-        sessionStorage.setItem(
-          'upm.signup.completed',
-          JSON.stringify({
-            ...draft,
-            plan: 'UPM Premium',
-            amount: 100,
-            currency: 'USD',
-            activatedAt: new Date().toISOString(),
-          }),
-        )
-        sessionStorage.removeItem('upm.signup.draft')
-        navigate('/cuenta-activada', { replace: true })
-      }, 900)
-    }, 350)
-    return () => clearTimeout(timer)
-  }, [cvv, isFormValid, processing, draft, navigate])
-
   if (!draft) return null
 
   const doConfirm = () => {
     if (processing || !isFormValid) return
     setProcessing(true)
-    setTimeout(() => {
-      sessionStorage.setItem(
-        'upm.signup.completed',
-        JSON.stringify({
-          ...draft,
-          plan: 'UPM Premium',
-          amount: 100,
-          currency: 'USD',
-          activatedAt: new Date().toISOString(),
-        }),
-      )
-      sessionStorage.removeItem('upm.signup.draft')
-      navigate('/cuenta-activada', { replace: true })
-    }, 1400)
+    sessionStorage.setItem(
+      'upm.signup.completed',
+      JSON.stringify({
+        ...draft,
+        plan: 'UPM Premium',
+        amount: 100,
+        currency: 'USD',
+        activatedAt: new Date().toISOString(),
+      }),
+    )
+    sessionStorage.removeItem('upm.signup.draft')
+    navigate('/cuenta-activada', { replace: true })
   }
 
   const submit = (e: FormEvent) => {
