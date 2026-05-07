@@ -72,6 +72,18 @@ export type NewsItem = {
   relevance: Relevance
   excerpt: string
   source: string
+  // Campos extra opcionales para vista de detalle
+  fullText?: string             // Ementa completa o cuerpo del documento
+  authors?: string              // Autoría (legislador, comisión, etc.)
+  status?: string               // Estado de tramitación
+  tipoDocumento?: string        // PL, PEC, MP, RQN, etc. (formato fuente)
+  tipoConteudo?: string         // "Norma Geral", "Inversão da Ordem do Dia", etc.
+  keywords?: string[]           // Palabras clave del documento
+  sourceUrl?: string            // URL del documento oficial
+  pdfUrl?: string               // Link al PDF si está disponible
+  dataPublicacao?: string       // Fecha de publicación oficial
+  dataAtualizacao?: string      // Última actualización
+  apiDetailUrl?: string         // Endpoint para enriquecer con más detalle
 }
 
 export type Dossier = {

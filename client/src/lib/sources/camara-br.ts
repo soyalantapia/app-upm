@@ -105,5 +105,54 @@ function mapProposicao(p: CamaraProposicao): NewsItem {
     relevance: detectRelevance(p.siglaTipo),
     excerpt: excerpt || `Proposição ${p.siglaTipo} ${p.numero}/${p.ano} en trámite legislativo.`,
     source: `Câmara dos Deputados — Brasil (${p.siglaTipo})`,
+    fullText: ementa,
+    tipoDocumento: `${p.siglaTipo} ${p.numero}/${p.ano}`,
+    tipoConteudo: tipo,
+    apiDetailUrl: `${BASE}/proposicoes/${p.id}`,
+  }
+}
+
+// Enriquecer un item de Câmara con su detalle completo
+type CamaraDetalle = {
+  ementa?: string
+  ementaDetalhada?: string
+  keywords?: string
+  urlInteiroTeor?: string
+  statusProposicao?: { descricaoSituacao?: string; descricaoTramitacao?: string }
+  dataApresentacao?: string
+}
+type CamaraAutor = { nome?: string; siglaPartido?: string; siglaUf?: string }
+
+export async function enrichCamaraItem(item: NewsItem, signal?: AbortSignal): Promise<NewsItem> {
+  if (!item.apiDetailUrl) return item
+  try {
+    const [detRes, autRes] = await Promise.all([
+      fetchWithCorsFallback(item.apiDetailUrl, { signal, headers: { Accept: 'application/json' } }),
+      fetchWithCorsFallback(item.apiDetailUrl + '/autores', { signal, headers: { Accept: 'application/json' } }),
+    ])
+    const det = (await detRes.json()) as { dados?: CamaraDetalle }
+    const aut = (await autRes.json()) as { dados?: CamaraAutor[] }
+    const dados = det.dados ?? {}
+    const autores = (aut.dados ?? [])
+      .map(a => `${a.nome ?? ''}${a.siglaPartido ? ` (${a.siglaPartido}${a.siglaUf ? '/' + a.siglaUf : ''})` : ''}`)
+      .filter(Boolean)
+      .join(', ')
+    const fullText = (dados.ementaDetalhada ?? dados.ementa ?? item.fullText ?? '').trim()
+    const keywords = (dados.keywords ?? '')
+      .split(/[,;]/)
+      .map(k => k.trim())
+      .filter(Boolean)
+    return {
+      ...item,
+      fullText: fullText.length > 0 ? fullText : item.fullText,
+      authors: autores || item.authors,
+      status: dados.statusProposicao?.descricaoSituacao || dados.statusProposicao?.descricaoTramitacao || item.status,
+      keywords: keywords.length > 0 ? keywords : item.keywords,
+      sourceUrl: dados.urlInteiroTeor || item.sourceUrl,
+      pdfUrl: dados.urlInteiroTeor || item.pdfUrl,
+      dataPublicacao: dados.dataApresentacao || item.dataPublicacao,
+    }
+  } catch {
+    return item
   }
 }

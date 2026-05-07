@@ -77,6 +77,16 @@ function mapItem(p: SenadoProcesso): NewsItem | null {
     excerpt: ementa.length > 280
       ? ementa.slice(0, 277) + '…'
       : ementa || `Materia ${ident} en trámite en el Senado Federal.`,
-    source: `Senado Federal — Brasil${p.autoria ? ' · ' + p.autoria.slice(0, 50) : ''}`,
+    source: 'Senado Federal — Brasil',
+    // Detalle completo para mostrar en NewsConversation
+    fullText: ementa,
+    authors: p.autoria,
+    status: p.tramitando === 'Sim' ? 'En trámite' : (p.tramitando ?? undefined),
+    tipoDocumento: ident,
+    tipoConteudo: p.tipoConteudo,
+    sourceUrl: p.urlDocumento,
+    pdfUrl: p.urlDocumento,
+    dataPublicacao: p.dataApresentacao,
+    dataAtualizacao: p.dataUltimaAtualizacao,
   }
 }
