@@ -118,6 +118,32 @@ export function HomePage() {
             description="Novedades, alertas y materiales priorizados por tus temas y países."
           />
 
+          {/* Alerta prioritaria — primero (urgente) */}
+          <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.18em] text-danger-fg">
+            <AlertTriangle size={11} /> Urgente · Alerta de tema prioritario
+          </div>
+          <Card className="animate-fade-up bg-gradient-to-br from-warning-bg/60 to-white ring-warning">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-warning text-white shadow-cta">
+                <AlertTriangle size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge tone="warning">Alerta UPM</Badge>
+                  <Badge tone="ghost">{alertTopic.shortLabel}</Badge>
+                  <Badge tone="danger">Revisar primero</Badge>
+                </div>
+                <h3 className="mt-2 text-[17px] font-bold leading-snug text-ink-900">{priorityAlert.title}</h3>
+                <p className="mt-1 text-[13.5px] leading-relaxed text-ink-700 line-clamp-2">{priorityAlert.excerpt}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button size="sm" onClick={() => navigate(`/radar/${priorityAlert.id}`)}>
+                    Abrir y conversar <ArrowRight size={13} />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           {/* 3 novedades destacadas */}
           <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-ink-500">
             Novedades normativas relevantes
@@ -182,31 +208,6 @@ export function HomePage() {
               )
             })}
           </div>
-
-          {/* Alerta prioritaria */}
-          <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-ink-500">
-            Alerta de tema prioritario
-          </div>
-          <Card className="animate-fade-up bg-gradient-to-br from-warning-bg/40 to-white ring-warning-bg">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-warning-bg text-warning-fg">
-                <AlertTriangle size={18} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <Badge tone="warning">Alerta UPM</Badge>
-                  <Badge tone="ghost">{alertTopic.shortLabel}</Badge>
-                </div>
-                <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{priorityAlert.title}</h3>
-                <p className="mt-1 text-[13.5px] leading-relaxed text-ink-500 line-clamp-2">{priorityAlert.excerpt}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Button size="sm" onClick={() => navigate(`/radar/${priorityAlert.id}`)}>
-                    Abrir conversación <ArrowRight size={13} />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Card>
 
           {/* Documento recomendado */}
           <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-ink-500">

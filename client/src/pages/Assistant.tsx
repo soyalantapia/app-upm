@@ -12,9 +12,7 @@ import type { ChatMessage } from '@/lib/types'
 const SUGGESTIONS = [
   'Explicame las novedades de ambiente de esta semana.',
   'Preparame un brief para una reunión sobre corredores bioceánicos.',
-  'Resumí el último informe en 1 página.',
   '¿Qué puntos debería revisar antes de la comisión?',
-  'Armame preguntas para una reunión con Brasil y Uruguay.',
 ]
 
 const INITIAL: ChatMessage = {
@@ -373,9 +371,13 @@ function ChatBubble({
         {message.sources && message.sources.length > 0 && (
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {message.sources.map(s => (
-              <button key={s.id} onClick={() => onOpenSource(s.id)} className="text-left">
-                <SourceCard title={s.title} type={s.type} status="oficial" />
-              </button>
+              <SourceCard
+                key={s.id}
+                title={s.title}
+                type={s.type}
+                status="oficial"
+                onClick={() => onOpenSource(s.id)}
+              />
             ))}
           </div>
         )}

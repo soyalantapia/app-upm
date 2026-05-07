@@ -1,13 +1,19 @@
-import { useMemo, useState } from 'react'
-import { ArrowUp, BookOpen, FileStack, GitCompare, Library, Share2, Sparkles } from 'lucide-react'
-import { Badge, Button, Card, Chip, Eyebrow, PageHeader } from '@/components/ui'
-import { Markdown } from '@/components/Markdown'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  BookOpen,
+  Bookmark,
+  BookmarkCheck,
+  ExternalLink,
+  MessageSquareText,
+  ScrollText,
+  Share2,
+} from 'lucide-react'
+import { Badge, Eyebrow, PageHeader } from '@/components/ui'
 import { DOCUMENTS } from '@/lib/data'
-import { generateAssistantResponse } from '@/lib/respond'
 import { store, useStore } from '@/lib/store'
-import { useUI } from '@/lib/ui-provider'
 import { shareLink } from '@/lib/share'
-import type { ChatMessage, Document } from '@/lib/types'
+import type { Document } from '@/lib/types'
 
 const LAWS = DOCUMENTS.filter(d => ['ley', 'decreto', 'reglamento', 'informe'].includes(d.type))
 
@@ -44,62 +50,43 @@ const ARTICLES = [
   },
 ]
 
-const QUESTIONS = [
-  '¿Qué dice sobre obligaciones de reporte?',
-  '¿Cuál es el artículo relevante?',
-  'Resumen ejecutivo en 1 página',
-  'Comparación entre Argentina y Brasil',
-  'Preguntas para reunión de comisión',
-]
-
 export function LawsPage() {
-  const { openDocument, openCreateBrief, openCreateMinuta } = useUI()
+  const navigate = useNavigate()
   const [active, setActive] = useState<Document>(LAWS[0])
   const isSaved = useStore(s => s.saved.some(i => i.ref === active.id))
-  const [highlight, setHighlight] = useState<number | null>(2)
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'init',
-      role: 'assistant',
-      content:
-        '**Hablemos del documento**\n\n' +
-        'Te respondo con el artículo relevante, citas y opciones para usar la respuesta.',
-      isInstitutional: true,
-      createdAt: new Date().toISOString(),
-    },
-  ])
-  const [input, setInput] = useState('')
-  const [thinking, setThinking] = useState(false)
 
-  const ask = (text?: string) => {
-    const value = (text ?? input).trim()
-    if (!value || thinking) return
-    setMessages(prev => [...prev, { id: 'u-' + Date.now(), role: 'user', content: value, createdAt: new Date().toISOString() }])
-    setInput('')
-    setThinking(true)
-    setTimeout(() => {
-      const reply = generateAssistantResponse(value)
-      setMessages(prev => [...prev, reply])
-      setThinking(false)
-      setHighlight(2)
-    }, 700)
+  const handleSave = () => {
+    if (isSaved) {
+      const item = store.getSnapshot().saved.find(i => i.ref === active.id)
+      if (item) {
+        store.removeSaved(item.id)
+        store.pushToast('info', 'Documento eliminado de tu carpeta')
+      }
+    } else {
+      store.saveItem({
+        id: 'sav-doc-' + active.id,
+        type: 'documento',
+        title: active.title,
+        ref: active.id,
+        meta: { type: active.type, status: active.status, date: active.date },
+      })
+      store.pushToast('success', 'Documento guardado en tu carpeta')
+    }
   }
 
-  const lawCounts = useMemo(() => LAWS.length, [])
-
   return (
-    <div className="animate-fade-up mx-auto flex w-full max-w-[1280px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
+    <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
         eyebrow={<Eyebrow icon={<BookOpen size={11} />}>Hablar con leyes e informes</Eyebrow>}
-        title="Preguntás. Encontrás artículos. Obtenés respuesta lista para usar."
-        description="Abrí cualquier ley, decreto, reglamento o informe y conversá con el documento. Los resultados vienen con cita y artículo relevante."
+        title="Abrí un documento y conversá con él"
+        description="Seleccioná una norma o informe y obtené un resumen, los artículos clave y la opción de hablar con el Asistente."
       />
 
       <div className="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">
         {/* Lista de documentos */}
         <div className="flex flex-col gap-2">
           <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
-            {lawCounts} documentos disponibles
+            {LAWS.length} documentos disponibles
           </div>
           {LAWS.map(d => (
             <button
@@ -123,145 +110,91 @@ export function LawsPage() {
           ))}
         </div>
 
-        {/* Documento + chat */}
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-          {/* Documento */}
-          <Card className="flex flex-col gap-3">
-            <div>
-              <Badge tone="brand">{active.type}</Badge>
-              <h2 className="mt-2 text-[19px] font-bold leading-snug tracking-tight text-ink-900">
-                {active.title}
-              </h2>
-              <p className="mt-1 text-[12.5px] text-ink-500">{active.excerpt}</p>
-            </div>
-            <div className="flex flex-col divide-y divide-ink-100 rounded-2xl bg-white ring-1 ring-ink-100">
-              {ARTICLES.map(art => (
-                <button
-                  key={art.n}
-                  onClick={() => setHighlight(art.n)}
-                  className={
-                    'flex flex-col gap-1 p-3.5 text-left transition-colors ' +
-                    (highlight === art.n ? 'bg-upm-50/70' : 'hover:bg-upm-50/40')
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    <Badge tone={highlight === art.n ? 'success' : 'neutral'}>Art. {art.n}</Badge>
-                    <span className="text-[12.5px] font-bold text-ink-900">{art.title}</span>
-                  </div>
-                  <p className="text-[12.5px] leading-relaxed text-ink-500">{art.body}</p>
-                </button>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="soft" onClick={() => openDocument(active)}>
-                <BookOpen size={13} /> Ver detalle
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  if (isSaved) {
-                    const item = store.getSnapshot().saved.find(i => i.ref === active.id)
-                    if (item) {
-                      store.removeSaved(item.id)
-                      store.pushToast('info', 'Eliminado de tu carpeta')
-                    }
-                  } else {
-                    store.saveItem({
-                      id: 'sav-doc-' + active.id,
-                      type: 'documento',
-                      title: active.title,
-                      ref: active.id,
-                      meta: { type: active.type, status: active.status, date: active.date },
-                    })
-                    store.pushToast('success', 'Documento guardado en tu carpeta')
-                  }
-                }}
-              >
-                <FileStack size={13} /> {isSaved ? 'Guardado' : 'Guardar'}
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() =>
-                  openCreateBrief({
-                    title: `Brief — ${active.title}`,
-                    body: `**Resumen**\n\n${active.excerpt}\n\n**Articulado clave**\n\n${ARTICLES.map(a => `${a.n}. ${a.title} — ${a.body}`).join('\n')}`,
-                    ref: active.id,
-                  })
-                }
-              >
-                <Sparkles size={13} /> Crear brief
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() =>
-                  openCreateMinuta({
-                    title: `Minuta — ${active.title}`,
-                    body: '1. Tema\n2. Participantes\n3. Puntos tratados\n4. Acuerdos\n5. Próximos pasos',
-                    ref: active.id,
-                  })
-                }
-              >
-                <GitCompare size={13} /> Crear minuta
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => shareLink(active.title, '/leyes')}>
-                <Share2 size={13} /> Compartir
-              </Button>
-            </div>
-          </Card>
-
-          {/* Chat con doc */}
-          <div className="flex min-h-[480px] flex-col rounded-3xl bg-white ring-1 ring-ink-100 shadow-card">
-            <div className="border-b border-ink-100 px-4 py-3">
-              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Conversación con el documento</div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {QUESTIONS.map(q => (
-                  <Chip key={q} size="sm" onClick={() => ask(q)}>{q}</Chip>
-                ))}
+        {/* Documento + único CTA */}
+        <div className="flex flex-col gap-4">
+          <article className="flex flex-col gap-4 rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card sm:p-7">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge tone="brand">{active.type}</Badge>
+                  {active.status === 'oficial' && <Badge tone="success">Oficial UPM</Badge>}
+                  {active.status === 'curado' && <Badge tone="info">Curado</Badge>}
+                  <span className="text-[11.5px] font-semibold text-ink-500 tabular-nums">{active.date}</span>
+                </div>
+                <h2 className="mt-2 text-[22px] font-bold leading-tight tracking-tight text-ink-900 sm:text-[26px]">
+                  {active.title}
+                </h2>
+                <p className="mt-2 text-[14px] leading-relaxed text-ink-700">{active.excerpt}</p>
               </div>
             </div>
 
-            <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-4">
-              {messages.map(m =>
-                m.role === 'user' ? (
-                  <div key={m.id} className="self-end max-w-[85%] rounded-3xl rounded-br-md bg-gradient-to-br from-upm-500 to-upm-700 px-4 py-3 text-[14px] leading-relaxed text-white shadow-cta">
-                    {m.content}
-                  </div>
-                ) : (
-                  <div key={m.id} className="rounded-3xl bg-upm-50/40 p-4 ring-1 ring-upm-100">
-                    <Badge tone={m.isInstitutional ? 'success' : 'warning'}>
-                      {m.isInstitutional ? 'Con fuentes UPM' : 'Respuesta general'}
-                    </Badge>
-                    <div className="mt-2.5">
-                      <Markdown content={m.content} />
-                    </div>
-                  </div>
-                ),
-              )}
-              {thinking && (
-                <div className="inline-flex items-center gap-2 self-start rounded-full bg-upm-50 px-3 py-1.5 text-[12px] font-semibold text-upm-700 ring-1 ring-upm-100">
-                  <Library size={12} /> Buscando artículos…
-                </div>
-              )}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={handleSave}
+                className={
+                  'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition ' +
+                  (isSaved
+                    ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
+                    : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
+                }
+              >
+                {isSaved ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
+                {isSaved ? 'Guardado en mi carpeta' : 'Guardar en mi carpeta'}
+              </button>
+              <button
+                onClick={() => shareLink(active.title, '/leyes')}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[12.5px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
+              >
+                <Share2 size={13} /> Compartir
+              </button>
+              <button
+                onClick={() => store.pushToast('info', 'Apertura de fuente externa simulada')}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[12.5px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
+              >
+                <ExternalLink size={13} /> Ver fuente
+              </button>
             </div>
 
-            <form
-              onSubmit={e => { e.preventDefault(); ask() }}
-              className="flex items-end gap-2 border-t border-ink-100 p-3"
-            >
-              <input
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Preguntale al documento (ej: ¿qué dice sobre reportes?)"
-                className="flex-1 rounded-2xl bg-upm-50/40 px-4 py-3 text-[14px] ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
-              />
-              <Button type="submit" size="md" disabled={!input.trim() || thinking}>
-                <ArrowUp size={16} />
-              </Button>
-            </form>
-          </div>
+            <div className="flex flex-col gap-2.5 rounded-2xl bg-bg p-4 ring-1 ring-ink-100" style={{ backgroundColor: '#f6f8fb' }}>
+              <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+                <ScrollText size={12} /> Articulado clave
+              </div>
+              <div className="flex flex-col gap-2">
+                {ARTICLES.map(a => (
+                  <div key={a.n} className="rounded-xl bg-white p-3.5 ring-1 ring-ink-100">
+                    <div className="flex items-center gap-2">
+                      <Badge tone="brand">Art. {a.n}</Badge>
+                      <span className="text-[12.5px] font-bold text-ink-900">{a.title}</span>
+                    </div>
+                    <p className="mt-1 text-[12.5px] leading-relaxed text-ink-700">{a.body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </article>
+
+          {/* Único CTA */}
+          <button
+            onClick={() => {
+              store.pushToast('info', 'El Asistente preparó preguntas sobre este documento')
+              navigate('/asistente')
+            }}
+            className="group flex items-center justify-between gap-4 rounded-3xl bg-gradient-to-br from-upm-500 to-upm-700 p-5 text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating sm:p-6"
+          >
+            <div className="flex items-center gap-4">
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
+                <MessageSquareText size={20} />
+              </div>
+              <div className="text-left">
+                <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-upm-200">Conversar con respaldo</div>
+                <div className="mt-0.5 text-[18px] font-bold tracking-tight">Hablar con el Asistente AI sobre este documento</div>
+                <div className="mt-1 text-[12.5px] text-white/80">
+                  Te respondo sobre artículos, comparo con normativa similar y armo brief.
+                </div>
+              </div>
+            </div>
+            <span className="text-[20px] transition group-hover:translate-x-1">→</span>
+          </button>
         </div>
       </div>
     </div>

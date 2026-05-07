@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Bookmark,
   ClipboardList,
@@ -13,14 +13,12 @@ import {
   Newspaper,
   Plus,
   Sparkles,
-  Tag,
   Trash2,
   X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Badge, Button, Card, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
 import { store, useStore, type SavedItem, type SavedType } from '@/lib/store'
-import { TOPICS } from '@/lib/data'
 import { useUI } from '@/lib/ui-provider'
 import { Drawer } from '@/components/Drawer'
 import { cn } from '@/lib/cn'
@@ -33,13 +31,13 @@ const SEED: { id: string; type: SavedType; title: string; ref?: string }[] = [
   { id: 'seed-5', type: 'minuta', title: 'Minuta — Foro de Medio Ambiente' },
 ]
 
-const SECTIONS: { id: SavedType; label: string; icon: LucideIcon }[] = [
-  { id: 'novedad', label: 'Novedades guardadas', icon: Newspaper },
-  { id: 'documento', label: 'Documentos guardados', icon: FileText },
-  { id: 'respuesta', label: 'Respuestas del Asistente', icon: MessageSquareQuote },
-  { id: 'minuta', label: 'Minutas', icon: ClipboardList },
-  { id: 'brief', label: 'Briefs', icon: FileStack },
-]
+const TYPE_META: Record<SavedType, { label: string; icon: LucideIcon; tone: string }> = {
+  novedad: { label: 'Novedad', icon: Newspaper, tone: 'bg-warning-bg text-warning-fg' },
+  documento: { label: 'Documento', icon: FileText, tone: 'bg-info-bg text-info-fg' },
+  respuesta: { label: 'Respuesta', icon: MessageSquareQuote, tone: 'bg-success-bg text-success-fg' },
+  minuta: { label: 'Minuta', icon: ClipboardList, tone: 'bg-upm-50 text-upm-700' },
+  brief: { label: 'Brief', icon: FileStack, tone: 'bg-upm-100 text-upm-800' },
+}
 
 export function FoldersPage() {
   const { openDocument } = useUI()
@@ -56,17 +54,6 @@ export function FoldersPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const grouped = useMemo(() => {
-    const map: Record<string, SavedItem[]> = {}
-    for (const s of SECTIONS) map[s.id] = []
-    for (const item of saved) {
-      const key = item.type
-      if (!map[key]) map[key] = []
-      map[key].push(item)
-    }
-    return map
-  }, [saved])
 
   const create = () => {
     if (!name.trim()) return
@@ -122,29 +109,10 @@ export function FoldersPage() {
         </Card>
       )}
 
-      {/* Mis temas */}
-      <div>
-        <h2 className="text-[15px] font-bold tracking-tight text-ink-900">Mis temas</h2>
-        <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-          {['ambiente', 'corredores-bioceanicos', 'integracion-regional', 'mercosur'].map(id => {
-            const t = TOPICS.find(x => x.id === id)!
-            return (
-              <Card key={id} interactive className="bg-gradient-to-br from-upm-50 to-white">
-                <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-                  <Tag size={11} /> Tema
-                </div>
-                <div className="mt-1.5 text-[14.5px] font-bold text-ink-900">{t.label}</div>
-                <div className="mt-0.5 text-[12px] text-ink-500">3 documentos · 2 minutas</div>
-              </Card>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Mis carpetas */}
+      {/* Carpetas */}
       <div>
         <div className="flex items-end justify-between">
-          <h2 className="text-[15px] font-bold tracking-tight text-ink-900">Mis carpetas</h2>
+          <h2 className="text-[15px] font-bold tracking-tight text-ink-900">Carpetas</h2>
           <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{folders.length} carpetas</span>
         </div>
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -177,10 +145,10 @@ export function FoldersPage() {
         </div>
       </div>
 
-      {/* Mis guardados — agrupados por tipo */}
+      {/* Guardados — lista plana */}
       <div>
         <div className="flex items-end justify-between">
-          <h2 className="text-[15px] font-bold tracking-tight text-ink-900">Mis guardados</h2>
+          <h2 className="text-[15px] font-bold tracking-tight text-ink-900">Guardados</h2>
           <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{saved.length} ítems</span>
         </div>
 
@@ -194,68 +162,60 @@ export function FoldersPage() {
             />
           </div>
         ) : (
-          <div className="mt-3 flex flex-col gap-5">
-            {SECTIONS.map(sec => {
-              const items = grouped[sec.id] ?? []
-              if (items.length === 0) return null
-              const Icon = sec.icon
+          <div className="mt-3 flex flex-col gap-2">
+            {saved.map((item, i) => {
+              const meta = TYPE_META[item.type]
+              const Icon = meta.icon
+              const folder = item.folderId ? folders.find(f => f.id === item.folderId) : null
               return (
-                <div key={sec.id}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-500">
-                      <Icon size={12} /> {sec.label}
-                    </div>
-                    <Badge tone="ghost">{items.length}</Badge>
-                  </div>
-                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                    {items.map((item, i) => (
-                      <Card key={item.id} style={{ animationDelay: `${i * 35}ms` }} className="animate-fade-up">
-                        <div className="flex items-start gap-3">
-                          <button
-                            onClick={() => handleItemClick(item)}
-                            className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-upm-50 text-upm-700 hover:bg-upm-100"
-                          >
-                            <Icon size={15} />
-                          </button>
-                          <div className="min-w-0 flex-1">
-                            <button onClick={() => handleItemClick(item)} className="text-left">
-                              <div className="text-[13px] font-semibold leading-snug text-ink-900 hover:text-upm-700">
-                                {item.title}
-                              </div>
-                            </button>
-                            <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[10.5px] text-ink-500 tabular-nums">
-                              {new Date(item.savedAt).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                              {item.folderId && (
-                                <Badge tone="brand">{folders.find(f => f.id === item.folderId)?.title ?? 'Carpeta'}</Badge>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <button
-                              onClick={() => setMoveTarget(item)}
-                              className="rounded-full p-2 text-ink-400 hover:bg-upm-50 hover:text-upm-700"
-                              aria-label="Mover a carpeta"
-                              title="Mover a carpeta"
-                            >
-                              <Move size={13} />
-                            </button>
-                            <button
-                              onClick={() => { store.removeSaved(item.id); store.pushToast('info', 'Eliminado de guardados') }}
-                              className="rounded-full p-2 text-ink-400 hover:bg-danger-bg/40 hover:text-danger"
-                              aria-label="Eliminar"
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          </div>
+                <Card
+                  key={item.id}
+                  style={{ animationDelay: `${i * 30}ms` }}
+                  className="animate-fade-up"
+                >
+                  <div className="flex items-start gap-3">
+                    <button
+                      onClick={() => handleItemClick(item)}
+                      className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl ${meta.tone} hover:opacity-80`}
+                    >
+                      <Icon size={16} />
+                    </button>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Badge tone="brand">{meta.label}</Badge>
+                        {folder && <Badge tone="info">{folder.title}</Badge>}
+                      </div>
+                      <button onClick={() => handleItemClick(item)} className="mt-1.5 block text-left">
+                        <div className="text-[13.5px] font-semibold leading-snug text-ink-900 hover:text-upm-700">
+                          {item.title}
                         </div>
-                      </Card>
-                    ))}
+                      </button>
+                      <div className="mt-0.5 text-[10.5px] text-ink-500 tabular-nums">
+                        {new Date(item.savedAt).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <button
+                        onClick={() => setMoveTarget(item)}
+                        className="rounded-full p-2 text-ink-400 hover:bg-upm-50 hover:text-upm-700"
+                        aria-label="Mover a carpeta"
+                        title="Mover a carpeta"
+                      >
+                        <Move size={13} />
+                      </button>
+                      <button
+                        onClick={() => { store.removeSaved(item.id); store.pushToast('info', 'Eliminado de guardados') }}
+                        className="rounded-full p-2 text-ink-400 hover:bg-danger-bg/40 hover:text-danger"
+                        aria-label="Eliminar"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                </Card>
               )
             })}
 
-            {/* Restaurar demo */}
             <button
               onClick={() => SEED.forEach(s => store.saveItem({ id: s.id, type: s.type, title: s.title, ref: s.ref }))}
               className="self-start text-[12px] font-semibold text-upm-700 hover:text-upm-800"
@@ -279,22 +239,22 @@ export function FoldersPage() {
         width="md"
       >
         {folderItems.length === 0 ? (
-          <div className="rounded-2xl bg-ink-50 p-6 text-center text-[13px] text-ink-500">
-            Esta carpeta aún no tiene ítems. Mové uno desde "Mis guardados" usando el icono de mover.
+          <div className="rounded-2xl bg-white p-6 text-center text-[13px] text-ink-500 ring-1 ring-ink-100">
+            Esta carpeta aún no tiene ítems. Mové uno desde "Guardados" usando el icono de mover.
           </div>
         ) : (
           <div className="flex flex-col gap-2">
             {folderItems.map(item => {
-              const sec = SECTIONS.find(s => s.id === item.type)
-              const Icon = sec?.icon ?? FileText
+              const meta = TYPE_META[item.type]
+              const Icon = meta.icon
               return (
                 <Card key={item.id} className="cursor-pointer" onClick={() => handleItemClick(item)}>
                   <div className="flex items-start gap-3">
-                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-upm-50 text-upm-700">
+                    <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-2xl ${meta.tone}`}>
                       <Icon size={15} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <Badge tone="brand">{sec?.label ?? item.type}</Badge>
+                      <Badge tone="brand">{meta.label}</Badge>
                       <div className="mt-1 text-[13px] font-semibold leading-snug text-ink-900">{item.title}</div>
                       <div className="mt-0.5 text-[10.5px] text-ink-500 tabular-nums">
                         {new Date(item.savedAt).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
@@ -335,7 +295,7 @@ export function FoldersPage() {
         </div>
       </Drawer>
 
-      {/* Modal mover a carpeta */}
+      {/* Drawer mover */}
       {moveTarget && (
         <Drawer
           open={Boolean(moveTarget)}

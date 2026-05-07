@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
-  ArrowUpRight,
   BookMarked,
+  Bookmark,
+  BookmarkCheck,
   FileBadge,
   FilePieChart,
   FileText,
@@ -17,7 +18,7 @@ import { Badge, Card, Chip, EmptyState, Eyebrow, PageHeader } from '@/components
 import { COUNTRIES, DOCUMENTS, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocStatus, DocType, Topic } from '@/lib/types'
 import { useUI } from '@/lib/ui-provider'
-import { useStore } from '@/lib/store'
+import { store, useStore } from '@/lib/store'
 
 type CategoryKey = 'all' | 'convenios' | 'actas' | 'comunicados' | 'informes' | 'documentos-base' | 'normativa' | 'academico'
 
@@ -220,6 +221,7 @@ export function LibraryPage() {
           {results.map((d, i) => {
             const t = topicById(d.topic)
             const c = d.country ? countryByCode(d.country) : null
+            const isSaved = savedRefs.has(d.id)
             return (
               <Card
                 key={d.id}
@@ -239,17 +241,45 @@ export function LibraryPage() {
                       {d.status === 'curado' && <Badge tone="info">Curado por UPM</Badge>}
                       {d.status === 'aporte' && <Badge tone="warning">Aporte de foro</Badge>}
                       {c && <Badge tone="ghost">{c.flag} {c.name}</Badge>}
-                      {savedRefs.has(d.id) && <Badge tone="success">Guardado</Badge>}
                     </div>
                     <h3 className="mt-2 text-[15px] font-bold leading-snug text-ink-900">{d.title}</h3>
                     <p className="mt-1 text-[12.5px] leading-relaxed text-ink-500 line-clamp-2">{d.excerpt}</p>
-                    <div className="mt-2 flex items-center justify-between">
+                    <div className="mt-2 flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 text-[11px] text-ink-500">
                         <span>{t.shortLabel}</span>
                         {d.forum && <span>· Foro {d.forum}</span>}
                         <span className="tabular-nums">· {d.date}</span>
                       </div>
-                      <ArrowUpRight size={15} className="text-upm-600" />
+                      <button
+                        onClick={e => {
+                          e.stopPropagation()
+                          if (isSaved) {
+                            const item = store.getSnapshot().saved.find(i => i.ref === d.id)
+                            if (item) {
+                              store.removeSaved(item.id)
+                              store.pushToast('info', 'Eliminado de tu carpeta')
+                            }
+                          } else {
+                            store.saveItem({
+                              id: 'sav-doc-' + d.id,
+                              type: 'documento',
+                              title: d.title,
+                              ref: d.id,
+                              meta: { type: d.type, status: d.status, date: d.date },
+                            })
+                            store.pushToast('success', 'Guardado en tu carpeta')
+                          }
+                        }}
+                        className={
+                          'inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11.5px] font-semibold transition ' +
+                          (isSaved
+                            ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
+                            : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
+                        }
+                      >
+                        {isSaved ? <BookmarkCheck size={11} /> : <Bookmark size={11} />}
+                        {isSaved ? 'Guardado' : 'Guardar'}
+                      </button>
                     </div>
                   </div>
                 </div>

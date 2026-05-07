@@ -5,6 +5,7 @@ import {
   ArrowRight,
   Bookmark,
   BookmarkCheck,
+  ChevronDown,
   FileStack,
   Filter,
   Radar,
@@ -13,6 +14,7 @@ import {
   Sparkles,
   Tag,
   Wand2,
+  X,
 } from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
 import { COUNTRIES, NEWS, TOPICS, countryByCode, topicById } from '@/lib/data'
@@ -58,6 +60,20 @@ export function RadarPage() {
   const [relevance, setRelevance] = useState<Relevance | 'all'>('all')
   const [sort, setSort] = useState<Sort>('fecha-desc')
   const [loading, setLoading] = useState(true)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+
+  const activeFiltersCount =
+    (country !== 'all' ? 1 : 0) +
+    (topic !== 'all' ? 1 : 0) +
+    (type !== 'all' ? 1 : 0) +
+    (relevance !== 'all' ? 1 : 0)
+
+  const clearFilters = () => {
+    setCountry('all')
+    setTopic('all')
+    setType('all')
+    setRelevance('all')
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -131,8 +147,8 @@ export function RadarPage() {
         }
       />
 
-      {/* Search + Sort */}
-      <div className="flex flex-col gap-3 rounded-3xl bg-white p-4 ring-1 ring-ink-100 shadow-card">
+      {/* Search + Sort + Toggle filtros */}
+      <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-3 ring-1 ring-ink-100 shadow-card">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="flex flex-1 items-center gap-3 rounded-2xl bg-upm-50/40 px-4 py-2.5 ring-1 ring-upm-100 focus-within:bg-white focus-within:ring-upm-400">
             <Search size={16} className="text-upm-600" />
@@ -143,55 +159,114 @@ export function RadarPage() {
               className="flex-1 bg-transparent text-[14px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
             />
           </label>
-          <div className="flex items-center gap-2">
+
+          <button
+            onClick={() => setFiltersOpen(v => !v)}
+            className={
+              'inline-flex items-center gap-1.5 rounded-2xl px-3 py-2.5 text-[13px] font-semibold transition ' +
+              (filtersOpen || activeFiltersCount > 0
+                ? 'bg-upm-50 text-upm-800 ring-1 ring-upm-200'
+                : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50')
+            }
+          >
+            <Filter size={13} />
+            Filtros
+            {activeFiltersCount > 0 && (
+              <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-upm-500 px-1 text-[10px] font-bold text-white tabular-nums">
+                {activeFiltersCount}
+              </span>
+            )}
+            <ChevronDown size={13} className={'transition ' + (filtersOpen ? 'rotate-180' : '')} />
+          </button>
+
+          <div className="flex items-center gap-1.5">
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-ink-500">
-              <ArrowDownUp size={11} className="mr-0.5 inline" /> Ordenar
+              <ArrowDownUp size={11} className="mr-0.5 inline" />
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <select
+              value={sort}
+              onChange={e => setSort(e.target.value as Sort)}
+              className="rounded-2xl bg-white px-3 py-2.5 text-[13px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 focus:outline-none focus:ring-2 focus:ring-upm-400"
+            >
               {SORT_OPTIONS.map(s => (
-                <Chip key={s.id} size="sm" active={sort === s.id} onClick={() => setSort(s.id)}>
-                  {s.label}
-                </Chip>
+                <option key={s.id} value={s.id}>{s.label}</option>
               ))}
-            </div>
+            </select>
           </div>
         </div>
 
-        <FilterRow label="País">
-          <Chip active={country === 'all'} onClick={() => setCountry('all')} size="sm">Todos</Chip>
-          {COUNTRIES.map(c => (
-            <Chip key={c.code} active={country === c.code} onClick={() => setCountry(c.code)} size="sm">
-              <span aria-hidden>{c.flag}</span> {c.name}
-            </Chip>
-          ))}
-        </FilterRow>
+        {/* Filtros activos como chips removibles cuando están plegados */}
+        {!filtersOpen && activeFiltersCount > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            {country !== 'all' && (
+              <ActiveChip label={countryByCode(country).name} onRemove={() => setCountry('all')} />
+            )}
+            {topic !== 'all' && (
+              <ActiveChip label={topicById(topic).label} onRemove={() => setTopic('all')} />
+            )}
+            {type !== 'all' && (
+              <ActiveChip label={type} onRemove={() => setType('all')} />
+            )}
+            {relevance !== 'all' && (
+              <ActiveChip label={`Relevancia ${RELEVANCE[relevance].label}`} onRemove={() => setRelevance('all')} />
+            )}
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold text-danger-fg hover:bg-danger-bg/40"
+            >
+              <X size={10} /> Limpiar todo
+            </button>
+          </div>
+        )}
 
-        <FilterRow label="Tema">
-          <Chip active={topic === 'all'} onClick={() => setTopic('all')} size="sm">Todos</Chip>
-          {TOPICS.map(t => (
-            <Chip key={t.id} active={topic === t.id} onClick={() => setTopic(t.id)} size="sm">
-              <Tag size={10} /> {t.shortLabel}
-            </Chip>
-          ))}
-        </FilterRow>
+        {filtersOpen && (
+          <div className="animate-fade-in flex flex-col gap-2.5 border-t border-ink-100 pt-3">
+            <FilterRow label="País">
+              <Chip active={country === 'all'} onClick={() => setCountry('all')} size="sm">Todos</Chip>
+              {COUNTRIES.map(c => (
+                <Chip key={c.code} active={country === c.code} onClick={() => setCountry(c.code)} size="sm">
+                  <span aria-hidden>{c.flag}</span> {c.name}
+                </Chip>
+              ))}
+            </FilterRow>
 
-        <FilterRow label="Tipo">
-          <Chip active={type === 'all'} onClick={() => setType('all')} size="sm">Todos</Chip>
-          {TYPE_OPTIONS.map(t => (
-            <Chip key={t.id} active={type === t.id} onClick={() => setType(t.id)} size="sm">
-              {t.label}
-            </Chip>
-          ))}
-        </FilterRow>
+            <FilterRow label="Tema">
+              <Chip active={topic === 'all'} onClick={() => setTopic('all')} size="sm">Todos</Chip>
+              {TOPICS.map(t => (
+                <Chip key={t.id} active={topic === t.id} onClick={() => setTopic(t.id)} size="sm">
+                  <Tag size={10} /> {t.shortLabel}
+                </Chip>
+              ))}
+            </FilterRow>
 
-        <FilterRow label="Relevancia">
-          <Chip active={relevance === 'all'} onClick={() => setRelevance('all')} size="sm">Toda</Chip>
-          {(Object.keys(RELEVANCE) as Relevance[]).map(r => (
-            <Chip key={r} active={relevance === r} onClick={() => setRelevance(r)} size="sm">
-              <span className={`h-1.5 w-1.5 rounded-full ${RELEVANCE[r].dot}`} /> {RELEVANCE[r].label}
-            </Chip>
-          ))}
-        </FilterRow>
+            <FilterRow label="Tipo">
+              <Chip active={type === 'all'} onClick={() => setType('all')} size="sm">Todos</Chip>
+              {TYPE_OPTIONS.map(t => (
+                <Chip key={t.id} active={type === t.id} onClick={() => setType(t.id)} size="sm">
+                  {t.label}
+                </Chip>
+              ))}
+            </FilterRow>
+
+            <FilterRow label="Relevancia">
+              <Chip active={relevance === 'all'} onClick={() => setRelevance('all')} size="sm">Toda</Chip>
+              {(Object.keys(RELEVANCE) as Relevance[]).map(r => (
+                <Chip key={r} active={relevance === r} onClick={() => setRelevance(r)} size="sm">
+                  <span className={`h-1.5 w-1.5 rounded-full ${RELEVANCE[r].dot}`} /> {RELEVANCE[r].label}
+                </Chip>
+              ))}
+            </FilterRow>
+
+            {activeFiltersCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="inline-flex items-center gap-1 self-start rounded-full bg-danger-bg/40 px-3 py-1 text-[11.5px] font-bold text-danger-fg hover:bg-danger-bg"
+              >
+                <X size={11} /> Limpiar filtros
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-2 text-[12.5px] font-semibold text-ink-500">
@@ -314,5 +389,16 @@ function FilterRow({ label, children }: { label: string; children: React.ReactNo
       <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">{label}</div>
       <div className="flex flex-wrap gap-1.5">{children}</div>
     </div>
+  )
+}
+
+function ActiveChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-upm-50 px-2.5 py-1 text-[11.5px] font-semibold text-upm-800 ring-1 ring-upm-100">
+      {label}
+      <button onClick={onRemove} className="rounded-full p-0.5 hover:bg-upm-100" aria-label={`Quitar ${label}`}>
+        <X size={10} />
+      </button>
+    </span>
   )
 }
