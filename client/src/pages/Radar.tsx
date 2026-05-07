@@ -52,11 +52,12 @@ export function RadarPage() {
   const navigate = useNavigate()
   const { openCreateBrief } = useUI()
   const saved = useStore(s => s.saved)
+  const prefs = useStore(s => s.prefs)
   const savedRefs = useMemo(
     () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
     [saved],
   )
-  const { feed, loading: feedLoading, refresh } = useLiveFeed()
+  const { feed, loading: feedLoading, refresh } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
   const NEWS = feed?.items ?? []
   const liveStatus = feed?.status ?? 'mock'
   const liveSources = feed?.sources ?? []

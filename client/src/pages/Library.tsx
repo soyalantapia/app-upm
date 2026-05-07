@@ -58,11 +58,12 @@ export function LibraryPage() {
   const navigate = useNavigate()
   const { openDocument } = useUI()
   const saved = useStore(s => s.saved)
+  const prefs = useStore(s => s.prefs)
   const savedRefs = useMemo(
     () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
     [saved],
   )
-  const { feed, loading: feedLoading, refresh } = useLiveFeed()
+  const { feed, loading: feedLoading, refresh } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
   const liveLaws = useMemo(
     () => (feed?.items ?? []).filter(i => i.type === 'ley' || i.type === 'decreto' || i.type === 'reglamento').slice(0, 6),
     [feed],
