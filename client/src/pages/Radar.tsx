@@ -147,51 +147,52 @@ export function RadarPage() {
         }
       />
 
-      {/* Search + Sort + Toggle filtros */}
-      <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-3 ring-1 ring-ink-100 shadow-card">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label className="flex flex-1 items-center gap-3 rounded-2xl bg-upm-50/40 px-4 py-2.5 ring-1 ring-upm-100 focus-within:bg-white focus-within:ring-upm-400">
-            <Search size={16} className="text-upm-600" />
+      {/* Search + Sort + Toggle filtros — todo en una sola fila */}
+      <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">
+        <div className="flex items-center gap-2">
+          <label className="flex flex-1 min-w-0 items-center gap-2 rounded-2xl bg-upm-50/40 px-3 py-2.5 ring-1 ring-upm-100 focus-within:bg-white focus-within:ring-upm-400">
+            <Search size={15} className="shrink-0 text-upm-600" />
             <input
               value={q}
               onChange={e => setQ(e.target.value)}
-              placeholder="Buscar por palabra (ej: ambiente, brasil, acuerdo)…"
-              className="flex-1 bg-transparent text-[14px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
+              placeholder="Buscar por palabra…"
+              className="min-w-0 flex-1 bg-transparent text-[13.5px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
             />
           </label>
 
           <button
             onClick={() => setFiltersOpen(v => !v)}
             className={
-              'inline-flex items-center gap-1.5 rounded-2xl px-3 py-2.5 text-[13px] font-semibold transition ' +
+              'inline-flex shrink-0 items-center gap-1 rounded-2xl px-2.5 py-2.5 text-[13px] font-semibold transition ' +
               (filtersOpen || activeFiltersCount > 0
                 ? 'bg-upm-50 text-upm-800 ring-1 ring-upm-200'
                 : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50')
             }
+            aria-label="Filtros"
           >
             <Filter size={13} />
-            Filtros
+            <span className="hidden sm:inline">Filtros</span>
             {activeFiltersCount > 0 && (
-              <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-upm-500 px-1 text-[10px] font-bold text-white tabular-nums">
+              <span className="grid h-4 min-w-[16px] place-items-center rounded-full bg-upm-500 px-1 text-[10px] font-bold text-white tabular-nums">
                 {activeFiltersCount}
               </span>
             )}
-            <ChevronDown size={13} className={'transition ' + (filtersOpen ? 'rotate-180' : '')} />
+            <ChevronDown size={12} className={'transition ' + (filtersOpen ? 'rotate-180' : '')} />
           </button>
 
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-ink-500">
-              <ArrowDownUp size={11} className="mr-0.5 inline" />
-            </span>
+          <div className="relative shrink-0">
+            <ArrowDownUp size={11} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-500" />
             <select
               value={sort}
               onChange={e => setSort(e.target.value as Sort)}
-              className="rounded-2xl bg-white px-3 py-2.5 text-[13px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 focus:outline-none focus:ring-2 focus:ring-upm-400"
+              aria-label="Ordenar"
+              className="appearance-none rounded-2xl bg-white py-2.5 pl-7 pr-7 text-[13px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 focus:outline-none focus:ring-2 focus:ring-upm-400"
             >
               {SORT_OPTIONS.map(s => (
                 <option key={s.id} value={s.id}>{s.label}</option>
               ))}
             </select>
+            <ChevronDown size={11} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-ink-500" />
           </div>
         </div>
 
