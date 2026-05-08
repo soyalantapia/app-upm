@@ -1,5 +1,4 @@
 import type { CountryCode, NewsItem, Topic } from '@/lib/types'
-import { NEWS as MOCK_NEWS } from '@/lib/data'
 import { fetchCamaraProposicoes } from './camara-br'
 import { fetchSenadoBR } from './senado-br'
 import { fetchHcdnArgentina } from './hcdn-ar'
@@ -162,22 +161,15 @@ export async function fetchLiveFeed(opts?: {
     id: f.id, label: f.label, country: f.country, ok: false, count: 0,
   }))
   const byCountry: Record<CountryCode, number> = {} as Record<CountryCode, number>
-  let liveCount = 0
   let resolved = 0
 
   const buildFeed = (status: SourceStatus): AggregatedFeed => {
-    let items = rank(dedupe(allItems), opts?.prefs)
-    let finalStatus = status
-    if (items.length === 0 && resolved === FETCHERS.length) {
-      items = MOCK_NEWS
-      finalStatus = 'mock'
-    } else if (resolved === FETCHERS.length && liveCount > 0 && liveCount < 8) {
-      items = rank(dedupe([...allItems, ...MOCK_NEWS]), opts?.prefs)
-      finalStatus = 'mixed'
-    }
+    // Solo datos en vivo. Si todo falla, queda vacío y el componente
+    // muestra un EmptyState; nunca mezclamos mock data.
+    const items = rank(dedupe(allItems), opts?.prefs)
     return {
       items,
-      status: finalStatus,
+      status,
       fetchedAt: new Date().toISOString(),
       sources: sources.slice(),
       byCountry: { ...byCountry },
@@ -200,7 +192,6 @@ export async function fetchLiveFeed(opts?: {
           error: r.ok ? undefined : String((r as { error: unknown }).error).slice(0, 200),
         }
         if (r.ok && r.items.length > 0) {
-          liveCount += r.items.length
           allItems.push(...r.items)
           byCountry[r.fetcher.country] = (byCountry[r.fetcher.country] ?? 0) + r.items.length
         }

@@ -4,28 +4,22 @@ import {
   ArrowDownUp,
   ArrowRight,
   BadgeCheck,
-  Bookmark,
-  BookmarkCheck,
   ChevronDown,
   ExternalLink,
-  FileStack,
   Filter,
   Radar,
   RefreshCw,
   ScrollText,
   Search,
   Tag,
-  Wand2,
   Wifi,
-  WifiOff,
   X,
 } from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import { formatDate } from '@/lib/format'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
-import { store, useStore } from '@/lib/store'
-import { useUI } from '@/lib/ui-provider'
+import { useStore } from '@/lib/store'
 import { useLiveFeed } from '@/lib/use-live-feed'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
@@ -53,7 +47,6 @@ const SORT_OPTIONS: { id: Sort; label: string }[] = [
 
 export function RadarPage() {
   const navigate = useNavigate()
-  const { openCreateBrief } = useUI()
   const saved = useStore(s => s.saved)
   const prefs = useStore(s => s.prefs)
   const savedRefs = useMemo(
@@ -127,27 +120,6 @@ export function RadarPage() {
     return items
   }, [NEWS, q, country, topic, type, relevance, sort])
 
-  const handleSave = (n: typeof NEWS[number]) => {
-    const id = 'sav-news-' + n.id
-    const isSaved = savedRefs.has(n.id)
-    if (isSaved) {
-      const item = store.getSnapshot().saved.find(i => i.ref === n.id)
-      if (item) {
-        store.removeSaved(item.id)
-        store.pushToast('info', 'Eliminado de tu carpeta')
-      }
-    } else {
-      store.saveItem({
-        id,
-        type: 'novedad',
-        title: n.title,
-        ref: n.id,
-        meta: { country: n.country, topic: n.topic, relevance: n.relevance, date: n.date },
-      })
-      store.pushToast('success', 'Novedad guardada en tu carpeta')
-    }
-  }
-
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
       <PageHeader
@@ -159,16 +131,6 @@ export function RadarPage() {
             {liveStatus === 'live' && (
               <Badge tone="success">
                 <Wifi size={11} /> En vivo
-              </Badge>
-            )}
-            {liveStatus === 'mixed' && (
-              <Badge tone="info">
-                <Wifi size={11} /> Vivo + muestra
-              </Badge>
-            )}
-            {liveStatus === 'mock' && (
-              <Badge tone="warning">
-                <WifiOff size={11} /> Datos de muestra
               </Badge>
             )}
             <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
@@ -427,43 +389,8 @@ export function RadarPage() {
                         </a>
                       )}
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button
-                        size="sm"
-                        variant="soft"
-                        onClick={e => {
-                          e.stopPropagation()
-                          navigate(`/radar/${n.id}`)
-                        }}
-                      >
-                        <Wand2 size={13} /> Explicámelo simple
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={e => {
-                          e.stopPropagation()
-                          handleSave(n)
-                        }}
-                      >
-                        {isSaved ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
-                        {isSaved ? 'Guardado' : 'Guardar'}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={e => {
-                          e.stopPropagation()
-                          openCreateBrief({
-                            title: `Brief: ${n.title}`,
-                            body: `**Contexto**\n\n${n.excerpt}\n\n**País:** ${country.name}\n**Tema:** ${topicMeta.label}\n**Relevancia:** ${rel.label}\n\n**Fuente:** ${n.source}`,
-                            ref: n.id,
-                          })
-                        }}
-                      >
-                        <FileStack size={13} /> Armar brief
-                      </Button>
-                      <span className="ml-auto inline-flex items-center gap-1 text-[12px] font-semibold text-upm-700">
+                    <div className="mt-3 flex justify-end">
+                      <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-upm-700">
                         Abrir <ArrowRight size={13} />
                       </span>
                     </div>

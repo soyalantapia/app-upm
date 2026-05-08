@@ -3,7 +3,6 @@ import { fetchLiveFeed } from './sources'
 import { enrichCamaraItem } from './sources/camara-br'
 import { enrichParlamentoUYItem } from './sources/parlamento-uy'
 import { enrichVotacionColombia } from './sources/votaciones-co'
-import { NEWS as MOCK_NEWS } from './data'
 import type { NewsItem } from './types'
 
 // Trae UN item por id (de cualquier fuente live o mock) y lo enriquece con detalle
@@ -22,7 +21,7 @@ export function useNewsItem(id: string | undefined) {
       setLoading(true)
       // Cargar feed para encontrar el item
       const feed = await fetchLiveFeed({ signal: ctrl.signal })
-      const found = feed.items.find(i => i.id === id) ?? MOCK_NEWS.find(i => i.id === id)
+      const found = feed.items.find(i => i.id === id)
       if (!mounted) return
       setItem(found ?? null)
       setLoading(false)

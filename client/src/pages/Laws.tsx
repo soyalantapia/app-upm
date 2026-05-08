@@ -16,7 +16,6 @@ import {
   Tag,
   Users,
   Wifi,
-  WifiOff,
 } from 'lucide-react'
 import { Badge, Button, Eyebrow, PageHeader } from '@/components/ui'
 import { countryByCode, topicById } from '@/lib/data'
@@ -48,7 +47,10 @@ export function LawsPage() {
   )
 
   const laws = useMemo(
-    () => (feed?.items ?? []).filter(isSanctionedLaw),
+    () => (feed?.items ?? [])
+      .filter(isSanctionedLaw)
+      // De más nueva a más vieja
+      .sort((a, b) => b.date.localeCompare(a.date)),
     [feed],
   )
 
@@ -107,16 +109,6 @@ export function LawsPage() {
             {liveStatus === 'live' && (
               <Badge tone="success">
                 <Wifi size={11} /> En vivo
-              </Badge>
-            )}
-            {liveStatus === 'mixed' && (
-              <Badge tone="info">
-                <Wifi size={11} /> Vivo + muestra
-              </Badge>
-            )}
-            {liveStatus === 'mock' && (
-              <Badge tone="warning">
-                <WifiOff size={11} /> Datos de muestra
               </Badge>
             )}
             <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
