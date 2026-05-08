@@ -117,6 +117,51 @@ export function NewsConversationPage() {
         </div>
       </div>
 
+      {/* Identificación + Fuente verificada · barra compacta sobre el article */}
+      <div className="flex flex-col gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card sm:p-3.5">
+        {/* Chips de metadata oficial */}
+        {(news.tipoDocumento || news.tipoConteudo || news.authors || news.dataPublicacao || news.dataAtualizacao) && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11.5px]">
+            {news.tipoDocumento && (
+              <MetaChip icon={Hash} label="Identificación" value={news.tipoDocumento} />
+            )}
+            {news.tipoConteudo && news.tipoConteudo !== news.tipoDocumento && (
+              <MetaChip icon={FileText} label="Tipo" value={news.tipoConteudo} />
+            )}
+            {news.authors && (
+              <MetaChip icon={Users} label="Autoría" value={news.authors} truncate />
+            )}
+            {fmt(news.dataPublicacao) && (
+              <MetaChip icon={CalendarDays} label="Presentación" value={fmt(news.dataPublicacao)!} />
+            )}
+            {fmt(news.dataAtualizacao) && (
+              <MetaChip icon={Clock} label="Actualización" value={fmt(news.dataAtualizacao)!} />
+            )}
+          </div>
+        )}
+
+        {/* Fuente verificada · línea verde */}
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-success-bg/40 px-3 py-2 ring-1 ring-success-bg">
+          <div className="flex flex-wrap items-center gap-2 min-w-0">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-success-fg">
+              <BadgeCheck size={11} /> Fuente oficial
+            </span>
+            <span className="text-[12.5px] font-semibold text-ink-800 line-clamp-1">{news.source}</span>
+            <span className="text-[11px] text-ink-500 tabular-nums">{formatDate(news.date)}</span>
+          </div>
+          {news.sourceUrl && (
+            <a
+              href={news.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
+            >
+              <ExternalLink size={11} /> {news.pdfUrl ? 'Documento oficial' : 'Ver fuente'}
+            </a>
+          )}
+        </div>
+      </div>
+
       {/* Cabecera con título y badges */}
       <article className="flex flex-col gap-4 rounded-3xl bg-white p-6 ring-1 ring-ink-100 shadow-card sm:p-8">
         <div className="flex items-center justify-between">
@@ -154,25 +199,6 @@ export function NewsConversationPage() {
         {!news.fullText && (
           <p className="text-[15px] leading-relaxed text-ink-700">{news.excerpt}</p>
         )}
-
-        {/* Metadata oficial */}
-        <div className="grid grid-cols-1 gap-3 rounded-2xl bg-upm-50/40 p-4 ring-1 ring-upm-100 sm:grid-cols-2">
-          {news.tipoDocumento && (
-            <Meta icon={Hash} label="Identificación" value={news.tipoDocumento} />
-          )}
-          {news.tipoConteudo && news.tipoConteudo !== news.tipoDocumento && (
-            <Meta icon={FileText} label="Tipo de contenido" value={news.tipoConteudo} />
-          )}
-          {news.authors && (
-            <Meta icon={Users} label="Autoría" value={news.authors} className="sm:col-span-2" />
-          )}
-          {fmt(news.dataPublicacao) && (
-            <Meta icon={CalendarDays} label="Presentación" value={fmt(news.dataPublicacao)!} />
-          )}
-          {fmt(news.dataAtualizacao) && (
-            <Meta icon={Clock} label="Última actualización" value={fmt(news.dataAtualizacao)!} />
-          )}
-        </div>
 
         {/* Keywords */}
         {news.keywords && news.keywords.length > 0 && (
@@ -223,51 +249,29 @@ export function NewsConversationPage() {
           </div>
         )}
 
-        {/* Fuente institucional con verificación */}
-        <div className="rounded-2xl bg-success-bg/30 p-4 ring-1 ring-success-bg">
-          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">
-            <BadgeCheck size={12} /> Fuente oficial verificada
-          </div>
-          <div className="mt-1.5 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <div className="text-[14px] font-bold text-ink-900">{news.source}</div>
-              <div className="mt-0.5 text-[11.5px] text-ink-500 tabular-nums">Fecha del feed: {formatDate(news.date)}</div>
-            </div>
-            {news.sourceUrl && (
-              <a
-                href={news.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
-              >
-                <ExternalLink size={11} /> {news.pdfUrl ? 'Abrir documento oficial' : 'Ver fuente'}
-              </a>
-            )}
-          </div>
-        </div>
       </article>
     </div>
   )
 }
 
-function Meta({
+function MetaChip({
   icon: Icon,
   label,
   value,
-  className,
+  truncate,
 }: {
   icon: typeof Hash
   label: string
   value: string
-  className?: string
+  truncate?: boolean
 }) {
   return (
-    <div className={className}>
-      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
+    <span className={'inline-flex items-baseline gap-1.5 ' + (truncate ? 'min-w-0 max-w-[420px]' : '')}>
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-400">
         <Icon size={10} /> {label}
-      </div>
-      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900">{value}</div>
-    </div>
+      </span>
+      <span className={'font-semibold text-ink-800 ' + (truncate ? 'truncate' : '')}>{value}</span>
+    </span>
   )
 }
 

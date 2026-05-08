@@ -193,6 +193,85 @@ export function LawsPage() {
 
           {/* Detalle de la ley seleccionada */}
           {active && (
+            <div className="flex flex-col gap-4">
+              {/* Barra de acciones */}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => shareLink(active.title, '/leyes')}
+                  className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
+                >
+                  <Share2 size={12} /> Compartir
+                </button>
+                <button
+                  onClick={handleSave}
+                  className={
+                    'inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-semibold transition ' +
+                    (isSaved
+                      ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
+                      : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
+                  }
+                >
+                  {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
+                  {isSaved ? 'Guardada' : 'Guardar'}
+                </button>
+                <button
+                  onClick={() => {
+                    store.pushToast('info', 'El Asistente preparó preguntas sobre esta ley')
+                    navigate('/asistente')
+                  }}
+                  className="group inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3 py-1.5 text-[12px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
+                >
+                  <MessageSquareText size={12} />
+                  <span className="hidden sm:inline">Hablar con Asistente</span>
+                  <span className="sm:hidden">Asistente</span>
+                  <span className="transition group-hover:translate-x-0.5">→</span>
+                </button>
+              </div>
+
+              {/* Identificación + Fuente verificada · barra compacta */}
+              <div className="flex flex-col gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card sm:p-3.5">
+                {/* Chips de metadata */}
+                {(active.tipoDocumento || active.authors || active.dataPublicacao || active.status || active.comision) && (
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11.5px]">
+                    {active.tipoDocumento && (
+                      <LawMetaChip icon={Hash} label="Identificación" value={active.tipoDocumento} />
+                    )}
+                    {active.authors && (
+                      <LawMetaChip icon={Users} label="Autoría" value={active.authors} truncate />
+                    )}
+                    {active.dataPublicacao && (
+                      <LawMetaChip icon={CalendarDays} label="Presentación" value={formatDate(active.dataPublicacao)} />
+                    )}
+                    {active.status && (
+                      <LawMetaChip icon={Hash} label="Estado" value={active.status} />
+                    )}
+                    {active.comision && (
+                      <LawMetaChip icon={ScrollText} label="Comisión" value={active.comision} />
+                    )}
+                  </div>
+                )}
+
+                {/* Fuente verificada · línea verde */}
+                <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-success-bg/40 px-3 py-2 ring-1 ring-success-bg">
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white/70 px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-success-fg">
+                      <BadgeCheck size={11} /> Fuente oficial
+                    </span>
+                    <span className="text-[12.5px] font-semibold text-ink-800 line-clamp-1">{active.source}</span>
+                  </div>
+                  {active.sourceUrl && (
+                    <a
+                      href={active.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
+                    >
+                      <ExternalLink size={11} /> Ver fuente
+                    </a>
+                  )}
+                </div>
+              </div>
+
             <article className="flex flex-col gap-4 rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card sm:p-7">
               <div className="flex flex-wrap items-center gap-1.5">
                 <Badge tone="brand">{countryByCode(active.country).flag} {countryByCode(active.country).name}</Badge>
@@ -225,46 +304,6 @@ export function LawsPage() {
                 <p className="text-[14.5px] leading-relaxed text-ink-700">{active.excerpt}</p>
               )}
 
-              {/* Metadata: autoría, fecha, estado, comisión */}
-              {(active.authors || active.dataPublicacao || active.status || active.comision) && (
-                <div className="grid grid-cols-1 gap-3 rounded-2xl bg-upm-50/40 p-3.5 ring-1 ring-upm-100 sm:grid-cols-2">
-                  {active.authors && (
-                    <div className="sm:col-span-2">
-                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
-                        <Users size={10} /> Autoría
-                      </div>
-                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900">{active.authors}</div>
-                    </div>
-                  )}
-                  {active.dataPublicacao && (
-                    <div>
-                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
-                        <CalendarDays size={10} /> Presentación
-                      </div>
-                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900 tabular-nums">
-                        {formatDate(active.dataPublicacao)}
-                      </div>
-                    </div>
-                  )}
-                  {active.status && (
-                    <div>
-                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
-                        <Hash size={10} /> Estado
-                      </div>
-                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900">{active.status}</div>
-                    </div>
-                  )}
-                  {active.comision && (
-                    <div>
-                      <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
-                        <ScrollText size={10} /> Comisión
-                      </div>
-                      <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900">{active.comision}</div>
-                    </div>
-                  )}
-                </div>
-              )}
-
               {/* Keywords */}
               {active.keywords && active.keywords.length > 0 && (
                 <div>
@@ -282,74 +321,32 @@ export function LawsPage() {
                 </div>
               )}
 
-              {/* Acciones */}
-              <div className="flex flex-wrap items-center gap-2 border-t border-ink-100 pt-4">
-                <button
-                  onClick={handleSave}
-                  className={
-                    'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition ' +
-                    (isSaved
-                      ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
-                      : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
-                  }
-                >
-                  {isSaved ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
-                  {isSaved ? 'Guardada' : 'Guardar'}
-                </button>
-                <button
-                  onClick={() => shareLink(active.title, '/leyes')}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[12.5px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
-                >
-                  <Share2 size={13} /> Compartir
-                </button>
-                <button
-                  onClick={() => {
-                    store.pushToast('info', 'El Asistente preparó preguntas sobre esta ley')
-                    navigate('/asistente')
-                  }}
-                  className="group inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3.5 py-1.5 text-[12.5px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
-                >
-                  <MessageSquareText size={13} />
-                  <span className="hidden sm:inline">Hablar con Asistente</span>
-                  <span className="sm:hidden">Asistente</span>
-                  <span className="transition group-hover:translate-x-0.5">→</span>
-                </button>
-                {active.sourceUrl && (
-                  <a
-                    href={active.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[12.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
-                  >
-                    <ExternalLink size={13} /> Ver en {active.country === 'AR' ? 'HCDN' : 'fuente oficial'}
-                  </a>
-                )}
-              </div>
-
-              {/* Fuente institucional con badge verificado */}
-              <div className="rounded-2xl bg-success-bg/30 p-3 ring-1 ring-success-bg">
-                <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">
-                  <BadgeCheck size={11} /> Fuente oficial verificada
-                </div>
-                <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
-                  <div className="text-[12.5px] text-ink-800">{active.source}</div>
-                  {active.sourceUrl && (
-                    <a
-                      href={active.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
-                    >
-                      <ExternalLink size={10} /> Abrir documento
-                    </a>
-                  )}
-                </div>
-              </div>
-
             </article>
+            </div>
           )}
         </div>
       )}
     </div>
+  )
+}
+
+function LawMetaChip({
+  icon: Icon,
+  label,
+  value,
+  truncate,
+}: {
+  icon: typeof Hash
+  label: string
+  value: string
+  truncate?: boolean
+}) {
+  return (
+    <span className={'inline-flex items-baseline gap-1.5 ' + (truncate ? 'min-w-0 max-w-[460px]' : '')}>
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-400">
+        <Icon size={10} /> {label}
+      </span>
+      <span className={'font-semibold text-ink-800 ' + (truncate ? 'truncate' : '')}>{value}</span>
+    </span>
   )
 }
