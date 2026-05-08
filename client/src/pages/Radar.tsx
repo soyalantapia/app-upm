@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
-import { formatDate } from '@/lib/format'
+import { formatDate, formatDateTime } from '@/lib/format'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
 import { useStore } from '@/lib/store'
 import { useLiveFeed } from '@/lib/use-live-feed'
@@ -350,8 +350,29 @@ export function RadarPage() {
                       <Badge tone="brand">{country.flag} {country.name}</Badge>
                       <Badge tone="ghost">{topicMeta.shortLabel}</Badge>
                       <Badge tone={rel.tone}>Relevancia {rel.label}</Badge>
-                      <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{formatDate(n.date)}</span>
+                      <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{(() => {
+                        // Preferir la fecha más rica (con hora) si está disponible.
+                        const conHora = [n.dataAtualizacao, n.dataPublicacao].find(d => d && (d.includes('T') || /\d{2}:\d{2}/.test(d)))
+                        if (conHora) return formatDateTime(conHora)
+                        return formatDate(n.dataPublicacao ?? n.date)
+                      })()}</span>
                       {isSaved && <Badge tone="success">Guardado</Badge>}
+                      {/* Fuente oficial inline con los badges */}
+                      <span className="inline-flex items-center gap-1 rounded-full bg-success-bg/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-success-fg ring-1 ring-success-bg">
+                        <BadgeCheck size={10} /> Fuente oficial
+                      </span>
+                      <span className="text-[11px] font-medium text-ink-500 line-clamp-1 max-w-[280px] sm:max-w-[420px]">{n.source}</span>
+                      {n.sourceUrl && (
+                        <a
+                          href={n.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={e => e.stopPropagation()}
+                          className="inline-flex items-center gap-0.5 text-[11px] font-bold text-upm-700 hover:text-upm-800 hover:underline"
+                        >
+                          <ExternalLink size={10} /> ver
+                        </a>
+                      )}
                     </div>
                     <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{n.title}</h3>
                     <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-600 line-clamp-4">{n.excerpt}</p>
@@ -371,27 +392,11 @@ export function RadarPage() {
                         )}
                       </div>
                     )}
-                    {/* Fuente oficial validada */}
-                    <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-success-bg/60 px-2 py-0.5 font-semibold text-success-fg ring-1 ring-success-bg">
-                        <BadgeCheck size={11} /> Fuente oficial
-                      </span>
-                      <span className="font-medium text-ink-500 line-clamp-1 max-w-[480px]">{n.source}</span>
-                      {n.sourceUrl && (
-                        <a
-                          href={n.sourceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={e => e.stopPropagation()}
-                          className="inline-flex items-center gap-0.5 font-bold text-upm-700 hover:text-upm-800 hover:underline"
-                        >
-                          <ExternalLink size={10} /> ver
-                        </a>
-                      )}
-                    </div>
+                    {/* Botón Abrir como pill, alineado al borde derecho */}
                     <div className="mt-3 flex justify-end">
-                      <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-upm-700">
-                        Abrir <ArrowRight size={13} />
+                      <span className="group/abrir inline-flex items-center gap-1.5 rounded-full bg-upm-50 px-3 py-1.5 text-[12px] font-bold text-upm-700 ring-1 ring-upm-100 transition group-hover:bg-upm-100">
+                        Abrir detalle
+                        <ArrowRight size={13} className="transition group-hover/abrir:translate-x-0.5" />
                       </span>
                     </div>
                   </div>
