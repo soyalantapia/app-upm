@@ -9,6 +9,7 @@ import { fetchVistaProyectosColombia } from './vista-co'
 import { fetchVotacionesColombia } from './votaciones-co'
 import { fetchLeyesUruguay } from './leyes-uy'
 import { fetchLeyesPresidenciaColombia, fetchDecretosPresidenciaColombia } from './presidencia-co'
+import { fetchLeyesInfolegArgentina, fetchDecretosInfolegArgentina } from './infoleg-ar'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -104,6 +105,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'senado-br', label: 'Senado Federal Brasil', country: 'BR', fn: ({ signal }) => fetchSenadoBR({ limit: 30, signal }) },
   { id: 'camara-br', label: 'Câmara dos Deputados', country: 'BR', fn: ({ signal }) => fetchCamaraProposicoes({ limit: 30, signal }) },
   { id: 'hcdn-ar', label: 'HCDN Argentina · Leyes Nacionales', country: 'AR', fn: ({ signal }) => fetchHcdnArgentina({ limit: 200, signal }) },
+  { id: 'leyes-infoleg-ar', label: 'Infoleg AR · Leyes Nacionales (BO)', country: 'AR', fn: ({ signal }) => fetchLeyesInfolegArgentina({ limit: 200, signal }) },
+  { id: 'decretos-infoleg-ar', label: 'Infoleg AR · Decretos y DAs', country: 'AR', fn: ({ signal }) => fetchDecretosInfolegArgentina({ limit: 60, signal }) },
   { id: 'senado-co', label: 'Senado Colombia', country: 'CO', fn: ({ signal }) => fetchProyectosColombia({ limit: 25, signal }) },
   { id: 'leyes-co', label: 'Leyes Sancionadas Colombia', country: 'CO', fn: ({ signal }) => fetchLeyesColombia({ limit: 100, signal }) },
   { id: 'tratados-co', label: 'Cancillería Colombia · Tratados', country: 'CO', fn: ({ signal }) => fetchTratadosColombia({ limit: 25, signal }) },

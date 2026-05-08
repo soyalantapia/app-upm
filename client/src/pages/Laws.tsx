@@ -29,6 +29,8 @@ import type { NewsItem } from '@/lib/types'
 function isSanctionedLaw(item: NewsItem): boolean {
   // Argentina: 1194 leyes nacionales sancionadas (HCDN)
   if (item.id.startsWith('ar-ley-')) return true
+  // Argentina · Infoleg (Min. Justicia): leyes nacionales con Boletín Oficial
+  if (item.id.startsWith('ar-ley-infoleg-')) return true
   // Colombia: proyectos con estado='LEY' (Socrata feim-cysj)
   if (item.id.startsWith('co-ley-')) return true
   // Colombia · Vista Proyectos cuando estado_del_proyecto_de_ley='Ley' (xs56-s7w6)
