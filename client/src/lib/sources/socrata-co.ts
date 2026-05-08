@@ -131,5 +131,21 @@ function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
     tipoDocumento: numero ? `Proyecto ${numero}` : undefined,
     comision: r.comision ? `Comisión ${r.comision}` : undefined,
     dataPublicacao: r.f_presentado,
+    sourceUrl: buildOfficialUrl(numero, isLaw),
   }
+}
+
+// Construye URL oficial para el proyecto/ley. Para proyectos linkeamos al portal
+// del Senado de Colombia con búsqueda por número. Para leyes sancionadas
+// linkeamos al gestor normativo de Función Pública.
+function buildOfficialUrl(numero: string, isLaw: boolean): string | undefined {
+  if (!numero) return undefined
+  // El número viene como "327/20" — para el portal hay que separar por "/"
+  const parts = numero.split('/')
+  if (isLaw && parts.length === 2) {
+    // Leyes sancionadas: link a búsqueda del Diario Oficial
+    return `https://www.suin-juriscol.gov.co/viewDocument.asp?ruta=Leyes/${encodeURIComponent(numero)}`
+  }
+  // Proyectos: portal del Senado con búsqueda
+  return `https://www.senado.gov.co/index.php/component/search/?searchword=${encodeURIComponent('Proyecto de Ley ' + numero)}&searchphrase=all`
 }

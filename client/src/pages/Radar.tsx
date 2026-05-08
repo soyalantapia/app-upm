@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import {
   ArrowDownUp,
   ArrowRight,
+  BadgeCheck,
   Bookmark,
   BookmarkCheck,
   ChevronDown,
+  ExternalLink,
   FileStack,
   Filter,
   Radar,
@@ -57,7 +59,7 @@ export function RadarPage() {
     () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
     [saved],
   )
-  const { feed, loading: feedLoading, refresh } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
+  const { feed, loading: feedLoading, revalidating, refresh } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
   const NEWS = feed?.items ?? []
   const liveStatus = feed?.status ?? 'mock'
   const liveSources = feed?.sources ?? []
@@ -168,8 +170,8 @@ export function RadarPage() {
                 <WifiOff size={11} /> Datos de muestra
               </Badge>
             )}
-            <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
-              <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} /> Actualizar
+            <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
+              <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} /> Actualizar
             </Button>
           </>
         }
@@ -406,6 +408,24 @@ export function RadarPage() {
                         )}
                       </div>
                     )}
+                    {/* Fuente oficial validada */}
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px]">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-success-bg/60 px-2 py-0.5 font-semibold text-success-fg ring-1 ring-success-bg">
+                        <BadgeCheck size={11} /> Fuente oficial
+                      </span>
+                      <span className="font-medium text-ink-500 line-clamp-1 max-w-[480px]">{n.source}</span>
+                      {n.sourceUrl && (
+                        <a
+                          href={n.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={e => e.stopPropagation()}
+                          className="inline-flex items-center gap-0.5 font-bold text-upm-700 hover:text-upm-800 hover:underline"
+                        >
+                          <ExternalLink size={10} /> ver
+                        </a>
+                      )}
+                    </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <Button
                         size="sm"

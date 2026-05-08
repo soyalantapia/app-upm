@@ -27,21 +27,31 @@ export type AggregatedFeed = {
 }
 
 const CACHE_KEY = 'upm.live-feed.v2'
-const CACHE_TTL_MS = 30 * 60 * 1000 // 30 min
+// Cache TTL alto porque las APIs legislativas se mueven lento.
+// Con stale-while-revalidate igual hacemos fetch en background si pasaron > 5min.
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000  // 24 h (hard expiry, eviction)
+const CACHE_FRESH_MS = 5 * 60 * 1000      // 5 min (considerado "fresco" para no revalidar)
 
 type Cached = AggregatedFeed & { _ts: number }
 
-function readCache(): AggregatedFeed | null {
+// Devuelve { feed, fresh } donde fresh=true si el cache está dentro de CACHE_FRESH_MS.
+// Si superó CACHE_TTL_MS, devuelve null (eviction).
+export function readCacheStatus(): { feed: AggregatedFeed; fresh: boolean } | null {
   if (typeof window === 'undefined') return null
   try {
     const raw = window.localStorage.getItem(CACHE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw) as Cached
-    if (Date.now() - parsed._ts > CACHE_TTL_MS) return null
-    return parsed
+    const age = Date.now() - parsed._ts
+    if (age > CACHE_TTL_MS) return null
+    return { feed: parsed, fresh: age < CACHE_FRESH_MS }
   } catch {
     return null
   }
+}
+
+function readCache(): AggregatedFeed | null {
+  return readCacheStatus()?.feed ?? null
 }
 
 function writeCache(c: AggregatedFeed) {
@@ -125,6 +135,9 @@ export async function fetchLiveFeed(opts?: {
   force?: boolean
   signal?: AbortSignal
   prefs?: { countries?: CountryCode[]; topics?: Topic[] }
+  // Emite el feed parcial cada vez que UNA fuente termina (success o error).
+  // Permite render progresivo: la primera fuente que responde ya muestra cards.
+  onProgress?: (partial: AggregatedFeed) => void
 }): Promise<AggregatedFeed> {
   if (!opts?.force) {
     const cached = readCache()
@@ -139,52 +152,65 @@ export async function fetchLiveFeed(opts?: {
     return fromWorker
   }
 
-  const promises = FETCHERS.map(f =>
-    f.fn({ signal: opts?.signal }).then(
-      items => ({ ok: true as const, fetcher: f, items }),
-      err => ({ ok: false as const, fetcher: f, items: [] as NewsItem[], error: err }),
-    ),
-  )
-
-  const settled = await Promise.all(promises)
+  // Render progresivo: cada fetcher emite por separado y se actualiza el feed.
   const allItems: NewsItem[] = []
-  const sources: SourceReport[] = []
+  const sources: SourceReport[] = FETCHERS.map(f => ({
+    id: f.id, label: f.label, country: f.country, ok: false, count: 0,
+  }))
   const byCountry: Record<CountryCode, number> = {} as Record<CountryCode, number>
   let liveCount = 0
+  let resolved = 0
 
-  for (const r of settled) {
-    sources.push({
-      id: r.fetcher.id,
-      label: r.fetcher.label,
-      country: r.fetcher.country,
-      ok: r.ok,
-      count: r.items.length,
-      error: r.ok ? undefined : String((r as { error: unknown }).error).slice(0, 200),
-    })
-    if (r.ok && r.items.length > 0) {
-      liveCount += r.items.length
-      allItems.push(...r.items)
-      byCountry[r.fetcher.country] = (byCountry[r.fetcher.country] ?? 0) + r.items.length
+  const buildFeed = (status: SourceStatus): AggregatedFeed => {
+    let items = rank(dedupe(allItems), opts?.prefs)
+    let finalStatus = status
+    if (items.length === 0 && resolved === FETCHERS.length) {
+      items = MOCK_NEWS
+      finalStatus = 'mock'
+    } else if (resolved === FETCHERS.length && liveCount > 0 && liveCount < 8) {
+      items = rank(dedupe([...allItems, ...MOCK_NEWS]), opts?.prefs)
+      finalStatus = 'mixed'
+    }
+    return {
+      items,
+      status: finalStatus,
+      fetchedAt: new Date().toISOString(),
+      sources: sources.slice(),
+      byCountry: { ...byCountry },
     }
   }
 
-  let status: SourceStatus = 'live'
-  let items = rank(dedupe(allItems), opts?.prefs)
-  if (items.length === 0) {
-    items = MOCK_NEWS
-    status = 'mock'
-  } else if (liveCount < 8) {
-    items = rank(dedupe([...allItems, ...MOCK_NEWS]), opts?.prefs)
-    status = 'mixed'
-  }
+  const promises = FETCHERS.map((f, idx) =>
+    f.fn({ signal: opts?.signal })
+      .then(
+        items => ({ ok: true as const, fetcher: f, idx, items }),
+        err => ({ ok: false as const, fetcher: f, idx, items: [] as NewsItem[], error: err }),
+      )
+      .then(r => {
+        sources[r.idx] = {
+          id: r.fetcher.id,
+          label: r.fetcher.label,
+          country: r.fetcher.country,
+          ok: r.ok,
+          count: r.items.length,
+          error: r.ok ? undefined : String((r as { error: unknown }).error).slice(0, 200),
+        }
+        if (r.ok && r.items.length > 0) {
+          liveCount += r.items.length
+          allItems.push(...r.items)
+          byCountry[r.fetcher.country] = (byCountry[r.fetcher.country] ?? 0) + r.items.length
+        }
+        resolved += 1
+        if (opts?.onProgress) {
+          // Emitir feed parcial con lo que hay hasta ahora
+          opts.onProgress(buildFeed('live'))
+        }
+        return r
+      }),
+  )
 
-  const feed: AggregatedFeed = {
-    items,
-    status,
-    fetchedAt: new Date().toISOString(),
-    sources,
-    byCountry,
-  }
+  await Promise.all(promises)
+  const feed = buildFeed('live')
   writeCache(feed)
   return feed
 }

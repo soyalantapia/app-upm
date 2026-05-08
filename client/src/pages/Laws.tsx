@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  BadgeCheck,
   BookOpen,
   Bookmark,
   BookmarkCheck,
@@ -41,7 +42,7 @@ function isSanctionedLaw(item: NewsItem): boolean {
 export function LawsPage() {
   const navigate = useNavigate()
   const prefs = useStore(s => s.prefs)
-  const { feed, loading: feedLoading, refresh } = useLiveFeed(
+  const { feed, loading: feedLoading, revalidating, refresh } = useLiveFeed(
     prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined,
   )
 
@@ -117,8 +118,8 @@ export function LawsPage() {
                 <WifiOff size={11} /> Datos de muestra
               </Badge>
             )}
-            <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
-              <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} /> Actualizar
+            <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
+              <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} /> Actualizar
             </Button>
           </>
         }
@@ -312,12 +313,24 @@ export function LawsPage() {
                 )}
               </div>
 
-              {/* Fuente institucional */}
-              <div className="rounded-2xl bg-upm-50/40 p-3 ring-1 ring-upm-100">
-                <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-                  <ScrollText size={11} /> Fuente
+              {/* Fuente institucional con badge verificado */}
+              <div className="rounded-2xl bg-success-bg/30 p-3 ring-1 ring-success-bg">
+                <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">
+                  <BadgeCheck size={11} /> Fuente oficial verificada
                 </div>
-                <div className="mt-1 text-[12.5px] text-ink-700">{active.source}</div>
+                <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+                  <div className="text-[12.5px] text-ink-800">{active.source}</div>
+                  {active.sourceUrl && (
+                    <a
+                      href={active.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
+                    >
+                      <ExternalLink size={10} /> Abrir documento
+                    </a>
+                  )}
+                </div>
               </div>
 
               {/* CTA único: Hablar con Asistente */}

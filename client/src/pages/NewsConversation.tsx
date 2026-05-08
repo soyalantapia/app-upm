@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
   Activity,
+  BadgeCheck,
   Bookmark,
   BookmarkCheck,
   CalendarDays,
@@ -209,9 +210,11 @@ export function NewsConversationPage() {
           </div>
         )}
 
-        {/* Fuente institucional */}
-        <div className="rounded-2xl bg-white p-4 ring-1 ring-ink-100">
-          <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">Fuente institucional</div>
+        {/* Fuente institucional con verificación */}
+        <div className="rounded-2xl bg-success-bg/30 p-4 ring-1 ring-success-bg">
+          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">
+            <BadgeCheck size={12} /> Fuente oficial verificada
+          </div>
           <div className="mt-1.5 flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-[14px] font-bold text-ink-900">{news.source}</div>
@@ -222,7 +225,7 @@ export function NewsConversationPage() {
                 href={news.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-full bg-upm-50 px-3 py-1.5 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-100"
+                className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
               >
                 <ExternalLink size={11} /> {news.pdfUrl ? 'Abrir documento oficial' : 'Ver fuente'}
               </a>
