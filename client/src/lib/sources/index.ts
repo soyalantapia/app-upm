@@ -12,6 +12,8 @@ import { fetchLeyesPresidenciaColombia, fetchDecretosPresidenciaColombia } from 
 import { fetchLeyesInfolegArgentina, fetchDecretosInfolegArgentina } from './infoleg-ar'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
+import { fetchVotacoesSenadoBR } from './votacoes-senado-br'
+import { fetchEventosCamaraBR } from './eventos-br'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -107,6 +109,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'senado-br', label: 'Senado Federal Brasil', country: 'BR', fn: ({ signal }) => fetchSenadoBR({ limit: 30, signal }) },
   { id: 'camara-br', label: 'Câmara dos Deputados', country: 'BR', fn: ({ signal }) => fetchCamaraProposicoes({ limit: 30, signal }) },
   { id: 'votacoes-camara-br', label: 'Câmara BR · Votaciones recientes', country: 'BR', fn: ({ signal }) => fetchVotacoesCamaraBR({ limit: 20, signal }) },
+  { id: 'votacoes-senado-br', label: 'Senado Federal BR · Votaciones nominales', country: 'BR', fn: ({ signal }) => fetchVotacoesSenadoBR({ limit: 20, signal }) },
+  { id: 'eventos-camara-br', label: 'Câmara BR · Agenda y eventos', country: 'BR', fn: ({ signal }) => fetchEventosCamaraBR({ limit: 25, signal }) },
   { id: 'hcdn-ar', label: 'HCDN Argentina · Leyes Nacionales', country: 'AR', fn: ({ signal }) => fetchHcdnArgentina({ limit: 200, signal }) },
   { id: 'leyes-infoleg-ar', label: 'Infoleg AR · Leyes Nacionales (BO)', country: 'AR', fn: ({ signal }) => fetchLeyesInfolegArgentina({ limit: 200, signal }) },
   { id: 'decretos-infoleg-ar', label: 'Infoleg AR · Decretos y DAs', country: 'AR', fn: ({ signal }) => fetchDecretosInfolegArgentina({ limit: 60, signal }) },
