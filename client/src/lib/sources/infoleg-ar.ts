@@ -73,6 +73,7 @@ export async function fetchInfolegArgentina(opts?: {
   limit?: number
   signal?: AbortSignal
   onlyTipo?: InfolegTipo
+  organismoMatch?: RegExp                  // filtrar por organismo emisor
 }): Promise<NewsItem[]> {
   const limit = opts?.limit ?? 100
   const url = `${basePath()}/data/infoleg-ar.json`
@@ -85,6 +86,7 @@ export async function fetchInfolegArgentina(opts?: {
   if (!Array.isArray(data)) return []
   let items = data
   if (opts?.onlyTipo) items = items.filter(i => i.tipo === opts.onlyTipo)
+  if (opts?.organismoMatch) items = items.filter(i => opts.organismoMatch!.test(i.organismo ?? ''))
   // Asumimos que ya viene ordenado por fecha desc, pero re-ordenamos para asegurar
   items.sort((a, b) => (b.fecha ?? '').localeCompare(a.fecha ?? ''))
   return items.slice(0, limit).map(mapInfoleg).filter((x): x is NewsItem => x !== null)
@@ -168,4 +170,33 @@ export function fetchDirectivasInfolegArgentina(opts?: { limit?: number; signal?
 
 export function fetchCircularesInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
   return fetchInfolegArgentina({ limit: opts?.limit ?? 30, signal: opts?.signal, onlyTipo: 'Circular' })
+}
+
+// Fetchers por organismo emisor argentino · útil para destacar fuentes específicas
+export function fetchMercosurComercioAR(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 60, signal: opts?.signal, organismoMatch: /COMERCIO DEL MERCOSUR/i })
+}
+
+export function fetchBCRAArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 40, signal: opts?.signal, organismoMatch: /BANCO CENTRAL/i })
+}
+
+export function fetchSaludArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 30, signal: opts?.signal, organismoMatch: /MINISTERIO DE SALUD|ADM\.NAC\.DE MEDICAMENTOS/i })
+}
+
+export function fetchEconomiaArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 30, signal: opts?.signal, organismoMatch: /MINISTERIO DE ECONOMIA|AGENCIA DE RECAUDACION/i })
+}
+
+export function fetchSeguridadArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 25, signal: opts?.signal, organismoMatch: /MINISTERIO DE SEGURIDAD|MINISTERIO DEL INTERIOR/i })
+}
+
+export function fetchEnergiaArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 25, signal: opts?.signal, organismoMatch: /SECRETARIA DE ENERGIA|ENTE NACIONAL REGULADOR DEL GAS|ENTE NACIONAL REGULADOR DE LA ELECTRICIDAD/i })
+}
+
+export function fetchComunicacionesARorg(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 20, signal: opts?.signal, organismoMatch: /ENTE NACIONAL DE COMUNICACIONES/i })
 }

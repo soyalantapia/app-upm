@@ -18,6 +18,13 @@ import {
   fetchAcordadasInfolegArgentina,
   fetchDirectivasInfolegArgentina,
   fetchCircularesInfolegArgentina,
+  fetchMercosurComercioAR,
+  fetchBCRAArgentina,
+  fetchSaludArgentina,
+  fetchEconomiaArgentina,
+  fetchSeguridadArgentina,
+  fetchEnergiaArgentina,
+  fetchComunicacionesARorg,
 } from './infoleg-ar'
 import { fetchExpedientesHCDN } from './expedientes-hcdn'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
@@ -132,6 +139,14 @@ const FETCHERS: Fetcher[] = [
   { id: 'directivas-ar', label: 'Argentina · Directivas', country: 'AR', fn: ({ signal }) => fetchDirectivasInfolegArgentina({ limit: 50, signal }) },
   { id: 'circulares-ar', label: 'Argentina · Circulares (BCRA, AFIP)', country: 'AR', fn: ({ signal }) => fetchCircularesInfolegArgentina({ limit: 30, signal }) },
   { id: 'expedientes-hcdn-ar', label: 'Cámara de Diputados AR · Expedientes históricos', country: 'AR', fn: ({ signal }) => fetchExpedientesHCDN({ limit: 80, signal }) },
+  // Fuentes AR por organismo · todas tiran del mismo JSON Infoleg con filtro por emisor
+  { id: 'mercosur-comercio-ar', label: 'Argentina · Comisión de Comercio del MERCOSUR', country: 'AR', fn: ({ signal }) => fetchMercosurComercioAR({ limit: 60, signal }) },
+  { id: 'bcra-ar', label: 'Argentina · Banco Central (BCRA)', country: 'AR', fn: ({ signal }) => fetchBCRAArgentina({ limit: 40, signal }) },
+  { id: 'salud-ar', label: 'Argentina · Salud (Min. Salud + ANMAT)', country: 'AR', fn: ({ signal }) => fetchSaludArgentina({ limit: 30, signal }) },
+  { id: 'economia-ar', label: 'Argentina · Economía y Recaudación (ARCA/AFIP)', country: 'AR', fn: ({ signal }) => fetchEconomiaArgentina({ limit: 30, signal }) },
+  { id: 'seguridad-ar', label: 'Argentina · Seguridad e Interior', country: 'AR', fn: ({ signal }) => fetchSeguridadArgentina({ limit: 25, signal }) },
+  { id: 'energia-ar', label: 'Argentina · Energía (Sec. Energía + ENRE/ENARGAS)', country: 'AR', fn: ({ signal }) => fetchEnergiaArgentina({ limit: 25, signal }) },
+  { id: 'enacom-ar', label: 'Argentina · ENACOM Comunicaciones', country: 'AR', fn: ({ signal }) => fetchComunicacionesARorg({ limit: 20, signal }) },
   { id: 'senado-co', label: 'Senado Colombia', country: 'CO', fn: ({ signal }) => fetchProyectosColombia({ limit: 25, signal }) },
   { id: 'leyes-co', label: 'Leyes Sancionadas Colombia', country: 'CO', fn: ({ signal }) => fetchLeyesColombia({ limit: 100, signal }) },
   { id: 'tratados-co', label: 'Cancillería Colombia · Tratados', country: 'CO', fn: ({ signal }) => fetchTratadosColombia({ limit: 25, signal }) },
