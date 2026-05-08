@@ -1,7 +1,6 @@
 import type { CountryCode, NewsItem, Topic } from '@/lib/types'
 import { fetchCamaraProposicoes } from './camara-br'
 import { fetchSenadoBR } from './senado-br'
-import { fetchHcdnArgentina } from './hcdn-ar'
 import { fetchProyectosColombia, fetchLeyesColombia } from './socrata-co'
 import { fetchTratadosColombia } from './tratados-co'
 import { fetchParlamentoUY } from './parlamento-uy'
@@ -111,8 +110,10 @@ const FETCHERS: Fetcher[] = [
   { id: 'votacoes-camara-br', label: 'Câmara BR · Votaciones recientes', country: 'BR', fn: ({ signal }) => fetchVotacoesCamaraBR({ limit: 20, signal }) },
   { id: 'votacoes-senado-br', label: 'Senado Federal BR · Votaciones nominales', country: 'BR', fn: ({ signal }) => fetchVotacoesSenadoBR({ limit: 20, signal }) },
   { id: 'eventos-camara-br', label: 'Câmara BR · Agenda y eventos', country: 'BR', fn: ({ signal }) => fetchEventosCamaraBR({ limit: 25, signal }) },
-  { id: 'hcdn-ar', label: 'HCDN Argentina · Leyes Nacionales', country: 'AR', fn: ({ signal }) => fetchHcdnArgentina({ limit: 200, signal }) },
-  { id: 'leyes-infoleg-ar', label: 'Infoleg AR · Leyes Nacionales (BO)', country: 'AR', fn: ({ signal }) => fetchLeyesInfolegArgentina({ limit: 200, signal }) },
+  // Argentina · Infoleg es la fuente primaria (Min. Justicia, fechas reales del
+  // Boletín Oficial, link al texto consolidado). HCDN se removió porque su CSV
+  // no trae fechas individuales y las leyes salían con fecha del feed (engañoso).
+  { id: 'leyes-infoleg-ar', label: 'Infoleg AR · Leyes Nacionales (BO)', country: 'AR', fn: ({ signal }) => fetchLeyesInfolegArgentina({ limit: 400, signal }) },
   { id: 'decretos-infoleg-ar', label: 'Infoleg AR · Decretos y DAs', country: 'AR', fn: ({ signal }) => fetchDecretosInfolegArgentina({ limit: 60, signal }) },
   { id: 'senado-co', label: 'Senado Colombia', country: 'CO', fn: ({ signal }) => fetchProyectosColombia({ limit: 25, signal }) },
   { id: 'leyes-co', label: 'Leyes Sancionadas Colombia', country: 'CO', fn: ({ signal }) => fetchLeyesColombia({ limit: 100, signal }) },

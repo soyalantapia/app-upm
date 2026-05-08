@@ -94,14 +94,17 @@ function mapProposicao(p: CamaraProposicao): NewsItem {
   const ementa = (p.ementa ?? '').trim()
   const title = `${tipo} ${p.numero}/${p.ano} · Brasil`
   const excerpt = ementa.length > 600 ? ementa.slice(0, 597) + '…' : ementa
-  const today = new Date().toISOString().slice(0, 10)
+  // Fecha aproximada por el año del proyecto. El enrich on-demand reemplaza
+  // dataPublicacao con la fecha exacta (dataApresentacao) cuando se abre el
+  // detalle. Para el listado en Radar usamos el año del proyecto.
+  const fechaAprox = `${p.ano}-01-01`
   return {
     id: 'br-camara-' + p.id,
     title,
     country: 'BR',
     topic: detectTopic(ementa + ' ' + tipo),
     type: SIGLA_TO_TYPE[p.siglaTipo] ?? 'ley',
-    date: today,
+    date: fechaAprox,
     relevance: detectRelevance(p.siglaTipo),
     excerpt: excerpt || `Proposição ${p.siglaTipo} ${p.numero}/${p.ano} en trámite legislativo.`,
     source: `Câmara dos Deputados · Brasil (${p.siglaTipo})`,

@@ -97,8 +97,12 @@ function mapInfoleg(r: InfolegItem): NewsItem | null {
   const fecha = (r.fecha ?? '').slice(0, 10)
   if (!tipo || !numero) return null
 
-  const idPrefix = tipo === 'Ley' ? 'ar-ley-infoleg' : 'ar-norm'
-  const id = `${idPrefix}-${r.id ?? `${tipo}-${numero}`.toLowerCase().replace(/\W+/g, '-')}`
+  // Para Leyes usamos el mismo id que HCDN AR (`ar-ley-{numero}`) para que el
+  // dedupe del index priorice Infoleg (que tiene fecha real). HCDN viene después
+  // en FETCHERS y queda descartado por ser duplicado.
+  const id = tipo === 'Ley'
+    ? `ar-ley-${numero}`
+    : `ar-norm-${r.id ?? `${tipo}-${numero}`.toLowerCase().replace(/\W+/g, '-')}`
 
   const ident = `${tipo} ${numero}`
   const titleClean = titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo
