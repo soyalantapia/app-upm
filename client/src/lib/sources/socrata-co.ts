@@ -140,12 +140,9 @@ function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
 // linkeamos al gestor normativo de Función Pública.
 function buildOfficialUrl(numero: string, isLaw: boolean): string | undefined {
   if (!numero) return undefined
-  // El número viene como "327/20" · para el portal hay que separar por "/"
-  const parts = numero.split('/')
-  if (isLaw && parts.length === 2) {
-    // Leyes sancionadas: link a búsqueda del Diario Oficial
-    return `https://www.suin-juriscol.gov.co/viewDocument.asp?ruta=Leyes/${encodeURIComponent(numero)}`
-  }
-  // Proyectos: portal del Senado con búsqueda
-  return `https://www.senado.gov.co/index.php/component/search/?searchword=${encodeURIComponent('Proyecto de Ley ' + numero)}&searchphrase=all`
+  // Linkeamos al buscador del Senado para ambos casos. Antes usábamos SUIN-Juriscol
+  // para las leyes sancionadas pero su URL viewDocument.asp requiere un ID interno
+  // que no está en el dataset feim-cysj y devolvía 404.
+  const queryBase = isLaw ? 'Ley sancionada Proyecto de Ley' : 'Proyecto de Ley'
+  return `https://www.senado.gov.co/index.php/component/search/?searchword=${encodeURIComponent(queryBase + ' ' + numero)}&searchphrase=all`
 }
