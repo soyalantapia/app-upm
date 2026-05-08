@@ -19,6 +19,7 @@ import {
   fetchDirectivasInfolegArgentina,
   fetchCircularesInfolegArgentina,
 } from './infoleg-ar'
+import { fetchExpedientesHCDN } from './expedientes-hcdn'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
 import { fetchVotacoesSenadoBR } from './votacoes-senado-br'
@@ -130,6 +131,7 @@ const FETCHERS: Fetcher[] = [
   { id: 'acordadas-ar', label: 'Argentina · Acordadas (Corte Suprema)', country: 'AR', fn: ({ signal }) => fetchAcordadasInfolegArgentina({ limit: 30, signal }) },
   { id: 'directivas-ar', label: 'Argentina · Directivas', country: 'AR', fn: ({ signal }) => fetchDirectivasInfolegArgentina({ limit: 50, signal }) },
   { id: 'circulares-ar', label: 'Argentina · Circulares (BCRA, AFIP)', country: 'AR', fn: ({ signal }) => fetchCircularesInfolegArgentina({ limit: 30, signal }) },
+  { id: 'expedientes-hcdn-ar', label: 'Cámara de Diputados AR · Expedientes históricos', country: 'AR', fn: ({ signal }) => fetchExpedientesHCDN({ limit: 80, signal }) },
   { id: 'senado-co', label: 'Senado Colombia', country: 'CO', fn: ({ signal }) => fetchProyectosColombia({ limit: 25, signal }) },
   { id: 'leyes-co', label: 'Leyes Sancionadas Colombia', country: 'CO', fn: ({ signal }) => fetchLeyesColombia({ limit: 100, signal }) },
   { id: 'tratados-co', label: 'Cancillería Colombia · Tratados', country: 'CO', fn: ({ signal }) => fetchTratadosColombia({ limit: 25, signal }) },
