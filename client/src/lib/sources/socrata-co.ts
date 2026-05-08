@@ -64,7 +64,7 @@ function normalizeDate(d?: string): string {
   return d.slice(0, 10)
 }
 
-// Trae proyectos en trámite (NO sancionados) — para el Radar
+// Trae proyectos en trámite (NO sancionados) · para el Radar
 export async function fetchProyectosColombia(opts?: { limit?: number; signal?: AbortSignal }): Promise<NewsItem[]> {
   const limit = opts?.limit ?? 20
   // Solo proyectos con título válido y estado distinto de LEY (los sancionados van a Leyes)
@@ -83,7 +83,7 @@ export async function fetchProyectosColombia(opts?: { limit?: number; signal?: A
   return data.map(r => mapRow(r, 'proyecto')).filter((x): x is NewsItem => x !== null)
 }
 
-// Trae proyectos que YA fueron sancionados como ley — para Leyes
+// Trae proyectos que YA fueron sancionados como ley · para Leyes
 export async function fetchLeyesColombia(opts?: { limit?: number; signal?: AbortSignal }): Promise<NewsItem[]> {
   const limit = opts?.limit ?? 50
   const params = new URLSearchParams({
@@ -140,7 +140,7 @@ function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
 // linkeamos al gestor normativo de Función Pública.
 function buildOfficialUrl(numero: string, isLaw: boolean): string | undefined {
   if (!numero) return undefined
-  // El número viene como "327/20" — para el portal hay que separar por "/"
+  // El número viene como "327/20" · para el portal hay que separar por "/"
   const parts = numero.split('/')
   if (isLaw && parts.length === 2) {
     // Leyes sancionadas: link a búsqueda del Diario Oficial

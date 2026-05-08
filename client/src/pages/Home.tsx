@@ -101,7 +101,7 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* Stats — clickeables */}
+      {/* Stats clickeables */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <button onClick={() => navigate('/radar')} className="text-left transition hover:-translate-y-0.5">
           <Stat label="Novedades hoy" value={NEWS.length} hint="Filtradas por tus temas" />
@@ -126,7 +126,7 @@ export function HomePage() {
             description="Novedades, alertas y materiales priorizados por tus temas y países."
           />
 
-          {/* Alerta prioritaria — primero (urgente) */}
+          {/* Alerta prioritaria, primero (urgente) */}
           <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.18em] text-danger-fg">
             <AlertTriangle size={11} /> Urgente · Alerta de tema prioritario
           </div>

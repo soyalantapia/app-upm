@@ -86,7 +86,7 @@ export async function fetchParlamentoUY(opts?: {
   if (!res.ok) throw new Error(`Parlamento UY error: ${res.status}`)
   const data = (await res.json()) as AsuntoUY[]
   if (!Array.isArray(data)) return []
-  // El endpoint devuelve los más recientes primero — limit y mapeamos.
+  // El endpoint devuelve los más recientes primero · limit y mapeamos.
   return data
     .slice(0, limit * 2)
     .map(mapAsunto)
@@ -103,7 +103,7 @@ function mapAsunto(r: AsuntoUY): NewsItem | null {
   const cuerpo = r.Cpo_Codigo ?? 'Parlamento'
   const tipoLabel = TIPO_FULL[tipo] || tipo
   const ident = numero && anio ? `${tipoLabel} ${numero}/${anio}` : tipoLabel
-  // Detectar tipo de doc — por defecto 'ley' si dice PROYECTO DE LEY en título
+  // Detectar tipo de doc · por defecto 'ley' si dice PROYECTO DE LEY en título
   const isProyectoLey = /\(PROYECTO DE LEY\)/i.test(titulo) || tipoLabel.toLowerCase().includes('proyecto')
   // URL https para evitar mixed content (la API devuelve http://)
   const sourceUrl = url ? url.replace(/^http:/, 'https:') : undefined

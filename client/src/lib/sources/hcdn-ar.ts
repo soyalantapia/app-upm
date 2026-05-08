@@ -1,6 +1,6 @@
 import type { NewsItem, Topic } from '@/lib/types'
 
-// HCDN — Cámara de Diputados de Argentina
+// HCDN · Cámara de Diputados de Argentina
 // Fuente original: dataset oficial 'leyes-sumario' de datos.hcdn.gob.ar
 // (5418c27d-344f-48bd-b21b-8fe1c7ad7eec)
 //

@@ -67,7 +67,7 @@ export function SignupPage() {
         </Link>
 
         <div className="grid gap-6 pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-start lg:gap-8 lg:pt-0">
-          {/* Pitch — visible mobile y desktop, layout adaptativo */}
+          {/* Pitch visible mobile y desktop, layout adaptativo */}
           <div className="flex flex-col gap-5 text-white">
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/85 ring-1 ring-white/20">
               <Zap size={11} /> Membresía institucional UPM

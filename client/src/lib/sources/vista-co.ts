@@ -110,7 +110,7 @@ export async function fetchVistaProyectosColombia(opts?: {
   const data = (await res.json()) as VistaRow[]
   if (!Array.isArray(data)) return []
 
-  // Dedupe por código de Cámara (campo `_`) — el dataset trae filas duplicadas
+  // Dedupe por código de Cámara (campo `_`) · el dataset trae filas duplicadas
   // por proyecto cuando hay más de un autor.
   const byCode = new Map<string, VistaRow>()
   for (const row of data) {

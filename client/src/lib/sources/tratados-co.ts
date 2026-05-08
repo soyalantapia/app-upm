@@ -111,7 +111,7 @@ function mapTratado(r: TratadoRow, idx: number): NewsItem | null {
   // Excerpt: tipo de tratado + países + lugar + tema
   const excerptParts: string[] = []
   if (naturaleza) excerptParts.push(naturaleza)
-  excerptParts.push(`${bilateral ? 'Bilateral' : 'Multilateral'} con ${estados || '—'}`)
+  excerptParts.push(`${bilateral ? 'Bilateral' : 'Multilateral'} con ${estados || 'varios estados'}`)
   if (lugar) excerptParts.push(`Adoptado en ${lugar}`)
   if (temas) excerptParts.push(`Tema: ${temas}`)
   if (!noRegistraLey) excerptParts.push(`Aprobado por Ley ${numLey}`)

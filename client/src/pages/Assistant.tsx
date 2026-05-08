@@ -214,7 +214,7 @@ export function AssistantPage() {
         </Card>
       )}
 
-      {/* Chat — única columna */}
+      {/* Chat · única columna */}
       <div className="flex min-h-0 flex-1 flex-col rounded-3xl bg-white ring-1 ring-ink-100 shadow-card">
         <div ref={scrollerRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-5 sm:px-6" style={{ maxHeight: 'calc(100svh - 260px)' }}>
           {messages.map(m => (

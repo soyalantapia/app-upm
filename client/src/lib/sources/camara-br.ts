@@ -152,7 +152,7 @@ export async function enrichCamaraItem(item: NewsItem, signal?: AbortSignal): Pr
       .split(/[,;]/)
       .map(k => k.trim())
       .filter(Boolean)
-    // Tramitacoes vienen del más antiguo al más reciente — invertimos y tomamos las últimas 10
+    // Tramitacoes vienen del más antiguo al más reciente · invertimos y tomamos las últimas 10
     const tramitaciones: Tramitacion[] = (tram.dados ?? [])
       .slice()
       .reverse()

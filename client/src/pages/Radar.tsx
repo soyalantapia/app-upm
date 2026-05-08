@@ -169,7 +169,7 @@ export function RadarPage() {
         </div>
       )}
 
-      {/* Search + Sort + Toggle filtros — todo en una sola fila */}
+      {/* Search + Sort + Toggle filtros, todo en una sola fila */}
       <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">
         <div className="flex items-center gap-2">
           <label className="flex flex-1 min-w-0 items-center gap-2 rounded-2xl bg-upm-50/40 px-3 py-2.5 ring-1 ring-upm-100 focus-within:bg-white focus-within:ring-upm-400">
