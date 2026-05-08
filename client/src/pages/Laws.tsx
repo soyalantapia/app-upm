@@ -33,6 +33,10 @@ function isSanctionedLaw(item: NewsItem): boolean {
   if (item.id.startsWith('co-ley-')) return true
   // Colombia · Vista Proyectos cuando estado_del_proyecto_de_ley='Ley' (xs56-s7w6)
   if (item.id.startsWith('co-vista-') && /^ley\b/i.test(item.status ?? '')) return true
+  // Colombia · Presidencia DAPRE: leyes, actos legislativos, constitución
+  if (item.id.startsWith('co-pres-leyes-')) return true
+  if (item.id.startsWith('co-pres-actos-legislativos-')) return true
+  if (item.id.startsWith('co-pres-constitución-')) return true
   // Uruguay: 4753 leyes promulgadas por el Poder Ejecutivo
   if (item.id.startsWith('uy-ley-')) return true
   return false

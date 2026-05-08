@@ -8,6 +8,7 @@ import { fetchParlamentoUY } from './parlamento-uy'
 import { fetchVistaProyectosColombia } from './vista-co'
 import { fetchVotacionesColombia } from './votaciones-co'
 import { fetchLeyesUruguay } from './leyes-uy'
+import { fetchLeyesPresidenciaColombia, fetchDecretosPresidenciaColombia } from './presidencia-co'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -108,6 +109,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'tratados-co', label: 'Cancillería Colombia · Tratados', country: 'CO', fn: ({ signal }) => fetchTratadosColombia({ limit: 25, signal }) },
   { id: 'vista-co', label: 'Senado y Cámara CO · Texto íntegro', country: 'CO', fn: ({ signal }) => fetchVistaProyectosColombia({ limit: 50, signal }) },
   { id: 'votaciones-co', label: 'Senado CO · Votaciones nominales', country: 'CO', fn: ({ signal }) => fetchVotacionesColombia({ limit: 15, signal }) },
+  { id: 'leyes-presidencia-co', label: 'Presidencia CO · Leyes y Actos Legislativos', country: 'CO', fn: ({ signal }) => fetchLeyesPresidenciaColombia({ limit: 100, signal }) },
+  { id: 'decretos-presidencia-co', label: 'Presidencia CO · Decretos y Resoluciones', country: 'CO', fn: ({ signal }) => fetchDecretosPresidenciaColombia({ limit: 40, signal }) },
   { id: 'parlamento-uy', label: 'Parlamento del Uruguay', country: 'UY', fn: ({ signal }) => fetchParlamentoUY({ limit: 25, signal }) },
   { id: 'leyes-uy', label: 'Leyes Promulgadas Uruguay', country: 'UY', fn: ({ signal }) => fetchLeyesUruguay({ limit: 80, signal }) },
 ]
