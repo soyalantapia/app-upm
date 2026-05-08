@@ -20,6 +20,7 @@ type LeyUY = {
   Asunto?: string                      // HTML con link a la ficha
   Leyes_Referenciadas?: string         // contador
   Leyes_que_referencia?: string        // contador
+  textoCompleto?: string               // texto íntegro pre-descargado de parlamento.gub.uy
 }
 
 function detectTopic(text: string): Topic {
@@ -90,6 +91,11 @@ function mapLey(r: LeyUY): NewsItem | null {
   const textoUrl = (r.Texto_Actualizado ?? r.Texto_Original ?? '').replace(/^http:/, 'https:')
   const titleClean = titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo
 
+  // Preferimos texto íntegro pre-descargado de parlamento.gub.uy/leyes/ley/{n}
+  // sobre el título resumido. 197 de las 200 leyes más recientes lo tienen.
+  const fullText = (r.textoCompleto && r.textoCompleto.length > 200)
+    ? r.textoCompleto
+    : titulo
   return {
     id: `uy-ley-${numero}`,
     title: `Ley ${numero} · ${titleClean}`,
@@ -98,9 +104,9 @@ function mapLey(r: LeyUY): NewsItem | null {
     type: 'ley',
     date: fecha,
     relevance: detectRelevance(titulo),
-    excerpt: titulo.length > 600 ? titulo.slice(0, 597) + '…' : titulo,
+    excerpt: fullText.length > 600 ? fullText.slice(0, 597) + '…' : fullText,
     source: `Ley ${numero} de Uruguay · Parlamento del Uruguay (Asamblea General)`,
-    fullText: titulo,
+    fullText,
     status: 'Promulgada',
     tipoDocumento: `Ley ${numero}`,
     sourceUrl: textoUrl || fichaUrl || undefined,
