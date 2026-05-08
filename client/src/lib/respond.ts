@@ -29,7 +29,7 @@ const PATTERNS: Pattern[] = [
     isInstitutional: true,
     sources: ['d2', 'd12', 'd3', 'd4'],
     body:
-      '**Resumen ejecutivo — Corredores bioceánicos**\n\n' +
+      '**Resumen ejecutivo · Corredores bioceánicos**\n\n' +
       'Los principales puntos a considerar son:\n\n' +
       '1. Avances normativos recientes en infraestructura logística.\n' +
       '2. Temas más relevantes: financiamiento, aduanas y coordinación interjurisdiccional.\n' +
@@ -58,7 +58,7 @@ const PATTERNS: Pattern[] = [
     isInstitutional: true,
     sources: ['d1', 'd5', 'd8'],
     body:
-      '**Novedades de Ambiente — esta semana**\n\n' +
+      '**Novedades de Ambiente esta semana**\n\n' +
       '1. Brasil avanza con un decreto que actualiza criterios de control ambiental.\n' +
       '2. Uruguay mantiene su marco vigente de Protección Ambiental Regional.\n' +
       '3. Hay coincidencias técnicas entre los marcos normativos del cono sur.\n\n' +
@@ -182,7 +182,7 @@ const PATTERNS: Pattern[] = [
     isInstitutional: true,
     sources: ['d4', 'd9', 'd10'],
     body:
-      '**Síntesis — Integración MERCOSUR**\n\n' +
+      '**Síntesis: Integración MERCOSUR**\n\n' +
       'Los ejes activos de la agenda son:\n\n' +
       '1. **Cooperación aduanera**: criterios comunes y procesos coordinados.\n' +
       '2. **Coordinación legislativa digital**: nueva etapa impulsada por UPM.\n' +
@@ -198,7 +198,7 @@ const PATTERNS: Pattern[] = [
     isInstitutional: true,
     sources: ['d6', 'd11'],
     body:
-      '**Síntesis — Río Uruguay**\n\n' +
+      '**Síntesis: Río Uruguay**\n\n' +
       'Tema bilateral con marco institucional consolidado y novedades recientes:\n\n' +
       '- Ajustes a criterios de monitoreo y reporte.\n' +
       '- Coordinación binacional sobre cuenca.\n' +
@@ -209,7 +209,7 @@ const PATTERNS: Pattern[] = [
     match: q => /(g[eé]nero|paridad)/i.test(q),
     isInstitutional: false,
     body:
-      '**Síntesis — Género y paridad**\n\n' +
+      '**Síntesis: Género y paridad**\n\n' +
       'La región avanza en marcos de paridad y representación. Hay un proyecto reciente en Paraguay sobre paridad en listas y organismos públicos.\n\n' +
       '- Foro UPM activo, con miembros de toda la región.\n' +
       '- Posibilidad de elaborar dictamen comparado.\n' +
@@ -219,7 +219,7 @@ const PATTERNS: Pattern[] = [
     match: q => /(salud|sanitaria)/i.test(q),
     isInstitutional: false,
     body:
-      '**Síntesis — Salud regional**\n\n' +
+      '**Síntesis: Salud regional**\n\n' +
       'Hay una nueva ley marco en Bolivia con foco en zonas fronterizas y poblaciones vulnerables.\n\n' +
       '- Oportunidad de articular criterios comunes con países limítrofes.\n' +
       '- Antecedentes en Argentina, Brasil y Uruguay.\n' +
@@ -230,7 +230,7 @@ const PATTERNS: Pattern[] = [
     isInstitutional: true,
     sources: ['d7'],
     body:
-      '**Síntesis — Educación pública regional**\n\n' +
+      '**Síntesis: Educación pública regional**\n\n' +
       'Hay un informe técnico comparativo reciente sobre financiamiento entre países del cono sur.\n\n' +
       '- Asimetrías de financiamiento.\n' +
       '- Oportunidades de cooperación académica regional.\n' +
@@ -241,7 +241,7 @@ const PATTERNS: Pattern[] = [
     match: q => /(seguridad|fronterizo|fronteriza)/i.test(q),
     isInstitutional: false,
     body:
-      '**Síntesis — Seguridad y zonas fronterizas**\n\n' +
+      '**Síntesis: Seguridad y zonas fronterizas**\n\n' +
       'Tema con sensibilidad institucional alta. Recomendable trabajarlo en marco de cooperación regional, no como decisión aislada.\n\n' +
       '- Coordinación entre organismos.\n' +
       '- Información técnica con respaldo.\n' +
@@ -253,7 +253,7 @@ const PATTERNS: Pattern[] = [
     isInstitutional: true,
     sources: ['d9', 'd4'],
     body:
-      '**Síntesis — Economía regional**\n\n' +
+      '**Síntesis: Economía regional**\n\n' +
       'Eje con avances recientes en cooperación aduanera MERCOSUR y trabajo del Foro de Integración Regional.\n\n' +
       '- Acuerdos sobre criterios y procesos comunes.\n' +
       '- Espacio para profundizar coordinación.\n' +
@@ -263,7 +263,7 @@ const PATTERNS: Pattern[] = [
     match: q => /(rrii|relaciones internacionales|tratado)/i.test(q),
     isInstitutional: false,
     body:
-      '**Síntesis — Relaciones internacionales**\n\n' +
+      '**Síntesis: Relaciones internacionales**\n\n' +
       'Hay un decreto reciente en Perú sobre coordinación entre cancillería y comisiones legislativas para tratados regionales.\n\n' +
       '- Relevancia institucional clara.\n' +
       '- Espacio para trabajo conjunto vía Foro UPM de RRII.\n' +

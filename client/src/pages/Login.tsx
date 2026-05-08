@@ -58,7 +58,7 @@ export function LoginPage() {
               Una plataforma que <span className="text-upm-200">informa, ordena y prepara</span> el trabajo del legislador.
             </h1>
             <p className="max-w-md text-[14.5px] leading-relaxed text-white/75">
-              Radar normativo regional, biblioteca institucional UPM y un asistente AI que convierte cada tema en un brief listo para usar — con fuentes verificables.
+              Radar normativo regional, biblioteca institucional UPM y un asistente AI que convierte cada tema en un brief listo para usar, con fuentes verificables.
             </p>
           </div>
 
@@ -81,7 +81,7 @@ export function LoginPage() {
           </div>
 
           <div className="text-[12px] text-white/55">
-            Ecosistema cerrado — UPM. Acceso institucional para miembros y autoridades autorizadas.
+            Ecosistema cerrado · UPM. Acceso institucional para miembros y autoridades autorizadas.
           </div>
         </div>
 

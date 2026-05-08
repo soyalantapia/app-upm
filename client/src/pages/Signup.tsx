@@ -32,7 +32,7 @@ const BENEFITS: { icon: LucideIcon; title: string; desc: string }[] = [
 const FAQ = [
   { q: '¿Quiénes pueden acceder?', a: 'Legisladores, autoridades y secretarías UPM acreditadas.' },
   { q: '¿Cómo se factura?', a: 'Mensual, sin permanencia. Cancelás cuando quieras.' },
-  { q: '¿Mi información es privada?', a: 'Sí — tu carpeta y conversaciones son privadas.' },
+  { q: '¿Mi información es privada?', a: 'Sí, tu carpeta y conversaciones son privadas.' },
 ]
 
 export function SignupPage() {
@@ -79,7 +79,7 @@ export function SignupPage() {
             </h1>
 
             <p className="max-w-md text-[14px] leading-relaxed text-white/75 sm:text-[15px]">
-              Asistente AI institucional, radar normativo regional y biblioteca UPM curada — todo desde un mismo espacio.
+              Asistente AI institucional, radar normativo regional y biblioteca UPM curada, todo desde un mismo espacio.
             </p>
 
             {/* Pricing card mobile-friendly */}

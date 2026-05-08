@@ -218,7 +218,7 @@ export function CheckoutPage() {
                   </>
                 ) : (
                   <>
-                    <Lock size={15} /> Confirmar canje — USD 100/mes
+                    <Lock size={15} /> Confirmar canje · USD 100/mes
                     <ArrowRight size={15} />
                   </>
                 )}

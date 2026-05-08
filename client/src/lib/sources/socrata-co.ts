@@ -114,8 +114,8 @@ function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
   return {
     id: (isLaw ? 'co-ley-' : 'co-proyecto-') + (numero || Math.random().toString(36).slice(2, 9)),
     title: isLaw
-      ? `${ident} (sancionado) — ${titleClean}`
-      : `${ident} — ${titleClean}`,
+      ? `${ident} (sancionado) · ${titleClean}`
+      : `${ident} · ${titleClean}`,
     country: 'CO',
     topic: detectTopic(titulo),
     type: 'ley',

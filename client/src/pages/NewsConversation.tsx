@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { Badge, Eyebrow } from '@/components/ui'
 import { countryByCode, topicById } from '@/lib/data'
+import { formatDate, formatDateTime } from '@/lib/format'
 import { store, useStore } from '@/lib/store'
 import { shareLink } from '@/lib/share'
 import { useNewsItem } from '@/lib/use-news-item'
@@ -74,7 +75,7 @@ export function NewsConversationPage() {
     }
   }
 
-  const fmt = (d?: string) => (d ? d.slice(0, 10) : null)
+  const fmt = (d?: string) => (d ? formatDate(d) : null)
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[820px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
@@ -204,7 +205,7 @@ export function NewsConversationPage() {
                   />
                   <div className="flex flex-wrap items-center gap-1.5">
                     {t.fecha && (
-                      <span className="text-[11px] font-bold tabular-nums text-ink-700">{t.fecha}</span>
+                      <span className="text-[11px] font-bold tabular-nums text-ink-700">{formatDateTime(t.fecha)}</span>
                     )}
                     {t.organo && (
                       <span className="rounded-md bg-ink-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-600 ring-1 ring-ink-100">
@@ -230,7 +231,7 @@ export function NewsConversationPage() {
           <div className="mt-1.5 flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-[14px] font-bold text-ink-900">{news.source}</div>
-              <div className="mt-0.5 text-[11.5px] text-ink-500 tabular-nums">Fecha del feed: {news.date}</div>
+              <div className="mt-0.5 text-[11.5px] text-ink-500 tabular-nums">Fecha del feed: {formatDate(news.date)}</div>
             </div>
             {news.sourceUrl && (
               <a

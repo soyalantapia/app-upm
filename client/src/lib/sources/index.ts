@@ -7,6 +7,7 @@ import { fetchProyectosColombia, fetchLeyesColombia } from './socrata-co'
 import { fetchTratadosColombia } from './tratados-co'
 import { fetchParlamentoUY } from './parlamento-uy'
 import { fetchVistaProyectosColombia } from './vista-co'
+import { fetchVotacionesColombia } from './votaciones-co'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -105,7 +106,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'senado-co', label: 'Senado Colombia', country: 'CO', fn: ({ signal }) => fetchProyectosColombia({ limit: 25, signal }) },
   { id: 'leyes-co', label: 'Leyes Sancionadas Colombia', country: 'CO', fn: ({ signal }) => fetchLeyesColombia({ limit: 30, signal }) },
   { id: 'tratados-co', label: 'Cancillería Colombia · Tratados', country: 'CO', fn: ({ signal }) => fetchTratadosColombia({ limit: 25, signal }) },
-  { id: 'vista-co', label: 'Senado/Cámara CO · Texto íntegro', country: 'CO', fn: ({ signal }) => fetchVistaProyectosColombia({ limit: 20, signal }) },
+  { id: 'vista-co', label: 'Senado y Cámara CO · Texto íntegro', country: 'CO', fn: ({ signal }) => fetchVistaProyectosColombia({ limit: 20, signal }) },
+  { id: 'votaciones-co', label: 'Senado CO · Votaciones nominales', country: 'CO', fn: ({ signal }) => fetchVotacionesColombia({ limit: 15, signal }) },
   { id: 'parlamento-uy', label: 'Parlamento del Uruguay', country: 'UY', fn: ({ signal }) => fetchParlamentoUY({ limit: 25, signal }) },
 ]
 

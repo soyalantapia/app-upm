@@ -53,7 +53,7 @@ export const NEWS: NewsItem[] = [
     date: '2026-05-05',
     relevance: 'alta',
     excerpt: 'El decreto actualiza criterios de control ambiental, incorpora obligaciones de reporte y refuerza la coordinación con autoridades competentes.',
-    source: 'Boletín Oficial — Brasil',
+    source: 'Boletín Oficial · Brasil',
   },
   {
     id: 'n2',
@@ -64,7 +64,7 @@ export const NEWS: NewsItem[] = [
     date: '2026-05-04',
     relevance: 'alta',
     excerpt: 'Iniciativa que ordena financiamiento, infraestructura y coordinación interjurisdiccional para corredores bioceánicos del cono sur.',
-    source: 'HCDN — Cámara de Diputados Argentina',
+    source: 'HCDN · Cámara de Diputados Argentina',
   },
   {
     id: 'n3',
@@ -90,7 +90,7 @@ export const NEWS: NewsItem[] = [
   },
   {
     id: 'n5',
-    title: 'Avances en ley de paridad de género — Paraguay',
+    title: 'Avances en ley de paridad de género · Paraguay',
     country: 'PY',
     topic: 'genero',
     type: 'ley',
@@ -112,7 +112,7 @@ export const NEWS: NewsItem[] = [
   },
   {
     id: 'n7',
-    title: 'Informe técnico — Educación pública regional',
+    title: 'Informe técnico · Educación pública regional',
     country: 'CL',
     topic: 'educacion',
     type: 'informe',
@@ -123,7 +123,7 @@ export const NEWS: NewsItem[] = [
   },
   {
     id: 'n8',
-    title: 'MERCOSUR — Acuerdo sobre cooperación aduanera',
+    title: 'MERCOSUR · Acuerdo sobre cooperación aduanera',
     country: 'AR',
     topic: 'mercosur',
     type: 'acta',
@@ -141,18 +141,18 @@ export const NEWS: NewsItem[] = [
     date: '2026-04-25',
     relevance: 'media',
     excerpt: 'Establece principios para programas de salud pública con énfasis en zonas fronterizas y poblaciones vulnerables.',
-    source: 'Asamblea Plurinacional — Bolivia',
+    source: 'Asamblea Plurinacional · Bolivia',
   },
   {
     id: 'n10',
-    title: 'Decreto sobre RRII — Perú',
+    title: 'Decreto sobre RRII · Perú',
     country: 'PE',
     topic: 'rrii',
     type: 'decreto',
     date: '2026-04-24',
     relevance: 'baja',
     excerpt: 'Reordena criterios de coordinación entre cancillería y comisiones legislativas para tratados regionales.',
-    source: 'Diario Oficial — Perú',
+    source: 'Diario Oficial · Perú',
   },
 ]
 
@@ -206,7 +206,7 @@ export const DOCUMENTS: Document[] = [
   },
   {
     id: 'd6',
-    title: 'Minuta de reunión UPM — Río Uruguay',
+    title: 'Minuta de reunión UPM · Río Uruguay',
     type: 'minuta',
     topic: 'rio-uruguay',
     status: 'oficial',
@@ -245,7 +245,7 @@ export const DOCUMENTS: Document[] = [
   },
   {
     id: 'd10',
-    title: 'Comunicado UPM — Cooperación legislativa digital',
+    title: 'Comunicado UPM · Cooperación legislativa digital',
     type: 'comunicado',
     topic: 'integracion-regional',
     status: 'oficial',
@@ -264,7 +264,7 @@ export const DOCUMENTS: Document[] = [
   },
   {
     id: 'd12',
-    title: 'Agenda preliminar — Foro Corredores Bioceánicos',
+    title: 'Agenda preliminar · Foro Corredores Bioceánicos',
     type: 'minuta',
     topic: 'corredores-bioceanicos',
     status: 'curado',
@@ -277,7 +277,7 @@ export const DOCUMENTS: Document[] = [
 export const DOSSIERS: Dossier[] = [
   {
     id: 'ds1',
-    title: 'Dossier — Corredores bioceánicos',
+    title: 'Dossier · Corredores bioceánicos',
     topic: 'corredores-bioceanicos',
     updatedAt: '2026-05-04',
     summary:
@@ -295,7 +295,7 @@ export const DOSSIERS: Dossier[] = [
   },
   {
     id: 'ds2',
-    title: 'Dossier — Ambiente y reporte regional',
+    title: 'Dossier · Ambiente y reporte regional',
     topic: 'ambiente',
     updatedAt: '2026-05-02',
     summary:
@@ -313,7 +313,7 @@ export const DOSSIERS: Dossier[] = [
 
 export const FOLDERS: Folder[] = [
   { id: 'f1', title: 'Comisión Ambiente', itemCount: 7, description: 'Material para próxima comisión' },
-  { id: 'f2', title: 'Reunión Brasil — Uruguay', itemCount: 4, description: 'Documentos de preparación' },
+  { id: 'f2', title: 'Reunión Brasil · Uruguay', itemCount: 4, description: 'Documentos de preparación' },
   { id: 'f3', title: 'Foro Corredores', itemCount: 9, description: 'Trabajo en curso' },
   { id: 'f4', title: 'Documentos para entrevista', itemCount: 3 },
   { id: 'f5', title: 'Pendientes legislativos', itemCount: 12, description: 'Seguimiento personal' },
@@ -331,7 +331,7 @@ export const AGENDA: AgendaEvent[] = [
   },
   {
     id: 'a2',
-    title: 'Reunión bilateral Argentina — Brasil',
+    title: 'Reunión bilateral Argentina · Brasil',
     date: '2026-05-15',
     participants: 'Comisiones bilaterales',
     status: 'pendiente',

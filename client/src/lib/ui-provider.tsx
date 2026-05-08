@@ -31,7 +31,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const openCreateMinuta = useCallback((preset?: { title?: string; body?: string; ref?: string }) => {
     setNoteIntent({
       mode: 'minuta',
-      defaultTitle: preset?.title ?? 'Minuta — ',
+      defaultTitle: preset?.title ?? 'Minuta: ',
       defaultBody: preset?.body,
       ref: preset?.ref,
     })
@@ -39,7 +39,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const openCreateBrief = useCallback((preset?: { title?: string; body?: string; ref?: string }) => {
     setNoteIntent({
       mode: 'brief',
-      defaultTitle: preset?.title ?? 'Brief — ',
+      defaultTitle: preset?.title ?? 'Brief: ',
       defaultBody: preset?.body,
       ref: preset?.ref,
     })
@@ -58,7 +58,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
         doc={doc}
         onClose={closeDocument}
         onCreateMinuta={() => {
-          if (doc) openCreateMinuta({ title: `Minuta — ${doc.title}`, ref: doc.id })
+          if (doc) openCreateMinuta({ title: `Minuta: ${doc.title}`, ref: doc.id })
         }}
       />
       <CreateNoteModal intent={noteIntent} onClose={closeNote} />

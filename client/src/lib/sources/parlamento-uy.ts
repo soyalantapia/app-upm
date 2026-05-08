@@ -1,7 +1,7 @@
 import type { NewsItem, Topic, Tramitacion } from '@/lib/types'
 import { fetchWithCorsFallback } from './cors-fetch'
 
-// Parlamento del Uruguay — Asuntos Entrados (proyectos al Parlamento)
+// Parlamento del Uruguay · Asuntos Entrados (proyectos al Parlamento)
 // Endpoint oficial: parlamento.gub.uy/.../asuntos-entrados/json
 //
 // CORS: ❌ no abre Access-Control-Allow-Origin → vamos vía proxy.
@@ -109,7 +109,7 @@ function mapAsunto(r: AsuntoUY): NewsItem | null {
   const sourceUrl = url ? url.replace(/^http:/, 'https:') : undefined
   return {
     id: `uy-${codigo || titulo.slice(0, 20).toLowerCase().replace(/\W+/g, '-')}`,
-    title: `${ident} — ${titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo}`,
+    title: `${ident} · ${titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo}`,
     country: 'UY',
     topic: detectTopic(titulo),
     type: isProyectoLey ? 'ley' : 'comunicado',
@@ -193,7 +193,7 @@ function mergeUYDetail(item: NewsItem, html: string): NewsItem {
       .filter(s => s.length > 1 && s.length < 100 && /\p{L}/u.test(s))
       .slice(0, 14)
     if (lista.length > 0) {
-      authors = (cuerpo ? cuerpo + ' — ' : '') + lista.join('; ')
+      authors = (cuerpo ? cuerpo + ' · ' : '') + lista.join('; ')
     }
   }
 
@@ -218,7 +218,7 @@ function mergeUYDetail(item: NewsItem, html: string): NewsItem {
     const isoDate = fecha.split('-').reverse().join('-')
     tramitaciones.push({
       fecha: isoDate,
-      descripcion: 'Entrada al Parlamento — ' + descripcion.trim().slice(0, 160),
+      descripcion: 'Entrada al Parlamento · ' + descripcion.trim().slice(0, 160),
       organo: cuerpo,
       despacho: `Carpeta ${carpeta}`,
     })

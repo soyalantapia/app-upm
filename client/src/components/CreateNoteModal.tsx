@@ -30,7 +30,7 @@ export function CreateNoteModal({
 
   useEffect(() => {
     if (intent) {
-      setTitle(intent.defaultTitle ?? (intent.mode === 'minuta' ? 'Minuta — ' : 'Brief — '))
+      setTitle(intent.defaultTitle ?? (intent.mode === 'minuta' ? 'Minuta: ' : 'Brief: '))
       setBody(intent.defaultBody ?? '')
       setTopic('integracion-regional')
       setFolderId(undefined)
@@ -95,7 +95,7 @@ export function CreateNoteModal({
           <input
             value={title}
             onChange={e => setTitle(e.target.value)}
-            placeholder={isMinuta ? 'Minuta — Reunión...' : 'Brief — Tema...'}
+            placeholder={isMinuta ? 'Minuta: Reunión...' : 'Brief: Tema...'}
             className="rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
           />
         </label>

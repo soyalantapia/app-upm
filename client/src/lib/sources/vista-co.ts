@@ -147,8 +147,8 @@ function mapVista(r: VistaRow): NewsItem | null {
 
   const titleClean = titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo
   const title = isLaw
-    ? `${ident} (sancionado) — ${titleClean || nombreCorto}`
-    : `${ident} — ${titleClean || nombreCorto}`
+    ? `${ident} (sancionado) · ${titleClean || nombreCorto}`
+    : `${ident} · ${titleClean || nombreCorto}`
 
   // Excerpt rico: nombre corto + autoría + estado
   const excerptParts: string[] = []
@@ -156,7 +156,7 @@ function mapVista(r: VistaRow): NewsItem | null {
     excerptParts.push(nombreCorto)
   }
   if (titulo) excerptParts.push(titulo)
-  const excerpt = excerptParts.join(' — ')
+  const excerpt = excerptParts.join(' · ')
   const excerptCut = excerpt.length > 600 ? excerpt.slice(0, 597) + '…' : excerpt
 
   // Autoría compuesta: cargos + nombres
@@ -172,8 +172,8 @@ function mapVista(r: VistaRow): NewsItem | null {
     relevance: detectRelevance(estado, titulo + ' ' + nombreCorto),
     excerpt: excerptCut || nombreCorto || titulo,
     source: isLaw
-      ? `Senado / Cámara de Colombia · Sancionado como ley`
-      : `Senado / Cámara de Colombia · ${estado || 'En trámite'}`,
+      ? `Senado y Cámara de Colombia · Sancionado como ley`
+      : `Senado y Cámara de Colombia · ${estado || 'En trámite'}`,
     fullText: titulo,
     authors: authorsFull,
     status: estado || undefined,

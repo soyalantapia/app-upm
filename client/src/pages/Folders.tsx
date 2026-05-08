@@ -26,9 +26,9 @@ import { cn } from '@/lib/cn'
 const SEED: { id: string; type: SavedType; title: string; ref?: string }[] = [
   { id: 'seed-1', type: 'novedad', title: 'Nueva reglamentación ambiental en Brasil', ref: 'n1' },
   { id: 'seed-2', type: 'documento', title: 'Convenio de cooperación legislativa regional', ref: 'd3' },
-  { id: 'seed-3', type: 'respuesta', title: 'Resumen ejecutivo — Corredores bioceánicos' },
+  { id: 'seed-3', type: 'respuesta', title: 'Resumen ejecutivo · Corredores bioceánicos' },
   { id: 'seed-4', type: 'brief', title: 'Brief de reunión bilateral Argentina-Brasil' },
-  { id: 'seed-5', type: 'minuta', title: 'Minuta — Foro de Medio Ambiente' },
+  { id: 'seed-5', type: 'minuta', title: 'Minuta: Foro de Medio Ambiente' },
 ]
 
 const TYPE_META: Record<SavedType, { label: string; icon: LucideIcon; tone: string }> = {
@@ -81,7 +81,7 @@ export function FoldersPage() {
       <PageHeader
         eyebrow={<Eyebrow icon={<FolderClosed size={11} />}>Mi carpeta</Eyebrow>}
         title="Tu espacio privado de trabajo"
-        description="Guardá briefs, documentos, minutas y respuestas. Privado — solo visible para vos."
+        description="Guardá briefs, documentos, minutas y respuestas. Privado, solo visible para vos."
         actions={
           <>
             <Badge tone="ghost"><Lock size={11} /> Privado</Badge>
@@ -145,7 +145,7 @@ export function FoldersPage() {
         </div>
       </div>
 
-      {/* Guardados — lista plana */}
+      {/* Guardados, lista plana */}
       <div>
         <div className="flex items-end justify-between">
           <h2 className="text-[15px] font-bold tracking-tight text-ink-900">Guardados</h2>

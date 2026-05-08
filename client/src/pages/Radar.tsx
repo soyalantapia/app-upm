@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
+import { formatDate } from '@/lib/format'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
 import { store, useStore } from '@/lib/store'
 import { useUI } from '@/lib/ui-provider'
@@ -387,7 +388,7 @@ export function RadarPage() {
                       <Badge tone="brand">{country.flag} {country.name}</Badge>
                       <Badge tone="ghost">{topicMeta.shortLabel}</Badge>
                       <Badge tone={rel.tone}>Relevancia {rel.label}</Badge>
-                      <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{n.date}</span>
+                      <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{formatDate(n.date)}</span>
                       {isSaved && <Badge tone="success">Guardado</Badge>}
                     </div>
                     <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{n.title}</h3>
@@ -454,7 +455,7 @@ export function RadarPage() {
                         onClick={e => {
                           e.stopPropagation()
                           openCreateBrief({
-                            title: `Brief — ${n.title}`,
+                            title: `Brief: ${n.title}`,
                             body: `**Contexto**\n\n${n.excerpt}\n\n**País:** ${country.name}\n**Tema:** ${topicMeta.label}\n**Relevancia:** ${rel.label}\n\n**Fuente:** ${n.source}`,
                             ref: n.id,
                           })

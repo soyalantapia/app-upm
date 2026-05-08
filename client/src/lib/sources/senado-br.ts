@@ -68,7 +68,7 @@ function mapItem(p: SenadoProcesso): NewsItem | null {
   if (!ementa && !ident) return null
   return {
     id: 'br-senado-' + p.id,
-    title: `${ident} — ${tipoDoc || 'Senado'} (Brasil)`,
+    title: `${ident} · ${tipoDoc || 'Senado'} (Brasil)`,
     country: 'BR',
     topic: detectTopic(ementa + ' ' + ident + ' ' + tipoDoc),
     type: 'ley',
@@ -77,7 +77,7 @@ function mapItem(p: SenadoProcesso): NewsItem | null {
     excerpt: ementa.length > 600
       ? ementa.slice(0, 597) + '…'
       : ementa || `Materia ${ident} en trámite en el Senado Federal.`,
-    source: 'Senado Federal — Brasil',
+    source: 'Senado Federal · Brasil',
     // Detalle completo para mostrar en NewsConversation
     fullText: ementa,
     authors: p.autoria,

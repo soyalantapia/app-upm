@@ -188,7 +188,7 @@ export function ProfilePage() {
               ))}
             </ul>
 
-            <Button size="sm" variant="secondary" className="mt-4 w-full" onClick={() => store.pushToast('info', 'Plan: 2026 — Renovación automática')}>
+            <Button size="sm" variant="secondary" className="mt-4 w-full" onClick={() => store.pushToast('info', 'Plan 2026 · Renovación automática')}>
               Ver plan
             </Button>
           </Card>

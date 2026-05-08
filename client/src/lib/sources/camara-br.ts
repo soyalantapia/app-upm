@@ -92,7 +92,7 @@ export async function fetchCamaraProposicoes(opts?: {
 function mapProposicao(p: CamaraProposicao): NewsItem {
   const tipo = SIGLA_FULL[p.siglaTipo] ?? p.siglaTipo
   const ementa = (p.ementa ?? '').trim()
-  const title = `${tipo} ${p.numero}/${p.ano} — Brasil`
+  const title = `${tipo} ${p.numero}/${p.ano} · Brasil`
   const excerpt = ementa.length > 600 ? ementa.slice(0, 597) + '…' : ementa
   const today = new Date().toISOString().slice(0, 10)
   return {
@@ -104,7 +104,7 @@ function mapProposicao(p: CamaraProposicao): NewsItem {
     date: today,
     relevance: detectRelevance(p.siglaTipo),
     excerpt: excerpt || `Proposição ${p.siglaTipo} ${p.numero}/${p.ano} en trámite legislativo.`,
-    source: `Câmara dos Deputados — Brasil (${p.siglaTipo})`,
+    source: `Câmara dos Deputados · Brasil (${p.siglaTipo})`,
     fullText: ementa,
     tipoDocumento: `${p.siglaTipo} ${p.numero}/${p.ano}`,
     tipoConteudo: tipo,

@@ -80,7 +80,7 @@ function mapLey(r: LeySumario): NewsItem | null {
   return {
     id: 'ar-ley-' + (leyNum ?? Math.random().toString(36).slice(2, 10)),
     title: leyNum
-      ? `Ley ${leyNum} — ${titulo.length > 80 ? titulo.slice(0, 77) + '…' : titulo}`
+      ? `Ley ${leyNum} · ${titulo.length > 80 ? titulo.slice(0, 77) + '…' : titulo}`
       : titulo,
     country: 'AR',
     topic: detectTopic(titulo + ' ' + sumario + ' ' + referencias),
@@ -89,8 +89,8 @@ function mapLey(r: LeySumario): NewsItem | null {
     relevance: detectRelevance(titulo + ' ' + sumario),
     excerpt: sumario.length > 600 ? sumario.slice(0, 597) + '…' : (sumario || titulo),
     source: leyNum
-      ? `Ley Nacional ${leyNum} — Cámara de Diputados de Argentina`
-      : 'HCDN — Argentina',
+      ? `Ley Nacional ${leyNum} · Cámara de Diputados de Argentina`
+      : 'HCDN · Argentina',
     fullText: sumario || titulo,
     tipoDocumento: leyNum ? `Ley ${leyNum}` : undefined,
     keywords: keywords.length > 0 ? keywords.slice(0, 16) : undefined,

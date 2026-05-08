@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { Badge, Button, Eyebrow, PageHeader } from '@/components/ui'
 import { countryByCode, topicById } from '@/lib/data'
+import { formatDate } from '@/lib/format'
 import { store, useStore } from '@/lib/store'
 import { shareLink } from '@/lib/share'
 import { useLiveFeed } from '@/lib/use-live-feed'
@@ -99,7 +100,7 @@ export function LawsPage() {
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
         eyebrow={<Eyebrow icon={<BookOpen size={11} />}>Hablar con leyes</Eyebrow>}
-        title="Leyes sancionadas — texto completo"
+        title="Leyes sancionadas · texto completo"
         description="Consultá leyes nacionales con su sumario íntegro y palabras clave oficiales. Después podés conversar con el Asistente sobre cualquiera."
         actions={
           <>
@@ -177,7 +178,7 @@ export function LawsPage() {
                       <Badge tone="success">Sancionada</Badge>
                     </div>
                     <div className="text-[12.5px] font-semibold leading-snug text-ink-900 line-clamp-2">
-                      {l.title.replace(/^Ley \d+\s*—\s*/, '')}
+                      {l.title.replace(/\^Ley \d+\s*·\s*/, '')}
                     </div>
                     {l.excerpt && l.excerpt !== l.title && (
                       <p className="text-[11.5px] leading-relaxed text-ink-500 line-clamp-3">
@@ -207,7 +208,7 @@ export function LawsPage() {
               </div>
 
               <h2 className="text-[22px] font-bold leading-tight tracking-tight text-ink-900 sm:text-[26px]">
-                {active.title.replace(/^Ley \d+\s*—\s*/, '')}
+                {active.title.replace(/\^Ley \d+\s*·\s*/, '')}
               </h2>
 
               {/* Sumario completo */}
@@ -241,7 +242,7 @@ export function LawsPage() {
                         <CalendarDays size={10} /> Presentación
                       </div>
                       <div className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-900 tabular-nums">
-                        {active.dataPublicacao.slice(0, 10)}
+                        {formatDate(active.dataPublicacao)}
                       </div>
                     </div>
                   )}

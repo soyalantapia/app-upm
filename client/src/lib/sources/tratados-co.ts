@@ -118,7 +118,7 @@ function mapTratado(r: TratadoRow, idx: number): NewsItem | null {
   const excerpt = excerptParts.join('. ') + '.'
   return {
     id,
-    title: `Tratado — ${titleClean}`,
+    title: `Tratado · ${titleClean}`,
     country: 'CO',
     topic: detectTopic(temas, nombre),
     type: 'convenio',

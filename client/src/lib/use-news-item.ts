@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { fetchLiveFeed } from './sources'
 import { enrichCamaraItem } from './sources/camara-br'
 import { enrichParlamentoUYItem } from './sources/parlamento-uy'
+import { enrichVotacionColombia } from './sources/votaciones-co'
 import { NEWS as MOCK_NEWS } from './data'
 import type { NewsItem } from './types'
 
@@ -37,6 +38,13 @@ export function useNewsItem(id: string | undefined) {
       } else if (found?.apiDetailUrl && found.id.startsWith('uy-')) {
         setEnriching(true)
         const enriched = await enrichParlamentoUYItem(found, ctrl.signal)
+        if (mounted) {
+          setItem(enriched)
+          setEnriching(false)
+        }
+      } else if (found?.id.startsWith('co-votacion-')) {
+        setEnriching(true)
+        const enriched = await enrichVotacionColombia(found, ctrl.signal)
         if (mounted) {
           setItem(enriched)
           setEnriching(false)

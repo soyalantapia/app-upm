@@ -284,12 +284,12 @@ export function AssistantPage() {
             <QuickButton
               icon={FileStack}
               label="Brief"
-              onClick={() => openCreateBrief({ title: `Brief — ${lastAssistantTitle}`, body: lastAssistantBody })}
+              onClick={() => openCreateBrief({ title: `Brief: ${lastAssistantTitle}`, body: lastAssistantBody })}
             />
             <QuickButton
               icon={ScrollText}
               label="Minuta"
-              onClick={() => openCreateMinuta({ title: `Minuta — ${lastAssistantTitle}`, body: lastAssistantBody })}
+              onClick={() => openCreateMinuta({ title: `Minuta: ${lastAssistantTitle}`, body: lastAssistantBody })}
             />
             <QuickButton icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />
             <QuickButton icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />
