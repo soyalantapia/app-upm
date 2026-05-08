@@ -25,17 +25,16 @@ import { shareLink } from '@/lib/share'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import type { NewsItem } from '@/lib/types'
 
-// Una ley sancionada para esta vista cumple:
-// - type === 'ley'
-// - source o id sugieren ley promulgada (no proyecto en trámite)
-// Por ahora: ítems con id `ar-ley-*` (1194 leyes nacionales argentinas)
-// son leyes ya sancionadas. Los items de Brasil (br-camara-*, br-senado-*)
-// son proyectos en trámite, NO leyes · se excluyen de esta vista.
+// Filtro para esta vista: solo leyes ya sancionadas/promulgadas, no proyectos en trámite.
 function isSanctionedLaw(item: NewsItem): boolean {
-  // Argentina: 1194 leyes nacionales sancionadas
+  // Argentina: 1194 leyes nacionales sancionadas (HCDN)
   if (item.id.startsWith('ar-ley-')) return true
-  // Colombia: proyectos del Senado con estado='LEY' (ya sancionados)
+  // Colombia: proyectos con estado='LEY' (Socrata feim-cysj)
   if (item.id.startsWith('co-ley-')) return true
+  // Colombia · Vista Proyectos cuando estado_del_proyecto_de_ley='Ley' (xs56-s7w6)
+  if (item.id.startsWith('co-vista-') && /^ley\b/i.test(item.status ?? '')) return true
+  // Uruguay: 4753 leyes promulgadas por el Poder Ejecutivo
+  if (item.id.startsWith('uy-ley-')) return true
   return false
 }
 
