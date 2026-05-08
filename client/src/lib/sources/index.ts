@@ -8,7 +8,17 @@ import { fetchVistaProyectosColombia } from './vista-co'
 import { fetchVotacionesColombia } from './votaciones-co'
 import { fetchLeyesUruguay } from './leyes-uy'
 import { fetchLeyesPresidenciaColombia, fetchDecretosPresidenciaColombia } from './presidencia-co'
-import { fetchLeyesInfolegArgentina, fetchDecretosInfolegArgentina } from './infoleg-ar'
+import {
+  fetchLeyesInfolegArgentina,
+  fetchDecretosInfolegArgentina,
+  fetchDecisionesAdminInfolegArgentina,
+  fetchResolucionesInfolegArgentina,
+  fetchDisposicionesInfolegArgentina,
+  fetchComunicacionesInfolegArgentina,
+  fetchAcordadasInfolegArgentina,
+  fetchDirectivasInfolegArgentina,
+  fetchCircularesInfolegArgentina,
+} from './infoleg-ar'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
 import { fetchVotacoesSenadoBR } from './votacoes-senado-br'
@@ -110,11 +120,16 @@ const FETCHERS: Fetcher[] = [
   { id: 'votacoes-camara-br', label: 'Câmara BR · Votaciones recientes', country: 'BR', fn: ({ signal }) => fetchVotacoesCamaraBR({ limit: 20, signal }) },
   { id: 'votacoes-senado-br', label: 'Senado Federal BR · Votaciones nominales', country: 'BR', fn: ({ signal }) => fetchVotacoesSenadoBR({ limit: 20, signal }) },
   { id: 'eventos-camara-br', label: 'Câmara BR · Agenda y eventos', country: 'BR', fn: ({ signal }) => fetchEventosCamaraBR({ limit: 25, signal }) },
-  // Argentina · Infoleg es la fuente primaria (Min. Justicia, fechas reales del
-  // Boletín Oficial, link al texto consolidado). HCDN se removió porque su CSV
-  // no trae fechas individuales y las leyes salían con fecha del feed (engañoso).
-  { id: 'leyes-infoleg-ar', label: 'Infoleg AR · Leyes Nacionales (BO)', country: 'AR', fn: ({ signal }) => fetchLeyesInfolegArgentina({ limit: 400, signal }) },
-  { id: 'decretos-infoleg-ar', label: 'Infoleg AR · Decretos y DAs', country: 'AR', fn: ({ signal }) => fetchDecretosInfolegArgentina({ limit: 60, signal }) },
+  // Argentina · Infoleg (Min. Justicia) con desglose por tipo de norma.
+  { id: 'leyes-infoleg-ar', label: 'Argentina · Leyes Nacionales (BO)', country: 'AR', fn: ({ signal }) => fetchLeyesInfolegArgentina({ limit: 400, signal }) },
+  { id: 'decretos-infoleg-ar', label: 'Argentina · Decretos del PEN', country: 'AR', fn: ({ signal }) => fetchDecretosInfolegArgentina({ limit: 80, signal }) },
+  { id: 'decisiones-admin-ar', label: 'Argentina · Decisiones Administrativas (Jefatura)', country: 'AR', fn: ({ signal }) => fetchDecisionesAdminInfolegArgentina({ limit: 50, signal }) },
+  { id: 'resoluciones-ar', label: 'Argentina · Resoluciones ministeriales', country: 'AR', fn: ({ signal }) => fetchResolucionesInfolegArgentina({ limit: 100, signal }) },
+  { id: 'disposiciones-ar', label: 'Argentina · Disposiciones', country: 'AR', fn: ({ signal }) => fetchDisposicionesInfolegArgentina({ limit: 50, signal }) },
+  { id: 'comunicaciones-ar', label: 'Argentina · Comunicaciones del PEN', country: 'AR', fn: ({ signal }) => fetchComunicacionesInfolegArgentina({ limit: 30, signal }) },
+  { id: 'acordadas-ar', label: 'Argentina · Acordadas (Corte Suprema)', country: 'AR', fn: ({ signal }) => fetchAcordadasInfolegArgentina({ limit: 30, signal }) },
+  { id: 'directivas-ar', label: 'Argentina · Directivas', country: 'AR', fn: ({ signal }) => fetchDirectivasInfolegArgentina({ limit: 50, signal }) },
+  { id: 'circulares-ar', label: 'Argentina · Circulares (BCRA, AFIP)', country: 'AR', fn: ({ signal }) => fetchCircularesInfolegArgentina({ limit: 30, signal }) },
   { id: 'senado-co', label: 'Senado Colombia', country: 'CO', fn: ({ signal }) => fetchProyectosColombia({ limit: 25, signal }) },
   { id: 'leyes-co', label: 'Leyes Sancionadas Colombia', country: 'CO', fn: ({ signal }) => fetchLeyesColombia({ limit: 100, signal }) },
   { id: 'tratados-co', label: 'Cancillería Colombia · Tratados', country: 'CO', fn: ({ signal }) => fetchTratadosColombia({ limit: 25, signal }) },

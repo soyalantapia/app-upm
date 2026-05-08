@@ -67,10 +67,12 @@ function basePath(): string {
   }
 }
 
+type InfolegTipo = 'Ley' | 'Decreto' | 'Decisión Administrativa' | 'Resolución' | 'Disposición' | 'Comunicación' | 'Acordada' | 'Decreto/Ley' | 'Directiva' | 'Circular'
+
 export async function fetchInfolegArgentina(opts?: {
   limit?: number
   signal?: AbortSignal
-  onlyTipo?: 'Ley' | 'Decreto' | 'Decisión Administrativa'
+  onlyTipo?: InfolegTipo
 }): Promise<NewsItem[]> {
   const limit = opts?.limit ?? 100
   const url = `${basePath()}/data/infoleg-ar.json`
@@ -131,11 +133,39 @@ function mapInfoleg(r: InfolegItem): NewsItem | null {
   }
 }
 
-// Atajos para distinguir leyes vs novedades de Decretos/DAs
+// Atajos por tipo de norma argentina
 export function fetchLeyesInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
-  return fetchInfolegArgentina({ limit: opts?.limit ?? 200, signal: opts?.signal, onlyTipo: 'Ley' })
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 400, signal: opts?.signal, onlyTipo: 'Ley' })
 }
 
 export function fetchDecretosInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
   return fetchInfolegArgentina({ limit: opts?.limit ?? 80, signal: opts?.signal, onlyTipo: 'Decreto' })
+}
+
+export function fetchDecisionesAdminInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 50, signal: opts?.signal, onlyTipo: 'Decisión Administrativa' })
+}
+
+export function fetchResolucionesInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 100, signal: opts?.signal, onlyTipo: 'Resolución' })
+}
+
+export function fetchDisposicionesInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 50, signal: opts?.signal, onlyTipo: 'Disposición' })
+}
+
+export function fetchComunicacionesInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 30, signal: opts?.signal, onlyTipo: 'Comunicación' })
+}
+
+export function fetchAcordadasInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 30, signal: opts?.signal, onlyTipo: 'Acordada' })
+}
+
+export function fetchDirectivasInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 50, signal: opts?.signal, onlyTipo: 'Directiva' })
+}
+
+export function fetchCircularesInfolegArgentina(opts?: { limit?: number; signal?: AbortSignal }) {
+  return fetchInfolegArgentina({ limit: opts?.limit ?? 30, signal: opts?.signal, onlyTipo: 'Circular' })
 }
