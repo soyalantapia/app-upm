@@ -301,6 +301,18 @@ export function LawsPage() {
                 >
                   <Share2 size={13} /> Compartir
                 </button>
+                <button
+                  onClick={() => {
+                    store.pushToast('info', 'El Asistente preparó preguntas sobre esta ley')
+                    navigate('/asistente')
+                  }}
+                  className="group inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3.5 py-1.5 text-[12.5px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
+                >
+                  <MessageSquareText size={13} />
+                  <span className="hidden sm:inline">Hablar con Asistente</span>
+                  <span className="sm:hidden">Asistente</span>
+                  <span className="transition group-hover:translate-x-0.5">→</span>
+                </button>
                 {active.sourceUrl && (
                   <a
                     href={active.sourceUrl}
@@ -333,25 +345,6 @@ export function LawsPage() {
                 </div>
               </div>
 
-              {/* CTA único: Hablar con Asistente */}
-              <button
-                onClick={() => {
-                  store.pushToast('info', 'El Asistente preparó preguntas sobre esta ley')
-                  navigate('/asistente')
-                }}
-                className="group flex items-center justify-between gap-4 rounded-3xl bg-gradient-to-br from-upm-500 to-upm-700 p-4 text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
-                    <MessageSquareText size={18} />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-upm-200">Conversar</div>
-                    <div className="mt-0.5 text-[15px] font-bold tracking-tight">Hablar con el Asistente AI sobre esta ley</div>
-                  </div>
-                </div>
-                <span className="text-[18px] transition group-hover:translate-x-1">→</span>
-              </button>
             </article>
           )}
         </div>

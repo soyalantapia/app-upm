@@ -78,11 +78,11 @@ export function NewsConversationPage() {
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[820px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <Link to="/radar" className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-upm-700 hover:text-upm-800">
           <ArrowLeft size={14} /> Volver al Radar
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => shareLink(news.title, `/radar/${news.id}`)}
             className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
@@ -100,6 +100,18 @@ export function NewsConversationPage() {
           >
             {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
             {isSaved ? 'Guardado' : 'Guardar'}
+          </button>
+          <button
+            onClick={() => {
+              store.pushToast('info', 'El Asistente preparó preguntas sobre este tema')
+              navigate('/asistente')
+            }}
+            className="group inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3 py-1.5 text-[12px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
+          >
+            <MessageSquareText size={12} />
+            <span className="hidden sm:inline">Hablar con Asistente</span>
+            <span className="sm:hidden">Asistente</span>
+            <span className="transition group-hover:translate-x-0.5">→</span>
           </button>
         </div>
       </div>
@@ -233,29 +245,6 @@ export function NewsConversationPage() {
           </div>
         </div>
       </article>
-
-      {/* CTA único: Hablar con el Asistente */}
-      <button
-        onClick={() => {
-          store.pushToast('info', 'El Asistente preparó preguntas sobre este tema')
-          navigate('/asistente')
-        }}
-        className="group flex items-center justify-between gap-4 rounded-3xl bg-gradient-to-br from-upm-500 to-upm-700 p-5 text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating sm:p-6"
-      >
-        <div className="flex items-center gap-4">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
-            <MessageSquareText size={20} />
-          </div>
-          <div className="text-left">
-            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-upm-200">Conversar con respaldo</div>
-            <div className="mt-0.5 text-[18px] font-bold tracking-tight">Hablar con el Asistente AI sobre este tema</div>
-            <div className="mt-1 text-[12.5px] text-white/80">
-              Te respondo con fuentes UPM, te armo brief o minuta, y dejo todo guardado.
-            </div>
-          </div>
-        </div>
-        <span className="text-[20px] transition group-hover:translate-x-1">→</span>
-      </button>
     </div>
   )
 }
