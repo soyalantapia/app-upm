@@ -10,6 +10,8 @@ import { fetchVotacionesColombia } from './votaciones-co'
 import { fetchLeyesUruguay } from './leyes-uy'
 import { fetchLeyesPresidenciaColombia, fetchDecretosPresidenciaColombia } from './presidencia-co'
 import { fetchLeyesInfolegArgentina, fetchDecretosInfolegArgentina } from './infoleg-ar'
+import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
+import { fetchVotacoesCamaraBR } from './votacoes-br'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -104,6 +106,7 @@ type Fetcher = {
 const FETCHERS: Fetcher[] = [
   { id: 'senado-br', label: 'Senado Federal Brasil', country: 'BR', fn: ({ signal }) => fetchSenadoBR({ limit: 30, signal }) },
   { id: 'camara-br', label: 'Câmara dos Deputados', country: 'BR', fn: ({ signal }) => fetchCamaraProposicoes({ limit: 30, signal }) },
+  { id: 'votacoes-camara-br', label: 'Câmara BR · Votaciones recientes', country: 'BR', fn: ({ signal }) => fetchVotacoesCamaraBR({ limit: 20, signal }) },
   { id: 'hcdn-ar', label: 'HCDN Argentina · Leyes Nacionales', country: 'AR', fn: ({ signal }) => fetchHcdnArgentina({ limit: 200, signal }) },
   { id: 'leyes-infoleg-ar', label: 'Infoleg AR · Leyes Nacionales (BO)', country: 'AR', fn: ({ signal }) => fetchLeyesInfolegArgentina({ limit: 200, signal }) },
   { id: 'decretos-infoleg-ar', label: 'Infoleg AR · Decretos y DAs', country: 'AR', fn: ({ signal }) => fetchDecretosInfolegArgentina({ limit: 60, signal }) },
@@ -114,6 +117,7 @@ const FETCHERS: Fetcher[] = [
   { id: 'votaciones-co', label: 'Senado CO · Votaciones nominales', country: 'CO', fn: ({ signal }) => fetchVotacionesColombia({ limit: 15, signal }) },
   { id: 'leyes-presidencia-co', label: 'Presidencia CO · Leyes y Actos Legislativos', country: 'CO', fn: ({ signal }) => fetchLeyesPresidenciaColombia({ limit: 100, signal }) },
   { id: 'decretos-presidencia-co', label: 'Presidencia CO · Decretos y Resoluciones', country: 'CO', fn: ({ signal }) => fetchDecretosPresidenciaColombia({ limit: 40, signal }) },
+  { id: 'corte-const-co', label: 'Corte Constitucional CO · Exhortos al Congreso', country: 'CO', fn: ({ signal }) => fetchCorteConstitucionalColombia({ limit: 30, signal }) },
   { id: 'parlamento-uy', label: 'Parlamento del Uruguay', country: 'UY', fn: ({ signal }) => fetchParlamentoUY({ limit: 25, signal }) },
   { id: 'leyes-uy', label: 'Leyes Promulgadas Uruguay', country: 'UY', fn: ({ signal }) => fetchLeyesUruguay({ limit: 80, signal }) },
 ]
