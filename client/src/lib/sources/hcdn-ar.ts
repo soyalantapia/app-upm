@@ -94,6 +94,10 @@ function mapLey(r: LeySumario): NewsItem | null {
     fullText: sumario || titulo,
     tipoDocumento: leyNum ? `Ley ${leyNum}` : undefined,
     keywords: keywords.length > 0 ? keywords.slice(0, 16) : undefined,
-    sourceUrl: leyNum ? `https://www.hcdn.gob.ar/proyectos/buscador2016-99.html?qBus=${leyNum}` : undefined,
+    // Portal oficial del Gobierno argentino: búsqueda paramétrica por número de ley.
+    // El antiguo buscador HCDN (buscador2016-99.html) está fuera de servicio (404).
+    sourceUrl: leyNum
+      ? `https://www.argentina.gob.ar/normativa?jurisdiccion=Nacional&numero-norma=${leyNum}&tipo-norma=Ley`
+      : undefined,
   }
 }
