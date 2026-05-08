@@ -221,26 +221,27 @@ export function LawsPage() {
 
               {/* Identificación + Fuente verificada · barra compacta */}
               <div className="flex flex-col gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card sm:p-3.5">
-                {/* Chips de metadata */}
-                {(active.tipoDocumento || active.authors || active.dataPublicacao || active.status || active.comision) && (
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11.5px]">
-                    {active.tipoDocumento && (
-                      <LawMetaChip icon={Hash} label="Identificación" value={active.tipoDocumento} />
-                    )}
-                    {active.authors && (
-                      <LawMetaChip icon={Users} label="Autoría" value={active.authors} truncate />
-                    )}
-                    {active.dataPublicacao && (
-                      <LawMetaChip icon={CalendarDays} label="Presentación" value={formatDate(active.dataPublicacao)} />
-                    )}
-                    {active.status && (
-                      <LawMetaChip icon={Hash} label="Estado" value={active.status} />
-                    )}
-                    {active.comision && (
-                      <LawMetaChip icon={ScrollText} label="Comisión" value={active.comision} />
-                    )}
-                  </div>
-                )}
+                {/* Chips de metadata · siempre incluye fecha de publicación */}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11.5px]">
+                  {/* Fecha de publicación · siempre visible */}
+                  <LawMetaChip
+                    icon={CalendarDays}
+                    label="Publicación"
+                    value={formatDate(active.dataPublicacao ?? active.date)}
+                  />
+                  {active.tipoDocumento && (
+                    <LawMetaChip icon={Hash} label="Identificación" value={active.tipoDocumento} />
+                  )}
+                  {active.authors && (
+                    <LawMetaChip icon={Users} label="Autoría" value={active.authors} truncate />
+                  )}
+                  {active.status && (
+                    <LawMetaChip icon={Hash} label="Estado" value={active.status} />
+                  )}
+                  {active.comision && (
+                    <LawMetaChip icon={ScrollText} label="Comisión" value={active.comision} />
+                  )}
+                </div>
 
                 {/* Fuente verificada · línea verde */}
                 <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-success-bg/40 px-3 py-2 ring-1 ring-success-bg">

@@ -119,26 +119,27 @@ export function NewsConversationPage() {
 
       {/* Identificación + Fuente verificada · barra compacta sobre el article */}
       <div className="flex flex-col gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card sm:p-3.5">
-        {/* Chips de metadata oficial */}
-        {(news.tipoDocumento || news.tipoConteudo || news.authors || news.dataPublicacao || news.dataAtualizacao) && (
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11.5px]">
-            {news.tipoDocumento && (
-              <MetaChip icon={Hash} label="Identificación" value={news.tipoDocumento} />
-            )}
-            {news.tipoConteudo && news.tipoConteudo !== news.tipoDocumento && (
-              <MetaChip icon={FileText} label="Tipo" value={news.tipoConteudo} />
-            )}
-            {news.authors && (
-              <MetaChip icon={Users} label="Autoría" value={news.authors} truncate />
-            )}
-            {fmt(news.dataPublicacao) && (
-              <MetaChip icon={CalendarDays} label="Presentación" value={fmt(news.dataPublicacao)!} />
-            )}
-            {fmt(news.dataAtualizacao) && (
-              <MetaChip icon={Clock} label="Actualización" value={fmt(news.dataAtualizacao)!} />
-            )}
-          </div>
-        )}
+        {/* Chips de metadata oficial · siempre incluye fecha de publicación */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11.5px]">
+          {/* Fecha de publicación · siempre visible (usa dataPublicacao si está, sino date del feed) */}
+          <MetaChip
+            icon={CalendarDays}
+            label="Publicación"
+            value={fmt(news.dataPublicacao ?? news.date) ?? formatDate(news.date)}
+          />
+          {news.tipoDocumento && (
+            <MetaChip icon={Hash} label="Identificación" value={news.tipoDocumento} />
+          )}
+          {news.tipoConteudo && news.tipoConteudo !== news.tipoDocumento && (
+            <MetaChip icon={FileText} label="Tipo" value={news.tipoConteudo} />
+          )}
+          {news.authors && (
+            <MetaChip icon={Users} label="Autoría" value={news.authors} truncate />
+          )}
+          {fmt(news.dataAtualizacao) && fmt(news.dataAtualizacao) !== fmt(news.dataPublicacao ?? news.date) && (
+            <MetaChip icon={Clock} label="Actualización" value={fmt(news.dataAtualizacao)!} />
+          )}
+        </div>
 
         {/* Fuente verificada · línea verde */}
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-success-bg/40 px-3 py-2 ring-1 ring-success-bg">
