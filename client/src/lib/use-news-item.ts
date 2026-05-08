@@ -3,6 +3,7 @@ import { fetchLiveFeed } from './sources'
 import { enrichCamaraItem } from './sources/camara-br'
 import { enrichParlamentoUYItem } from './sources/parlamento-uy'
 import { enrichVotacionColombia } from './sources/votaciones-co'
+import { enrichInfolegItem } from './sources/infoleg-ar'
 import type { NewsItem } from './types'
 
 // Trae UN item por id (de cualquier fuente live o mock) y lo enriquece con detalle
@@ -44,6 +45,14 @@ export function useNewsItem(id: string | undefined) {
       } else if (found?.id.startsWith('co-votacion-')) {
         setEnriching(true)
         const enriched = await enrichVotacionColombia(found, ctrl.signal)
+        if (mounted) {
+          setItem(enriched)
+          setEnriching(false)
+        }
+      } else if (found?.apiDetailUrl && (found.id.startsWith('ar-ley-') || found.id.startsWith('ar-norm-'))) {
+        // Infoleg AR · trae texto completo de la norma desde infoleg.gob.ar
+        setEnriching(true)
+        const enriched = await enrichInfolegItem(found, ctrl.signal)
         if (mounted) {
           setItem(enriched)
           setEnriching(false)
