@@ -28,6 +28,7 @@ import {
 } from './infoleg-ar'
 import { fetchExpedientesHCDN } from './expedientes-hcdn'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
+import { fetchSentenciasCorteCO } from './sentencias-corte-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
 import { fetchVotacoesSenadoBR } from './votacoes-senado-br'
 import { fetchEventosCamaraBR } from './eventos-br'
@@ -155,6 +156,7 @@ const FETCHERS: Fetcher[] = [
   { id: 'leyes-presidencia-co', label: 'Presidencia CO · Leyes y Actos Legislativos', country: 'CO', fn: ({ signal }) => fetchLeyesPresidenciaColombia({ limit: 100, signal }) },
   { id: 'decretos-presidencia-co', label: 'Presidencia CO · Decretos y Resoluciones', country: 'CO', fn: ({ signal }) => fetchDecretosPresidenciaColombia({ limit: 40, signal }) },
   { id: 'corte-const-co', label: 'Corte Constitucional CO · Exhortos al Congreso', country: 'CO', fn: ({ signal }) => fetchCorteConstitucionalColombia({ limit: 30, signal }) },
+  { id: 'sentencias-corte-co', label: 'Corte Constitucional CO · Sentencias recientes', country: 'CO', fn: ({ signal }) => fetchSentenciasCorteCO({ limit: 50, signal }) },
   { id: 'parlamento-uy', label: 'Parlamento del Uruguay', country: 'UY', fn: ({ signal }) => fetchParlamentoUY({ limit: 25, signal }) },
   { id: 'leyes-uy', label: 'Leyes Promulgadas Uruguay', country: 'UY', fn: ({ signal }) => fetchLeyesUruguay({ limit: 80, signal }) },
 ]
