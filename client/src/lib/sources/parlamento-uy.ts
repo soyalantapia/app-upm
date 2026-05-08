@@ -1,4 +1,4 @@
-import type { NewsItem, Topic } from '@/lib/types'
+import type { NewsItem, Topic, Tramitacion } from '@/lib/types'
 import { fetchWithCorsFallback } from './cors-fetch'
 
 // Parlamento del Uruguay — Asuntos Entrados (proyectos al Parlamento)
@@ -105,6 +105,8 @@ function mapAsunto(r: AsuntoUY): NewsItem | null {
   const ident = numero && anio ? `${tipoLabel} ${numero}/${anio}` : tipoLabel
   // Detectar tipo de doc — por defecto 'ley' si dice PROYECTO DE LEY en título
   const isProyectoLey = /\(PROYECTO DE LEY\)/i.test(titulo) || tipoLabel.toLowerCase().includes('proyecto')
+  // URL https para evitar mixed content (la API devuelve http://)
+  const sourceUrl = url ? url.replace(/^http:/, 'https:') : undefined
   return {
     id: `uy-${codigo || titulo.slice(0, 20).toLowerCase().replace(/\W+/g, '-')}`,
     title: `${ident} — ${titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo}`,
@@ -118,8 +120,115 @@ function mapAsunto(r: AsuntoUY): NewsItem | null {
     fullText: titulo,
     tipoDocumento: ident,
     tipoConteudo: cuerpo,
-    sourceUrl: url || undefined,
-    pdfUrl: url || undefined,
+    sourceUrl,
+    pdfUrl: sourceUrl,
     dataPublicacao: fecha || undefined,
+    apiDetailUrl: codigo ? `https://parlamento.gub.uy/documentosyleyes/ficha-asunto/${codigo}` : undefined,
+  }
+}
+
+// Enriquecimiento on-demand: parsea el HTML de la ficha-asunto del Parlamento UY
+// y extrae autores, descripción del proyecto, comisión asignada y entrada cronológica.
+// Usa fetchWithCorsFallback porque parlamento.gub.uy no abre CORS para el HTML.
+export async function enrichParlamentoUYItem(item: NewsItem, signal?: AbortSignal): Promise<NewsItem> {
+  if (!item.apiDetailUrl) return item
+  try {
+    const res = await fetchWithCorsFallback(item.apiDetailUrl, {
+      signal,
+      headers: { Accept: 'text/html' },
+    })
+    if (!res.ok) return item
+    const html = await res.text()
+    return mergeUYDetail(item, html)
+  } catch {
+    return item
+  }
+}
+
+// Parser HTML: aplana tags y extrae secciones clave por label.
+function flatten(html: string): string {
+  let text = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+  text = text.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+  text = text.replace(/<[^>]+>/g, '|')
+  text = text.replace(/\|+/g, '|')
+  text = text.replace(/\s+/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+  return text
+}
+
+// Devuelve el contenido entre `label` y el siguiente label de la lista (o EOF).
+function extractBetween(flat: string, label: string, nextLabels: string[]): string {
+  const idx = flat.indexOf(label)
+  if (idx < 0) return ''
+  const start = idx + label.length
+  let end = flat.length
+  for (const next of nextLabels) {
+    const ni = flat.indexOf(next, start)
+    if (ni > 0 && ni < end) end = ni
+  }
+  return flat
+    .slice(start, end)
+    .replace(/\|/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
+
+function mergeUYDetail(item: NewsItem, html: string): NewsItem {
+  const flat = flatten(html)
+  const labels = ['Origen:', 'Análisis:', 'Asunto:', 'Título:', 'Entradas', 'Comisiones', 'Sesiones', 'Distribuídos', 'Distribuidos']
+
+  const origen = extractBetween(flat, 'Origen:', labels.filter(l => l !== 'Origen:'))
+  const analisis = extractBetween(flat, 'Análisis:', labels.filter(l => l !== 'Análisis:'))
+
+  // Autores: el origen viene como "Cámara Senadores - Apellido, Nombre; Apellido2, Nombre2; ..."
+  // Split por ` - ` (con espacios) para separar cuerpo de lista, y por `;` para
+  // separar firmantes (los nombres tienen "Apellido, Nombre" con coma interna).
+  let authors = item.authors
+  if (origen) {
+    const m = origen.match(/^\s*(.+?)\s+[-–—]\s+(.+)$/)
+    const cuerpo = m ? m[1].trim() : ''
+    const restoStr = m ? m[2] : origen
+    const lista = restoStr
+      .split(';')
+      .map(s => s.trim())
+      .filter(s => s.length > 1 && s.length < 100 && /\p{L}/u.test(s))
+      .slice(0, 14)
+    if (lista.length > 0) {
+      authors = (cuerpo ? cuerpo + ' — ' : '') + lista.join('; ')
+    }
+  }
+
+  // Descripción del proyecto: tomar lo de Análisis si tiene contenido sustancial.
+  const fullText = analisis.length > 60 ? analisis.slice(0, 1500) : item.fullText
+
+  // Comisión: buscar el patrón "Comisión Cuerpo Carpeta/Año NOMBRE_COMISION CSS|CRR ..."
+  // En el flat aparece como: "Comisiones Comisión Cuerpo Carpeta/Año HACIENDA CSS 549/2026 ..."
+  let comision: string | undefined
+  const comMatch = flat.match(/Comisiones\s+Comisión\s+Cuerpo\s+Carpeta\/Año\s+([A-ZÁÉÍÓÚÑ ]{4,40}?)\s+(?:CSS|CRR|CAG)\b/)
+  if (comMatch) {
+    comision = comMatch[1].trim()
+  }
+
+  // Cronología: extraer la primera fila de "Entradas" (fecha → entrada)
+  const tramitaciones: Tramitacion[] = []
+  const entradasBlock = extractBetween(flat, 'Entradas', ['Comisiones', 'Sesiones', 'Distribuidos', 'Distribuídos'])
+  const entradaMatch = entradasBlock.match(/(\d{2}-\d{2}-\d{4})\s+(CSS|CRR|CAG)\s+(\d+\/\d{4})\s+(.{20,200})/)
+  if (entradaMatch) {
+    const [, fecha, cuerpo, carpeta, descripcion] = entradaMatch
+    // Convertir DD-MM-YYYY → YYYY-MM-DD
+    const isoDate = fecha.split('-').reverse().join('-')
+    tramitaciones.push({
+      fecha: isoDate,
+      descripcion: 'Entrada al Parlamento — ' + descripcion.trim().slice(0, 160),
+      organo: cuerpo,
+      despacho: `Carpeta ${carpeta}`,
+    })
+  }
+
+  return {
+    ...item,
+    fullText,
+    authors,
+    comision,
+    tramitaciones: tramitaciones.length > 0 ? tramitaciones : item.tramitaciones,
   }
 }

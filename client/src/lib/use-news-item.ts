@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { fetchLiveFeed } from './sources'
 import { enrichCamaraItem } from './sources/camara-br'
+import { enrichParlamentoUYItem } from './sources/parlamento-uy'
 import { NEWS as MOCK_NEWS } from './data'
 import type { NewsItem } from './types'
 
@@ -29,6 +30,13 @@ export function useNewsItem(id: string | undefined) {
       if (found?.apiDetailUrl && found.id.startsWith('br-camara-')) {
         setEnriching(true)
         const enriched = await enrichCamaraItem(found, ctrl.signal)
+        if (mounted) {
+          setItem(enriched)
+          setEnriching(false)
+        }
+      } else if (found?.apiDetailUrl && found.id.startsWith('uy-')) {
+        setEnriching(true)
+        const enriched = await enrichParlamentoUYItem(found, ctrl.signal)
         if (mounted) {
           setItem(enriched)
           setEnriching(false)
