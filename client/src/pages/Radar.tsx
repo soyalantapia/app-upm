@@ -62,28 +62,47 @@ export function RadarPage() {
   const [topic, setTopic] = useState<Topic | 'all'>('all')
   const [type, setType] = useState<DocType | 'all'>('all')
   const [relevance, setRelevance] = useState<Relevance | 'all'>('all')
+  const [organismo, setOrganismo] = useState<string>('all')
   const [sort, setSort] = useState<Sort>('fecha-desc')
   const [loading, setLoading] = useState(true)
   const [filtersOpen, setFiltersOpen] = useState(false)
+
+  // Lista de organismos emisores únicos del feed (top 20 por frecuencia)
+  const organismos = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const n of NEWS) {
+      const o = (n.authors ?? '').trim()
+      if (!o) continue
+      // Tomamos solo organismos institucionales (mayúsculas o con "MINISTERIO/SECRETARIA/...")
+      if (!/^[A-ZÁÉÍÓÚÑ]/.test(o)) continue
+      counts.set(o, (counts.get(o) ?? 0) + 1)
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20)
+      .map(([name, count]) => ({ name, count }))
+  }, [NEWS])
 
   const activeFiltersCount =
     (country !== 'all' ? 1 : 0) +
     (topic !== 'all' ? 1 : 0) +
     (type !== 'all' ? 1 : 0) +
-    (relevance !== 'all' ? 1 : 0)
+    (relevance !== 'all' ? 1 : 0) +
+    (organismo !== 'all' ? 1 : 0)
 
   const clearFilters = () => {
     setCountry('all')
     setTopic('all')
     setType('all')
     setRelevance('all')
+    setOrganismo('all')
   }
 
   useEffect(() => {
     setLoading(true)
     const id = setTimeout(() => setLoading(false), 420)
     return () => clearTimeout(id)
-  }, [country, topic, type, relevance, q, sort])
+  }, [country, topic, type, relevance, organismo, q, sort])
 
   // Loading inicial mientras se trae el feed real
   const isLoadingInitial = feedLoading && !feed
@@ -94,15 +113,23 @@ export function RadarPage() {
       if (term !== '') {
         const t = topicById(n.topic)
         const c = countryByCode(n.country)
+        // Búsqueda full-text: incluye fullText (texto íntegro de la norma),
+        // authors (autoría) y status. Antes solo matcheaba en title+excerpt+source.
         const haystack = [
           n.title,
           n.excerpt,
+          n.fullText,                        // texto íntegro pre-procesado
           n.source,
           n.type,
+          n.authors,
+          n.status,
+          n.tipoDocumento,
+          (n.keywords ?? []).join(' '),
           t.label,
           t.shortLabel,
           c.name,
         ]
+          .filter(Boolean)
           .join(' ')
           .toLowerCase()
         if (!haystack.includes(term)) return false
@@ -111,14 +138,15 @@ export function RadarPage() {
         (country === 'all' || n.country === country) &&
         (topic === 'all' || n.topic === topic) &&
         (type === 'all' || n.type === type) &&
-        (relevance === 'all' || n.relevance === relevance)
+        (relevance === 'all' || n.relevance === relevance) &&
+        (organismo === 'all' || (n.authors ?? '').includes(organismo))
       )
     })
     if (sort === 'fecha-desc') items = [...items].sort((a, b) => b.date.localeCompare(a.date))
     if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
     if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)
     return items
-  }, [NEWS, q, country, topic, type, relevance, sort])
+  }, [NEWS, q, country, topic, type, relevance, organismo, sort])
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
@@ -279,6 +307,18 @@ export function RadarPage() {
                 </Chip>
               ))}
             </FilterRow>
+
+            {organismos.length > 0 && (
+              <FilterRow label="Organismo emisor">
+                <Chip active={organismo === 'all'} onClick={() => setOrganismo('all')} size="sm">Todos</Chip>
+                {organismos.map(o => (
+                  <Chip key={o.name} active={organismo === o.name} onClick={() => setOrganismo(o.name)} size="sm">
+                    {o.name.length > 38 ? o.name.slice(0, 36) + '…' : o.name}
+                    <span className="ml-1 rounded bg-white/40 px-1 text-[10px] tabular-nums">{o.count}</span>
+                  </Chip>
+                ))}
+              </FilterRow>
+            )}
 
             {activeFiltersCount > 0 && (
               <button

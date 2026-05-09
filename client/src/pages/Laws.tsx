@@ -76,11 +76,24 @@ export function LawsPage() {
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase()
     if (!term) return laws
-    return laws.filter(l =>
-      (l.title + ' ' + l.excerpt + ' ' + (l.fullText ?? '') + ' ' + (l.keywords ?? []).join(' '))
+    return laws.filter(l => {
+      // Búsqueda full-text: en title, excerpt, fullText (texto íntegro),
+      // authors, status, tipoDocumento, source y keywords.
+      const haystack = [
+        l.title,
+        l.excerpt,
+        l.fullText,
+        l.authors,
+        l.status,
+        l.tipoDocumento,
+        l.source,
+        (l.keywords ?? []).join(' '),
+      ]
+        .filter(Boolean)
+        .join(' ')
         .toLowerCase()
-        .includes(term),
-    )
+      return haystack.includes(term)
+    })
   }, [laws, q])
 
   const handleSave = () => {

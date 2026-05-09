@@ -201,6 +201,42 @@ export function NewsConversationPage() {
           <p className="text-[15px] leading-relaxed text-ink-700">{news.excerpt}</p>
         )}
 
+        {/* Leyes relacionadas · extraídas con regex del texto completo */}
+        {(() => {
+          const text = news.fullText ?? news.excerpt ?? ''
+          // Match patrones tipo "Ley 27.541", "Ley N° 24.076", "Ley Nº 27541",
+          // "Ley N.° 24.076", "Leyes\nN.° 24.076 y N.° 27.742", etc.
+          const re = /Ley(?:es)?\s*[\s\n]*(?:N[°º\.\s]*)?(\d{1,2}[\.\s]?\d{3,4})/gi
+          const found = new Set<string>()
+          let m: RegExpExecArray | null
+          while ((m = re.exec(text)) !== null) {
+            const num = m[1].replace(/[\.\s]/g, '')
+            // Filtrar la propia ley (si aplica) y números muy chicos / muy grandes
+            if (num.length < 4 || num.length > 5) continue
+            if (news.id === `ar-ley-${num}` || news.id === `uy-ley-${num}`) continue
+            found.add(num)
+          }
+          const leyes = Array.from(found).slice(0, 12)
+          if (leyes.length === 0) return null
+          return (
+            <div>
+              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Leyes citadas en el texto</div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {leyes.map(num => (
+                  <button
+                    key={num}
+                    onClick={() => navigate(`/radar/${news.country === 'UY' ? 'uy-ley-' : 'ar-ley-'}${num}`)}
+                    className="inline-flex items-center gap-1 rounded-full bg-upm-50 px-2.5 py-1 text-[11.5px] font-semibold text-upm-800 ring-1 ring-upm-100 hover:bg-upm-100 hover:ring-upm-300 transition"
+                    title={`Abrir Ley ${num}`}
+                  >
+                    Ley {num}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
+
         {/* Keywords */}
         {news.keywords && news.keywords.length > 0 && (
           <div>
