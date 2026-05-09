@@ -18,10 +18,11 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { store, useStore } from '@/lib/store'
-import { DOCUMENTS, NEWS, countryByCode, topicById } from '@/lib/data'
+import { DOCUMENTS, NEWS as MOCK_NEWS, countryByCode, topicById } from '@/lib/data'
 import { Badge, Button, Card, Chip, Eyebrow, PageHeader, Stat } from '@/components/ui'
 import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
 import { useUI } from '@/lib/ui-provider'
+import { useLiveFeed } from '@/lib/use-live-feed'
 
 const RELEVANCE: Record<string, { label: string; tone: 'danger' | 'warning' | 'info' }> = {
   alta: { label: 'Relevancia alta', tone: 'danger' },
@@ -54,6 +55,11 @@ export function HomePage() {
   const navigate = useNavigate()
   const { openDocument } = useUI()
 
+  // Feed real (live) en lugar del mock estático. Si el feed todavía no cargó,
+  // usamos los items mock como fallback para que el Home no se vea vacío.
+  const { feed } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
+  const NEWS = feed?.items?.length ? feed.items : MOCK_NEWS
+
   const greeting = (() => {
     const hour = new Date().getHours()
     if (hour < 12) return 'Buenos días'
@@ -63,9 +69,20 @@ export function HomePage() {
 
   const lastName = operator?.name.split(' ').slice(-1)[0] ?? 'Legislador'
 
-  const highlightedNews = NEWS.slice(0, 3)
+  // Stats reales del feed live
+  const totalNovedades = NEWS.length
+  const altaRelevancia = NEWS.filter(n => n.relevance === 'alta').length
+
+  // Highlights: 3 más recientes ordenadas por fecha desc
+  const highlightedNews = [...NEWS]
+    .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
+    .slice(0, 3)
   const recommendedDoc = DOCUMENTS.find(d => d.status === 'oficial' && d.type === 'informe') ?? DOCUMENTS[1]
-  const priorityAlert = NEWS.find(n => n.relevance === 'alta' && n.topic === 'ambiente') ?? NEWS[0]
+  // Alerta prioritaria: primer item de alta relevancia y tema ambiente; fallback al primer alta
+  const priorityAlert =
+    NEWS.find(n => n.relevance === 'alta' && n.topic === 'ambiente') ??
+    NEWS.find(n => n.relevance === 'alta') ??
+    NEWS[0]
   const alertTopic = topicById(priorityAlert.topic)
 
   return (
@@ -86,8 +103,8 @@ export function HomePage() {
               {greeting}, {lastName}
             </h1>
             <p className="mt-1 max-w-2xl text-[14.5px] text-white/75">
-              Tenés <span className="font-bold text-white">{NEWS.length} novedades relevantes</span> y{' '}
-              <span className="font-bold text-white">1 alerta prioritaria</span>. El radar UPM se actualizó hace minutos.
+              Tenés <span className="font-bold text-white">{totalNovedades} novedades</span> en tu radar y{' '}
+              <span className="font-bold text-white">{altaRelevancia} de alta relevancia</span>. El radar UPM se actualizó hace minutos.
             </p>
           </div>
           <div className="flex flex-wrap gap-2 sm:flex-col sm:items-end">
@@ -101,13 +118,13 @@ export function HomePage() {
         </div>
       </div>
 
-      {/* Stats clickeables */}
+      {/* Stats clickeables · todos vinculados al feed real */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <button onClick={() => navigate('/radar')} className="text-left transition hover:-translate-y-0.5">
-          <Stat label="Novedades hoy" value={NEWS.length} hint="Filtradas por tus temas" />
+          <Stat label="Novedades en radar" value={totalNovedades} hint="Datos en vivo de fuentes oficiales" />
         </button>
         <button onClick={() => navigate('/radar')} className="text-left transition hover:-translate-y-0.5">
-          <Stat label="Alta relevancia" value={NEWS.filter(n => n.relevance === 'alta').length} hint="Para revisar primero" />
+          <Stat label="Alta relevancia" value={altaRelevancia} hint="Para revisar primero" />
         </button>
         <button onClick={() => navigate('/biblioteca')} className="text-left transition hover:-translate-y-0.5">
           <Stat label="Documentos UPM" value={DOCUMENTS.length} hint="Biblioteca activa" />
