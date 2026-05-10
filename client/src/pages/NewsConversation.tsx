@@ -31,6 +31,7 @@ import { shareLink } from '@/lib/share'
 import { useNewsItem } from '@/lib/use-news-item'
 import { extractContext } from '@/lib/extract-context'
 import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
+import { BacklinksPanel } from '@/components/BacklinksPanel'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -303,6 +304,9 @@ export function NewsConversationPage() {
 
         {/* Normas equivalentes en la región · TF-IDF cross-país */}
         <SimilarItemsPanel itemId={news.id} basePath="/radar" />
+
+        {/* Backlinks invertidos · solo para leyes nacionales (renderiza null si no aplica) */}
+        <BacklinksPanel itemId={news.id} />
 
         {/* Texto completo (ementa o ementaDetalhada) */}
         {news.fullText && news.fullText.length > 0 && (

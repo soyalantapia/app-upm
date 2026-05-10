@@ -17,6 +17,7 @@ import { LawsPage } from '@/pages/Laws'
 import { LibraryPage } from '@/pages/Library'
 import { FoldersPage } from '@/pages/Folders'
 import { ProfilePage } from '@/pages/Profile'
+import { BriefingPage } from '@/pages/Briefing'
 
 function OnboardingGate({ children }: { children: React.ReactNode }) {
   const onboarded = useStore(s => s.onboarded)
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="radar" element={<RadarPage />} />
             <Route path="radar/:id" element={<NewsConversationPage />} />
             <Route path="leyes" element={<LawsPage />} />
+            <Route path="briefing" element={<BriefingPage />} />
             <Route path="biblioteca" element={<LibraryPage />} />
             <Route path="carpetas" element={<FoldersPage />} />
             <Route path="perfil" element={<ProfilePage />} />

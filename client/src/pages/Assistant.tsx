@@ -20,6 +20,7 @@ import { Badge, Button, Card, Eyebrow, PageHeader } from '@/components/ui'
 import { Markdown } from '@/components/Markdown'
 import { SourceCard } from '@/components/SourceCard'
 import { generateAssistantResponse } from '@/lib/respond'
+import { generateRAGAnswer } from '@/lib/rag'
 import { store, useStore } from '@/lib/store'
 import { copyToClipboard, shareLink } from '@/lib/share'
 import { useUI } from '@/lib/ui-provider'
@@ -77,35 +78,50 @@ export function AssistantPage() {
     scrollerRef.current?.scrollTo({ top: scrollerRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, thinking])
 
-  const send = (text?: string) => {
+  // RAG real sobre el corpus de 1601 normas via TF-IDF + coseno (lib/rag.ts).
+  // Si la query no matchea ninguna norma con score >= 0.04, hace fallback al
+  // motor de patrones legacy (lib/respond.ts) para no dejar al usuario sin nada.
+  const send = async (text?: string) => {
     const value = (text ?? input).trim()
     if (!value || thinking) return
     setMessages(prev => [...prev, userMessage(value)])
     setInput('')
     setThinking(true)
-    setTimeout(() => {
-      const reply = generateAssistantResponse(value)
-      setMessages(prev => [...prev, reply])
-      setThinking(false)
-    }, 750)
+    try {
+      const reply = await generateRAGAnswer(value)
+      // Si el RAG retorna 0 sources (sin coincidencias), caer al pattern matcher
+      const finalReply = reply.sources && reply.sources.length > 0
+        ? reply
+        : generateAssistantResponse(value)
+      setMessages(prev => [...prev, finalReply])
+    } catch {
+      const fallback = generateAssistantResponse(value)
+      setMessages(prev => [...prev, fallback])
+    }
+    setThinking(false)
   }
 
-  const regenerate = () => {
+  const regenerate = async () => {
     if (thinking) return
     const lastUser = [...messages].reverse().find(m => m.role === 'user')
     if (!lastUser) return
     setThinking(true)
-    setTimeout(() => {
-      const reply = generateAssistantResponse(lastUser.content)
+    try {
+      const reply = await generateRAGAnswer(lastUser.content)
+      const finalReply = reply.sources && reply.sources.length > 0
+        ? reply
+        : generateAssistantResponse(lastUser.content)
       setMessages(prev => {
         const idx = [...prev].reverse().findIndex(m => m.role === 'assistant')
-        if (idx === -1) return [...prev, reply]
+        if (idx === -1) return [...prev, finalReply]
         const realIdx = prev.length - 1 - idx
-        return [...prev.slice(0, realIdx), reply, ...prev.slice(realIdx + 1)]
+        return [...prev.slice(0, realIdx), finalReply, ...prev.slice(realIdx + 1)]
       })
-      setThinking(false)
-      store.pushToast('info', 'Respuesta regenerada')
-    }, 600)
+      store.pushToast('info', 'Respuesta regenerada con corpus actualizado')
+    } catch {
+      // ignore
+    }
+    setThinking(false)
   }
 
   const newConversation = () => {

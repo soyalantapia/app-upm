@@ -21,6 +21,7 @@ import { formatDate, formatDateTime } from '@/lib/format'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
 import { useStore } from '@/lib/store'
 import { useLiveFeed } from '@/lib/use-live-feed'
+import { writeSnapshot } from '@/lib/visit-tracker'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -104,6 +105,15 @@ export function RadarPage() {
     const id = setTimeout(() => setLoading(false), 420)
     return () => clearTimeout(id)
   }, [country, topic, type, relevance, organismo, q, sort])
+
+  // Snapshot de visita: cada vez que el usuario abre Radar y el feed está cargado,
+  // guardamos los IDs vistos. Al volver al Home, el banner Diff usa esto para
+  // computar "qué cambió desde tu última visita".
+  useEffect(() => {
+    if (NEWS.length > 0) writeSnapshot(NEWS)
+    // No queremos correrlo en cada render, solo cuando el feed efectivamente cargó
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [NEWS.length])
 
   // Loading inicial mientras se trae el feed real
   const isLoadingInitial = feedLoading && !feed

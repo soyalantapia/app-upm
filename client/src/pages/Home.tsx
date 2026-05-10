@@ -23,6 +23,7 @@ import { Badge, Button, Card, Chip, Eyebrow, PageHeader, Stat } from '@/componen
 import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
 import { useUI } from '@/lib/ui-provider'
 import { useLiveFeed } from '@/lib/use-live-feed'
+import { DiffSinceLastVisit } from '@/components/DiffSinceLastVisit'
 
 const RELEVANCE: Record<string, { label: string; tone: 'danger' | 'warning' | 'info' }> = {
   alta: { label: 'Relevancia alta', tone: 'danger' },
@@ -117,6 +118,11 @@ export function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Diff "qué cambió desde tu última visita" · solo aparece si hay snapshot previo
+          y al menos 1 norma nueva. Click en "Marcar como leídas" o navegar a /radar
+          actualiza el snapshot. */}
+      <DiffSinceLastVisit items={NEWS} />
 
       {/* Stats clickeables · todos vinculados al feed real */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -277,6 +283,7 @@ export function HomePage() {
             <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-500">Acciones rápidas</div>
             <div className="mt-3 flex flex-col gap-2.5">
               <QuickAction to="/asistente" icon={MessageSquareText} title="Preguntar al Asistente" desc="Brief, resumen, redacción" />
+              <QuickAction to="/briefing" icon={ScrollText} title="Briefing Pre-sesión" desc="1-pager imprimible para tu comisión" />
               <QuickAction to="/radar" icon={Radar} title="Ver Radar" desc="Novedades por país y tema" />
               <QuickAction to="/leyes" icon={BookOpen} title="Hablar con una ley" desc="Preguntá al documento" />
               <QuickAction to="/biblioteca" icon={Library} title="Buscar en Biblioteca UPM" desc="Memoria institucional" />
