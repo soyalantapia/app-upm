@@ -112,7 +112,11 @@ function mapRow(r: SenadoCoRow, kind: 'proyecto' | 'ley'): NewsItem | null {
   const isLaw = kind === 'ley'
   const titleClean = titulo.length > 110 ? titulo.slice(0, 107) + '…' : titulo
   return {
-    id: (isLaw ? 'co-ley-' : 'co-proyecto-') + (numero || Math.random().toString(36).slice(2, 9)),
+    // El número en Socrata viene como "034/22" o "272/19". El "/" rompe HashRouter
+    // (la ruta /radar/co-ley-034/22 se parsea como nested route). Normalizamos a "034-22".
+    id: (isLaw ? 'co-ley-' : 'co-proyecto-') + (numero
+      ? numero.replace(/[^a-zA-Z0-9]/g, '-')
+      : Math.random().toString(36).slice(2, 9)),
     title: isLaw
       ? `${ident} (sancionado) · ${titleClean}`
       : `${ident} · ${titleClean}`,
