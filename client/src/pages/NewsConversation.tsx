@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -5,16 +6,21 @@ import {
   BadgeCheck,
   Bookmark,
   BookmarkCheck,
+  Building2,
   CalendarDays,
   Clock,
+  DollarSign,
   ExternalLink,
   FileText,
   Globe,
   Hash,
+  MapPin,
   MessageSquareText,
   ScrollText,
   Share2,
+  Sparkles,
   Tag,
+  Timer,
   Users,
 } from 'lucide-react'
 import { Badge, Eyebrow } from '@/components/ui'
@@ -23,12 +29,15 @@ import { formatDate, formatDateTime } from '@/lib/format'
 import { store, useStore } from '@/lib/store'
 import { shareLink } from '@/lib/share'
 import { useNewsItem } from '@/lib/use-news-item'
+import { extractContext } from '@/lib/extract-context'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
   const { id } = useParams()
   const { item, loading, enriching } = useNewsItem(id)
   const isSaved = useStore(s => (item ? s.saved.some(i => i.ref === item.id) : false))
+  // Contexto extraído antes de early returns para respetar Rules of Hooks
+  const ctx = useMemo(() => extractContext(item?.fullText), [item?.fullText])
 
   if (loading) {
     return (
@@ -187,6 +196,110 @@ export function NewsConversationPage() {
           {news.status && <Badge tone="success">{news.status}</Badge>}
         </div>
 
+        {/* Resumen ejecutivo extraído del articulado */}
+        {ctx.resumen && ctx.resumen.length > 50 && (
+          <div className="rounded-2xl bg-upm-50/40 p-4 ring-1 ring-upm-100">
+            <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+              <Sparkles size={11} /> Resumen ejecutivo
+            </div>
+            <p className="mt-2 text-[14.5px] leading-relaxed text-ink-800">{ctx.resumen}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-ink-500">
+              <span className="inline-flex items-center gap-1">
+                <FileText size={10} /> {ctx.totalPalabras} palabras
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Activity size={10} /> Complejidad{' '}
+                <span className={
+                  ctx.complejidad === 'compleja' ? 'font-bold text-danger-fg'
+                    : ctx.complejidad === 'media' ? 'font-bold text-warning-fg'
+                    : 'font-bold text-success-fg'
+                }>{ctx.complejidad}</span>
+              </span>
+              {ctx.articulos.length > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <Hash size={10} /> {ctx.articulos.length} artículos
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Grid de contexto extraído · 4 columnas en desktop, stack en mobile */}
+        {(ctx.decretos.length > 0 || ctx.resoluciones.length > 0 || ctx.montos.length > 0 || ctx.plazos.length > 0 || ctx.provincias.length > 0 || ctx.instituciones.length > 0) && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {ctx.instituciones.length > 0 && (
+              <ContextSection icon={Building2} label="Organismos mencionados">
+                {ctx.instituciones.map(i => (
+                  <Chip2 key={i}>{i}</Chip2>
+                ))}
+              </ContextSection>
+            )}
+            {ctx.provincias.length > 0 && (
+              <ContextSection icon={MapPin} label="Lugares afectados">
+                {ctx.provincias.map(p => (
+                  <Chip2 key={p}>{p}</Chip2>
+                ))}
+              </ContextSection>
+            )}
+            {ctx.plazos.length > 0 && (
+              <ContextSection icon={Timer} label="Plazos">
+                {ctx.plazos.map((p, i) => (
+                  <Chip2 key={i}>{p}</Chip2>
+                ))}
+              </ContextSection>
+            )}
+            {ctx.montos.length > 0 && (
+              <ContextSection icon={DollarSign} label="Montos">
+                {ctx.montos.map((m, i) => (
+                  <Chip2 key={i}>{m}</Chip2>
+                ))}
+              </ContextSection>
+            )}
+            {ctx.decretos.length > 0 && (
+              <ContextSection icon={ScrollText} label="Decretos relacionados">
+                {ctx.decretos.map(d => (
+                  <Chip2 key={d}>{d}</Chip2>
+                ))}
+              </ContextSection>
+            )}
+            {ctx.resoluciones.length > 0 && (
+              <ContextSection icon={FileText} label="Resoluciones citadas">
+                {ctx.resoluciones.map(r => (
+                  <Chip2 key={r}>{r}</Chip2>
+                ))}
+              </ContextSection>
+            )}
+          </div>
+        )}
+
+        {/* Articulado (si fue parseable) */}
+        {ctx.articulos.length >= 2 && (
+          <div>
+            <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
+              <Hash size={11} /> Articulado ({ctx.articulos.length})
+            </div>
+            <ol className="mt-3 space-y-2">
+              {ctx.articulos.slice(0, 10).map((a, i) => (
+                <li key={`art-${i}-${a.numero}`} className="rounded-2xl bg-white p-3 ring-1 ring-ink-100">
+                  <div className="flex items-baseline gap-2">
+                    <span className="rounded-md bg-upm-50 px-2 py-0.5 text-[11px] font-bold text-upm-800 ring-1 ring-upm-100">
+                      Art. {a.numero}
+                    </span>
+                    <p className="flex-1 text-[13.5px] leading-relaxed text-ink-800 line-clamp-3">
+                      {a.texto}
+                    </p>
+                  </div>
+                </li>
+              ))}
+              {ctx.articulos.length > 10 && (
+                <li className="text-[11.5px] text-ink-500 italic">
+                  + {ctx.articulos.length - 10} artículos más en el texto completo
+                </li>
+              )}
+            </ol>
+          </div>
+        )}
+
         {/* Texto completo (ementa o ementaDetalhada) */}
         {news.fullText && news.fullText.length > 0 && (
           <div>
@@ -308,6 +421,34 @@ function MetaChip({
         <Icon size={10} /> {label}
       </span>
       <span className={'font-semibold text-ink-800 ' + (truncate ? 'truncate' : '')}>{value}</span>
+    </span>
+  )
+}
+
+// Sección de contexto extraído (montos, plazos, instituciones, etc.)
+function ContextSection({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: typeof Hash
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="rounded-2xl bg-white p-3 ring-1 ring-ink-100">
+      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
+        <Icon size={11} /> {label}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-1.5">{children}</div>
+    </div>
+  )
+}
+
+function Chip2({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-upm-50/80 px-2.5 py-1 text-[11.5px] font-semibold text-upm-800 ring-1 ring-upm-100">
+      {children}
     </span>
   )
 }

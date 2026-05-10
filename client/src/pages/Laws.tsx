@@ -1,19 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  Activity,
   BadgeCheck,
   BookOpen,
   Bookmark,
   BookmarkCheck,
+  Building2,
   CalendarDays,
+  DollarSign,
   ExternalLink,
+  FileText,
   Hash,
+  MapPin,
   MessageSquareText,
   RefreshCw,
   ScrollText,
   Search,
   Share2,
+  Sparkles,
   Tag,
+  Timer,
   Users,
   Wifi,
 } from 'lucide-react'
@@ -24,6 +31,7 @@ import { store, useStore } from '@/lib/store'
 import { shareLink } from '@/lib/share'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import type { NewsItem } from '@/lib/types'
+import { extractContext } from '@/lib/extract-context'
 
 // Filtro para esta vista: solo leyes ya sancionadas/promulgadas, no proyectos en trámite.
 function isSanctionedLaw(item: NewsItem): boolean {
@@ -61,6 +69,10 @@ export function LawsPage() {
 
   const [active, setActive] = useState<NewsItem | null>(null)
   const [q, setQ] = useState('')
+
+  // Contexto extraído del fullText de la ley activa (8 capas: resumen, articulado,
+  // decretos relacionados, leyes citadas, montos, plazos, provincias, instituciones).
+  const ctx = useMemo(() => extractContext(active?.fullText), [active?.fullText])
 
   // Seleccionar la primera ley cuando carga el feed
   useEffect(() => {
@@ -301,6 +313,110 @@ export function LawsPage() {
                 {active.title.replace(/\^Ley \d+\s*·\s*/, '')}
               </h2>
 
+              {/* Resumen ejecutivo extraído del articulado */}
+              {ctx.resumen && ctx.resumen.length > 50 && (
+                <div className="rounded-2xl bg-upm-50/40 p-4 ring-1 ring-upm-100">
+                  <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+                    <Sparkles size={11} /> Resumen ejecutivo
+                  </div>
+                  <p className="mt-2 text-[14.5px] leading-relaxed text-ink-800">{ctx.resumen}</p>
+                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-ink-500">
+                    <span className="inline-flex items-center gap-1">
+                      <FileText size={10} /> {ctx.totalPalabras} palabras
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                      <Activity size={10} /> Complejidad{' '}
+                      <span className={
+                        ctx.complejidad === 'compleja' ? 'font-bold text-danger-fg'
+                          : ctx.complejidad === 'media' ? 'font-bold text-warning-fg'
+                          : 'font-bold text-success-fg'
+                      }>{ctx.complejidad}</span>
+                    </span>
+                    {ctx.articulos.length > 0 && (
+                      <span className="inline-flex items-center gap-1">
+                        <Hash size={10} /> {ctx.articulos.length} artículos
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Grid de contexto extraído */}
+              {(ctx.decretos.length > 0 || ctx.resoluciones.length > 0 || ctx.montos.length > 0 || ctx.plazos.length > 0 || ctx.provincias.length > 0 || ctx.instituciones.length > 0) && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {ctx.instituciones.length > 0 && (
+                    <LawCtxSection icon={Building2} label="Organismos mencionados">
+                      {ctx.instituciones.map(i => (
+                        <LawCtxChip key={i}>{i}</LawCtxChip>
+                      ))}
+                    </LawCtxSection>
+                  )}
+                  {ctx.provincias.length > 0 && (
+                    <LawCtxSection icon={MapPin} label="Lugares afectados">
+                      {ctx.provincias.map(p => (
+                        <LawCtxChip key={p}>{p}</LawCtxChip>
+                      ))}
+                    </LawCtxSection>
+                  )}
+                  {ctx.plazos.length > 0 && (
+                    <LawCtxSection icon={Timer} label="Plazos">
+                      {ctx.plazos.map((p, i) => (
+                        <LawCtxChip key={i}>{p}</LawCtxChip>
+                      ))}
+                    </LawCtxSection>
+                  )}
+                  {ctx.montos.length > 0 && (
+                    <LawCtxSection icon={DollarSign} label="Montos">
+                      {ctx.montos.map((m, i) => (
+                        <LawCtxChip key={i}>{m}</LawCtxChip>
+                      ))}
+                    </LawCtxSection>
+                  )}
+                  {ctx.decretos.length > 0 && (
+                    <LawCtxSection icon={ScrollText} label="Decretos relacionados">
+                      {ctx.decretos.map(d => (
+                        <LawCtxChip key={d}>{d}</LawCtxChip>
+                      ))}
+                    </LawCtxSection>
+                  )}
+                  {ctx.resoluciones.length > 0 && (
+                    <LawCtxSection icon={FileText} label="Resoluciones citadas">
+                      {ctx.resoluciones.map(r => (
+                        <LawCtxChip key={r}>{r}</LawCtxChip>
+                      ))}
+                    </LawCtxSection>
+                  )}
+                </div>
+              )}
+
+              {/* Articulado (si fue parseable) */}
+              {ctx.articulos.length >= 2 && (
+                <div>
+                  <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
+                    <Hash size={11} /> Articulado ({ctx.articulos.length})
+                  </div>
+                  <ol className="mt-3 space-y-2">
+                    {ctx.articulos.slice(0, 10).map((a, i) => (
+                      <li key={`art-${i}-${a.numero}`} className="rounded-2xl bg-white p-3 ring-1 ring-ink-100">
+                        <div className="flex items-baseline gap-2">
+                          <span className="rounded-md bg-upm-50 px-2 py-0.5 text-[11px] font-bold text-upm-800 ring-1 ring-upm-100">
+                            Art. {a.numero}
+                          </span>
+                          <p className="flex-1 text-[13.5px] leading-relaxed text-ink-800 line-clamp-3">
+                            {a.texto}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                    {ctx.articulos.length > 10 && (
+                      <li className="text-[11.5px] text-ink-500 italic">
+                        + {ctx.articulos.length - 10} artículos más en el texto completo
+                      </li>
+                    )}
+                  </ol>
+                </div>
+              )}
+
               {/* Sumario completo */}
               {active.fullText && active.fullText.length > 0 && (
                 <div>
@@ -358,6 +474,33 @@ function LawMetaChip({
         <Icon size={10} /> {label}
       </span>
       <span className={'font-semibold text-ink-800 ' + (truncate ? 'truncate' : '')}>{value}</span>
+    </span>
+  )
+}
+
+function LawCtxSection({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: typeof Hash
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="rounded-2xl bg-white p-3 ring-1 ring-ink-100">
+      <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
+        <Icon size={11} /> {label}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-1.5">{children}</div>
+    </div>
+  )
+}
+
+function LawCtxChip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-upm-50/80 px-2.5 py-1 text-[11.5px] font-semibold text-upm-800 ring-1 ring-upm-100">
+      {children}
     </span>
   )
 }
