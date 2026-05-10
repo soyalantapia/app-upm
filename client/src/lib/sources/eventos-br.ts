@@ -85,7 +85,24 @@ function mapEvento(r: EventoRow): NewsItem | null {
   if (!desc || !r.id) return null
   const fecha = (r.dataHoraInicio ?? '').slice(0, 10)
   const orgao = r.orgaos?.[0]?.sigla ?? r.orgaos?.[0]?.nome ?? 'Câmara'
+  const orgaoNombre = r.orgaos?.[0]?.nome ?? 'Câmara dos Deputados'
   const titleClean = desc.length > 110 ? desc.slice(0, 107) + '…' : desc
+
+  // El excerpt debe agregar info que NO está en el título: hora, lugar, situación,
+  // comisión organizadora completa. Antes copiábamos el desc tal cual y quedaba
+  // redundante con el title.
+  const horaInicio = (r.dataHoraInicio ?? '').slice(11, 16)
+  const horaFim = (r.dataHoraFim ?? '').slice(11, 16)
+  const lugar = r.localCamara?.sala ?? r.localCamara?.nome ?? r.localExterno ?? null
+  const excerptParts = [
+    `Convocada por ${orgaoNombre}`,
+    horaInicio ? `Inicio ${horaInicio}${horaFim ? ` · Fin ${horaFim}` : ''} (BRT)` : null,
+    lugar ? `Lugar: ${lugar}` : null,
+    r.situacao ? `Estado: ${r.situacao}` : null,
+    `Tipo: ${tipo || 'Evento legislativo'}`,
+    desc,
+  ].filter(Boolean)
+  const excerpt = excerptParts.join(' · ')
 
   return {
     id: `br-evento-${r.id}`,
@@ -95,7 +112,7 @@ function mapEvento(r: EventoRow): NewsItem | null {
     type: 'comunicado',
     date: fecha || new Date().toISOString().slice(0, 10),
     relevance: detectRelevance(tipo, desc),
-    excerpt: desc.length > 600 ? desc.slice(0, 597) + '…' : desc,
+    excerpt: excerpt.length > 600 ? excerpt.slice(0, 597) + '…' : excerpt,
     source: `Câmara dos Deputados · Brasil · Agenda ${orgao}`,
     fullText: desc,
     status: r.situacao ?? 'Convocado',

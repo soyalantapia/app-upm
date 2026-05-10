@@ -66,6 +66,7 @@ export function RadarPage() {
   const [sort, setSort] = useState<Sort>('fecha-desc')
   const [loading, setLoading] = useState(true)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const [sourcesOpen, setSourcesOpen] = useState(false)
 
   // Lista de organismos emisores únicos del feed (top 20 por frecuencia)
   const organismos = useMemo(() => {
@@ -168,38 +169,67 @@ export function RadarPage() {
         }
       />
 
-      {/* Stats por fuente */}
-      {liveSources.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card">
-          <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Fuentes</span>
-          {liveSources.map(s => (
+      {/* Stats por fuente · colapsado por defecto para no ocupar tanto espacio */}
+      {liveSources.length > 0 && (() => {
+        const okCount = liveSources.filter(s => s.ok).length
+        // Contar ítems del feed real (después de dedupe), no la suma de counts.
+        const totalItems = NEWS.length
+        const countriesSet = new Set(liveSources.filter(s => s.ok).map(s => s.country))
+        return (
+          <div className="rounded-2xl bg-white ring-1 ring-ink-100 shadow-card">
             <button
-              key={s.id}
-              onClick={() => setCountry(s.country)}
-              className={
-                'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition ' +
-                (s.ok
-                  ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
-                  : 'bg-ink-50 text-ink-400 ring-1 ring-ink-100')
-              }
-              title={s.error ?? `${s.count} ítems desde ${s.label}`}
+              onClick={() => setSourcesOpen(v => !v)}
+              className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-upm-50/30 rounded-2xl transition"
+              aria-expanded={sourcesOpen}
+              aria-label="Fuentes activas"
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${s.ok ? 'bg-success' : 'bg-ink-300'}`} />
-              {countryByCode(s.country).flag} {s.label}
-              <span className="ml-0.5 rounded bg-white/60 px-1 text-[10px] tabular-nums">{s.count}</span>
+              <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Fuentes</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-[11px] font-bold text-success-fg ring-1 ring-success-bg">
+                <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft" />
+                {okCount}/{liveSources.length} en vivo
+              </span>
+              <span className="text-[11.5px] font-semibold text-ink-700 tabular-nums">{totalItems} ítems</span>
+              <span className="hidden sm:inline text-[11.5px] text-ink-500">
+                {[...countriesSet].map(c => countryByCode(c).flag).join(' ')}
+              </span>
+              {feed?.fetchedAt && (
+                <span className="ml-auto hidden sm:inline text-[10.5px] text-ink-400 tabular-nums">
+                  {new Date(feed.fetchedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              )}
+              <ChevronDown
+                size={14}
+                className={'shrink-0 text-ink-500 transition ' + (sourcesOpen ? 'rotate-180' : '') + (feed?.fetchedAt ? '' : ' ml-auto')}
+              />
             </button>
-          ))}
-          {feed?.fetchedAt && (
-            <span className="ml-auto text-[10.5px] text-ink-400 tabular-nums">
-              Actualizado {new Date(feed.fetchedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          )}
-        </div>
-      )}
+            {sourcesOpen && (
+              <div className="flex flex-wrap items-center gap-1.5 border-t border-ink-100 px-3 py-2.5">
+                {liveSources.map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => setCountry(s.country)}
+                    className={
+                      'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition whitespace-nowrap ' +
+                      (s.ok
+                        ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
+                        : 'bg-ink-50 text-ink-400 ring-1 ring-ink-100')
+                    }
+                    title={s.error ?? `${s.count} ítems desde ${s.label}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${s.ok ? 'bg-success' : 'bg-ink-300'}`} />
+                    {countryByCode(s.country).flag} {s.label}
+                    <span className="ml-0.5 rounded bg-white/60 px-1 text-[10px] tabular-nums">{s.count}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })()}
 
-      {/* Search + Sort + Toggle filtros, todo en una sola fila */}
+      {/* Search + Sort + Toggle filtros · search full-width en mobile */}
       <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="flex flex-1 min-w-0 items-center gap-2 rounded-2xl bg-upm-50/40 px-3 py-2.5 ring-1 ring-upm-100 focus-within:bg-white focus-within:ring-upm-400">
             <Search size={15} className="shrink-0 text-upm-600" />
             <input
@@ -210,39 +240,41 @@ export function RadarPage() {
             />
           </label>
 
-          <button
-            onClick={() => setFiltersOpen(v => !v)}
-            className={
-              'inline-flex shrink-0 items-center gap-1 rounded-2xl px-2.5 py-2.5 text-[13px] font-semibold transition ' +
-              (filtersOpen || activeFiltersCount > 0
-                ? 'bg-upm-50 text-upm-800 ring-1 ring-upm-200'
-                : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50')
-            }
-            aria-label="Filtros"
-          >
-            <Filter size={13} />
-            <span className="hidden sm:inline">Filtros</span>
-            {activeFiltersCount > 0 && (
-              <span className="grid h-4 min-w-[16px] place-items-center rounded-full bg-upm-500 px-1 text-[10px] font-bold text-white tabular-nums">
-                {activeFiltersCount}
-              </span>
-            )}
-            <ChevronDown size={12} className={'transition ' + (filtersOpen ? 'rotate-180' : '')} />
-          </button>
-
-          <div className="relative shrink-0">
-            <ArrowDownUp size={11} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-500" />
-            <select
-              value={sort}
-              onChange={e => setSort(e.target.value as Sort)}
-              aria-label="Ordenar"
-              className="appearance-none rounded-2xl bg-white py-2.5 pl-7 pr-7 text-[13px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 focus:outline-none focus:ring-2 focus:ring-upm-400"
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setFiltersOpen(v => !v)}
+              className={
+                'inline-flex shrink-0 items-center gap-1 rounded-2xl px-2.5 py-2.5 text-[13px] font-semibold transition ' +
+                (filtersOpen || activeFiltersCount > 0
+                  ? 'bg-upm-50 text-upm-800 ring-1 ring-upm-200'
+                  : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50')
+              }
+              aria-label="Filtros"
             >
-              {SORT_OPTIONS.map(s => (
-                <option key={s.id} value={s.id}>{s.label}</option>
-              ))}
-            </select>
-            <ChevronDown size={11} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-ink-500" />
+              <Filter size={13} />
+              <span>Filtros</span>
+              {activeFiltersCount > 0 && (
+                <span className="grid h-4 min-w-[16px] place-items-center rounded-full bg-upm-500 px-1 text-[10px] font-bold text-white tabular-nums">
+                  {activeFiltersCount}
+                </span>
+              )}
+              <ChevronDown size={12} className={'transition ' + (filtersOpen ? 'rotate-180' : '')} />
+            </button>
+
+            <div className="relative flex-1 sm:flex-initial">
+              <ArrowDownUp size={11} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-500" />
+              <select
+                value={sort}
+                onChange={e => setSort(e.target.value as Sort)}
+                aria-label="Ordenar"
+                className="w-full appearance-none rounded-2xl bg-white py-2.5 pl-7 pr-7 text-[13px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 focus:outline-none focus:ring-2 focus:ring-upm-400"
+              >
+                {SORT_OPTIONS.map(s => (
+                  <option key={s.id} value={s.id}>{s.label}</option>
+                ))}
+              </select>
+              <ChevronDown size={11} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-ink-500" />
+            </div>
           </div>
         </div>
 
