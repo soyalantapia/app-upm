@@ -92,12 +92,16 @@ export async function fetchCamaraProposicoes(opts?: {
 function mapProposicao(p: CamaraProposicao): NewsItem {
   const tipo = SIGLA_FULL[p.siglaTipo] ?? p.siglaTipo
   const ementa = (p.ementa ?? '').trim()
-  const title = `${tipo} ${p.numero}/${p.ano} · Brasil`
+  // La API a veces devuelve ano: 0 para pareceres (PRL) sin año asignado.
+  // En ese caso usamos el año actual para que la fecha sea válida.
+  const anoValido = p.ano && p.ano > 1900 ? p.ano : new Date().getFullYear()
+  const idLabel = `${p.siglaTipo} ${p.numero}/${anoValido}`
+  const title = `${tipo} ${p.numero}/${anoValido} · Brasil`
   const excerpt = ementa.length > 600 ? ementa.slice(0, 597) + '…' : ementa
   // Fecha aproximada por el año del proyecto. El enrich on-demand reemplaza
   // dataPublicacao con la fecha exacta (dataApresentacao) cuando se abre el
   // detalle. Para el listado en Radar usamos el año del proyecto.
-  const fechaAprox = `${p.ano}-01-01`
+  const fechaAprox = `${anoValido}-01-01`
   return {
     id: 'br-camara-' + p.id,
     title,
@@ -106,10 +110,10 @@ function mapProposicao(p: CamaraProposicao): NewsItem {
     type: SIGLA_TO_TYPE[p.siglaTipo] ?? 'ley',
     date: fechaAprox,
     relevance: detectRelevance(p.siglaTipo),
-    excerpt: excerpt || `Proposição ${p.siglaTipo} ${p.numero}/${p.ano} en trámite legislativo.`,
+    excerpt: excerpt || `Proposição ${idLabel} en trámite legislativo.`,
     source: `Câmara dos Deputados · Brasil (${p.siglaTipo})`,
     fullText: ementa,
-    tipoDocumento: `${p.siglaTipo} ${p.numero}/${p.ano}`,
+    tipoDocumento: idLabel,
     tipoConteudo: tipo,
     apiDetailUrl: `${BASE}/proposicoes/${p.id}`,
   }
