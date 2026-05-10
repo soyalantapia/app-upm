@@ -32,6 +32,7 @@ import { shareLink } from '@/lib/share'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import type { NewsItem } from '@/lib/types'
 import { extractContext } from '@/lib/extract-context'
+import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 
 // Filtro para esta vista: solo leyes ya sancionadas/promulgadas, no proyectos en trámite.
 function isSanctionedLaw(item: NewsItem): boolean {
@@ -416,6 +417,9 @@ export function LawsPage() {
                   </ol>
                 </div>
               )}
+
+              {/* Normas equivalentes en la región · TF-IDF cross-país */}
+              <SimilarItemsPanel itemId={active.id} basePath="/leyes" />
 
               {/* Sumario completo */}
               {active.fullText && active.fullText.length > 0 && (
