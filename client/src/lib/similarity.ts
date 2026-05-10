@@ -147,7 +147,9 @@ export function findSimilarItems(
     if (id === itemId) continue
     const n = index.norms.get(id) ?? 1
     const score = cosine(queryVec, queryNorm, v, n)
-    if (score < 0.08) continue
+    // Threshold más laxo (0.04) para que items técnicos también encuentren matches
+    // cross-país. Antes era 0.08 y dejaba a Resoluciones AR sin contraparte UY/BR.
+    if (score < 0.04) continue
     const item = index.itemsById.get(id)
     if (!item) continue
     all.push({ item, score })

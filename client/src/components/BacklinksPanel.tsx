@@ -17,10 +17,15 @@ export function BacklinksPanel({ itemId }: { itemId: string }) {
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-          <Network size={11} /> Reconstrucción del grafo regulatorio…
+          <Network size={11} /> Reconstruyendo grafo regulatorio…
         </div>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {[0, 1].map(i => (
+            <li key={`bl-sk-${i}`} className="skeleton h-[72px] rounded-2xl" />
+          ))}
+        </ul>
       </div>
     )
   }
@@ -54,24 +59,22 @@ export function BacklinksPanel({ itemId }: { itemId: string }) {
         </span>
       </div>
 
-      {/* Distribución por país */}
-      {byCountry.size > 1 && (
-        <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-ink-600">
-          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-400">Distribución</span>
-          {Array.from(byCountry.entries())
-            .sort((a, b) => b[1] - a[1])
-            .map(([country, count]) => {
-              const c = countryByCode(country as CountryCode)
-              return (
-                <span key={country} className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 ring-1 ring-ink-100">
-                  <span>{c.flag}</span>
-                  <span className="font-semibold text-ink-700">{c.code}</span>
-                  <span className="tabular-nums text-ink-500">· {count}</span>
-                </span>
-              )
-            })}
-        </div>
-      )}
+      {/* Distribución por país · siempre visible */}
+      <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-ink-600">
+        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-400">Distribución</span>
+        {Array.from(byCountry.entries())
+          .sort((a, b) => b[1] - a[1])
+          .map(([country, count]) => {
+            const c = countryByCode(country as CountryCode)
+            return (
+              <span key={country} className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 ring-1 ring-ink-100">
+                <span>{c.flag}</span>
+                <span className="font-semibold text-ink-700">{c.code}</span>
+                <span className="tabular-nums text-ink-500">· {count}</span>
+              </span>
+            )
+          })}
+      </div>
 
       <ul className="grid gap-2 sm:grid-cols-2">
         {visible.map(({ item, occurrences }) => {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Activity,
   BadgeCheck,
@@ -70,7 +70,16 @@ export function LawsPage() {
   )
 
   const [active, setActive] = useState<NewsItem | null>(null)
-  const [q, setQ] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [q, setQ] = useState(searchParams.get('q') ?? '')
+
+  // Sincronizar query con URL (?q=27541) para deep-links desde NewsConversation
+  // y otras pantallas. Limpiar el param cuando q queda vacía.
+  useEffect(() => {
+    if (q) setSearchParams({ q }, { replace: true })
+    else if (searchParams.get('q')) setSearchParams({}, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q])
 
   // Contexto extraído del fullText de la ley activa (8 capas: resumen, articulado,
   // decretos relacionados, leyes citadas, montos, plazos, provincias, instituciones).
@@ -90,9 +99,9 @@ export function LawsPage() {
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase()
     if (!term) return laws
-    return laws.filter(l => {
-      // Búsqueda full-text: en title, excerpt, fullText (texto íntegro),
-      // authors, status, tipoDocumento, source y keywords.
+    const matched = laws.filter(l => {
+      // Búsqueda full-text: en title, excerpt, fullText, authors, status,
+      // tipoDocumento, source y keywords.
       const haystack = [
         l.title,
         l.excerpt,
@@ -108,7 +117,38 @@ export function LawsPage() {
         .toLowerCase()
       return haystack.includes(term)
     })
+    // Si la query es solo dígitos, priorizar match EXACTO al número de ley
+    // (ej. "27541" debe poner Ley 27541 antes que Ley 27562 que también la cita).
+    if (/^\d{4,5}$/.test(term)) {
+      return matched.sort((a, b) => {
+        const aExact = a.id === `ar-ley-${term}` || a.id === `uy-ley-${term}` || a.id === `ar-ley-infoleg-${term}`
+        const bExact = b.id === `ar-ley-${term}` || b.id === `uy-ley-${term}` || b.id === `ar-ley-infoleg-${term}`
+        if (aExact && !bExact) return -1
+        if (!aExact && bExact) return 1
+        // Después: el título que arranca con "Ley {NUM}" pesa más
+        const aStartsWith = (a.title ?? '').includes(`Ley ${term}`) && !(a.title ?? '').includes(`Ley ${term} ·`) ? -1 : 0
+        // Mantener orden por fecha desc como tiebreaker
+        return aStartsWith - 0 || (b.date ?? '').localeCompare(a.date ?? '')
+      })
+    }
+    return matched
   }, [laws, q])
+
+  // Cuando cambia la query y el active no aparece en los resultados filtrados,
+  // saltar al primer resultado (mejora la UX al buscar por número exacto).
+  useEffect(() => {
+    if (!q.trim()) return
+    if (filtered.length > 0 && active && !filtered.find(l => l.id === active.id)) {
+      setActive(filtered[0])
+    } else if (filtered.length > 0 && /^\d{4,5}$/.test(q.trim())) {
+      const term = q.trim()
+      const exact = filtered.find(l =>
+        l.id === `ar-ley-${term}` || l.id === `uy-ley-${term}` || l.id === `ar-ley-infoleg-${term}`,
+      )
+      if (exact && active?.id !== exact.id) setActive(exact)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, filtered])
 
   const handleSave = () => {
     if (!active) return
@@ -363,14 +403,14 @@ export function LawsPage() {
                   {ctx.plazos.length > 0 && (
                     <LawCtxSection icon={Timer} label="Plazos">
                       {ctx.plazos.map((p, i) => (
-                        <LawCtxChip key={i}>{p}</LawCtxChip>
+                        <LawCtxChip key={`p-${i}-${p}`}>{p}</LawCtxChip>
                       ))}
                     </LawCtxSection>
                   )}
                   {ctx.montos.length > 0 && (
                     <LawCtxSection icon={DollarSign} label="Montos">
                       {ctx.montos.map((m, i) => (
-                        <LawCtxChip key={i}>{m}</LawCtxChip>
+                        <LawCtxChip key={`m-${i}-${m}`}>{m}</LawCtxChip>
                       ))}
                     </LawCtxSection>
                   )}

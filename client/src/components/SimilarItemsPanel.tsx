@@ -20,16 +20,24 @@ export function SimilarItemsPanel({
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-          <GitCompareArrows size={11} /> Normas equivalentes en la región
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+            <GitCompareArrows size={11} /> Normas equivalentes en la región
+          </div>
+          <span className="inline-flex items-center gap-1 rounded-full bg-upm-50 px-2 py-0.5 text-[10px] font-bold text-upm-700 ring-1 ring-upm-100">
+            <Sparkles size={9} /> Match TF·IDF
+          </span>
         </div>
-        <div className="rounded-2xl bg-upm-50/30 p-4 ring-1 ring-upm-100">
-          <p className="text-[12px] text-ink-500 inline-flex items-center gap-2">
-            <span className="h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
-            Calculando similaridad TF·IDF sobre los 1601 ítems del corpus regional…
-          </p>
-        </div>
+        <p className="text-[11.5px] text-ink-500 inline-flex items-center gap-2">
+          <span className="h-1.5 w-1.5 animate-pulse-soft rounded-full bg-upm-400" />
+          Indexando corpus regional para encontrar normas equivalentes…
+        </p>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {[0, 1, 2, 3].map(i => (
+            <li key={`sk-${i}`} className="skeleton h-[88px] rounded-2xl" />
+          ))}
+        </ul>
       </div>
     )
   }

@@ -15,8 +15,8 @@ function renderInline(text: string, key: string) {
     <span key={key}>
       {parts.map((p, i) =>
         typeof p === 'string'
-          ? <span key={i}>{p}</span>
-          : <strong key={i} className="font-bold text-ink-900">{p.bold}</strong>,
+          ? <span key={`s-${key}-${i}`}>{p}</span>
+          : <strong key={`b-${key}-${i}`} className="font-bold text-ink-900">{p.bold}</strong>,
       )}
     </span>
   )

@@ -54,10 +54,43 @@ export function NewsConversationPage() {
   }
 
   if (!item) {
+    // Si la URL apunta a una ley nacional (id `ar-ley-XXXX` o `uy-ley-XXXX`) que
+    // no está en el corpus, ofrecemos buscar en /leyes con ese número.
+    const leyMatch = id?.match(/^(?:ar|uy)-ley-(\d{4,5})$/)
+    const numero = leyMatch?.[1]
     return (
-      <div className="mx-auto max-w-2xl px-4 py-12 text-center">
-        <p className="text-[14px] text-ink-500">Novedad no encontrada.</p>
-        <Link to="/radar" className="mt-3 inline-flex text-upm-700 hover:underline">← Volver al Radar</Link>
+      <div className="animate-fade-up mx-auto flex w-full max-w-[640px] flex-col gap-4 px-4 py-10">
+        <div className="rounded-3xl bg-white p-6 ring-1 ring-ink-100 shadow-card sm:p-8">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-warning-bg/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-warning-fg ring-1 ring-warning-bg">
+            Norma no indexada
+          </div>
+          <h1 className="mt-3 text-[22px] font-bold leading-tight tracking-tight text-ink-900">
+            {numero
+              ? `La Ley ${numero} no está en el corpus actual`
+              : 'Esta norma no está disponible en el corpus'}
+          </h1>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-600">
+            {numero
+              ? `Probablemente sea anterior al rango cubierto por nuestras fuentes oficiales (HCDN AR cubre desde la Ley 25.000+, Parlamento UY desde la 19.000+). Aunque no podamos abrir su ficha, otras normas en el corpus pueden citarla.`
+              : 'El identificador no matchea ninguna norma del feed actual. Volvé al Radar para buscar.'}
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link
+              to="/radar"
+              className="inline-flex items-center gap-1.5 rounded-full bg-upm-700 px-4 py-2 text-[12.5px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5"
+            >
+              <ArrowLeft size={13} /> Volver al Radar
+            </Link>
+            {numero && (
+              <button
+                onClick={() => navigate(`/leyes?q=${numero}`)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-[12.5px] font-semibold text-upm-700 ring-1 ring-upm-100 transition hover:bg-upm-50"
+              >
+                Buscar Ley {numero} en /leyes
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     )
   }
@@ -246,14 +279,14 @@ export function NewsConversationPage() {
             {ctx.plazos.length > 0 && (
               <ContextSection icon={Timer} label="Plazos">
                 {ctx.plazos.map((p, i) => (
-                  <Chip2 key={i}>{p}</Chip2>
+                  <Chip2 key={`p-${i}-${p}`}>{p}</Chip2>
                 ))}
               </ContextSection>
             )}
             {ctx.montos.length > 0 && (
               <ContextSection icon={DollarSign} label="Montos">
                 {ctx.montos.map((m, i) => (
-                  <Chip2 key={i}>{m}</Chip2>
+                  <Chip2 key={`m-${i}-${m}`}>{m}</Chip2>
                 ))}
               </ContextSection>
             )}
