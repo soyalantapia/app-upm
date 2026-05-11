@@ -8,7 +8,7 @@ import { buildSimilarityIndex, findSimilarItems, type SimilarItem, type Similari
 let cached: { index: SimilarityIndex; itemsCount: number } | null = null
 let buildPromise: Promise<SimilarityIndex> | null = null
 
-async function getOrBuildIndex(): Promise<SimilarityIndex> {
+export async function getOrBuildIndex(): Promise<SimilarityIndex> {
   // Si ya hay índice cacheado y el feed no cambió de tamaño, reusar.
   if (cached && buildPromise === null) {
     // Sondear si el feed cambió (lectura sincrónica de cache)

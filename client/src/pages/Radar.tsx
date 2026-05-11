@@ -1,27 +1,31 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   ArrowDownUp,
-  ArrowRight,
-  BadgeCheck,
+  Boxes,
+  CalendarRange,
   ChevronDown,
-  ExternalLink,
   Filter,
+  LayoutGrid,
+  LayoutList,
   Radar,
   RefreshCw,
-  ScrollText,
   Search,
   Tag,
   Wifi,
   X,
 } from 'lucide-react'
-import { Badge, Button, Card, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
+import { Badge, Button, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
-import { formatDate, formatDateTime } from '@/lib/format'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
 import { useStore } from '@/lib/store'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { writeSnapshot } from '@/lib/visit-tracker'
+import { useCitationGraph, getCitationCount } from '@/lib/use-citations'
+import { buildClusters } from '@/lib/clusters'
+import { RadarSmartCard } from '@/components/RadarSmartCard'
+import { QuickFilterPills, type FilterPresetId } from '@/components/QuickFilterPills'
+import { RadarTimeline } from '@/components/RadarTimeline'
+import { RadarClusters } from '@/components/RadarClusters'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -47,7 +51,6 @@ const SORT_OPTIONS: { id: Sort; label: string }[] = [
 ]
 
 export function RadarPage() {
-  const navigate = useNavigate()
   const saved = useStore(s => s.saved)
   const prefs = useStore(s => s.prefs)
   const savedRefs = useMemo(
@@ -68,6 +71,12 @@ export function RadarPage() {
   const [loading, setLoading] = useState(true)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [sourcesOpen, setSourcesOpen] = useState(false)
+  // Tier 1+2 features state
+  const [preset, setPreset] = useState<FilterPresetId>('all')
+  const [density, setDensity] = useState<'comfortable' | 'compact'>('comfortable')
+  const [viewMode, setViewMode] = useState<'list' | 'timeline' | 'clusters'>('list')
+  // Grafo de citas para smart cards + clusters
+  const { graph: citationGraph } = useCitationGraph()
 
   // Lista de organismos emisores únicos del feed (top 20 por frecuencia)
   const organismos = useMemo(() => {
@@ -153,11 +162,68 @@ export function RadarPage() {
         (organismo === 'all' || (n.authors ?? '').includes(organismo))
       )
     })
+    // Aplicar preset de quick filters
+    if (preset === 'hot') {
+      items = items.filter(n => n.relevance === 'alta')
+    } else if (preset === 'recent-sancionadas') {
+      const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
+      items = items.filter(n => {
+        const isLey = /^(?:ar|uy)-ley-/.test(n.id) || /sancion|promulgad/i.test(n.status ?? '')
+        const d = new Date(n.date ?? '').getTime()
+        return isLey && !Number.isNaN(d) && d >= monthAgo
+      })
+    } else if (preset === 'crossborder') {
+      const otrosPaises = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|MERCOSUR|MERCOSUL)\b/i
+      items = items.filter(n => otrosPaises.test((n.fullText ?? '') + ' ' + (n.title ?? '')))
+    } else if (preset === 'this-week') {
+      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+      items = items.filter(n => {
+        const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
+        return !Number.isNaN(d) && d >= weekAgo
+      })
+    } else if (preset === 'with-tramite') {
+      items = items.filter(n => (n.tramitaciones?.length ?? 0) > 0 || /trámite|tramite|comisión|comision|votaci/i.test(n.status ?? ''))
+    }
     if (sort === 'fecha-desc') items = [...items].sort((a, b) => b.date.localeCompare(a.date))
     if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
     if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)
     return items
-  }, [NEWS, q, country, topic, type, relevance, organismo, sort])
+  }, [NEWS, q, country, topic, type, relevance, organismo, sort, preset])
+
+  // Precomputar conteos para badges de quick filter pills (cuenta sobre el universo
+  // ya filtrado por country/topic/type/etc. pero sin aplicar el preset propio).
+  const presetCounts = useMemo(() => {
+    const baseFiltered = NEWS.filter(n =>
+      (country === 'all' || n.country === country) &&
+      (topic === 'all' || n.topic === topic) &&
+      (type === 'all' || n.type === type) &&
+      (relevance === 'all' || n.relevance === relevance) &&
+      (organismo === 'all' || (n.authors ?? '').includes(organismo)),
+    )
+    const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+    const otrosPaises = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|MERCOSUR|MERCOSUL)\b/i
+    return {
+      hot: baseFiltered.filter(n => n.relevance === 'alta').length,
+      'recent-sancionadas': baseFiltered.filter(n => {
+        const isLey = /^(?:ar|uy)-ley-/.test(n.id) || /sancion|promulgad/i.test(n.status ?? '')
+        const d = new Date(n.date ?? '').getTime()
+        return isLey && !Number.isNaN(d) && d >= monthAgo
+      }).length,
+      crossborder: baseFiltered.filter(n => otrosPaises.test((n.fullText ?? '') + ' ' + (n.title ?? ''))).length,
+      'this-week': baseFiltered.filter(n => {
+        const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
+        return !Number.isNaN(d) && d >= weekAgo
+      }).length,
+      'with-tramite': baseFiltered.filter(n => (n.tramitaciones?.length ?? 0) > 0 || /trámite|tramite|comisión|comision|votaci/i.test(n.status ?? '')).length,
+    } as Record<FilterPresetId, number>
+  }, [NEWS, country, topic, type, relevance, organismo])
+
+  // Clusters de ecosistema normativo · solo cuando viewMode === 'clusters'
+  const clustersData = useMemo(() => {
+    if (viewMode !== 'clusters' || !citationGraph) return null
+    return buildClusters(filtered, citationGraph, 3)
+  }, [viewMode, citationGraph, filtered])
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
@@ -374,15 +440,69 @@ export function RadarPage() {
         )}
       </div>
 
-      <div className="flex items-center gap-2 text-[12.5px] font-semibold text-ink-500">
-        {loading || isLoadingInitial ? (
-          <>
-            <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
-            {isLoadingInitial ? 'Trayendo novedades en vivo de fuentes oficiales…' : 'Buscando fuentes UPM…'}
-          </>
-        ) : (
-          `${filtered.length} ${filtered.length === 1 ? 'novedad' : 'novedades'} encontradas`
-        )}
+      {/* Quick filter pills · presets de filtros que el usuario puede aplicar
+          de un click sin abrir el panel completo. */}
+      {!isLoadingInitial && (
+        <QuickFilterPills active={preset} onChange={setPreset} counts={presetCounts} />
+      )}
+
+      {/* Toolbar: count + density + view mode */}
+      <div className="sticky top-2 z-10 flex flex-wrap items-center gap-2 rounded-2xl bg-white/80 px-3 py-2 backdrop-blur-md ring-1 ring-ink-100 shadow-card">
+        <div className="flex items-center gap-2 text-[12.5px] font-semibold text-ink-700">
+          {loading || isLoadingInitial ? (
+            <>
+              <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
+              {isLoadingInitial ? 'Trayendo novedades en vivo de fuentes oficiales…' : 'Filtrando…'}
+            </>
+          ) : (
+            <span><span className="font-bold text-upm-800 tabular-nums">{filtered.length}</span> novedades</span>
+          )}
+        </div>
+        <div className="ml-auto flex items-center gap-1">
+          {/* View mode toggle */}
+          <div className="flex items-center gap-0.5 rounded-full bg-ink-50 p-0.5 ring-1 ring-ink-100">
+            <button
+              onClick={() => setViewMode('list')}
+              className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition ' + (viewMode === 'list' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
+              title="Vista lista"
+            >
+              <LayoutList size={11} /> Lista
+            </button>
+            <button
+              onClick={() => setViewMode('timeline')}
+              className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition ' + (viewMode === 'timeline' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
+              title="Vista timeline"
+            >
+              <CalendarRange size={11} /> Timeline
+            </button>
+            <button
+              onClick={() => setViewMode('clusters')}
+              className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition ' + (viewMode === 'clusters' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
+              title="Agrupado por ecosistema normativo"
+            >
+              <Boxes size={11} /> Ecosistemas
+            </button>
+          </div>
+          {/* Density toggle · solo en lista */}
+          {viewMode === 'list' && (
+            <div className="flex items-center gap-0.5 rounded-full bg-ink-50 p-0.5 ring-1 ring-ink-100">
+              <button
+                onClick={() => setDensity('comfortable')}
+                className={'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold transition ' + (density === 'comfortable' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
+                title="Densidad cómoda"
+              >
+                <LayoutGrid size={11} />
+              </button>
+              <button
+                onClick={() => setDensity('compact')}
+                className={'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold transition ' + (density === 'compact' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
+                title="Densidad compacta"
+              >
+                <LayoutList size={11} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Resultados */}
@@ -406,86 +526,34 @@ export function RadarPage() {
         <EmptyState
           icon={<Filter size={22} />}
           title="No encontramos novedades"
-          description="Probá con otro país, tema o palabra clave. El Radar UPM se actualiza varias veces al día."
+          description="Probá con otro país, tema, palabra clave o quitando el preset activo. El Radar UPM se actualiza varias veces al día."
         />
+      ) : viewMode === 'timeline' ? (
+        <RadarTimeline items={filtered} />
+      ) : viewMode === 'clusters' ? (
+        clustersData ? (
+          <RadarClusters clusters={clustersData.clusters} singletonsCount={clustersData.singletons.length} />
+        ) : (
+          <div className="rounded-3xl bg-white p-8 text-center text-[13px] text-ink-500 ring-1 ring-ink-100">
+            <span className="inline-flex items-center gap-2">
+              <span className="h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
+              Construyendo grafo de ecosistemas normativos…
+            </span>
+          </div>
+        )
       ) : (
-        <div className="flex flex-col gap-3">
-          {filtered.map((n, i) => {
-            const country = countryByCode(n.country)
-            const topicMeta = topicById(n.topic)
-            const rel = RELEVANCE[n.relevance]
-            const isSaved = savedRefs.has(n.id)
-            return (
-              <Card
-                key={n.id}
-                interactive
-                onClick={() => navigate(`/radar/${n.id}`)}
-                style={{ animationDelay: `${i * 50}ms` }}
-                className="animate-fade-up"
-              >
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-upm-50 text-upm-700">
-                    <ScrollText size={18} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <Badge tone="brand">{country.flag} {country.name}</Badge>
-                      <Badge tone="ghost">{topicMeta.shortLabel}</Badge>
-                      <Badge tone={rel.tone}>Relevancia {rel.label}</Badge>
-                      <span className="text-[11px] font-semibold text-ink-500 tabular-nums">{(() => {
-                        // Preferir la fecha más rica (con hora) si está disponible.
-                        const conHora = [n.dataAtualizacao, n.dataPublicacao].find(d => d && (d.includes('T') || /\d{2}:\d{2}/.test(d)))
-                        if (conHora) return formatDateTime(conHora)
-                        return formatDate(n.dataPublicacao ?? n.date)
-                      })()}</span>
-                      {isSaved && <Badge tone="success">Guardado</Badge>}
-                      {/* Fuente oficial inline con los badges */}
-                      <span className="inline-flex items-center gap-1 rounded-full bg-success-bg/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.14em] text-success-fg ring-1 ring-success-bg">
-                        <BadgeCheck size={10} /> Fuente oficial
-                      </span>
-                      <span className="text-[11px] font-medium text-ink-500 line-clamp-1 max-w-[280px] sm:max-w-[420px]">{n.source}</span>
-                      {n.sourceUrl && (
-                        <a
-                          href={n.sourceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={e => e.stopPropagation()}
-                          className="inline-flex items-center gap-0.5 text-[11px] font-bold text-upm-700 hover:text-upm-800 hover:underline"
-                        >
-                          <ExternalLink size={10} /> ver
-                        </a>
-                      )}
-                    </div>
-                    <h3 className="mt-2 text-[16px] font-bold leading-snug text-ink-900">{n.title}</h3>
-                    <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-600 line-clamp-4">{n.excerpt}</p>
-                    {(n.authors || n.status) && (
-                      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-ink-500">
-                        {n.authors && (
-                          <span className="inline-flex items-center gap-1">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-400">Autoría</span>
-                            <span className="font-semibold text-ink-700 line-clamp-1 max-w-[420px]">{n.authors}</span>
-                          </span>
-                        )}
-                        {n.status && (
-                          <span className="inline-flex items-center gap-1">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-400">Estado</span>
-                            <span className="font-semibold text-ink-700 line-clamp-1">{n.status}</span>
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {/* Botón Abrir como pill, alineado al borde derecho */}
-                    <div className="mt-3 flex justify-end">
-                      <span className="group/abrir inline-flex items-center gap-1.5 rounded-full bg-upm-50 px-3 py-1.5 text-[12px] font-bold text-upm-700 ring-1 ring-upm-100 transition group-hover:bg-upm-100">
-                        Abrir detalle
-                        <ArrowRight size={13} className="transition group-hover/abrir:translate-x-0.5" />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            )
-          })}
+        <div className={density === 'compact' ? 'flex flex-col gap-1.5' : 'flex flex-col gap-3'}>
+          {filtered.map((n, i) => (
+            <RadarSmartCard
+              key={n.id}
+              item={n}
+              index={i}
+              citationCount={getCitationCount(n.id, citationGraph)}
+              isSaved={savedRefs.has(n.id)}
+              density={density}
+              searchQuery={q}
+            />
+          ))}
         </div>
       )}
     </div>

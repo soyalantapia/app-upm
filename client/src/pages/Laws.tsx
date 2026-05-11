@@ -34,6 +34,11 @@ import type { NewsItem } from '@/lib/types'
 import { extractContext } from '@/lib/extract-context'
 import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
+import { VigenciaBadge } from '@/components/VigenciaBadge'
+import { LawComparator } from '@/components/LawComparator'
+import { useCitationGraph } from '@/lib/use-citations'
+import { computeVigencia, type VigenciaStatus } from '@/lib/vigencia'
+import { GitCompareArrows } from 'lucide-react'
 
 // Filtro para esta vista: solo leyes ya sancionadas/promulgadas, no proyectos en trámite.
 function isSanctionedLaw(item: NewsItem): boolean {
@@ -72,6 +77,10 @@ export function LawsPage() {
   const [active, setActive] = useState<NewsItem | null>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
+  const [showComparator, setShowComparator] = useState(false)
+  const [vigenciaFilter, setVigenciaFilter] = useState<VigenciaStatus | 'all'>('all')
+  // Grafo de citas para vigencia
+  const { graph: citationGraph } = useCitationGraph()
 
   // Sincronizar query con URL (?q=27541) para deep-links desde NewsConversation
   // y otras pantallas. Limpiar el param cuando q queda vacía.
@@ -133,6 +142,22 @@ export function LawsPage() {
     }
     return matched
   }, [laws, q])
+
+  // Aplicar filtro por vigencia · usa el grafo de citas para clasificar cada ley.
+  // Si el grafo todavía no cargó, no filtra (muestra todas).
+  const filteredByVigencia = useMemo(() => {
+    if (!citationGraph || vigenciaFilter === 'all') return filtered
+    return filtered.filter(l => {
+      const info = computeVigencia(l, citationGraph)
+      return info.status === vigenciaFilter
+    })
+  }, [filtered, citationGraph, vigenciaFilter])
+
+  // Vigencia de la ley activa (mostrada en el detalle como badge prominente)
+  const activeVigencia = useMemo(() => {
+    if (!active || !citationGraph) return null
+    return computeVigencia(active, citationGraph)
+  }, [active, citationGraph])
 
   // Cuando cambia la query y el active no aparece en los resultados filtrados,
   // saltar al primer resultado (mejora la UX al buscar por número exacto).
@@ -220,11 +245,33 @@ export function LawsPage() {
                 className="flex-1 bg-transparent text-[13px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
               />
             </label>
+            {/* Filtro por vigencia */}
+            {citationGraph && (
+              <div className="flex flex-wrap gap-1">
+                {(['all', 'activa', 'latente', 'en-revision', 'derogada'] as const).map(v => (
+                  <button
+                    key={v}
+                    onClick={() => setVigenciaFilter(v)}
+                    className={
+                      'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold transition ring-1 ' +
+                      (vigenciaFilter === v
+                        ? 'bg-upm-700 text-white ring-upm-700'
+                        : 'bg-white text-ink-600 ring-ink-100 hover:bg-upm-50')
+                    }
+                  >
+                    {v === 'all' ? 'Todas' : v === 'activa' ? '🟢 Activas' : v === 'latente' ? '🟡 Latentes' : v === 'en-revision' ? '🟠 En revisión' : '⚫ Derogadas'}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
-              {filtered.length} {filtered.length === 1 ? 'ley' : 'leyes'}
+              {filteredByVigencia.length} {filteredByVigencia.length === 1 ? 'ley' : 'leyes'}
+              {vigenciaFilter !== 'all' && (
+                <span className="ml-1 normal-case text-ink-400">/ {filtered.length} totales</span>
+              )}
             </div>
             <div className="flex max-h-[640px] flex-col gap-1.5 overflow-y-auto pr-1">
-              {filtered.slice(0, 50).map(l => {
+              {filteredByVigencia.slice(0, 50).map(l => {
                 const c = countryByCode(l.country)
                 return (
                   <button
@@ -277,6 +324,15 @@ export function LawsPage() {
                 >
                   {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
                   {isSaved ? 'Guardada' : 'Guardar'}
+                </button>
+                <button
+                  onClick={() => setShowComparator(true)}
+                  className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-upm-700 ring-1 ring-upm-200 shadow-cta transition hover:-translate-y-0.5 hover:bg-upm-50"
+                  title="Comparar esta ley con su equivalente en otro país del Mercosur"
+                >
+                  <GitCompareArrows size={12} />
+                  <span className="hidden sm:inline">Comparar con…</span>
+                  <span className="sm:hidden">Comparar</span>
                 </button>
                 <button
                   onClick={() => {
@@ -349,7 +405,15 @@ export function LawsPage() {
                 <Badge tone="ghost">
                   <Tag size={10} /> {topicById(active.topic).label}
                 </Badge>
+                {activeVigencia && (
+                  <VigenciaBadge info={activeVigencia} compact />
+                )}
               </div>
+
+              {/* Vigencia detallada · solo si hay razones útiles que mostrar */}
+              {activeVigencia && activeVigencia.reasons.length > 0 && (
+                <VigenciaBadge info={activeVigencia} />
+              )}
 
               <h2 className="text-[22px] font-bold leading-tight tracking-tight text-ink-900 sm:text-[26px]">
                 {active.title.replace(/\^Ley \d+\s*·\s*/, '')}
@@ -500,6 +564,11 @@ export function LawsPage() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Modal comparador · se monta al final del DOM, fixed overlay */}
+      {showComparator && active && (
+        <LawComparator source={active} onClose={() => setShowComparator(false)} />
       )}
     </div>
   )
