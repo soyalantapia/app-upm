@@ -62,6 +62,9 @@ type Cached = AggregatedFeed & { _ts: number }
 
 // Devuelve { feed, fresh } donde fresh=true si el cache está dentro de CACHE_FRESH_MS.
 // Si superó CACHE_TTL_MS, devuelve null (eviction).
+// Importante: si el cache guardó un feed VACÍO (0 items, p. ej. todas las fuentes
+// fallaron por CORS o red intermitente), tratamos como si no hubiera cache para
+// que la próxima llamada gatille un refetch en lugar de mostrar la app vacía.
 export function readCacheStatus(): { feed: AggregatedFeed; fresh: boolean } | null {
   if (typeof window === 'undefined') return null
   try {
@@ -70,6 +73,8 @@ export function readCacheStatus(): { feed: AggregatedFeed; fresh: boolean } | nu
     const parsed = JSON.parse(raw) as Cached
     const age = Date.now() - parsed._ts
     if (age > CACHE_TTL_MS) return null
+    // Evitar cache "envenenado" con 0 items · forzar refetch en próxima carga
+    if (!parsed.items || parsed.items.length === 0) return null
     return { feed: parsed, fresh: age < CACHE_FRESH_MS }
   } catch {
     return null
@@ -83,6 +88,18 @@ function readCache(): AggregatedFeed | null {
 function writeCache(c: AggregatedFeed) {
   if (typeof window === 'undefined') return
   try {
+    // Guardar siempre los progresivos (>= 1 item). Si tenemos 0 items pero ya
+    // había cache previa con datos, NO sobrescribir · preferimos datos viejos
+    // antes que pantalla vacía.
+    if (!c.items || c.items.length === 0) {
+      const existing = window.localStorage.getItem(CACHE_KEY)
+      if (existing) {
+        try {
+          const prev = JSON.parse(existing) as Cached
+          if (prev.items && prev.items.length > 0) return
+        } catch { /* fall through to write */ }
+      }
+    }
     window.localStorage.setItem(CACHE_KEY, JSON.stringify({ ...c, _ts: Date.now() }))
   } catch {
     // ignore
