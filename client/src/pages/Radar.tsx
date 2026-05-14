@@ -446,8 +446,11 @@ export function RadarPage() {
         <QuickFilterPills active={preset} onChange={setPreset} counts={presetCounts} />
       )}
 
-      {/* Toolbar: count + density + view mode */}
-      <div className="sticky top-2 z-10 flex flex-wrap items-center gap-2 rounded-2xl bg-white/80 px-3 py-2 backdrop-blur-md ring-1 ring-ink-100 shadow-card">
+      {/* Toolbar: count + density + view mode.
+          Mobile: header del AppShell ocupa los primeros 56px y es z-30, así que
+          posicionamos debajo (top-14) con z-20 para evitar overlap.
+          Desktop: no hay header sticky · top-2 es suficiente. */}
+      <div className="sticky top-14 z-20 flex flex-wrap items-center gap-2 rounded-2xl bg-white/80 px-3 py-2 backdrop-blur-md ring-1 ring-ink-100 shadow-card md:top-2">
         <div className="flex items-center gap-2 text-[12.5px] font-semibold text-ink-700">
           {loading || isLoadingInitial ? (
             <>

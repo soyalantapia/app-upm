@@ -27,11 +27,16 @@ export function LawComparator({
       .then(index => {
         if (!mounted) return
         const sims = findSimilarItems(source.id, index, { topK: 10, preferCrossCountry: true })
-        // Buscar el primer match en país distinto al source
-        const cross = sims.find(s => s.item.country !== source.country)
-        const fallback = sims[0]?.item ?? null
-        setCounterpart((cross ?? sims[0])?.item ?? fallback)
-        setAlternatives(sims.filter(s => s.item.id !== (cross ?? sims[0])?.item.id).slice(0, 4).map(s => s.item))
+        // Preferir match en otro país; si no hay cross-país, caer al top match.
+        const chosen = sims.find(s => s.item.country !== source.country) ?? sims[0]
+        const chosenId = chosen?.item.id
+        setCounterpart(chosen?.item ?? null)
+        setAlternatives(
+          sims
+            .filter(s => s.item.id !== chosenId)
+            .slice(0, 4)
+            .map(s => s.item),
+        )
         setLoading(false)
       })
       .catch(() => {

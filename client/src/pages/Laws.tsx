@@ -134,10 +134,15 @@ export function LawsPage() {
         const bExact = b.id === `ar-ley-${term}` || b.id === `uy-ley-${term}` || b.id === `ar-ley-infoleg-${term}`
         if (aExact && !bExact) return -1
         if (!aExact && bExact) return 1
-        // Después: el título que arranca con "Ley {NUM}" pesa más
-        const aStartsWith = (a.title ?? '').includes(`Ley ${term}`) && !(a.title ?? '').includes(`Ley ${term} ·`) ? -1 : 0
-        // Mantener orden por fecha desc como tiebreaker
-        return aStartsWith - 0 || (b.date ?? '').localeCompare(a.date ?? '')
+        // El título que arranca con "Ley {NUM} ·" pesa más (es la ley raíz, no
+        // una modificatoria como "Ley 27562 · Ley 27541 · MODIFICACIÓN").
+        const titleAStart = `Ley ${term} ·`
+        const titleBStart = `Ley ${term} ·`
+        const aIsRoot = (a.title ?? '').startsWith(titleAStart) ? 1 : 0
+        const bIsRoot = (b.title ?? '').startsWith(titleBStart) ? 1 : 0
+        if (aIsRoot !== bIsRoot) return bIsRoot - aIsRoot
+        // Tiebreaker: fecha desc
+        return (b.date ?? '').localeCompare(a.date ?? '')
       })
     }
     return matched
@@ -289,7 +294,7 @@ export function LawsPage() {
                       <Badge tone="success">Sancionada</Badge>
                     </div>
                     <div className="text-[12.5px] font-semibold leading-snug text-ink-900 line-clamp-2">
-                      {l.title.replace(/\^Ley \d+\s*·\s*/, '')}
+                      {l.title.replace(/^Ley \d+\s*·\s*/, '')}
                     </div>
                     {l.excerpt && l.excerpt !== l.title && (
                       <p className="text-[11.5px] leading-relaxed text-ink-500 line-clamp-3">
@@ -416,7 +421,7 @@ export function LawsPage() {
               )}
 
               <h2 className="text-[22px] font-bold leading-tight tracking-tight text-ink-900 sm:text-[26px]">
-                {active.title.replace(/\^Ley \d+\s*·\s*/, '')}
+                {active.title.replace(/^Ley \d+\s*·\s*/, '')}
               </h2>
 
               {/* Resumen ejecutivo extraído del articulado */}

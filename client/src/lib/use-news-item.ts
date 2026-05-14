@@ -27,36 +27,30 @@ export function useNewsItem(id: string | undefined) {
       setItem(found ?? null)
       setLoading(false)
 
-      // Enrich on-demand si tiene apiDetailUrl
+      // Enrich on-demand si tiene apiDetailUrl.
+      // Wrap en try/catch para que un error de red no deje enriching=true forever.
+      const safeEnrich = async (
+        item: NewsItem,
+        enricher: (i: NewsItem, s?: AbortSignal) => Promise<NewsItem>,
+      ) => {
+        setEnriching(true)
+        try {
+          const enriched = await enricher(item, ctrl.signal)
+          if (mounted) setItem(enriched)
+        } catch {
+          // Silent fail · mantenemos el item original sin enriquecer
+        } finally {
+          if (mounted) setEnriching(false)
+        }
+      }
       if (found?.apiDetailUrl && found.id.startsWith('br-camara-')) {
-        setEnriching(true)
-        const enriched = await enrichCamaraItem(found, ctrl.signal)
-        if (mounted) {
-          setItem(enriched)
-          setEnriching(false)
-        }
+        await safeEnrich(found, enrichCamaraItem)
       } else if (found?.apiDetailUrl && found.id.startsWith('uy-')) {
-        setEnriching(true)
-        const enriched = await enrichParlamentoUYItem(found, ctrl.signal)
-        if (mounted) {
-          setItem(enriched)
-          setEnriching(false)
-        }
+        await safeEnrich(found, enrichParlamentoUYItem)
       } else if (found?.id.startsWith('co-votacion-')) {
-        setEnriching(true)
-        const enriched = await enrichVotacionColombia(found, ctrl.signal)
-        if (mounted) {
-          setItem(enriched)
-          setEnriching(false)
-        }
+        await safeEnrich(found, enrichVotacionColombia)
       } else if (found?.apiDetailUrl && (found.id.startsWith('ar-ley-') || found.id.startsWith('ar-norm-'))) {
-        // Infoleg AR · trae texto completo de la norma desde infoleg.gob.ar
-        setEnriching(true)
-        const enriched = await enrichInfolegItem(found, ctrl.signal)
-        if (mounted) {
-          setItem(enriched)
-          setEnriching(false)
-        }
+        await safeEnrich(found, enrichInfolegItem)
       }
     })()
 

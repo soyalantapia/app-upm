@@ -55,7 +55,12 @@ export function buildCitationGraph(items: NewsItem[]): CitationGraph {
     const cites = extractLawCitations(text)
     for (const [num, count] of cites) {
       // Filtrar autoreferencia: si el item mismo es la ley citada, ignorar.
-      if (item.id === `ar-ley-${num}` || item.id === `uy-ley-${num}`) continue
+      // Cubrimos ar-ley-, uy-ley- y ar-ley-infoleg- (Infoleg AR usa ese prefijo).
+      if (
+        item.id === `ar-ley-${num}` ||
+        item.id === `uy-ley-${num}` ||
+        item.id === `ar-ley-infoleg-${num}`
+      ) continue
       if (!backlinks.has(num)) backlinks.set(num, [])
       backlinks.get(num)!.push({ item, occurrences: count })
     }

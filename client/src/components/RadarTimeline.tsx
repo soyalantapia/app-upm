@@ -56,7 +56,10 @@ export function RadarTimeline({ items }: { items: NewsItem[] }) {
         <div className="flex">
           <div className="w-16 shrink-0" />
           {months.map(m => {
-            const label = new Date(m + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
+            // es-AR retorna "may. 25" en minúscula con punto · limpiamos para
+            // que se vea homogéneo en mayúscula (CSS uppercase no tira el punto).
+            const raw = new Date(m + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' })
+            const label = raw.replace(/\./g, '').toUpperCase()
             return (
               <div key={m} className="flex-1 text-center text-[10px] font-bold uppercase tracking-[0.1em] text-ink-500">
                 {label}
@@ -134,8 +137,10 @@ function TimelineCell({
   const size = total >= 20 ? 'h-3.5 w-3.5' : total >= 10 ? 'h-3 w-3' : total >= 4 ? 'h-2.5 w-2.5' : 'h-2 w-2'
   const color = alta > 0 ? 'bg-danger-fg' : media > 0 ? 'bg-warning-fg' : 'bg-upm-400'
 
-  // Pick el item de relevancia más alta para el click
-  const target = items.sort((a, b) => {
+  // Pick el item de relevancia más alta para el click.
+  // ⚠️ NO mutar `items` con .sort() · es una referencia compartida del useMemo
+  // padre. Spread + sort sobre la copia.
+  const target = [...items].sort((a, b) => {
     const w = { alta: 3, media: 2, baja: 1 }
     return w[b.relevance] - w[a.relevance]
   })[0]

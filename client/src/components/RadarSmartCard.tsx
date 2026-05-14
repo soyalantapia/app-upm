@@ -195,12 +195,16 @@ function Highlighted({ text, query }: { text: string; query?: string }) {
   const q = query.trim()
   // Escape regex specials
   const safeQ = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const re = new RegExp(`(${safeQ})`, 'gi')
-  const parts = text.split(re)
+  // Split con flag 'gi' captura todos los matches. Para el test() usamos un
+  // regex SIN flag 'g' por part (un regex con 'g' es stateful: re.lastIndex
+  // persiste entre llamadas y test() alterna true/false sobre el mismo string).
+  const splitRe = new RegExp(`(${safeQ})`, 'gi')
+  const matchRe = new RegExp(`^${safeQ}$`, 'i')
+  const parts = text.split(splitRe)
   return (
     <>
       {parts.map((p, i) =>
-        re.test(p) ? (
+        matchRe.test(p) ? (
           <mark key={`h-${i}-${p.length}`} className="rounded bg-warning-bg/60 px-0.5 text-ink-900">
             {p}
           </mark>

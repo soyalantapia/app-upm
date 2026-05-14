@@ -21,16 +21,32 @@ export type VigenciaInfo = {
   reasons: string[]
 }
 
-// Detección de derogatoria: si alguna norma reciente menciona derogar/derogada/sustituye
-// + el número de esta ley, está derogada.
+// Detección de derogatoria conservadora:
+// 1. Solo aceptamos verbos en forma imperativa o declarativa fuerte
+//    (deróguese/se deroga/queda derogada/abrógase) que indican acción legal directa.
+// 2. Excluimos negaciones ("no se deroga") y modalidades hipotéticas.
+// 3. Exigimos que el item citante sea posterior en fecha a la ley.
 function isDerogada(law: NewsItem, citingItems: NewsItem[]): boolean {
   const num = extractLawNumberFromId(law.id)
   if (!num) return false
-  const derogaRe = new RegExp(
-    `(?:derog|deróguese|deroguese|sustitúy|sustituy|abrog).{0,80}\\bley\\s*(?:n[°º\\.]?)?\\s*${num.replace(/(\d{2})(\d{3})/, '$1\\.?$2')}\\b`,
+  const lawDate = new Date(law.date ?? '').getTime()
+  // Patrones más estrictos · acción legal directa, no mera mención.
+  const fuerteRe = new RegExp(
+    `(?:der[óo]guese|deroga[sd]?e|qued[ao]\\s+derogad[ao]|abr[óo]gase|abrog[oa]se|d[eé]jase\\s+sin\\s+efecto).{0,60}\\bley\\s*(?:n[°º\\.]?)?\\s*${num.replace(/(\d{2})(\d{3})/, '$1\\.?$2')}\\b`,
     'i',
   )
-  return citingItems.some(it => derogaRe.test((it.fullText ?? '') + ' ' + (it.title ?? '')))
+  const negacionRe = new RegExp(
+    `\\bno\\s+(?:se|debe)?\\s*(?:der[óo]g|abr[óo]g).{0,30}\\bley\\s*(?:n[°º\\.]?)?\\s*${num.replace(/(\d{2})(\d{3})/, '$1\\.?$2')}\\b`,
+    'i',
+  )
+  return citingItems.some(it => {
+    const itemDate = new Date(it.date ?? '').getTime()
+    // Solo items posteriores a la ley pueden derogar
+    if (!Number.isNaN(lawDate) && !Number.isNaN(itemDate) && itemDate < lawDate) return false
+    const text = (it.fullText ?? '') + ' ' + (it.title ?? '')
+    if (negacionRe.test(text)) return false
+    return fuerteRe.test(text)
+  })
 }
 
 // Detección de en-revisión: si hay un proyecto modificatorio (PL/PEC/PLP/Carpeta)

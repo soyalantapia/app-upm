@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fetchLiveFeed, readCacheStatus, type AggregatedFeed } from './sources'
 import type { CountryCode, Topic } from './types'
 
@@ -15,6 +15,12 @@ export function useLiveFeed(prefs?: { countries?: CountryCode[]; topics?: Topic[
   const [revalidating, setRevalidating] = useState(initial?.fresh === false)
   const [error, setError] = useState<string | null>(null)
 
+  // Ref para hasCache que se mantiene sincrónica con el feed actual.
+  // Antes capturábamos `feed` en la closure del useEffect (deps=[]) y siempre
+  // era el valor inicial · cada interval de 5 min mostraba loading=true.
+  const feedRef = useRef(feed)
+  feedRef.current = feed
+
   useEffect(() => {
     let mounted = true
     let ctrl: AbortController | null = null
@@ -22,7 +28,7 @@ export function useLiveFeed(prefs?: { countries?: CountryCode[]; topics?: Topic[
     const load = (force: boolean) => {
       ctrl?.abort()
       ctrl = new AbortController()
-      const hasCache = !!feed
+      const hasCache = !!feedRef.current
       // Si NO hay cache previo, mostramos loading global. Si hay, solo "revalidating".
       if (!hasCache) setLoading(true)
       else setRevalidating(true)

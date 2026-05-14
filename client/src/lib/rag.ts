@@ -29,10 +29,15 @@ async function getOrBuildIndex(): Promise<SimilarityIndex> {
   return buildPromise
 }
 
-// Stopwords mínimo + tecnicismos legales repetidos
+// Stopwords mínimo + tecnicismos legales repetidos.
+// IMPORTANTE: el tokenizador aplica .normalize('NFD').replace(diacríticos, '')
+// ANTES de chequear este Set, así que las entradas deben estar SIN diacríticos
+// (de lo contrario nunca matchean y son código muerto).
 const STOPWORDS = new Set([
-  'que','con','para','por','las','los','del','este','esta','sobre','desde','hasta','cuando','donde','como','cuáles','cuales','cuál','cual','cómo','como','qué','que','dónde','donde',
-  'ley','leyes','norma','normas','articulo','artigo','decreto','decretos','resolucion','resoluciones','reglamento','reglamentos',
+  'que','con','para','por','las','los','del','este','esta','sobre','desde','hasta',
+  'cuando','donde','como','cuales','cual','que','dondes','dondes',
+  'ley','leyes','norma','normas','articulo','artigo','decreto','decretos',
+  'resolucion','resoluciones','reglamento','reglamentos',
 ])
 
 function tokenize(text: string): string[] {
