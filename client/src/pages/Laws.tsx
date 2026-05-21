@@ -36,6 +36,9 @@ import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
 import { LawMap } from '@/components/LawMap'
 import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
+import { AuthorChips } from '@/components/AuthorChips'
+import { NotesPanel } from '@/components/NotesPanel'
+import { ExportLawButton } from '@/components/ExportLawButton'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
 import { useCitationGraph } from '@/lib/use-citations'
@@ -341,6 +344,7 @@ export function LawsPage() {
                   <span className="hidden sm:inline">Comparar con…</span>
                   <span className="sm:hidden">Comparar</span>
                 </button>
+                <ExportLawButton item={active} variant="compact" />
                 <button
                   onClick={() => {
                     store.pushToast('info', 'El Asistente preparó preguntas sobre esta ley')
@@ -532,6 +536,12 @@ export function LawsPage() {
 
               {/* Mapa de la Ley · panel maestro de información conectada */}
               <LawMap item={active} />
+
+              {/* Legisladores autores · si detectamos firmas conocidas */}
+              <AuthorChips authorsString={active.authors} />
+
+              {/* Anotaciones personales · localStorage */}
+              <NotesPanel itemId={active.id} />
 
               {/* Constelación regulatoria · SVG radial de conexiones */}
               <RegulatoryConstellation item={active} />

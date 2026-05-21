@@ -24,6 +24,7 @@ import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
 import { useUI } from '@/lib/ui-provider'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { DiffSinceLastVisit } from '@/components/DiffSinceLastVisit'
+import { TrendingPanel } from '@/components/TrendingPanel'
 
 const RELEVANCE: Record<string, { label: string; tone: 'danger' | 'warning' | 'info' }> = {
   alta: { label: 'Relevancia alta', tone: 'danger' },
@@ -123,6 +124,9 @@ export function HomePage() {
           y al menos 1 norma nueva. Click en "Marcar como leídas" o navegar a /radar
           actualiza el snapshot. */}
       <DiffSinceLastVisit items={NEWS} />
+
+      {/* Trending: leyes con tracción reciente + temas en alza */}
+      <TrendingPanel />
 
       {/* Stats clickeables · todos vinculados al feed real */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -34,6 +34,9 @@ import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
 import { LawMap } from '@/components/LawMap'
 import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
+import { AuthorChips } from '@/components/AuthorChips'
+import { NotesPanel } from '@/components/NotesPanel'
+import { ExportLawButton } from '@/components/ExportLawButton'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -136,6 +139,7 @@ export function NewsConversationPage() {
           >
             <Share2 size={12} /> Compartir
           </button>
+          <ExportLawButton item={news} variant="compact" />
           <button
             onClick={handleSave}
             className={
@@ -340,6 +344,12 @@ export function NewsConversationPage() {
         {/* Mapa de la Ley · análisis de impacto + sectores + modificaciones +
             jurisprudencia + glosario. Panel maestro de información conectada. */}
         <LawMap item={news} />
+
+        {/* Legisladores autores · si detectamos firmas conocidas */}
+        <AuthorChips authorsString={news.authors} />
+
+        {/* Anotaciones personales del legislador (localStorage) */}
+        <NotesPanel itemId={news.id} />
 
         {/* Constelación regulatoria · visualización SVG radial */}
         <RegulatoryConstellation item={news} />
