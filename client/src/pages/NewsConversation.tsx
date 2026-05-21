@@ -32,6 +32,8 @@ import { useNewsItem } from '@/lib/use-news-item'
 import { extractContext } from '@/lib/extract-context'
 import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
+import { LawMap } from '@/components/LawMap'
+import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -334,6 +336,13 @@ export function NewsConversationPage() {
             </ol>
           </div>
         )}
+
+        {/* Mapa de la Ley · análisis de impacto + sectores + modificaciones +
+            jurisprudencia + glosario. Panel maestro de información conectada. */}
+        <LawMap item={news} />
+
+        {/* Constelación regulatoria · visualización SVG radial */}
+        <RegulatoryConstellation item={news} />
 
         {/* Normas equivalentes en la región · TF-IDF cross-país */}
         <SimilarItemsPanel itemId={news.id} basePath="/radar" />

@@ -34,6 +34,8 @@ import type { NewsItem } from '@/lib/types'
 import { extractContext } from '@/lib/extract-context'
 import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
+import { LawMap } from '@/components/LawMap'
+import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
 import { useCitationGraph } from '@/lib/use-citations'
@@ -527,6 +529,12 @@ export function LawsPage() {
                   </ol>
                 </div>
               )}
+
+              {/* Mapa de la Ley · panel maestro de información conectada */}
+              <LawMap item={active} />
+
+              {/* Constelación regulatoria · SVG radial de conexiones */}
+              <RegulatoryConstellation item={active} />
 
               {/* Normas equivalentes en la región · TF-IDF cross-país */}
               <SimilarItemsPanel itemId={active.id} basePath="/leyes" />
