@@ -40,6 +40,7 @@ import { AuthorChips } from '@/components/AuthorChips'
 import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
+import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
 import { useCitationGraph } from '@/lib/use-citations'
@@ -541,6 +542,9 @@ export function LawsPage() {
 
               {/* Legisladores autores · si detectamos firmas conocidas */}
               <AuthorChips authorsString={active.authors} />
+
+              {/* Flujo de tramitación · stepper visual */}
+              <TramitacionFlow item={active} />
 
               {/* Anotaciones personales · localStorage */}
               <NotesPanel itemId={active.id} />

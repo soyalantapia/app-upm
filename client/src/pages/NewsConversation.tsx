@@ -38,6 +38,7 @@ import { AuthorChips } from '@/components/AuthorChips'
 import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
+import { TramitacionFlow } from '@/components/TramitacionFlow'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -349,6 +350,9 @@ export function NewsConversationPage() {
 
         {/* Legisladores autores · si detectamos firmas conocidas */}
         <AuthorChips authorsString={news.authors} />
+
+        {/* Flujo de tramitación · stepper visual */}
+        <TramitacionFlow item={news} />
 
         {/* Anotaciones personales del legislador (localStorage) */}
         <NotesPanel itemId={news.id} />

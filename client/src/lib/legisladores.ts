@@ -8,6 +8,7 @@
 // El dataset vive en public/data/legisladores.json y se carga lazy una vez por sesión.
 
 import type { CountryCode } from './types'
+import { fetchDiputadosBR } from './sources/diputados-br'
 
 export type Legislador = {
   id: string
@@ -40,11 +41,38 @@ async function loadAll(): Promise<LegisladoresData | null> {
   if (loadPromise) return loadPromise
   loadPromise = (async () => {
     try {
+      // Cargar dataset estático
       const res = await fetch(DATA_URL)
-      if (!res.ok) return null
-      const json = (await res.json()) as LegisladoresData
-      cached = json
-      return json
+      const staticData = res.ok ? ((await res.json()) as LegisladoresData) : null
+      const items = staticData?.items ? [...staticData.items] : []
+
+      // Fusionar con diputados BR en vivo (CORS abierto)
+      try {
+        const brDiputados = await fetchDiputadosBR({ limit: 600 })
+        for (const d of brDiputados) {
+          // Evitar duplicados si ya existe alguien con el mismo nombre en el JSON
+          if (items.some(i => i.name === d.name)) continue
+          items.push({
+            id: d.id,
+            name: d.name,
+            country: 'BR',
+            camara: 'Câmara',
+            partido: d.partido,
+            provincia: d.uf,
+            foto: d.foto,
+            bio: undefined,
+          })
+        }
+      } catch {
+        // Si falla el fetch BR, seguimos con el estático
+      }
+
+      cached = {
+        fuente: staticData?.fuente ?? 'Datos abiertos · Cámara de Diputados AR + Senado AR + Câmara BR live',
+        fetchedAt: new Date().toISOString(),
+        items,
+      }
+      return cached
     } catch {
       return null
     } finally {
