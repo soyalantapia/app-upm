@@ -27,6 +27,7 @@ import {
   fetchComunicacionesARorg,
 } from './infoleg-ar'
 import { fetchExpedientesHCDN } from './expedientes-hcdn'
+import { fetchSenadoAR } from './senado-ar'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
 import { fetchSentenciasCorteCO } from './sentencias-corte-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
@@ -157,6 +158,7 @@ const FETCHERS: Fetcher[] = [
   { id: 'directivas-ar', label: 'Argentina · Directivas', country: 'AR', fn: ({ signal }) => fetchDirectivasInfolegArgentina({ limit: 50, signal }) },
   { id: 'circulares-ar', label: 'Argentina · Circulares (BCRA, AFIP)', country: 'AR', fn: ({ signal }) => fetchCircularesInfolegArgentina({ limit: 30, signal }) },
   { id: 'expedientes-hcdn-ar', label: 'Cámara de Diputados AR · Expedientes históricos', country: 'AR', fn: ({ signal }) => fetchExpedientesHCDN({ limit: 80, signal }) },
+  { id: 'senado-ar', label: 'Honorable Senado de la Nación · Argentina', country: 'AR', fn: ({ signal }) => fetchSenadoAR({ limit: 30, signal }) },
   // Fuentes AR por organismo · todas tiran del mismo JSON Infoleg con filtro por emisor
   { id: 'mercosur-comercio-ar', label: 'Argentina · Comisión de Comercio del MERCOSUR', country: 'AR', fn: ({ signal }) => fetchMercosurComercioAR({ limit: 60, signal }) },
   { id: 'bcra-ar', label: 'Argentina · Banco Central (BCRA)', country: 'AR', fn: ({ signal }) => fetchBCRAArgentina({ limit: 40, signal }) },

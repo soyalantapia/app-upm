@@ -39,6 +39,7 @@ import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
 import { AuthorChips } from '@/components/AuthorChips'
 import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
+import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
 import { useCitationGraph } from '@/lib/use-citations'
@@ -344,6 +345,7 @@ export function LawsPage() {
                   <span className="hidden sm:inline">Comparar con…</span>
                   <span className="sm:hidden">Comparar</span>
                 </button>
+                <WatchToggleButton item={active} variant="compact" />
                 <ExportLawButton item={active} variant="compact" />
                 <button
                   onClick={() => {

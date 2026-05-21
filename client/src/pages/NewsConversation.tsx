@@ -37,6 +37,7 @@ import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
 import { AuthorChips } from '@/components/AuthorChips'
 import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
+import { WatchToggleButton } from '@/components/WatchToggleButton'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -139,6 +140,7 @@ export function NewsConversationPage() {
           >
             <Share2 size={12} /> Compartir
           </button>
+          <WatchToggleButton item={news} variant="compact" />
           <ExportLawButton item={news} variant="compact" />
           <button
             onClick={handleSave}
