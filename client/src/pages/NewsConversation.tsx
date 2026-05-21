@@ -39,6 +39,7 @@ import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
+import { BudgetPanel } from '@/components/BudgetPanel'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -353,6 +354,9 @@ export function NewsConversationPage() {
 
         {/* Flujo de tramitación · stepper visual */}
         <TramitacionFlow item={news} />
+
+        {/* Inversión, contrataciones e impacto fiscal */}
+        <BudgetPanel item={news} />
 
         {/* Anotaciones personales del legislador (localStorage) */}
         <NotesPanel itemId={news.id} />

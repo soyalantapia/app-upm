@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowLeft,
   FileText,
@@ -44,9 +44,17 @@ export function BriefingPage() {
   const { feed } = useLiveFeed()
   const items = feed?.items ?? []
 
-  const [topic, setTopic] = useState<Topic | 'all'>('integracion-regional')
-  const [countries, setCountries] = useState<Set<CountryCode>>(new Set(['AR', 'BR', 'UY']))
-  const [win, setWin] = useState<Window>('30d')
+  const [searchParams] = useSearchParams()
+  // Deep-link · ?window=7d&topic=all activa el modo Briefing Semanal automático
+  const initialWin = (searchParams.get('window') as Window | null) ?? '30d'
+  const initialTopic = (searchParams.get('topic') as Topic | 'all' | null) ?? 'integracion-regional'
+  const isWeekly = initialWin === '7d'
+
+  const [topic, setTopic] = useState<Topic | 'all'>(initialTopic)
+  const [countries, setCountries] = useState<Set<CountryCode>>(
+    new Set(isWeekly ? ['AR', 'BR', 'UY', 'CO'] : ['AR', 'BR', 'UY']),
+  )
+  const [win, setWin] = useState<Window>(initialWin)
 
   const fechaHoy = new Date().toLocaleDateString('es-AR', {
     day: '2-digit', month: 'long', year: 'numeric',

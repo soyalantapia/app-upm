@@ -6,6 +6,8 @@ import { useLiveFeed } from '@/lib/use-live-feed'
 import { useCitationGraph } from '@/lib/use-citations'
 import { computeTrendingLaws } from '@/lib/trending'
 import { COUNTRIES, TOPICS } from '@/lib/data'
+import { ActivityHeatmap } from '@/components/ActivityHeatmap'
+import { MercosurChoropleth } from '@/components/MercosurChoropleth'
 import type { CountryCode, NewsItem, Topic } from '@/lib/types'
 
 // /estadisticas · Dashboard global del corpus.
@@ -37,6 +39,12 @@ export function StatsPage() {
         <BigStat label="Países cubiertos" value={stats.paisesActivos} icon={MapPin} />
         <BigStat label="Backlinks en grafo" value={stats.totalBacklinks} icon={Network} />
       </div>
+
+      {/* Heatmap calendario · actividad regulatoria por día */}
+      <ActivityHeatmap />
+
+      {/* Mapa coroplético · ya está en Home pero también acá */}
+      <MercosurChoropleth />
 
       {/* Distribución por país */}
       <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">

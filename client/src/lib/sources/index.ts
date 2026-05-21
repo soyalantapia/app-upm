@@ -30,6 +30,7 @@ import { fetchExpedientesHCDN } from './expedientes-hcdn'
 import { fetchSenadoAR } from './senado-ar'
 import { fetchImpoUY } from './impo-uy'
 import { fetchMateriasSenadoBR } from './materias-senado-br'
+import { fetchConveniosAR } from './convenios-ar'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
 import { fetchSentenciasCorteCO } from './sentencias-corte-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
@@ -163,6 +164,7 @@ const FETCHERS: Fetcher[] = [
   { id: 'senado-ar', label: 'Honorable Senado de la Nación · Argentina', country: 'AR', fn: ({ signal }) => fetchSenadoAR({ limit: 30, signal }) },
   { id: 'impo-uy', label: 'IMPO Uruguay · Decretos del Poder Ejecutivo', country: 'UY', fn: ({ signal }) => fetchImpoUY({ limit: 30, signal }) },
   { id: 'materias-senado-br', label: 'Senado Federal Brasil · Matérias legislativas', country: 'BR', fn: ({ signal }) => fetchMateriasSenadoBR({ limit: 30, signal }) },
+  { id: 'convenios-ar', label: 'Ministerio de Trabajo AR · Convenios Colectivos', country: 'AR', fn: ({ signal }) => fetchConveniosAR({ limit: 30, signal }) },
   // Fuentes AR por organismo · todas tiran del mismo JSON Infoleg con filtro por emisor
   { id: 'mercosur-comercio-ar', label: 'Argentina · Comisión de Comercio del MERCOSUR', country: 'AR', fn: ({ signal }) => fetchMercosurComercioAR({ limit: 60, signal }) },
   { id: 'bcra-ar', label: 'Argentina · Banco Central (BCRA)', country: 'AR', fn: ({ signal }) => fetchBCRAArgentina({ limit: 40, signal }) },

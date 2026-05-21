@@ -296,6 +296,7 @@ export function HomePage() {
             <div className="mt-3 flex flex-col gap-2.5">
               <QuickAction to="/asistente" icon={MessageSquareText} title="Preguntar al Asistente" desc="Brief, resumen, redacción" />
               <QuickAction to="/briefing" icon={ScrollText} title="Briefing Pre-sesión" desc="1-pager imprimible para tu comisión" />
+              <QuickAction to="/briefing?window=7d&topic=all" icon={ScrollText} title="Briefing Semanal" desc="Resumen automático de los últimos 7 días" />
               <QuickAction to="/estadisticas" icon={TrendingUp} title="Estadísticas del corpus" desc="Métricas globales del Mercosur regulatorio" />
               <QuickAction to="/radar" icon={Radar} title="Ver Radar" desc="Novedades por país y tema" />
               <QuickAction to="/leyes" icon={BookOpen} title="Hablar con una ley" desc="Preguntá al documento" />

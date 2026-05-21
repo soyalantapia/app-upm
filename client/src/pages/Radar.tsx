@@ -22,6 +22,7 @@ import { useLiveFeed } from '@/lib/use-live-feed'
 import { writeSnapshot } from '@/lib/visit-tracker'
 import { useCitationGraph, getCitationCount } from '@/lib/use-citations'
 import { buildClusters } from '@/lib/clusters'
+import { matchesQuery } from '@/lib/synonyms'
 import { RadarSmartCard } from '@/components/RadarSmartCard'
 import { QuickFilterPills, type FilterPresetId } from '@/components/QuickFilterPills'
 import { RadarTimeline } from '@/components/RadarTimeline'
@@ -133,12 +134,12 @@ export function RadarPage() {
       if (term !== '') {
         const t = topicById(n.topic)
         const c = countryByCode(n.country)
-        // Búsqueda full-text: incluye fullText (texto íntegro de la norma),
-        // authors (autoría) y status. Antes solo matcheaba en title+excerpt+source.
+        // Búsqueda full-text con q-expansion · busca también sinónimos legales.
+        // Ej: query "género" matchea "mujer", "paridad", "violencia de género".
         const haystack = [
           n.title,
           n.excerpt,
-          n.fullText,                        // texto íntegro pre-procesado
+          n.fullText,
           n.source,
           n.type,
           n.authors,
@@ -151,8 +152,7 @@ export function RadarPage() {
         ]
           .filter(Boolean)
           .join(' ')
-          .toLowerCase()
-        if (!haystack.includes(term)) return false
+        if (!matchesQuery(haystack, term)) return false
       }
       return (
         (country === 'all' || n.country === country) &&

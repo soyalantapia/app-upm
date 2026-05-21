@@ -41,10 +41,12 @@ import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
+import { BudgetPanel } from '@/components/BudgetPanel'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
 import { useCitationGraph } from '@/lib/use-citations'
 import { computeVigencia, type VigenciaStatus } from '@/lib/vigencia'
+import { matchesQuery } from '@/lib/synonyms'
 import { GitCompareArrows } from 'lucide-react'
 
 // Filtro para esta vista: solo leyes ya sancionadas/promulgadas, no proyectos en trámite.
@@ -116,8 +118,7 @@ export function LawsPage() {
     const term = q.trim().toLowerCase()
     if (!term) return laws
     const matched = laws.filter(l => {
-      // Búsqueda full-text: en title, excerpt, fullText, authors, status,
-      // tipoDocumento, source y keywords.
+      // Búsqueda full-text con q-expansion de sinónimos.
       const haystack = [
         l.title,
         l.excerpt,
@@ -130,8 +131,7 @@ export function LawsPage() {
       ]
         .filter(Boolean)
         .join(' ')
-        .toLowerCase()
-      return haystack.includes(term)
+      return matchesQuery(haystack, term)
     })
     // Si la query es solo dígitos, priorizar match EXACTO al número de ley
     // (ej. "27541" debe poner Ley 27541 antes que Ley 27562 que también la cita).
@@ -545,6 +545,9 @@ export function LawsPage() {
 
               {/* Flujo de tramitación · stepper visual */}
               <TramitacionFlow item={active} />
+
+              {/* Inversión, contrataciones e impacto fiscal */}
+              <BudgetPanel item={active} />
 
               {/* Anotaciones personales · localStorage */}
               <NotesPanel itemId={active.id} />
