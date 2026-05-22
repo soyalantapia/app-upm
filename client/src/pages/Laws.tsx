@@ -42,6 +42,7 @@ import { ExportLawButton } from '@/components/ExportLawButton'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
+import { ModificatoriasTimeline } from '@/components/ModificatoriasTimeline'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
 import { MultiComparator } from '@/components/MultiComparator'
@@ -558,6 +559,9 @@ export function LawsPage() {
 
               {/* Inversión, contrataciones e impacto fiscal */}
               <BudgetPanel item={active} />
+
+              {/* Cronología de modificatorias · solo para leyes nacionales */}
+              <ModificatoriasTimeline item={active} />
 
               {/* Anotaciones personales · localStorage */}
               <NotesPanel itemId={active.id} />

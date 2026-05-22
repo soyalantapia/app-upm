@@ -40,6 +40,8 @@ import { ExportLawButton } from '@/components/ExportLawButton'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
+import { VotosBRPanel } from '@/components/VotosBRPanel'
+import { ModificatoriasTimeline } from '@/components/ModificatoriasTimeline'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -357,6 +359,12 @@ export function NewsConversationPage() {
 
         {/* Inversión, contrataciones e impacto fiscal */}
         <BudgetPanel item={news} />
+
+        {/* Votos nominales BR · solo aparece si el item es br-votacao-* */}
+        <VotosBRPanel itemId={news.id} />
+
+        {/* Cronología de modificatorias · solo si es una ley nacional */}
+        <ModificatoriasTimeline item={news} />
 
         {/* Anotaciones personales del legislador (localStorage) */}
         <NotesPanel itemId={news.id} />
