@@ -131,7 +131,7 @@ export function LawMap({ item }: { item: NewsItem }) {
         <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-              <Scale size={11} /> Jurisprudencia · CSJN
+              <Scale size={11} /> Jurisprudencia regional (CSJN AR · STF BR · SCJ UY)
             </div>
             <span className="inline-flex items-center gap-1 rounded-full bg-upm-700 px-2.5 py-0.5 text-[11px] font-bold text-white">
               {fallos.length} {fallos.length === 1 ? 'fallo' : 'fallos'}
@@ -142,7 +142,12 @@ export function LawMap({ item }: { item: NewsItem }) {
               <li key={f.id} className="rounded-2xl bg-ink-50/40 p-3 ring-1 ring-ink-100">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-ink-900 line-clamp-2">{f.title}</p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-upm-700 px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wide text-white">
+                        {f.tribunal} · {f.country}
+                      </span>
+                      <p className="text-[13px] font-bold text-ink-900 line-clamp-1 flex-1">{f.title}</p>
+                    </div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10.5px] text-ink-500">
                       <span className="tabular-nums">{formatDate(f.fecha)}</span>
                       <span>·</span>

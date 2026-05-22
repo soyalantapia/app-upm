@@ -9,6 +9,7 @@ import { COUNTRIES, TOPICS } from '@/lib/data'
 import { ActivityHeatmap } from '@/components/ActivityHeatmap'
 import { MercosurChoropleth } from '@/components/MercosurChoropleth'
 import { SectorHeatmap } from '@/components/SectorHeatmap'
+import { BudgetRanking } from '@/components/BudgetRanking'
 import type { CountryCode, NewsItem, Topic } from '@/lib/types'
 
 // /estadisticas · Dashboard global del corpus.
@@ -49,6 +50,9 @@ export function StatsPage() {
 
       {/* Sectores económicos más regulados */}
       <SectorHeatmap />
+
+      {/* Top normas por impacto presupuestario */}
+      <BudgetRanking />
 
       {/* Distribución por país */}
       <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">

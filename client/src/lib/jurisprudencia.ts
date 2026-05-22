@@ -1,65 +1,77 @@
-// Conexión norma↔jurisprudencia · usa un dataset pre-procesado de sumarios de
-// la Corte Suprema de Justicia de la Nación (Argentina) que mapean cada fallo
-// a la(s) ley(es) que interpretan.
+// Conexión norma↔jurisprudencia · usa datasets pre-procesados de sumarios de
+// las cortes supremas del Mercosur (CSJN AR, STF BR, SCJ UY) que mapean cada
+// fallo a la(s) ley(es) que interpreta.
 //
-// Una vez cargado el dataset (lazy fetch), exponemos lookups por número de ley.
+// Carga los 3 datasets lazy y los fusiona en un único índice ley → fallos.
+
+import type { CountryCode } from './types'
 
 export type CSJNFallo = {
   id: string
   title: string
   fecha: string
   sala: string
-  ley: string                  // número de ley citada
+  ley: string
   sumario: string
   url: string
   tags: string[]
+  country: CountryCode
+  tribunal: 'CSJN' | 'STF' | 'SCJ'
 }
 
-type CSJNData = {
+type FalloDataRaw = Omit<CSJNFallo, 'country' | 'tribunal'>
+
+type FallosData = {
   fuente: string
   url: string
   fetchedAt: string
-  items: CSJNFallo[]
+  items: FalloDataRaw[]
 }
 
 const PUBLIC_BASE = (import.meta.env?.BASE_URL ?? '/').replace(/\/$/, '')
-const DATA_URL = `${PUBLIC_BASE}/data/csjn-ar.json`
 
-let cached: CSJNData | null = null
-let loadPromise: Promise<CSJNData | null> | null = null
+const SOURCES: { url: string; country: CountryCode; tribunal: CSJNFallo['tribunal'] }[] = [
+  { url: `${PUBLIC_BASE}/data/csjn-ar.json`, country: 'AR', tribunal: 'CSJN' },
+  { url: `${PUBLIC_BASE}/data/stf-br.json`, country: 'BR', tribunal: 'STF' },
+  { url: `${PUBLIC_BASE}/data/scj-uy.json`, country: 'UY', tribunal: 'SCJ' },
+]
 
-async function loadCSJN(): Promise<CSJNData | null> {
+let cached: CSJNFallo[] | null = null
+let loadPromise: Promise<CSJNFallo[]> | null = null
+
+async function loadAllFallos(): Promise<CSJNFallo[]> {
   if (cached) return cached
   if (loadPromise) return loadPromise
   loadPromise = (async () => {
-    try {
-      const res = await fetch(DATA_URL)
-      if (!res.ok) return null
-      const json = (await res.json()) as CSJNData
-      cached = json
-      return json
-    } catch {
-      return null
-    } finally {
-      loadPromise = null
+    const all: CSJNFallo[] = []
+    for (const src of SOURCES) {
+      try {
+        const res = await fetch(src.url)
+        if (!res.ok) continue
+        const data = (await res.json()) as FallosData
+        for (const raw of data.items) {
+          all.push({ ...raw, country: src.country, tribunal: src.tribunal })
+        }
+      } catch {
+        // Si una corte falla, continuamos con las otras
+      }
     }
+    cached = all
+    return all
   })()
   return loadPromise
 }
 
-// Backlinks: dado un número de ley, lista de fallos CSJN que la mencionan.
 let leyToFallos: Map<string, CSJNFallo[]> | null = null
 
 async function ensureIndex(): Promise<Map<string, CSJNFallo[]>> {
   if (leyToFallos) return leyToFallos
-  const data = await loadCSJN()
+  const all = await loadAllFallos()
   const index = new Map<string, CSJNFallo[]>()
-  if (data) {
-    for (const fallo of data.items) {
-      const num = fallo.ley
-      if (!index.has(num)) index.set(num, [])
-      index.get(num)!.push(fallo)
-    }
+  for (const fallo of all) {
+    const num = fallo.ley
+    if (!index.has(num)) index.set(num, [])
+    index.get(num)!.push(fallo)
   }
   leyToFallos = index
   return index
@@ -70,8 +82,14 @@ export async function getFallosForLaw(numero: string): Promise<CSJNFallo[]> {
   return index.get(numero) ?? []
 }
 
-// Total de fallos en el corpus
 export async function getCSJNTotalCount(): Promise<number> {
-  const data = await loadCSJN()
-  return data?.items.length ?? 0
+  const all = await loadAllFallos()
+  return all.length
+}
+
+export async function getFallosCountByTribunal(): Promise<Record<CSJNFallo['tribunal'], number>> {
+  const all = await loadAllFallos()
+  const out = { CSJN: 0, STF: 0, SCJ: 0 } as Record<CSJNFallo['tribunal'], number>
+  for (const f of all) out[f.tribunal]++
+  return out
 }

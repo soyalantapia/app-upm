@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   ArrowLeft,
   Activity,
@@ -42,10 +42,15 @@ import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
 import { VotosBRPanel } from '@/components/VotosBRPanel'
 import { ModificatoriasTimeline } from '@/components/ModificatoriasTimeline'
+import { HighlightedText } from '@/components/HighlightedText'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
+  // Highlights inline · si llegamos a /radar/:id?q=energia,inflacion resaltamos
+  // esas palabras en el fullText. Coma-separadas o palabra única.
+  const highlightTerms = (searchParams.get('q') ?? '').split(/[,;\s]+/).filter(t => t.trim().length >= 2)
   const { item, loading, enriching } = useNewsItem(id)
   const isSaved = useStore(s => (item ? s.saved.some(i => i.ref === item.id) : false))
   // Contexto extraído antes de early returns para respetar Rules of Hooks
@@ -381,9 +386,16 @@ export function NewsConversationPage() {
         {/* Texto completo (ementa o ementaDetalhada) */}
         {news.fullText && news.fullText.length > 0 && (
           <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Texto completo</div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Texto completo</div>
+              {highlightTerms.length > 0 && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-warning-bg/60 px-2 py-0.5 text-[10px] font-bold text-warning-fg ring-1 ring-warning-bg">
+                  Highlight: {highlightTerms.join(' · ')}
+                </span>
+              )}
+            </div>
             <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-ink-800">
-              {news.fullText}
+              <HighlightedText text={news.fullText} terms={highlightTerms} />
             </p>
           </div>
         )}
