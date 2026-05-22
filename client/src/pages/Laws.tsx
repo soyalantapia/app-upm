@@ -44,6 +44,7 @@ import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
+import { MultiComparator } from '@/components/MultiComparator'
 import { useCitationGraph } from '@/lib/use-citations'
 import { computeVigencia, type VigenciaStatus } from '@/lib/vigencia'
 import { matchesQuery } from '@/lib/synonyms'
@@ -87,6 +88,7 @@ export function LawsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
   const [showComparator, setShowComparator] = useState(false)
+  const [showMultiComparator, setShowMultiComparator] = useState(false)
   const [vigenciaFilter, setVigenciaFilter] = useState<VigenciaStatus | 'all'>('all')
   // Grafo de citas para vigencia
   const { graph: citationGraph } = useCitationGraph()
@@ -346,6 +348,14 @@ export function LawsPage() {
                   <span className="hidden sm:inline">Comparar con…</span>
                   <span className="sm:hidden">Comparar</span>
                 </button>
+                <button
+                  onClick={() => setShowMultiComparator(true)}
+                  className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-upm-700 ring-1 ring-upm-200 shadow-cta transition hover:-translate-y-0.5 hover:bg-upm-50"
+                  title="Comparar con hasta 3 países a la vez"
+                >
+                  <GitCompareArrows size={12} />
+                  <span className="hidden sm:inline">Multi-país</span>
+                </button>
                 <WatchToggleButton item={active} variant="compact" />
                 <ExportLawButton item={active} variant="compact" />
                 <button
@@ -601,6 +611,9 @@ export function LawsPage() {
       {/* Modal comparador · se monta al final del DOM, fixed overlay */}
       {showComparator && active && (
         <LawComparator source={active} onClose={() => setShowComparator(false)} />
+      )}
+      {showMultiComparator && active && (
+        <MultiComparator source={active} onClose={() => setShowMultiComparator(false)} />
       )}
     </div>
   )
