@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { Badge, Button, PageHeader, Eyebrow } from '@/components/ui'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
-import { formatDate } from '@/lib/format'
+import { formatDate, decodeHtml } from '@/lib/format'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { extractContext } from '@/lib/extract-context'
 import type { CountryCode, NewsItem, Topic } from '@/lib/types'
@@ -271,7 +271,7 @@ export function BriefingPage() {
                           )}
                         </div>
                         <h3 className="mt-1.5 text-[14.5px] font-bold leading-snug text-ink-900">
-                          {item.title}
+                          {decodeHtml(item.title)}
                         </h3>
                         {ctx.resumen && ctx.resumen.length > 50 && (
                           <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-700 line-clamp-3">
@@ -309,7 +309,7 @@ export function BriefingPage() {
                     <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-upm-500" />
                     <div className="flex-1">
                       <span className="font-bold">{country.flag} {country.code}</span> ·{' '}
-                      <span>{item.title}</span>
+                      <span>{decodeHtml(item.title)}</span>
                       {item.status && (
                         <span className="ml-1 rounded-md bg-success-bg/60 px-1.5 py-0.5 text-[10px] font-bold text-success-fg ring-1 ring-success-bg">
                           {item.status}
@@ -337,7 +337,7 @@ export function BriefingPage() {
                     <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-upm-500" />
                     <div className="flex-1">
                       <span className="font-bold">{country.flag} {country.code}</span> ·{' '}
-                      <span>{item.title}</span>
+                      <span>{decodeHtml(item.title)}</span>
                     </div>
                   </li>
                 )

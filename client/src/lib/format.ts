@@ -7,6 +7,17 @@ export function formatDate(d?: string): string {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : d
 }
 
+// Decodifica entidades HTML comunes en strings del feed (e.g. &quot; → ", &amp; → &).
+const HTML_ENTITIES: Record<string, string> = {
+  '&quot;': '"', '&apos;': "'", '&amp;': '&',
+  '&lt;': '<', '&gt;': '>', '&nbsp;': ' ',
+  '&#39;': "'", '&#34;': '"',
+}
+export function decodeHtml(s?: string): string {
+  if (!s) return ''
+  return s.replace(/&[a-z#0-9]+;/gi, m => HTML_ENTITIES[m] ?? m)
+}
+
 // "2026-05-08T18:42:00" o "2026-05-08 18:42" → "08/05/2026 18:42"
 export function formatDateTime(d?: string): string {
   if (!d) return ''

@@ -32,7 +32,7 @@ export function StatsPage() {
       <PageHeader
         eyebrow={<Eyebrow icon={<BarChart3 size={11} />}>Estadísticas del corpus</Eyebrow>}
         title="El estado del Mercosur regulatorio"
-        description="Métricas en vivo sobre los 33 feeds oficiales. Lo que está pasando ahora, dónde, y por qué importa."
+        description="Métricas en vivo sobre los 45 feeds oficiales. Lo que está pasando ahora, dónde, y por qué importa."
       />
 
       {/* Hero stats */}

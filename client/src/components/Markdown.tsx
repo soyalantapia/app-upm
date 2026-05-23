@@ -42,6 +42,11 @@ export function Markdown({ content, className }: { content: string; className?: 
       flush()
       continue
     }
+    if (line.startsWith('### ')) {
+      flush()
+      blocks.push({ type: 'h', items: [line.slice(4)], level: 3 })
+      continue
+    }
     if (line.startsWith('## ')) {
       flush()
       blocks.push({ type: 'h', items: [line.slice(3)], level: 2 })

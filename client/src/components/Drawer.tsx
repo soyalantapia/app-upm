@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
@@ -35,7 +36,7 @@ export function Drawer({
   const widthCls =
     width === 'md' ? 'max-w-md' : width === 'xl' ? 'max-w-3xl' : 'max-w-2xl'
 
-  return (
+  return createPortal(
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-[80]">
       <button
         aria-label="Cerrar"
@@ -63,6 +64,7 @@ export function Drawer({
         </div>
         <div className="flex-1 overflow-y-auto bg-bg px-5 py-5" style={{ backgroundColor: '#f6f8fb' }}>{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
