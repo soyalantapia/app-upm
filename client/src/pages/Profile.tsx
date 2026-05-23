@@ -3,31 +3,37 @@ import { useNavigate } from 'react-router-dom'
 import {
   BadgeCheck,
   Bell,
+  BellOff,
+  BellRing,
   Building2,
   CalendarDays,
   CircleUser,
   Globe,
   LogOut,
   Pencil,
+  Plus,
   Sparkles,
   Tag,
+  Trash2,
   Wrench,
 } from 'lucide-react'
 import { Badge, Button, Card, Chip, Eyebrow, PageHeader } from '@/components/ui'
 import { Drawer } from '@/components/Drawer'
 import { useAuth } from '@/lib/auth'
-import { useStore, store } from '@/lib/store'
+import { useStore, store, type Alert } from '@/lib/store'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
-import type { CountryCode } from '@/lib/types'
+import type { CountryCode, Topic } from '@/lib/types'
 
 const CARGOS = ['Legislador', 'Senador', 'Diputado', 'Coordinador de foro', 'Secretaría UPM', 'Asesor parlamentario']
 
 export function ProfilePage() {
   const { operator, signOut, updateOperator } = useAuth()
   const prefs = useStore(s => s.prefs)
+  const alerts = useStore(s => s.alerts)
   const navigate = useNavigate()
 
   const [editOpen, setEditOpen] = useState(false)
+  const [alertsOpen, setAlertsOpen] = useState(false)
   const [editName, setEditName] = useState(operator?.name ?? '')
   const [editEmail, setEditEmail] = useState(operator?.email ?? '')
   const [editCargo, setEditCargo] = useState(operator?.cargo ?? 'Legislador')
@@ -157,8 +163,13 @@ export function ProfilePage() {
             <Button size="md" variant="secondary" onClick={() => navigate('/onboarding')}>
               <Wrench size={14} /> Editar preferencias
             </Button>
-            <Button size="md" variant="ghost" onClick={() => store.pushToast('info', 'Notificaciones actualizadas')}>
-              <Bell size={14} /> Gestionar alertas
+            <Button size="md" variant="ghost" onClick={() => setAlertsOpen(true)}>
+              <BellRing size={14} /> Gestionar alertas
+              {alerts.filter(a => a.active).length > 0 && (
+                <span className="ml-1 rounded-full bg-upm-600 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                  {alerts.filter(a => a.active).length}
+                </span>
+              )}
             </Button>
             <Button size="md" variant="danger" onClick={handleSignOut}>
               <LogOut size={14} /> Cerrar sesión
@@ -203,6 +214,17 @@ export function ProfilePage() {
           </Card>
         </div>
       </div>
+
+      {/* Drawer Alertas inteligentes */}
+      <Drawer
+        open={alertsOpen}
+        onClose={() => setAlertsOpen(false)}
+        title={<span className="flex items-center gap-2"><BellRing size={15} className="text-upm-600" /> Alertas inteligentes</span>}
+        description="Recibís una notificación cada vez que el Radar detecta un ítem que coincide con tus alertas."
+        width="md"
+      >
+        <AlertasPanel alerts={alerts} />
+      </Drawer>
 
       {/* Drawer Editar perfil */}
       <Drawer
@@ -274,5 +296,171 @@ function Field({ label, children, required }: { label: string; children: React.R
       </span>
       {children}
     </label>
+  )
+}
+
+// ─── Panel de alertas inteligentes ────────────────────────────────────────────
+function AlertasPanel({ alerts }: { alerts: Alert[] }) {
+  const [keyword, setKeyword] = useState('')
+  const [selCountries, setSelCountries] = useState<CountryCode[]>([])
+  const [selTopics, setSelTopics] = useState<Topic[]>([])
+  const [adding, setAdding] = useState(false)
+
+  const toggleCountry = (c: CountryCode) =>
+    setSelCountries(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c])
+
+  const toggleTopic = (t: Topic) =>
+    setSelTopics(prev => prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t])
+
+  const handleAdd = (e: FormEvent) => {
+    e.preventDefault()
+    if (!keyword.trim()) return
+    store.createAlert({ keyword: keyword.trim(), countries: selCountries, topics: selTopics, active: true })
+    setKeyword('')
+    setSelCountries([])
+    setSelTopics([])
+    setAdding(false)
+    store.pushToast('success', `Alerta "${keyword.trim()}" activada`)
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Lista de alertas existentes */}
+      <div className="flex flex-col gap-2">
+        {alerts.length === 0 && (
+          <div className="rounded-2xl bg-ink-50 px-4 py-6 text-center text-[13px] text-ink-500">
+            No tenés alertas activas. Creá la primera abajo.
+          </div>
+        )}
+        {alerts.map(a => (
+          <div
+            key={a.id}
+            className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 ring-1 ring-ink-100"
+          >
+            <button
+              onClick={() => store.toggleAlert(a.id)}
+              className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl transition-colors ${
+                a.active ? 'bg-upm-50 text-upm-600' : 'bg-ink-50 text-ink-400'
+              }`}
+              title={a.active ? 'Desactivar alerta' : 'Activar alerta'}
+            >
+              {a.active ? <BellRing size={14} /> : <BellOff size={14} />}
+            </button>
+            <div className="min-w-0 flex-1">
+              <div className="text-[13px] font-semibold text-ink-900 truncate">{a.keyword}</div>
+              <div className="mt-0.5 flex flex-wrap gap-1">
+                {a.countries.length > 0
+                  ? a.countries.map(c => {
+                    const co = countryByCode(c)
+                    return <span key={c} className="text-[10.5px] text-ink-500">{co.flag} {co.code}</span>
+                  })
+                  : <span className="text-[10.5px] text-ink-400">Todos los países</span>
+                }
+                {a.topics.length > 0 && (
+                  <>
+                    <span className="text-[10.5px] text-ink-300">·</span>
+                    {a.topics.map(t => (
+                      <span key={t} className="text-[10.5px] text-ink-500">{topicById(t).shortLabel}</span>
+                    ))}
+                  </>
+                )}
+              </div>
+              {a.matchCount > 0 && (
+                <div className="mt-0.5 text-[10.5px] text-upm-600 font-semibold">
+                  {a.matchCount} coincidencia{a.matchCount !== 1 ? 's' : ''} encontrada{a.matchCount !== 1 ? 's' : ''}
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => {
+                store.removeAlert(a.id)
+                store.pushToast('info', 'Alerta eliminada')
+              }}
+              className="shrink-0 p-1.5 text-ink-300 hover:text-danger transition-colors"
+              title="Eliminar alerta"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Crear nueva alerta */}
+      {!adding ? (
+        <Button size="sm" variant="secondary" onClick={() => setAdding(true)}>
+          <Plus size={13} /> Nueva alerta
+        </Button>
+      ) : (
+        <form
+          onSubmit={handleAdd}
+          className="rounded-2xl bg-upm-50/40 p-4 ring-1 ring-upm-100 flex flex-col gap-3"
+        >
+          <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
+            Nueva alerta
+          </div>
+          <Field label="Palabra clave" required>
+            <input
+              autoFocus
+              value={keyword}
+              onChange={e => setKeyword(e.target.value)}
+              placeholder="Ej.: ITAIPU, corredor bioceánico, género…"
+              className="w-full rounded-2xl bg-white px-4 py-3 text-[14px] ring-1 ring-ink-100 focus:outline-none focus:ring-2 focus:ring-upm-400"
+            />
+          </Field>
+          <div>
+            <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-500 mb-1.5">
+              Países (vacío = todos)
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {COUNTRIES.map(c => (
+                <button
+                  key={c.code}
+                  type="button"
+                  onClick={() => toggleCountry(c.code)}
+                  className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors ring-1 ${
+                    selCountries.includes(c.code)
+                      ? 'bg-upm-600 text-white ring-upm-600'
+                      : 'bg-white text-ink-600 ring-ink-100 hover:ring-upm-200'
+                  }`}
+                >
+                  {c.flag} {c.code}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-500 mb-1.5">
+              Temas (vacío = todos)
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {TOPICS.map(t => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => toggleTopic(t.id)}
+                  className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors ring-1 ${
+                    selTopics.includes(t.id)
+                      ? 'bg-upm-600 text-white ring-upm-600'
+                      : 'bg-white text-ink-600 ring-ink-100 hover:ring-upm-200'
+                  }`}
+                >
+                  {t.shortLabel}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-2 pt-1">
+            <Button type="button" size="sm" variant="secondary" onClick={() => setAdding(false)}>Cancelar</Button>
+            <Button type="submit" size="sm" disabled={!keyword.trim()}>
+              <Bell size={13} /> Crear alerta
+            </Button>
+          </div>
+        </form>
+      )}
+
+      <p className="text-[11.5px] text-ink-400">
+        Las alertas se evalúan cuando el Radar carga nuevos ítems. Recibís una notificación si hay coincidencias.
+      </p>
+    </div>
   )
 }

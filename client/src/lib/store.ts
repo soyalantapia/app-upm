@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { DEFAULT_PREFS, FOLDERS } from './data'
-import type { ChatMessage, Preferences, Folder } from './types'
+import type { ChatMessage, CountryCode, Preferences, Folder, Topic } from './types'
 
 const STORAGE_KEY = 'upm.app.state'
 
@@ -36,6 +36,17 @@ export type Conversation = {
 
 type Toast = { id: string; tone: 'success' | 'info' | 'warning' | 'danger'; message: string }
 
+export type Alert = {
+  id: string
+  keyword: string          // Palabra clave libre
+  countries: CountryCode[] // [] = todos
+  topics: Topic[]          // [] = todos
+  active: boolean
+  createdAt: string
+  lastMatchAt?: string     // Última vez que matcheó un ítem del feed
+  matchCount: number       // Total de hits desde que se creó
+}
+
 type State = {
   prefs: Preferences | null
   onboarded: boolean
@@ -43,6 +54,7 @@ type State = {
   folders: Folder[]
   notifications: Notification[]
   conversations: Conversation[]
+  alerts: Alert[]
   toasts: Toast[]
 }
 
@@ -91,6 +103,12 @@ const SEED_NOTIFICATIONS: Notification[] = [
   },
 ]
 
+const SEED_ALERTS: Alert[] = [
+  { id: 'al-1', keyword: 'corredor bioceánico', countries: [], topics: ['corredores-bioceanicos'], active: true, createdAt: '2026-05-01T00:00:00Z', matchCount: 0 },
+  { id: 'al-2', keyword: 'ITAIPU', countries: ['PY', 'BR'], topics: [], active: true, createdAt: '2026-05-01T00:00:00Z', matchCount: 0 },
+  { id: 'al-3', keyword: 'Mercosur arancel', countries: [], topics: ['mercosur', 'integracion-regional'], active: false, createdAt: '2026-04-15T00:00:00Z', matchCount: 0 },
+]
+
 const initial: State = {
   prefs: null,
   onboarded: false,
@@ -98,6 +116,7 @@ const initial: State = {
   folders: FOLDERS,
   notifications: SEED_NOTIFICATIONS,
   conversations: [],
+  alerts: SEED_ALERTS,
   toasts: [],
 }
 
@@ -114,6 +133,7 @@ function load(): State {
       folders: parsed.folders && parsed.folders.length ? parsed.folders : FOLDERS,
       notifications: parsed.notifications && parsed.notifications.length ? parsed.notifications : SEED_NOTIFICATIONS,
       conversations: parsed.conversations ?? [],
+      alerts: (parsed as Partial<State>).alerts ?? SEED_ALERTS,
     }
   } catch {
     return initial
@@ -248,6 +268,35 @@ export const store = {
     update(s => ({
       ...s,
       conversations: s.conversations.filter(c => c.id !== id),
+    }))
+  },
+  // Alerts
+  createAlert(alert: Omit<Alert, 'id' | 'createdAt' | 'matchCount'>) {
+    const id = randId('al-')
+    update(s => ({
+      ...s,
+      alerts: [{ id, createdAt: new Date().toISOString(), matchCount: 0, ...alert }, ...s.alerts],
+    }))
+    return id
+  },
+  toggleAlert(id: string) {
+    update(s => ({
+      ...s,
+      alerts: s.alerts.map(a => (a.id === id ? { ...a, active: !a.active } : a)),
+    }))
+  },
+  removeAlert(id: string) {
+    update(s => ({
+      ...s,
+      alerts: s.alerts.filter(a => a.id !== id),
+    }))
+  },
+  updateAlertMatchCount(id: string, lastMatchAt: string) {
+    update(s => ({
+      ...s,
+      alerts: s.alerts.map(a =>
+        a.id === id ? { ...a, matchCount: a.matchCount + 1, lastMatchAt } : a,
+      ),
     }))
   },
 }

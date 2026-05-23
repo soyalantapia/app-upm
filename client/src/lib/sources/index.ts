@@ -40,6 +40,7 @@ import { fetchSentenciasCorteCO } from './sentencias-corte-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
 import { fetchVotacoesSenadoBR } from './votacoes-senado-br'
 import { fetchEventosCamaraBR } from './eventos-br'
+import { fetchSenadoPY } from './senado-py'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -192,6 +193,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'sentencias-corte-co', label: 'Corte Constitucional CO · Sentencias recientes', country: 'CO', fn: ({ signal }) => fetchSentenciasCorteCO({ limit: 50, signal }) },
   { id: 'parlamento-uy', label: 'Parlamento del Uruguay', country: 'UY', fn: ({ signal }) => fetchParlamentoUY({ limit: 25, signal }) },
   { id: 'leyes-uy', label: 'Leyes Promulgadas Uruguay', country: 'UY', fn: ({ signal }) => fetchLeyesUruguay({ limit: 80, signal }) },
+  // Paraguay · Cámara de Senadores
+  { id: 'senado-py', label: 'Senado de la República del Paraguay', country: 'PY', fn: ({ signal }) => fetchSenadoPY({ limit: 30, signal }) },
 ]
 
 // Si hay un Worker desplegado (variable VITE_UPM_API_URL), preferirlo.

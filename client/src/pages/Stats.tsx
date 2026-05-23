@@ -10,6 +10,7 @@ import { ActivityHeatmap } from '@/components/ActivityHeatmap'
 import { MercosurChoropleth } from '@/components/MercosurChoropleth'
 import { SectorHeatmap } from '@/components/SectorHeatmap'
 import { BudgetRanking } from '@/components/BudgetRanking'
+import { TermFrequency } from '@/components/TermFrequency'
 import type { CountryCode, NewsItem, Topic } from '@/lib/types'
 
 // /estadisticas · Dashboard global del corpus.
@@ -53,6 +54,9 @@ export function StatsPage() {
 
       {/* Top normas por impacto presupuestario */}
       <BudgetRanking />
+
+      {/* Análisis de frecuencia de términos */}
+      <TermFrequency items={items} topN={20} />
 
       {/* Distribución por país */}
       <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">

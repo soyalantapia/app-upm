@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { fetchLiveFeed, readCacheStatus, type AggregatedFeed } from './sources'
+import { store } from './store'
 import type { CountryCode, Topic } from './types'
 
 const AUTO_REFRESH_MS = 5 * 60 * 1000 // 5 min
@@ -49,7 +50,11 @@ export function useLiveFeed(prefs?: { countries?: CountryCode[]; topics?: Topic[
         },
       })
         .then(f => {
-          if (mounted) setFeed(f)
+          if (mounted) {
+            setFeed(f)
+            // Evaluar alertas activas contra el nuevo feed
+            evaluateAlerts(f)
+          }
         })
         .catch(e => {
           if (mounted) setError(String(e))
@@ -93,4 +98,39 @@ export function useLiveFeed(prefs?: { countries?: CountryCode[]; topics?: Topic[
   }
 
   return { feed, loading, revalidating, error, refresh }
+}
+
+// Clave en sessionStorage para saber si ya evaluamos en esta sesión (evitar spam de notifs).
+const EVAL_KEY = 'upm.alerts.evaluated'
+
+function evaluateAlerts(feed: AggregatedFeed) {
+  if (typeof window === 'undefined') return
+  if (window.sessionStorage.getItem(EVAL_KEY)) return // ya se evaluó en esta sesión
+  window.sessionStorage.setItem(EVAL_KEY, '1')
+
+  const { alerts } = store.getSnapshot()
+  const activeAlerts = alerts.filter(a => a.active)
+  if (activeAlerts.length === 0) return
+
+  for (const alert of activeAlerts) {
+    const lower = alert.keyword.toLowerCase()
+    const matches = feed.items.filter(item => {
+      // Filtrar por países si el alert los especifica
+      if (alert.countries.length > 0 && !alert.countries.includes(item.country)) return false
+      // Filtrar por temas si el alert los especifica
+      if (alert.topics.length > 0 && !alert.topics.includes(item.topic)) return false
+      // Buscar keyword en título + excerpt
+      return (item.title + ' ' + item.excerpt).toLowerCase().includes(lower)
+    })
+    if (matches.length > 0) {
+      const best = matches[0]
+      store.updateAlertMatchCount(alert.id, best.date)
+      store.pushNotification({
+        title: `Alerta: "${alert.keyword}"`,
+        description: `${matches.length} coincidencia${matches.length > 1 ? 's' : ''} en el Radar · ${best.title.slice(0, 80)}${best.title.length > 80 ? '…' : ''}`,
+        type: 'novedad',
+        ref: best.id,
+      })
+    }
+  }
 }
