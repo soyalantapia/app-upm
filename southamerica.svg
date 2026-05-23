@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid meet">
+  <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" opacity="0.55">
+    <!-- Contorno simplificado de Sudamérica -->
+    <path d="M295 60 L335 70 L370 95 L395 130 L420 155 L445 180 L460 215 L470 250 L478 290 L482 335 L490 380 L500 420 L505 460 L498 500 L478 535 L455 565 L425 595 L395 625 L370 655 L355 690 L342 720 L320 745 L295 760 L270 750 L255 720 L248 685 L260 650 L268 615 L255 585 L228 560 L195 540 L168 515 L150 485 L138 450 L132 410 L125 370 L120 330 L130 295 L155 265 L180 235 L200 200 L218 165 L240 130 L265 100 Z" />
+    <!-- Detalle costa este simplificado -->
+    <path d="M395 130 Q418 175 432 215" opacity="0.5"/>
+    <path d="M482 335 Q490 360 482 390" opacity="0.5"/>
+    <!-- Líneas internas (cuencas / ríos) muy sutiles -->
+    <path d="M210 250 Q260 290 310 320 T420 380" opacity="0.35" stroke-dasharray="3 6"/>
+    <path d="M280 600 Q300 640 320 670" opacity="0.35" stroke-dasharray="3 6"/>
+  </g>
+  <!-- Nodos de integración regional -->
+  <g fill="currentColor" opacity="0.7">
+    <circle cx="285" cy="280" r="3.5"/>  <!-- Bolivia/Brasil -->
+    <circle cx="220" cy="380" r="3.5"/>  <!-- Chile -->
+    <circle cx="320" cy="500" r="3.5"/>  <!-- Argentina norte -->
+    <circle cx="370" cy="425" r="3.5"/>  <!-- Brasil centro -->
+    <circle cx="345" cy="555" r="3.5"/>  <!-- UY/AR -->
+    <circle cx="290" cy="540" r="3.5"/>  <!-- Paraguay -->
+    <circle cx="245" cy="195" r="3.5"/>  <!-- Colombia -->
+    <circle cx="200" cy="265" r="3.5"/>  <!-- Perú -->
+  </g>
+  <!-- Líneas de conexión entre nodos -->
+  <g stroke="currentColor" stroke-width="0.8" opacity="0.4" fill="none">
+    <line x1="245" y1="195" x2="200" y2="265"/>
+    <line x1="200" y1="265" x2="285" y2="280"/>
+    <line x1="285" y1="280" x2="370" y2="425"/>
+    <line x1="285" y1="280" x2="290" y2="540"/>
+    <line x1="370" y1="425" x2="345" y2="555"/>
+    <line x1="290" y1="540" x2="320" y2="500"/>
+    <line x1="320" y1="500" x2="345" y2="555"/>
+    <line x1="220" y1="380" x2="320" y2="500"/>
+  </g>
+</svg>

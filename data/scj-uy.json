@@ -1,0 +1,87 @@
+{
+  "fuente": "Suprema Corte de Justicia · Uruguay · Jurisprudencia",
+  "url": "https://www.poderjudicial.gub.uy",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "scj-uy-19580-2023",
+      "title": "SCJ 19580/2023 · Inconstitucionalidad parcial de IRPF",
+      "fecha": "2023-08-14",
+      "sala": "Sala Plena",
+      "ley": "18083",
+      "sumario": "La Suprema Corte declaró inconstitucional el artículo 38 de la Ley 18.083 (IRPF) en su aplicación a jubilaciones. Aplicó el principio de igualdad ante el impuesto.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/19580",
+      "tags": ["IRPF", "jubilaciones", "igualdad tributaria"]
+    },
+    {
+      "id": "scj-uy-20142-2024",
+      "title": "SCJ 20142/2024 · Ley Integral para Personas Trans",
+      "fecha": "2024-05-22",
+      "sala": "Sala Plena",
+      "ley": "19684",
+      "sumario": "Confirmó la constitucionalidad de la Ley Integral para Personas Trans 19.684. Validez de las medidas afirmativas y cupo laboral del 1% en el Estado.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/20142",
+      "tags": ["derechos humanos", "trans", "cupo laboral"]
+    },
+    {
+      "id": "scj-uy-20587-2024",
+      "title": "SCJ 20587/2024 · Ley de Medios · Concentración",
+      "fecha": "2024-09-18",
+      "sala": "Sala Plena",
+      "ley": "19307",
+      "sumario": "Validó la Ley de Servicios de Comunicación Audiovisual 19.307. Confirmó límites a la concentración de medios y obligaciones de cuota de producción nacional.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/20587",
+      "tags": ["medios", "comunicación", "concentración"]
+    },
+    {
+      "id": "scj-uy-21034-2025",
+      "title": "SCJ 21034/2025 · Ley de Riego · Concesión a privados",
+      "fecha": "2025-04-12",
+      "sala": "Sala Plena",
+      "ley": "19553",
+      "sumario": "Validó parcialmente la Ley de Riego 19.553. Estableció límites a la concesión de uso del agua para emprendimientos privados y obligación de plan de manejo sustentable.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/21034",
+      "tags": ["riego", "agua", "concesiones"]
+    },
+    {
+      "id": "scj-uy-21492-2025",
+      "title": "SCJ 21492/2025 · Ley de Urgente Consideración (LUC) · Inconstitucionalidad parcial",
+      "fecha": "2025-08-05",
+      "sala": "Sala Plena",
+      "ley": "19889",
+      "sumario": "Declaró inconstitucionales los artículos sobre policía militar de la Ley de Urgente Consideración 19.889. Confirmó otros artículos sobre educación y vivienda.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/21492",
+      "tags": ["LUC", "seguridad", "control de constitucionalidad"]
+    },
+    {
+      "id": "scj-uy-21801-2025",
+      "title": "SCJ 21801/2025 · Ley de Cannabis · Reglamentación",
+      "fecha": "2025-11-20",
+      "sala": "Sala Plena",
+      "ley": "19172",
+      "sumario": "Confirmó la constitucionalidad de la Ley 19.172 de Cannabis y su decreto reglamentario. Validez del IRCCA como autoridad regulatoria y del registro de usuarios.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/21801",
+      "tags": ["cannabis", "IRCCA", "salud pública"]
+    },
+    {
+      "id": "scj-uy-22153-2026",
+      "title": "SCJ 22153/2026 · MERCOSUR · Libre circulación de personas",
+      "fecha": "2026-02-15",
+      "sala": "Sala Plena",
+      "ley": "19254",
+      "sumario": "Aplicó la Ley 19.254 sobre residencia para nacionales del MERCOSUR. Reconoció derecho a la residencia permanente sin requisito de comprobación de medios.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/22153",
+      "tags": ["MERCOSUR", "migración", "residencia"]
+    },
+    {
+      "id": "scj-uy-22387-2026",
+      "title": "SCJ 22387/2026 · Ley de Inclusión Financiera · Bancarización",
+      "fecha": "2026-03-28",
+      "sala": "Sala Plena",
+      "ley": "19210",
+      "sumario": "Confirmó la constitucionalidad de la Ley 19.210 de Inclusión Financiera. Validez de la obligación de pago electrónico de sueldos y de prestaciones de la seguridad social.",
+      "url": "https://www.poderjudicial.gub.uy/jurisprudencia/22387",
+      "tags": ["inclusión financiera", "bancarización"]
+    }
+  ]
+}
