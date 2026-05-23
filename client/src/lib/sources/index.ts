@@ -42,6 +42,8 @@ import { fetchVotacoesSenadoBR } from './votacoes-senado-br'
 import { fetchEventosCamaraBR } from './eventos-br'
 import { fetchSenadoPY } from './senado-py'
 import { fetchDiputadosPY } from './diputados-py'
+import { fetchAsambleaBO } from './asamblea-bo'
+import { fetchCongresoCL } from './congreso-cl'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -197,6 +199,10 @@ const FETCHERS: Fetcher[] = [
   // Paraguay · Cámara de Senadores + Diputados
   { id: 'senado-py', label: 'Senado de la República del Paraguay', country: 'PY', fn: ({ signal }) => fetchSenadoPY({ limit: 30, signal }) },
   { id: 'diputados-py', label: 'Cámara de Diputados del Paraguay', country: 'PY', fn: ({ signal }) => fetchDiputadosPY({ limit: 30, signal }) },
+  // Bolivia · Asamblea Legislativa Plurinacional
+  { id: 'asamblea-bo', label: 'Asamblea Legislativa Plurinacional de Bolivia', country: 'BO', fn: ({ signal }) => fetchAsambleaBO({ limit: 30, signal }) },
+  // Chile · Biblioteca del Congreso Nacional
+  { id: 'congreso-cl', label: 'Congreso Nacional de Chile (BCN)', country: 'CL', fn: ({ signal }) => fetchCongresoCL({ limit: 30, signal }) },
 ]
 
 // Si hay un Worker desplegado (variable VITE_UPM_API_URL), preferirlo.
