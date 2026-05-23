@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BarChart3, TrendingUp, Network, MapPin, Tag, Activity, Flame } from 'lucide-react'
+import { BarChart3, TrendingUp, Network, MapPin, Tag, Activity, Flame, Radio, CheckCircle2, XCircle } from 'lucide-react'
 import { Eyebrow, PageHeader } from '@/components/ui'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { useCitationGraph } from '@/lib/use-citations'
@@ -136,6 +136,46 @@ export function StatsPage() {
           })}
         </div>
       </div>
+
+      {/* Panel de fuentes activas */}
+      {feed && feed.sources.length > 0 && (
+        <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+              <Radio size={11} /> Fuentes del corpus · {feed.sources.length} activas
+            </div>
+            <div className="flex items-center gap-2 text-[11px]">
+              <span className="flex items-center gap-1 text-success-fg">
+                <CheckCircle2 size={11} /> {feed.sources.filter(s => s.ok).length} ok
+              </span>
+              <span className="flex items-center gap-1 text-ink-400">
+                <XCircle size={11} /> {feed.sources.filter(s => !s.ok).length} con error
+              </span>
+            </div>
+          </div>
+          <div className="mt-3 grid gap-1 sm:grid-cols-2">
+            {feed.sources.map(s => {
+              const c = COUNTRIES.find(co => co.code === s.country)
+              return (
+                <div
+                  key={s.id}
+                  className={`flex items-center gap-2 rounded-xl px-2.5 py-1.5 ring-1 ${
+                    s.ok ? 'bg-success-bg/20 ring-success-bg' : 'bg-danger-bg/10 ring-ink-50'
+                  }`}
+                >
+                  <span className="text-[12px]">{c?.flag ?? '🌐'}</span>
+                  <span className="min-w-0 flex-1 truncate text-[11px] text-ink-700">{s.label}</span>
+                  {s.ok ? (
+                    <span className="shrink-0 text-[10px] font-bold tabular-nums text-success-fg">{s.count}</span>
+                  ) : (
+                    <XCircle size={11} className="shrink-0 text-danger" />
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Top citadas */}
       {topCitadas.length > 0 && (
