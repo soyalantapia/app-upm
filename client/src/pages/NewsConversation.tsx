@@ -44,6 +44,7 @@ import { VotosBRPanel } from '@/components/VotosBRPanel'
 import { ModificatoriasTimeline } from '@/components/ModificatoriasTimeline'
 import { HighlightedText } from '@/components/HighlightedText'
 import { LazyMount } from '@/components/LazyMount'
+import { RelevanciaPanel } from '@/components/RelevanciaPanel'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -54,6 +55,7 @@ export function NewsConversationPage() {
   const highlightTerms = (searchParams.get('q') ?? '').split(/[,;\s]+/).filter(t => t.trim().length >= 2)
   const { item, loading, enriching } = useNewsItem(id)
   const isSaved = useStore(s => (item ? s.saved.some(i => i.ref === item.id) : false))
+  const prefs = useStore(s => s.prefs)
   // Contexto extraído antes de early returns para respetar Rules of Hooks
   const ctx = useMemo(() => extractContext(item?.fullText), [item?.fullText])
 
@@ -276,6 +278,9 @@ export function NewsConversationPage() {
             </div>
           </div>
         )}
+
+        {/* ¿Por qué importa? · relevancia personalizada */}
+        <RelevanciaPanel item={news} prefs={prefs} />
 
         {/* Grid de contexto extraído · 4 columnas en desktop, stack en mobile */}
         {(ctx.decretos.length > 0 || ctx.resoluciones.length > 0 || ctx.montos.length > 0 || ctx.plazos.length > 0 || ctx.provincias.length > 0 || ctx.instituciones.length > 0) && (

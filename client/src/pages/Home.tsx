@@ -27,6 +27,7 @@ import { DiffSinceLastVisit } from '@/components/DiffSinceLastVisit'
 import { TrendingPanel } from '@/components/TrendingPanel'
 import { WatchlistPanel } from '@/components/WatchlistPanel'
 import { MercosurChoropleth } from '@/components/MercosurChoropleth'
+import { AgendaMercosur } from '@/components/AgendaMercosur'
 
 const RELEVANCE: Record<string, { label: string; tone: 'danger' | 'warning' | 'info' }> = {
   alta: { label: 'Relevancia alta', tone: 'danger' },
@@ -291,6 +292,9 @@ export function HomePage() {
 
         {/* Sidebar derecho */}
         <div className="flex flex-col gap-4">
+          {/* Agenda Mercosur */}
+          <AgendaMercosur />
+
           <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
             <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-500">Acciones rápidas</div>
             <div className="mt-3 flex flex-col gap-2.5">
