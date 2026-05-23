@@ -23,6 +23,7 @@ import { writeSnapshot } from '@/lib/visit-tracker'
 import { useCitationGraph, getCitationCount } from '@/lib/use-citations'
 import { buildClusters } from '@/lib/clusters'
 import { matchesQuery } from '@/lib/synonyms'
+import { useDebounced } from '@/lib/use-debounced'
 import { RadarSmartCard } from '@/components/RadarSmartCard'
 import { QuickFilterPills, type FilterPresetId } from '@/components/QuickFilterPills'
 import { RadarTimeline } from '@/components/RadarTimeline'
@@ -63,6 +64,8 @@ export function RadarPage() {
   const liveStatus = feed?.status ?? 'mock'
   const liveSources = feed?.sources ?? []
   const [q, setQ] = useState('')
+  // Debounced para no re-filtrar 1700+ items en cada keystroke
+  const debouncedQ = useDebounced(q, 200)
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
   const [topic, setTopic] = useState<Topic | 'all'>('all')
   const [type, setType] = useState<DocType | 'all'>('all')
@@ -76,6 +79,9 @@ export function RadarPage() {
   const [preset, setPreset] = useState<FilterPresetId>('all')
   const [density, setDensity] = useState<'comfortable' | 'compact'>('comfortable')
   const [viewMode, setViewMode] = useState<'list' | 'timeline' | 'clusters'>('list')
+  // Paginación incremental · Radar tiene 1700+ items, montar todo crashea perf.
+  // Empezamos con 50, agregamos 50 cada "Ver más".
+  const [visibleCount, setVisibleCount] = useState(50)
   // Grafo de citas para smart cards + clusters
   const { graph: citationGraph } = useCitationGraph()
 
@@ -112,9 +118,10 @@ export function RadarPage() {
 
   useEffect(() => {
     setLoading(true)
-    const id = setTimeout(() => setLoading(false), 420)
+    setVisibleCount(50) // resetear paginación al cambiar filtros
+    const id = setTimeout(() => setLoading(false), 200)
     return () => clearTimeout(id)
-  }, [country, topic, type, relevance, organismo, q, sort])
+  }, [country, topic, type, relevance, organismo, debouncedQ, sort, preset])
 
   // Snapshot de visita: cada vez que el usuario abre Radar y el feed está cargado,
   // guardamos los IDs vistos. Al volver al Home, el banner Diff usa esto para
@@ -129,7 +136,7 @@ export function RadarPage() {
   const isLoadingInitial = feedLoading && !feed
 
   const filtered = useMemo(() => {
-    const term = q.trim().toLowerCase()
+    const term = debouncedQ.trim().toLowerCase()
     let items = NEWS.filter(n => {
       if (term !== '') {
         const t = topicById(n.topic)
@@ -188,7 +195,7 @@ export function RadarPage() {
     if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
     if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)
     return items
-  }, [NEWS, q, country, topic, type, relevance, organismo, sort, preset])
+  }, [NEWS, debouncedQ, country, topic, type, relevance, organismo, sort, preset])
 
   // Precomputar conteos para badges de quick filter pills (cuenta sobre el universo
   // ya filtrado por country/topic/type/etc. pero sin aplicar el preset propio).
@@ -545,19 +552,34 @@ export function RadarPage() {
           </div>
         )
       ) : (
-        <div className={density === 'compact' ? 'flex flex-col gap-1.5' : 'flex flex-col gap-3'}>
-          {filtered.map((n, i) => (
-            <RadarSmartCard
-              key={n.id}
-              item={n}
-              index={i}
-              citationCount={getCitationCount(n.id, citationGraph)}
-              isSaved={savedRefs.has(n.id)}
-              density={density}
-              searchQuery={q}
-            />
-          ))}
-        </div>
+        <>
+          <div className={density === 'compact' ? 'flex flex-col gap-1.5' : 'flex flex-col gap-3'}>
+            {filtered.slice(0, visibleCount).map((n, i) => (
+              <RadarSmartCard
+                key={n.id}
+                item={n}
+                index={i}
+                citationCount={getCitationCount(n.id, citationGraph)}
+                isSaved={savedRefs.has(n.id)}
+                density={density}
+                searchQuery={debouncedQ}
+              />
+            ))}
+          </div>
+          {filtered.length > visibleCount && (
+            <div className="flex flex-col items-center gap-2 py-3">
+              <button
+                onClick={() => setVisibleCount(v => v + 100)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-upm-700 px-5 py-2 text-[12.5px] font-bold text-white shadow-cta hover:-translate-y-0.5"
+              >
+                Cargar 100 más
+              </button>
+              <p className="text-[10.5px] text-ink-500">
+                Mostrando {visibleCount} de {filtered.length} · perf optimizada
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

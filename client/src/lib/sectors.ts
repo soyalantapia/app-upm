@@ -116,7 +116,15 @@ for (const [cat, names] of Object.entries(DICT) as [SectorCategory, string[]][])
   }
 }
 
+// Cache por id para evitar re-detección. SmartCard hace detectSectors en cada
+// item del Radar; sin cache, cada keystroke en search ejecuta 60+ regex × 1700 items.
+const SECTORS_CACHE = new Map<string, Sector[]>()
+const MAX_SECTORS_CACHE = 3000
+
 export function detectSectors(item: NewsItem): Sector[] {
+  const cached = SECTORS_CACHE.get(item.id)
+  if (cached) return cached
+
   const text = `${item.title ?? ''}\n${item.fullText ?? item.excerpt ?? ''}`
   if (!text) return []
   const found: Sector[] = []
@@ -129,6 +137,12 @@ export function detectSectors(item: NewsItem): Sector[] {
     found.push({ name: c.name, category: c.category })
     if (found.length >= 25) break
   }
+
+  if (SECTORS_CACHE.size >= MAX_SECTORS_CACHE) {
+    const keys = Array.from(SECTORS_CACHE.keys()).slice(0, Math.floor(MAX_SECTORS_CACHE * 0.3))
+    for (const k of keys) SECTORS_CACHE.delete(k)
+  }
+  SECTORS_CACHE.set(item.id, found)
   return found
 }
 

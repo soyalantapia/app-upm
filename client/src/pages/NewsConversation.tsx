@@ -43,6 +43,7 @@ import { BudgetPanel } from '@/components/BudgetPanel'
 import { VotosBRPanel } from '@/components/VotosBRPanel'
 import { ModificatoriasTimeline } from '@/components/ModificatoriasTimeline'
 import { HighlightedText } from '@/components/HighlightedText'
+import { LazyMount } from '@/components/LazyMount'
 
 export function NewsConversationPage() {
   const navigate = useNavigate()
@@ -368,14 +369,18 @@ export function NewsConversationPage() {
         {/* Votos nominales BR · solo aparece si el item es br-votacao-* */}
         <VotosBRPanel itemId={news.id} />
 
-        {/* Cronología de modificatorias · solo si es una ley nacional */}
-        <ModificatoriasTimeline item={news} />
+        {/* Cronología de modificatorias · solo si es una ley nacional · lazy */}
+        <LazyMount minHeight={150}>
+          <ModificatoriasTimeline item={news} />
+        </LazyMount>
 
         {/* Anotaciones personales del legislador (localStorage) */}
         <NotesPanel itemId={news.id} />
 
-        {/* Constelación regulatoria · visualización SVG radial */}
-        <RegulatoryConstellation item={news} />
+        {/* Constelación regulatoria · visualización SVG radial · lazy */}
+        <LazyMount minHeight={500}>
+          <RegulatoryConstellation item={news} />
+        </LazyMount>
 
         {/* Normas equivalentes en la región · TF-IDF cross-país */}
         <SimilarItemsPanel itemId={news.id} basePath="/radar" />

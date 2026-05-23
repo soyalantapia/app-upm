@@ -28,7 +28,13 @@ const VERBOS = {
 const ART_RE = /(?:art[íi]culo|art\.?)\s+(\d{1,4}(?:\s*[°º]\s*)?(?:\s*(?:bis|ter|quater|quinquies))?)/i
 const LEY_RE = /ley(?:\s+nacional)?\s*(?:n[°º\.]?)?\s*(\d{1,2}[\.\s]?\d{3,4})/i
 
+const MODS_CACHE = new Map<string, ArticleModification[]>()
+const MAX_MODS_CACHE = 3000
+
 export function extractArticleModifications(item: NewsItem): ArticleModification[] {
+  const cached = MODS_CACHE.get(item.id)
+  if (cached) return cached
+
   const text = item.fullText ?? item.excerpt ?? ''
   if (!text) return []
 
@@ -54,7 +60,13 @@ export function extractArticleModifications(item: NewsItem): ArticleModification
       if (out.length >= 30) return out // safety cap
     }
   }
-  return dedupeModifications(out)
+  const result = dedupeModifications(out)
+  if (MODS_CACHE.size >= MAX_MODS_CACHE) {
+    const keys = Array.from(MODS_CACHE.keys()).slice(0, Math.floor(MAX_MODS_CACHE * 0.3))
+    for (const k of keys) MODS_CACHE.delete(k)
+  }
+  MODS_CACHE.set(item.id, result)
+  return result
 }
 
 function dedupeModifications(arr: ArticleModification[]): ArticleModification[] {

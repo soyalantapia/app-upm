@@ -43,12 +43,14 @@ import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
 import { ModificatoriasTimeline } from '@/components/ModificatoriasTimeline'
+import { LazyMount } from '@/components/LazyMount'
 import { VigenciaBadge } from '@/components/VigenciaBadge'
 import { LawComparator } from '@/components/LawComparator'
 import { MultiComparator } from '@/components/MultiComparator'
 import { useCitationGraph } from '@/lib/use-citations'
 import { computeVigencia, type VigenciaStatus } from '@/lib/vigencia'
 import { matchesQuery } from '@/lib/synonyms'
+import { useDebounced } from '@/lib/use-debounced'
 import { GitCompareArrows } from 'lucide-react'
 
 // Filtro para esta vista: solo leyes ya sancionadas/promulgadas, no proyectos en trámite.
@@ -88,6 +90,7 @@ export function LawsPage() {
   const [active, setActive] = useState<NewsItem | null>(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
+  const debouncedQ = useDebounced(q, 200)
   const [showComparator, setShowComparator] = useState(false)
   const [showMultiComparator, setShowMultiComparator] = useState(false)
   const [vigenciaFilter, setVigenciaFilter] = useState<VigenciaStatus | 'all'>('all')
@@ -118,7 +121,7 @@ export function LawsPage() {
   const isLoading = feedLoading && !feed
 
   const filtered = useMemo(() => {
-    const term = q.trim().toLowerCase()
+    const term = debouncedQ.trim().toLowerCase()
     if (!term) return laws
     const matched = laws.filter(l => {
       // Búsqueda full-text con q-expansion de sinónimos.
@@ -156,7 +159,7 @@ export function LawsPage() {
       })
     }
     return matched
-  }, [laws, q])
+  }, [laws, debouncedQ])
 
   // Aplicar filtro por vigencia · usa el grafo de citas para clasificar cada ley.
   // Si el grafo todavía no cargó, no filtra (muestra todas).
@@ -560,14 +563,18 @@ export function LawsPage() {
               {/* Inversión, contrataciones e impacto fiscal */}
               <BudgetPanel item={active} />
 
-              {/* Cronología de modificatorias · solo para leyes nacionales */}
-              <ModificatoriasTimeline item={active} />
+              {/* Cronología de modificatorias · solo para leyes nacionales · lazy */}
+              <LazyMount minHeight={150}>
+                <ModificatoriasTimeline item={active} />
+              </LazyMount>
 
               {/* Anotaciones personales · localStorage */}
               <NotesPanel itemId={active.id} />
 
-              {/* Constelación regulatoria · SVG radial de conexiones */}
-              <RegulatoryConstellation item={active} />
+              {/* Constelación regulatoria · SVG radial de conexiones · lazy */}
+              <LazyMount minHeight={500}>
+                <RegulatoryConstellation item={active} />
+              </LazyMount>
 
               {/* Normas equivalentes en la región · TF-IDF cross-país */}
               <SimilarItemsPanel itemId={active.id} basePath="/leyes" />

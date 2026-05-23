@@ -49,6 +49,12 @@ const INSTITUCIONES = [
   'DAPRE', 'Presidencia de la República', 'Función Pública',
 ]
 
+// Cache módulo-level por contenido del fullText. Crítico para performance:
+// SmartCard ejecuta extractContext en cada uno de los 1700+ items del Radar.
+// Sin cache, cada keystroke en search re-corre todas las regex sobre todo el corpus.
+const CONTEXT_CACHE = new Map<string, ExtractedContext>()
+const MAX_CACHE_SIZE = 3000
+
 export function extractContext(fullText: string | undefined): ExtractedContext {
   const text = (fullText ?? '').trim()
   if (!text) {
@@ -59,7 +65,11 @@ export function extractContext(fullText: string | undefined): ExtractedContext {
     }
   }
 
-  return {
+  // Cache hit · evita re-correr regex pesadas sobre textos repetidos
+  const cached = CONTEXT_CACHE.get(text)
+  if (cached) return cached
+
+  const result: ExtractedContext = {
     resumen: extractResumen(text),
     articulos: extractArticulos(text),
     decretos: dedupe(extractDecretos(text), 12),
@@ -72,6 +82,14 @@ export function extractContext(fullText: string | undefined): ExtractedContext {
     totalPalabras: text.split(/\s+/).length,
     complejidad: computeComplejidad(text),
   }
+
+  // LRU básico · si pasamos del límite, limpiar primer 30%
+  if (CONTEXT_CACHE.size >= MAX_CACHE_SIZE) {
+    const keys = Array.from(CONTEXT_CACHE.keys()).slice(0, Math.floor(MAX_CACHE_SIZE * 0.3))
+    for (const k of keys) CONTEXT_CACHE.delete(k)
+  }
+  CONTEXT_CACHE.set(text, result)
+  return result
 }
 
 function dedupe(arr: string[], max: number): string[] {

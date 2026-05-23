@@ -9,6 +9,7 @@ import { cn } from '@/lib/cn'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { getAllLegisladores, type Legislador } from '@/lib/legisladores'
 import { matchesQuery } from '@/lib/synonyms'
+import { useDebounced } from '@/lib/use-debounced'
 
 const ROUTES = [
   { label: 'Asistente AI', path: '/asistente', desc: 'Chat con respaldo institucional' },
@@ -31,6 +32,7 @@ export function GlobalSearch({
   const navigate = useNavigate()
   const { openDocument } = useUI()
   const [q, setQ] = useState('')
+  const debouncedQ = useDebounced(q, 150)
   const inputRef = useRef<HTMLInputElement>(null)
   const { feed } = useLiveFeed()
   const [legisladores, setLegisladores] = useState<Legislador[]>([])
@@ -55,7 +57,7 @@ export function GlobalSearch({
   }, [feed])
 
   const matches = useMemo(() => {
-    const term = q.trim()
+    const term = debouncedQ.trim()
     if (!term) {
       return {
         news: allNews.slice(0, 4),
@@ -64,7 +66,6 @@ export function GlobalSearch({
         routes: ROUTES.slice(0, 4),
       }
     }
-    // Búsqueda full-text con synonyms para news + simple includes para el resto
     const lower = term.toLowerCase()
     return {
       news: allNews.filter(n => matchesQuery(`${n.title} ${n.excerpt ?? ''} ${n.tipoDocumento ?? ''}`, term)).slice(0, 8),
@@ -72,7 +73,7 @@ export function GlobalSearch({
       legs: legisladores.filter(l => l.name.toLowerCase().includes(lower) || (l.partido ?? '').toLowerCase().includes(lower)).slice(0, 6),
       routes: ROUTES.filter(r => r.label.toLowerCase().includes(lower) || r.desc.toLowerCase().includes(lower)),
     }
-  }, [q, allNews, legisladores])
+  }, [debouncedQ, allNews, legisladores])
 
   const total = matches.news.length + matches.docs.length + matches.legs.length + matches.routes.length
 
