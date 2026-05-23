@@ -78,6 +78,20 @@ export function AssistantPage() {
     scrollerRef.current?.scrollTo({ top: scrollerRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, thinking])
 
+  // Prefill desde sessionStorage · setea el input con una pregunta sugerida
+  // cuando el usuario viene de "Asistente" en un artículo de Leyes.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem('upm.asistente.prefill')
+      if (!raw) return
+      sessionStorage.removeItem('upm.asistente.prefill')
+      const prefill = JSON.parse(raw) as { suggestedQuestion?: string }
+      if (prefill?.suggestedQuestion) setInput(prefill.suggestedQuestion)
+    } catch {
+      // ignore
+    }
+  }, [])
+
   // RAG real sobre el corpus de 1601 normas via TF-IDF + coseno (lib/rag.ts).
   // Si la query no matchea ninguna norma con score >= 0.04, hace fallback al
   // motor de patrones legacy (lib/respond.ts) para no dejar al usuario sin nada.

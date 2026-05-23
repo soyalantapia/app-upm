@@ -33,6 +33,9 @@ import { useLiveFeed } from '@/lib/use-live-feed'
 import type { NewsItem } from '@/lib/types'
 import { extractContext } from '@/lib/extract-context'
 import { GenealogyBreadcrumb } from '@/components/GenealogyBreadcrumb'
+import { ArticuladoPanel } from '@/components/ArticuladoPanel'
+import { SuggestedComparison } from '@/components/SuggestedComparison'
+import { JurisprudenciaPanel } from '@/components/JurisprudenciaPanel'
 import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
 import { LawMap } from '@/components/LawMap'
@@ -592,33 +595,13 @@ export function LawsPage() {
                 </div>
               )}
 
-              {/* Articulado (si fue parseable) */}
-              {ctx.articulos.length >= 2 && (
-                <div>
-                  <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
-                    <Hash size={11} /> Articulado ({ctx.articulos.length})
-                  </div>
-                  <ol className="mt-3 space-y-2">
-                    {ctx.articulos.slice(0, 10).map((a, i) => (
-                      <li key={`art-${i}-${a.numero}`} className="rounded-2xl bg-white p-3 ring-1 ring-ink-100">
-                        <div className="flex items-baseline gap-2">
-                          <span className="rounded-md bg-upm-50 px-2 py-0.5 text-[11px] font-bold text-upm-800 ring-1 ring-upm-100">
-                            Art. {a.numero}
-                          </span>
-                          <p className="flex-1 text-[13.5px] leading-relaxed text-ink-800 line-clamp-3">
-                            {a.texto}
-                          </p>
-                        </div>
-                      </li>
-                    ))}
-                    {ctx.articulos.length > 10 && (
-                      <li className="text-[11.5px] text-ink-500 italic">
-                        + {ctx.articulos.length - 10} artículos más en el texto completo
-                      </li>
-                    )}
-                  </ol>
-                </div>
-              )}
+              {/* Articulado (si fue parseable) · con búsqueda within +
+                  paginación + botón "Asistente" por artículo */}
+              <ArticuladoPanel
+                articulos={ctx.articulos}
+                lawId={active.id}
+                lawTitle={active.title}
+              />
 
               {/* Genealogía regulatoria · madre → ESTA → hijas.
                   Visible solo si la ley tiene modificatorias detectables. */}
@@ -630,6 +613,9 @@ export function LawsPage() {
                   if (ley) setActive(ley)
                 }}
               />
+
+              {/* Sugerencia automática de comparación cross-país · 1 click → comparator */}
+              <SuggestedComparison item={active} onCompare={() => setShowComparator(true)} />
 
               {/* Mapa de la Ley · panel maestro de información conectada */}
               <LawMap item={active} />
@@ -661,6 +647,11 @@ export function LawsPage() {
 
               {/* Backlinks · normas que citan esta ley */}
               <BacklinksPanel itemId={active.id} />
+
+              {/* Jurisprudencia · fallos de CSJN/STF/SCJ que aplican esta ley.
+                  Lazy fetch desde datasets en public/data. No renderiza si
+                  no hay fallos relacionados. */}
+              <JurisprudenciaPanel itemId={active.id} />
 
               {/* Sumario completo */}
               {active.fullText && active.fullText.length > 0 && (

@@ -29,6 +29,7 @@ import { QuickFilterPills, type FilterPresetId } from '@/components/QuickFilterP
 import { RadarTimeline } from '@/components/RadarTimeline'
 import { RadarClusters } from '@/components/RadarClusters'
 import { PulseToday } from '@/components/PulseToday'
+import { ExportRadarButton } from '@/components/ExportRadarButton'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -494,7 +495,9 @@ export function RadarPage() {
             <span><span className="font-bold text-upm-800 tabular-nums">{filtered.length}</span> novedades</span>
           )}
         </div>
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-2">
+          {/* Export · CSV o Markdown del listado filtrado */}
+          <ExportRadarButton items={filtered} disabled={loading || isLoadingInitial} />
           {/* View mode toggle */}
           <div className="flex items-center gap-0.5 rounded-full bg-ink-50 p-0.5 ring-1 ring-ink-100">
             <button
