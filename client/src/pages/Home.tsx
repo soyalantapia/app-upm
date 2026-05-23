@@ -292,8 +292,9 @@ export function HomePage() {
 
         {/* Sidebar derecho */}
         <div className="flex flex-col gap-4">
-          {/* Agenda Mercosur */}
-          <AgendaMercosur />
+          {/* Agenda Mercosur · combina eventos institucionales fijos
+              con convocatorias automáticas detectadas del feed. */}
+          <AgendaMercosur items={NEWS} />
 
           <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
             <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-500">Acciones rápidas</div>

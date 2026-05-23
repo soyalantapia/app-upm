@@ -102,6 +102,54 @@ function buildBullets(item: NewsItem, prefs: Preferences | null): Bullet[] {
   return bullets.slice(0, 3)
 }
 
+// Versión 1-línea para mostrar inline en cards del Radar/Leyes.
+// Devuelve la frase más impactante + tono semántico para color.
+export type RelevanceHint = {
+  text: string
+  tone: 'priority' | 'urgent' | 'comparative' | 'cross' | 'fiscal' | 'neutral'
+}
+export function buildRelevanceHint(item: NewsItem, prefs: Preferences | null): RelevanceHint | null {
+  const text = (item.title + ' ' + (item.excerpt ?? '') + ' ' + (item.fullText ?? '')).toLowerCase()
+  const country = countryByCode(item.country)
+  const topic = topicById(item.topic)
+  const userTopics = prefs?.topics ?? []
+
+  // Prioridad 1 · Tu tema + alta relevancia (lo más fuerte)
+  if (userTopics.includes(item.topic) && item.relevance === 'alta') {
+    return { text: `Tu tema "${topic.shortLabel}" · alta relevancia`, tone: 'urgent' }
+  }
+  // Prioridad 2 · Alta relevancia general
+  if (item.relevance === 'alta') {
+    return { text: `Alta relevancia · revisar antes de comisión`, tone: 'urgent' }
+  }
+  // Prioridad 3 · Energía binacional ITAIPU
+  if (/itaipu|yacyret[aá]|royalt/i.test(text)) {
+    return { text: `ITAIPU/YACYRETÁ · energía binacional`, tone: 'cross' }
+  }
+  // Prioridad 4 · Corredor bioceánico
+  if (/bioce[aá]nico|corredor/i.test(text)) {
+    return { text: `Corredor bioceánico · infraestructura regional`, tone: 'cross' }
+  }
+  // Prioridad 5 · Tema prioritario del usuario
+  if (userTopics.includes(item.topic)) {
+    return { text: `Tu tema prioritario: ${topic.shortLabel}`, tone: 'priority' }
+  }
+  // Prioridad 6 · MERCOSUR institucional
+  if (/mercosur|mercosul|parlasur/i.test(text)) {
+    return { text: `Afecta al bloque MERCOSUR`, tone: 'cross' }
+  }
+  // Prioridad 7 · Impacto fiscal
+  if (/presupuest|millones|fondo\s+(nacional|federal)/i.test(text)) {
+    return { text: `Modifica partidas presupuestarias`, tone: 'fiscal' }
+  }
+  // Prioridad 8 · Cross-país: norma de otro país que sirve de referencia
+  if (item.country !== 'AR' && (prefs?.countries ?? []).includes('AR')) {
+    return { text: `Norma de ${country.name} · referencia comparada`, tone: 'comparative' }
+  }
+  // Default: no mostrar (es ruido)
+  return null
+}
+
 export function RelevanciaPanel({ item, prefs }: { item: NewsItem; prefs: Preferences | null }) {
   const bullets = useMemo(() => buildBullets(item, prefs), [item, prefs])
 

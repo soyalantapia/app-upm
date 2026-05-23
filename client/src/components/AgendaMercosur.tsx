@@ -2,15 +2,18 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CalendarDays, ChevronRight, Globe, Users } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { countryByCode } from '@/lib/data'
+import type { NewsItem } from '@/lib/types'
 
 type MercosurEvent = {
   id: string
   date: string          // YYYY-MM-DD
   title: string
-  type: 'cumbre' | 'reunion' | 'sesion' | 'plazo' | 'foro'
+  type: 'cumbre' | 'reunion' | 'sesion' | 'plazo' | 'foro' | 'audiencia' | 'votacion'
   countries?: string[]  // flags
   description: string
-  link?: string
+  link?: string         // path interno (ej: /radar/[id]) o URL externa
+  itemId?: string       // id del feed item para navegar al detalle
 }
 
 // Agenda institucional del MERCOSUR y organismos asociados.
@@ -88,19 +91,77 @@ const TYPE_META: Record<MercosurEvent['type'], { label: string; color: string }>
   sesion: { label: 'Sesión', color: 'bg-warning-bg text-warning-dark ring-1 ring-warning/30' },
   plazo: { label: 'Plazo', color: 'bg-danger-bg text-danger ring-1 ring-danger/30' },
   foro: { label: 'Foro', color: 'bg-ink-50 text-ink-600 ring-1 ring-ink-200' },
+  audiencia: { label: 'Audiencia', color: 'bg-info-bg text-info-fg ring-1 ring-info/30' },
+  votacion: { label: 'Votación', color: 'bg-success-bg text-success-fg ring-1 ring-success/30' },
 }
 
-export function AgendaMercosur() {
+// Detecta eventos automáticos del feed (convocatorias reales de comisión,
+// audiencias, sesiones, votaciones agendadas). Filtra los que tengan
+// fecha futura y un status que indique evento programado.
+function extractFeedEvents(items: NewsItem[] | undefined, todayMs: number, horizonDays = 90): MercosurEvent[] {
+  if (!items?.length) return []
+  const horizonMs = todayMs + horizonDays * 24 * 60 * 60 * 1000
+
+  const events: MercosurEvent[] = []
+  for (const item of items) {
+    // Fecha del evento · prioriza dataPublicacao (puede ser fecha futura de convocatoria)
+    const dateStr = item.dataPublicacao ?? item.date
+    if (!dateStr) continue
+    const eventMs = new Date(dateStr).getTime()
+    if (Number.isNaN(eventMs) || eventMs < todayMs || eventMs > horizonMs) continue
+
+    // Detectar tipo a partir de status / tipoConteudo / tipoDocumento / title
+    const blob = ((item.status ?? '') + ' ' + (item.tipoConteudo ?? '') + ' ' + (item.tipoDocumento ?? '') + ' ' + (item.title ?? '')).toLowerCase()
+
+    let type: MercosurEvent['type'] | null = null
+    if (/audi[eê]ncia\s+p[uú]blica|audiencia\s+p[uú]blica/i.test(blob)) type = 'audiencia'
+    else if (/votaci[óo]n|votação|voto\s+nominal/i.test(blob)) type = 'votacion'
+    else if (/sess[ãa]o|sesi[óo]n\s+(plenaria|extraordinaria|ordinaria|deliberativa)/i.test(blob)) type = 'sesion'
+    else if (/convocad|agendad|reuni[óo]n\s+(de\s+comisi[óo]n|extraordinaria|ordinaria)/i.test(blob)) type = 'reunion'
+
+    if (!type) continue
+
+    const c = countryByCode(item.country)
+    events.push({
+      id: `feed-${item.id}`,
+      date: dateStr.slice(0, 10),
+      title: item.title.length > 90 ? item.title.slice(0, 90) + '…' : item.title,
+      type,
+      countries: [c.flag],
+      description: item.source ?? item.excerpt?.slice(0, 80) ?? '',
+      itemId: item.id,
+    })
+  }
+  // Dedupe por (date + title) en caso de items con el mismo evento
+  const seen = new Set<string>()
+  return events.filter(e => {
+    const key = e.date + '|' + e.title.slice(0, 40).toLowerCase()
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
+export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
   const navigate = useNavigate()
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+  const todayMs = today.getTime()
 
+  // Combina eventos institucionales fijos (cumbres, plazos) con eventos
+  // automáticos detectados del feed (convocatorias, audiencias, sesiones).
   const upcoming = useMemo(() => {
-    return AGENDA
-      .filter(e => new Date(e.date) >= today)
+    const institutional = AGENDA.filter(e => new Date(e.date) >= today)
+    const fromFeed = extractFeedEvents(items, todayMs)
+    return [...institutional, ...fromFeed]
       .sort((a, b) => a.date.localeCompare(b.date))
-      .slice(0, 5)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+      .slice(0, 6)
+  }, [items, todayMs]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const feedCount = useMemo(
+    () => extractFeedEvents(items, todayMs).length,
+    [items, todayMs],
+  )
 
   if (upcoming.length === 0) return null
 
@@ -125,10 +186,15 @@ export function AgendaMercosur() {
           const typeMeta = TYPE_META[ev.type]
           const dayLabel = d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })
 
+          const clickable = !!ev.itemId
           return (
             <li
               key={ev.id}
-              className="group flex items-start gap-3 rounded-2xl p-2.5 transition-colors hover:bg-upm-50/60"
+              onClick={clickable ? () => navigate(`/radar/${ev.itemId}`) : undefined}
+              className={cn(
+                'group flex items-start gap-3 rounded-2xl p-2.5 transition-colors',
+                clickable ? 'cursor-pointer hover:bg-upm-50/60' : 'hover:bg-upm-50/40',
+              )}
             >
               {/* Fecha */}
               <div className="flex w-10 shrink-0 flex-col items-center rounded-xl bg-upm-50 p-1.5 ring-1 ring-upm-100">
@@ -166,7 +232,7 @@ export function AgendaMercosur() {
       <div className="mt-3 flex items-center gap-1.5 border-t border-ink-50 pt-3">
         <Globe size={11} className="text-ink-400" />
         <span className="text-[10.5px] text-ink-400">
-          {AGENDA.length} eventos institucionales del MERCOSUR en agenda
+          {AGENDA.length} institucionales{feedCount > 0 ? ` · ${feedCount} convocatorias detectadas` : ''}
         </span>
         <Users size={11} className="ml-auto text-ink-300" />
         <span className="text-[10.5px] text-ink-400">5 países</span>

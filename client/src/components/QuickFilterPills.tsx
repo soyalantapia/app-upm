@@ -1,11 +1,14 @@
-import { Flame, Zap, GitCompareArrows, CalendarDays, Activity } from 'lucide-react'
+import { Flame, Zap, GitCompareArrows, CalendarDays, Activity, Sparkles } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 // Presets de filtros que aplican varios criterios a la vez.
 // El padre (Radar) recibe el id del preset activo y los traduce a state.
-export type FilterPresetId = 'all' | 'hot' | 'recent-sancionadas' | 'crossborder' | 'this-week' | 'with-tramite'
+export type FilterPresetId = 'all' | 'mi-comision' | 'hot' | 'recent-sancionadas' | 'crossborder' | 'this-week' | 'with-tramite'
 
-const PRESETS: { id: FilterPresetId; label: string; icon: LucideIcon; tone: string }[] = [
+const PRESETS: { id: FilterPresetId; label: string; icon: LucideIcon; tone: string; special?: boolean }[] = [
+  // "Mi comisión" · destacado · usa prefs.topics + prefs.countries del usuario.
+  // Va primero y tiene tratamiento visual distintivo (gradient + ✨).
+  { id: 'mi-comision', label: 'Mi comisión', icon: Sparkles, tone: 'bg-gradient-to-r from-upm-500 to-upm-700 text-white ring-upm-700', special: true },
   { id: 'all', label: 'Todas', icon: Activity, tone: 'bg-white text-ink-700 ring-ink-100' },
   { id: 'hot', label: 'Alta relevancia hoy', icon: Flame, tone: 'bg-danger-bg/40 text-danger-fg ring-danger-bg' },
   { id: 'recent-sancionadas', label: 'Recién sancionadas', icon: Zap, tone: 'bg-success-bg/40 text-success-fg ring-success-bg' },

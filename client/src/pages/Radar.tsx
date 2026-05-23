@@ -28,6 +28,7 @@ import { RadarSmartCard } from '@/components/RadarSmartCard'
 import { QuickFilterPills, type FilterPresetId } from '@/components/QuickFilterPills'
 import { RadarTimeline } from '@/components/RadarTimeline'
 import { RadarClusters } from '@/components/RadarClusters'
+import { PulseToday } from '@/components/PulseToday'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -170,7 +171,18 @@ export function RadarPage() {
       )
     })
     // Aplicar preset de quick filters
-    if (preset === 'hot') {
+    if (preset === 'mi-comision') {
+      // Mi comisión · usa prefs del usuario (topics + countries).
+      // Si el usuario no tiene prefs seteadas, se comporta como 'all'.
+      const userTopics = new Set(prefs?.topics ?? [])
+      const userCountries = new Set(prefs?.countries ?? [])
+      if (userTopics.size > 0 || userCountries.size > 0) {
+        items = items.filter(n =>
+          (userTopics.size === 0 || userTopics.has(n.topic)) &&
+          (userCountries.size === 0 || userCountries.has(n.country)),
+        )
+      }
+    } else if (preset === 'hot') {
       items = items.filter(n => n.relevance === 'alta')
     } else if (preset === 'recent-sancionadas') {
       const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
@@ -195,7 +207,7 @@ export function RadarPage() {
     if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
     if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)
     return items
-  }, [NEWS, debouncedQ, country, topic, type, relevance, organismo, sort, preset])
+  }, [NEWS, debouncedQ, country, topic, type, relevance, organismo, sort, preset, prefs])
 
   // Precomputar conteos para badges de quick filter pills (cuenta sobre el universo
   // ya filtrado por country/topic/type/etc. pero sin aplicar el preset propio).
@@ -210,7 +222,15 @@ export function RadarPage() {
     const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
     const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
     const otrosPaises = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|MERCOSUR|MERCOSUL)\b/i
+    const userTopics = new Set(prefs?.topics ?? [])
+    const userCountries = new Set(prefs?.countries ?? [])
     return {
+      'mi-comision': (userTopics.size > 0 || userCountries.size > 0)
+        ? baseFiltered.filter(n =>
+            (userTopics.size === 0 || userTopics.has(n.topic)) &&
+            (userCountries.size === 0 || userCountries.has(n.country)),
+          ).length
+        : baseFiltered.length,
       hot: baseFiltered.filter(n => n.relevance === 'alta').length,
       'recent-sancionadas': baseFiltered.filter(n => {
         const isLey = /^(?:ar|uy)-ley-/.test(n.id) || /sancion|promulgad/i.test(n.status ?? '')
@@ -224,7 +244,7 @@ export function RadarPage() {
       }).length,
       'with-tramite': baseFiltered.filter(n => (n.tramitaciones?.length ?? 0) > 0 || /trámite|tramite|comisión|comision|votaci/i.test(n.status ?? '')).length,
     } as Record<FilterPresetId, number>
-  }, [NEWS, country, topic, type, relevance, organismo])
+  }, [NEWS, country, topic, type, relevance, organismo, prefs])
 
   // Clusters de ecosistema normativo · solo cuando viewMode === 'clusters'
   const clustersData = useMemo(() => {
@@ -309,6 +329,12 @@ export function RadarPage() {
           </div>
         )
       })()}
+
+      {/* Pulso de hoy · 3 cards hero que responden "qué pasó importante hoy"
+          en 3 segundos. Click → aplica preset al Radar. */}
+      {!isLoadingInitial && NEWS.length > 0 && (
+        <PulseToday items={NEWS} onPresetClick={setPreset} />
+      )}
 
       {/* Search + Sort + Toggle filtros · search full-width en mobile */}
       <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">
@@ -563,6 +589,7 @@ export function RadarPage() {
                 isSaved={savedRefs.has(n.id)}
                 density={density}
                 searchQuery={debouncedQ}
+                prefs={prefs}
               />
             ))}
           </div>

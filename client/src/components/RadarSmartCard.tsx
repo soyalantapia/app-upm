@@ -14,7 +14,17 @@ import { Badge, Card } from '@/components/ui'
 import { countryByCode, topicById } from '@/lib/data'
 import { formatDate, formatDateTime } from '@/lib/format'
 import { extractContext } from '@/lib/extract-context'
-import type { NewsItem } from '@/lib/types'
+import { buildRelevanceHint, type RelevanceHint } from '@/components/RelevanciaPanel'
+import type { NewsItem, Preferences } from '@/lib/types'
+
+const HINT_STYLES: Record<RelevanceHint['tone'], { bg: string; ring: string; text: string; icon: string }> = {
+  urgent:      { bg: 'bg-danger-bg/40',  ring: 'ring-danger/30',  text: 'text-danger-fg',  icon: '🔥' },
+  priority:    { bg: 'bg-upm-50',        ring: 'ring-upm-200',    text: 'text-upm-800',    icon: '⭐' },
+  cross:       { bg: 'bg-info-bg/40',    ring: 'ring-info/30',    text: 'text-info-fg',    icon: '🔗' },
+  comparative: { bg: 'bg-info-bg/30',    ring: 'ring-info/20',    text: 'text-info-fg',    icon: '↔️' },
+  fiscal:      { bg: 'bg-warning-bg/40', ring: 'ring-warning/30', text: 'text-warning-fg', icon: '💰' },
+  neutral:     { bg: 'bg-ink-50',        ring: 'ring-ink-100',    text: 'text-ink-700',    icon: '·' },
+}
 
 const RELEVANCE: Record<string, { label: string; tone: 'danger' | 'warning' | 'info' }> = {
   alta: { label: 'alta', tone: 'danger' },
@@ -39,6 +49,7 @@ export function RadarSmartCard({
   isSaved,
   density,
   searchQuery,
+  prefs,
 }: {
   item: NewsItem
   index: number
@@ -46,8 +57,12 @@ export function RadarSmartCard({
   isSaved: boolean
   density: 'comfortable' | 'compact'
   searchQuery?: string
+  prefs?: Preferences | null
 }) {
   const navigate = useNavigate()
+  // Hint inline · 1-línea "¿por qué importa?" según prefs del usuario.
+  // null → no se muestra (cuando no hay nada relevante para destacar).
+  const hint = useMemo(() => buildRelevanceHint(item, prefs ?? null), [item, prefs])
   const country = countryByCode(item.country)
   const topicMeta = topicById(item.topic)
   const rel = RELEVANCE[item.relevance]
@@ -144,6 +159,18 @@ export function RadarSmartCard({
               <Highlighted text={item.excerpt ?? ''} query={searchQuery} />
             </p>
           )}
+
+          {/* Hint de relevancia · 1-línea que responde "¿por qué importa?"
+              basado en prefs del usuario + heurística del contenido. */}
+          {hint && (() => {
+            const style = HINT_STYLES[hint.tone]
+            return (
+              <div className={`mt-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ${style.bg} ${style.ring} ${style.text}`}>
+                <span aria-hidden>{style.icon}</span>
+                <span>{hint.text}</span>
+              </div>
+            )
+          })()}
 
           {/* Fuente + autoría · simplificada en compact */}
           {density !== 'compact' && (

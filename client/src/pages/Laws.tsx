@@ -32,6 +32,7 @@ import { shareLink } from '@/lib/share'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import type { NewsItem } from '@/lib/types'
 import { extractContext } from '@/lib/extract-context'
+import { GenealogyBreadcrumb } from '@/components/GenealogyBreadcrumb'
 import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
 import { LawMap } from '@/components/LawMap'
@@ -91,6 +92,13 @@ export function LawsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
   const debouncedQ = useDebounced(q, 200)
+  // Tab del sidebar: 'all' (todas) | 'saved' (solo guardadas/watch del usuario)
+  const [sidebarTab, setSidebarTab] = useState<'all' | 'saved'>('all')
+  const savedItems = useStore(s => s.saved)
+  const savedRefs = useMemo(
+    () => new Set(savedItems.map(i => i.ref).filter(Boolean) as string[]),
+    [savedItems],
+  )
   const [showComparator, setShowComparator] = useState(false)
   const [showMultiComparator, setShowMultiComparator] = useState(false)
   const [vigenciaFilter, setVigenciaFilter] = useState<VigenciaStatus | 'all'>('all')
@@ -170,6 +178,13 @@ export function LawsPage() {
       return info.status === vigenciaFilter
     })
   }, [filtered, citationGraph, vigenciaFilter])
+
+  // Aplicar tab del sidebar: 'saved' filtra a leyes guardadas/watched.
+  const filteredFinal = useMemo(() => {
+    if (sidebarTab === 'saved') return filteredByVigencia.filter(l => savedRefs.has(l.id))
+    return filteredByVigencia
+  }, [filteredByVigencia, sidebarTab, savedRefs])
+  const savedCount = useMemo(() => laws.filter(l => savedRefs.has(l.id)).length, [laws, savedRefs])
 
   // Vigencia de la ley activa (mostrada en el detalle como badge prominente)
   const activeVigencia = useMemo(() => {
@@ -254,15 +269,69 @@ export function LawsPage() {
         <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
           {/* Lista de leyes */}
           <div className="flex flex-col gap-2">
+            {/* Tabs principales: Todas | Guardadas */}
+            <div className="flex items-center gap-1 rounded-full bg-white p-1 ring-1 ring-ink-100 shadow-card">
+              <button
+                onClick={() => setSidebarTab('all')}
+                className={
+                  'flex-1 rounded-full px-3 py-1.5 text-[12px] font-bold transition ' +
+                  (sidebarTab === 'all' ? 'bg-upm-700 text-white shadow-cta' : 'text-ink-600 hover:bg-ink-50')
+                }
+              >
+                Todas ({laws.length})
+              </button>
+              <button
+                onClick={() => setSidebarTab('saved')}
+                className={
+                  'flex-1 inline-flex items-center justify-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-bold transition ' +
+                  (sidebarTab === 'saved' ? 'bg-upm-700 text-white shadow-cta' : 'text-ink-600 hover:bg-ink-50')
+                }
+                title="Solo leyes que guardaste o tenés en seguimiento"
+              >
+                <Bookmark size={11} /> Guardadas ({savedCount})
+              </button>
+            </div>
             <label className="flex items-center gap-2 rounded-2xl bg-white px-3 py-2 ring-1 ring-ink-100 shadow-card focus-within:ring-upm-400">
               <Search size={14} className="text-upm-600" />
               <input
                 value={q}
                 onChange={e => setQ(e.target.value)}
-                placeholder={`Buscar entre ${laws.length} leyes…`}
+                placeholder={`Buscar por nº (ej: 27742), tema o sector…`}
                 className="flex-1 bg-transparent text-[13px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
               />
+              {q && (
+                <button
+                  onClick={() => setQ('')}
+                  className="rounded-full p-1 text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+                  aria-label="Limpiar búsqueda"
+                  title="Limpiar"
+                >
+                  <span className="text-[14px] leading-none">×</span>
+                </button>
+              )}
             </label>
+            {/* Sugerencias de búsqueda · click → setea la query */}
+            {!q && (
+              <div className="flex flex-wrap items-center gap-1 px-1">
+                <span className="text-[10px] font-bold uppercase tracking-wide text-ink-400">Probá:</span>
+                {[
+                  { label: '27742', q: '27742' },
+                  { label: 'ambiente', q: 'ambiente' },
+                  { label: 'corredor bioceánico', q: 'corredor bioceánico' },
+                  { label: 'MERCOSUR', q: 'mercosur' },
+                  { label: 'género', q: 'género' },
+                  { label: 'presupuesto', q: 'presupuesto' },
+                ].map(s => (
+                  <button
+                    key={s.q}
+                    onClick={() => setQ(s.q)}
+                    className="rounded-full bg-upm-50 px-2 py-0.5 text-[10.5px] font-semibold text-upm-700 ring-1 ring-upm-100 transition hover:-translate-y-0.5 hover:bg-upm-100"
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            )}
             {/* Filtro por vigencia */}
             {citationGraph && (
               <div className="flex flex-wrap gap-1">
@@ -283,13 +352,13 @@ export function LawsPage() {
               </div>
             )}
             <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
-              {filteredByVigencia.length} {filteredByVigencia.length === 1 ? 'ley' : 'leyes'}
+              {filteredFinal.length} {filteredFinal.length === 1 ? 'ley' : 'leyes'}
               {vigenciaFilter !== 'all' && (
                 <span className="ml-1 normal-case text-ink-400">/ {filtered.length} totales</span>
               )}
             </div>
             <div className="flex max-h-[640px] flex-col gap-1.5 overflow-y-auto pr-1">
-              {filteredByVigencia.slice(0, 50).map(l => {
+              {filteredFinal.slice(0, 50).map(l => {
                 const c = countryByCode(l.country)
                 return (
                   <button
@@ -550,6 +619,17 @@ export function LawsPage() {
                   </ol>
                 </div>
               )}
+
+              {/* Genealogía regulatoria · madre → ESTA → hijas.
+                  Visible solo si la ley tiene modificatorias detectables. */}
+              <GenealogyBreadcrumb
+                item={active}
+                laws={laws}
+                onSelect={id => {
+                  const ley = laws.find(l => l.id === id)
+                  if (ley) setActive(ley)
+                }}
+              />
 
               {/* Mapa de la Ley · panel maestro de información conectada */}
               <LawMap item={active} />
