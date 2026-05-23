@@ -33,6 +33,8 @@ import { fetchMateriasSenadoBR } from './materias-senado-br'
 import { fetchConveniosAR } from './convenios-ar'
 import { fetchCnvAR } from './cnv-ar'
 import { fetchParlasur } from './parlasur'
+import { fetchDefensoriaAR } from './defensoria-ar'
+import { fetchTcuBR } from './tcu-br'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
 import { fetchSentenciasCorteCO } from './sentencias-corte-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
@@ -169,6 +171,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'convenios-ar', label: 'Ministerio de Trabajo AR · Convenios Colectivos', country: 'AR', fn: ({ signal }) => fetchConveniosAR({ limit: 30, signal }) },
   { id: 'cnv-ar', label: 'Comisión Nacional de Valores · Argentina', country: 'AR', fn: ({ signal }) => fetchCnvAR({ limit: 30, signal }) },
   { id: 'parlasur', label: 'Parlamento del Mercosur (Parlasur) · Actos supranacionales', country: 'AR', fn: ({ signal }) => fetchParlasur({ limit: 30, signal }) },
+  { id: 'defensoria-ar', label: 'Defensoría del Pueblo · Argentina', country: 'AR', fn: ({ signal }) => fetchDefensoriaAR({ limit: 30, signal }) },
+  { id: 'tcu-br', label: 'Tribunal de Contas da União · Brasil', country: 'BR', fn: ({ signal }) => fetchTcuBR({ limit: 30, signal }) },
   // Fuentes AR por organismo · todas tiran del mismo JSON Infoleg con filtro por emisor
   { id: 'mercosur-comercio-ar', label: 'Argentina · Comisión de Comercio del MERCOSUR', country: 'AR', fn: ({ signal }) => fetchMercosurComercioAR({ limit: 60, signal }) },
   { id: 'bcra-ar', label: 'Argentina · Banco Central (BCRA)', country: 'AR', fn: ({ signal }) => fetchBCRAArgentina({ limit: 40, signal }) },

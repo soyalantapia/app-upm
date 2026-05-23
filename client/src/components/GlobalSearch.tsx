@@ -1,16 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, FileText, Newspaper, Search, Sparkles } from 'lucide-react'
+import { ArrowRight, FileText, Newspaper, Search, Sparkles, User } from 'lucide-react'
 import { Modal } from './Modal'
 import { Badge } from './ui'
-import { DOCUMENTS, NEWS, countryByCode, topicById } from '@/lib/data'
+import { DOCUMENTS, NEWS as MOCK_NEWS, countryByCode, topicById } from '@/lib/data'
 import { useUI } from '@/lib/ui-provider'
 import { cn } from '@/lib/cn'
+import { useLiveFeed } from '@/lib/use-live-feed'
+import { getAllLegisladores, type Legislador } from '@/lib/legisladores'
+import { matchesQuery } from '@/lib/synonyms'
 
 const ROUTES = [
   { label: 'Asistente AI', path: '/asistente', desc: 'Chat con respaldo institucional' },
   { label: 'Radar normativo', path: '/radar', desc: 'Novedades por país y tema' },
   { label: 'Hablar con leyes', path: '/leyes', desc: 'Consultá artículos directos' },
+  { label: 'Briefing Pre-sesión', path: '/briefing', desc: '1-pager imprimible' },
+  { label: 'Estadísticas del corpus', path: '/estadisticas', desc: 'Métricas globales' },
   { label: 'Biblioteca UPM', path: '/biblioteca', desc: 'Memoria institucional' },
   { label: 'Mi carpeta', path: '/carpetas', desc: 'Tus guardados privados' },
   { label: 'Perfil', path: '/perfil', desc: 'Preferencias y membresía' },
@@ -27,6 +32,8 @@ export function GlobalSearch({
   const { openDocument } = useUI()
   const [q, setQ] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const { feed } = useLiveFeed()
+  const [legisladores, setLegisladores] = useState<Legislador[]>([])
 
   useEffect(() => {
     if (open) {
@@ -35,23 +42,39 @@ export function GlobalSearch({
     }
   }, [open])
 
+  // Cargar legisladores cuando abre por primera vez
+  useEffect(() => {
+    if (open && legisladores.length === 0) {
+      getAllLegisladores().then(setLegisladores).catch(() => {})
+    }
+  }, [open, legisladores.length])
+
+  // Universo de búsqueda · usa feed live + legisladores + mock fallback
+  const allNews = useMemo(() => {
+    return feed?.items?.length ? feed.items : MOCK_NEWS
+  }, [feed])
+
   const matches = useMemo(() => {
-    const term = q.trim().toLowerCase()
+    const term = q.trim()
     if (!term) {
       return {
-        news: NEWS.slice(0, 4),
-        docs: DOCUMENTS.slice(0, 4),
+        news: allNews.slice(0, 4),
+        docs: DOCUMENTS.slice(0, 3),
+        legs: legisladores.slice(0, 3),
         routes: ROUTES.slice(0, 4),
       }
     }
+    // Búsqueda full-text con synonyms para news + simple includes para el resto
+    const lower = term.toLowerCase()
     return {
-      news: NEWS.filter(n => (n.title + ' ' + n.excerpt).toLowerCase().includes(term)).slice(0, 6),
-      docs: DOCUMENTS.filter(d => (d.title + ' ' + d.excerpt).toLowerCase().includes(term)).slice(0, 6),
-      routes: ROUTES.filter(r => r.label.toLowerCase().includes(term) || r.desc.toLowerCase().includes(term)),
+      news: allNews.filter(n => matchesQuery(`${n.title} ${n.excerpt ?? ''} ${n.tipoDocumento ?? ''}`, term)).slice(0, 8),
+      docs: DOCUMENTS.filter(d => (d.title + ' ' + d.excerpt).toLowerCase().includes(lower)).slice(0, 4),
+      legs: legisladores.filter(l => l.name.toLowerCase().includes(lower) || (l.partido ?? '').toLowerCase().includes(lower)).slice(0, 6),
+      routes: ROUTES.filter(r => r.label.toLowerCase().includes(lower) || r.desc.toLowerCase().includes(lower)),
     }
-  }, [q])
+  }, [q, allNews, legisladores])
 
-  const total = matches.news.length + matches.docs.length + matches.routes.length
+  const total = matches.news.length + matches.docs.length + matches.legs.length + matches.routes.length
 
   return (
     <Modal
@@ -104,7 +127,7 @@ export function GlobalSearch({
             )}
 
             {matches.news.length > 0 && (
-              <Section title="Novedades del Radar">
+              <Section title={`Normas del corpus (${matches.news.length})`}>
                 {matches.news.map(n => {
                   const c = countryByCode(n.country)
                   return (
@@ -112,10 +135,31 @@ export function GlobalSearch({
                       key={n.id}
                       icon={<Newspaper size={14} className="text-warning" />}
                       title={n.title}
-                      desc={`${c.flag} ${c.name} · ${topicById(n.topic).shortLabel}`}
+                      desc={`${c.flag} ${c.name} · ${topicById(n.topic).shortLabel}${n.tipoDocumento ? ` · ${n.tipoDocumento}` : ''}`}
                       tone="news"
                       onClick={() => {
-                        navigate(`/radar/${n.id}`)
+                        // Pasar query como highlight inline
+                        navigate(`/radar/${n.id}${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`)
+                        onClose()
+                      }}
+                    />
+                  )
+                })}
+              </Section>
+            )}
+
+            {matches.legs.length > 0 && (
+              <Section title={`Legisladores (${matches.legs.length})`}>
+                {matches.legs.map(l => {
+                  const c = countryByCode(l.country)
+                  return (
+                    <ResultItem
+                      key={l.id}
+                      icon={<User size={14} className="text-upm-600" />}
+                      title={l.name}
+                      desc={`${c.flag} ${l.camara} · ${l.partido}${l.provincia ? ` (${l.provincia})` : ''}`}
+                      onClick={() => {
+                        navigate(`/legislador/${l.id}`)
                         onClose()
                       }}
                     />

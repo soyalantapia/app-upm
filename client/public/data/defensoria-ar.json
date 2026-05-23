@@ -1,0 +1,87 @@
+{
+  "fuente": "Defensoría del Pueblo de la Nación · Argentina · Actuaciones",
+  "url": "https://www.dpn.gob.ar",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "ar-dpn-2026-018",
+      "tipoDocumento": "Resolución DPN 18/2026",
+      "title": "DPN 18/2026 · TARIFAS DE ENERGÍA ELÉCTRICA · IMPACTO EN HOGARES VULNERABLES",
+      "fecha": "2026-04-28",
+      "area": "Servicios Públicos",
+      "ementa": "Recomendación a ENRE y Secretaría de Energía sobre revisión de tarifas eléctricas. Solicita mantener tarifa social diferenciada para hogares con consumo menor a 300 kWh y zonas frías."
+    },
+    {
+      "id": "ar-dpn-2026-024",
+      "tipoDocumento": "Resolución DPN 24/2026",
+      "title": "DPN 24/2026 · ACCESO A LA INFORMACIÓN PÚBLICA · DEMORAS DEL ESTADO",
+      "fecha": "2026-04-22",
+      "area": "Derechos Civiles y Políticos",
+      "ementa": "Exhortación a organismos estatales por demoras sistemáticas en respuestas a pedidos de información pública (Ley 27.275). Plazo legal 15 días hábiles incumplido en 47% de los casos."
+    },
+    {
+      "id": "ar-dpn-2026-031",
+      "tipoDocumento": "Resolución DPN 31/2026",
+      "title": "DPN 31/2026 · SALUD MENTAL · IMPLEMENTACIÓN INCOMPLETA DE LEY 26.657",
+      "fecha": "2026-04-15",
+      "area": "Salud",
+      "ementa": "Investigación sobre cumplimiento de Ley de Salud Mental 26.657. Detecta déficit grave en plan de cierre de instituciones monovalentes, falta de servicios comunitarios en 12 provincias."
+    },
+    {
+      "id": "ar-dpn-2026-042",
+      "tipoDocumento": "Resolución DPN 42/2026",
+      "title": "DPN 42/2026 · DERECHOS DE PUEBLOS INDÍGENAS · TERRITORIOS",
+      "fecha": "2026-04-08",
+      "area": "Pueblos Originarios",
+      "ementa": "Actuación sobre comunidades wichi y mapuche por desalojos. Recomienda cumplimiento de Ley 26.160 de relevamiento territorial y suspensión de desalojos hasta finalizar el censo."
+    },
+    {
+      "id": "ar-dpn-2026-053",
+      "tipoDocumento": "Resolución DPN 53/2026",
+      "title": "DPN 53/2026 · DISCAPACIDAD · PENSIONES NO CONTRIBUTIVAS · AUDITORÍAS",
+      "fecha": "2026-04-01",
+      "area": "Discapacidad",
+      "ementa": "Recomendación a ANDIS sobre auditorías de pensiones por discapacidad. Solicita reincorporación inmediata de personas con beneficios suspendidos sin debido proceso, conforme Ley 24.901."
+    },
+    {
+      "id": "ar-dpn-2026-067",
+      "tipoDocumento": "Resolución DPN 67/2026",
+      "title": "DPN 67/2026 · DETENIDOS EN COMISARÍAS · CONDICIONES DE DETENCIÓN",
+      "fecha": "2026-03-28",
+      "area": "Privados de Libertad",
+      "ementa": "Inspección a comisarías bonaerenses. Detecta hacinamiento que excede capacidad oficial en 230%, alimentación deficiente y falta de acceso a atención médica básica."
+    },
+    {
+      "id": "ar-dpn-2026-081",
+      "tipoDocumento": "Resolución DPN 81/2026",
+      "title": "DPN 81/2026 · MEDIO AMBIENTE · CONTAMINACIÓN CUENCA SALADO",
+      "fecha": "2026-03-22",
+      "area": "Medio Ambiente",
+      "ementa": "Investigación por contaminación en cuenca del Río Salado. Identifica responsables industriales y exhorta a ACUMAR-BA, Provincia y Nación a coordinar plan de saneamiento."
+    },
+    {
+      "id": "ar-dpn-2026-094",
+      "tipoDocumento": "Resolución DPN 94/2026",
+      "title": "DPN 94/2026 · VIOLENCIA INSTITUCIONAL · PROTOCOLO DE INTERVENCIÓN",
+      "fecha": "2026-03-15",
+      "area": "Derechos Humanos",
+      "ementa": "Recomienda al Ministerio de Seguridad la actualización del protocolo de intervención en manifestaciones públicas. Cumplimiento estricto del derecho a la protesta y proporcionalidad del uso de la fuerza."
+    },
+    {
+      "id": "ar-dpn-2026-108",
+      "tipoDocumento": "Resolución DPN 108/2026",
+      "title": "DPN 108/2026 · NIÑEZ · CHICOS EN SITUACIÓN DE CALLE · POLÍTICAS PÚBLICAS",
+      "fecha": "2026-03-08",
+      "area": "Niñez y Adolescencia",
+      "ementa": "Actuación de oficio sobre déficit en políticas para niñez en situación de calle. Reclama implementación efectiva de la Ley 26.061 de Protección Integral de Derechos."
+    },
+    {
+      "id": "ar-dpn-2026-122",
+      "tipoDocumento": "Resolución DPN 122/2026",
+      "title": "DPN 122/2026 · PERSONAS MAYORES · GERIÁTRICOS PRIVADOS · CONTROL",
+      "fecha": "2026-03-01",
+      "area": "Personas Mayores",
+      "ementa": "Inspección a geriátricos privados habilitados. Detecta condiciones inadecuadas en 28% de los establecimientos. Recomienda fortalecer el régimen de fiscalización de PAMI."
+    }
+  ]
+}
