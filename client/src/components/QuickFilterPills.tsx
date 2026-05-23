@@ -5,10 +5,19 @@ import type { LucideIcon } from 'lucide-react'
 // El padre (Radar) recibe el id del preset activo y los traduce a state.
 export type FilterPresetId = 'all' | 'mi-comision' | 'hot' | 'recent-sancionadas' | 'crossborder' | 'this-week' | 'with-tramite'
 
-const PRESETS: { id: FilterPresetId; label: string; icon: LucideIcon; tone: string; special?: boolean }[] = [
+const PRESETS: { id: FilterPresetId; label: string; icon: LucideIcon; tone: string; activeTone?: string; special?: boolean }[] = [
   // "Mi comisión" · destacado · usa prefs.topics + prefs.countries del usuario.
-  // Va primero y tiene tratamiento visual distintivo (gradient + ✨).
-  { id: 'mi-comision', label: 'Mi comisión', icon: Sparkles, tone: 'bg-gradient-to-r from-upm-500 to-upm-700 text-white ring-upm-700', special: true },
+  // Va primero y tiene tratamiento visual distintivo.
+  // Inactivo: card light con borde azul (invita a clickear).
+  // Activo: gradient azul→morado con sparkle (claramente seleccionado).
+  {
+    id: 'mi-comision',
+    label: 'Mi comisión',
+    icon: Sparkles,
+    tone: 'bg-upm-50 text-upm-800 ring-upm-300 hover:bg-upm-100',
+    activeTone: 'bg-gradient-to-r from-upm-600 via-upm-700 to-info text-white ring-upm-700 shadow-floating',
+    special: true,
+  },
   { id: 'all', label: 'Todas', icon: Activity, tone: 'bg-white text-ink-700 ring-ink-100' },
   { id: 'hot', label: 'Alta relevancia hoy', icon: Flame, tone: 'bg-danger-bg/40 text-danger-fg ring-danger-bg' },
   { id: 'recent-sancionadas', label: 'Recién sancionadas', icon: Zap, tone: 'bg-success-bg/40 text-success-fg ring-success-bg' },
@@ -37,10 +46,10 @@ export function QuickFilterPills({
             key={preset.id}
             onClick={() => onChange(preset.id)}
             className={
-              'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-bold transition ring-1 ' +
+              'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-bold transition ring-1 hover:-translate-y-0.5 ' +
               (isActive
-                ? 'bg-upm-700 text-white shadow-cta ring-upm-700 hover:-translate-y-0.5'
-                : `${preset.tone} hover:-translate-y-0.5`)
+                ? (preset.activeTone ?? 'bg-upm-700 text-white shadow-cta ring-upm-700')
+                : preset.tone)
             }
           >
             <Icon size={11} />

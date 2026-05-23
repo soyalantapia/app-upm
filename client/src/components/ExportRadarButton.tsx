@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Download, FileText, FileSpreadsheet, Check } from 'lucide-react'
 import type { NewsItem } from '@/lib/types'
 import { countryByCode, topicById } from '@/lib/data'
@@ -75,6 +75,26 @@ function downloadBlob(content: string, filename: string, mime: string) {
 export function ExportRadarButton({ items, disabled }: { items: NewsItem[]; disabled?: boolean }) {
   const [open, setOpen] = useState(false)
   const [done, setDone] = useState<'csv' | 'md' | null>(null)
+  const wrapRef = useRef<HTMLDivElement>(null)
+
+  // Click-outside · cerrar el dropdown si el usuario clickea afuera
+  useEffect(() => {
+    if (!open) return
+    const onDocClick = (e: MouseEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    // Defer para no capturar el mismo click que abrió el menú
+    const id = setTimeout(() => document.addEventListener('mousedown', onDocClick), 0)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      clearTimeout(id)
+      document.removeEventListener('mousedown', onDocClick)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
 
   const handle = (format: 'csv' | 'md') => {
     const ts = new Date().toISOString().slice(0, 10)
@@ -88,7 +108,7 @@ export function ExportRadarButton({ items, disabled }: { items: NewsItem[]; disa
   }
 
   return (
-    <div className="relative inline-block">
+    <div ref={wrapRef} className="relative inline-block">
       <button
         onClick={() => setOpen(v => !v)}
         disabled={disabled || items.length === 0}
