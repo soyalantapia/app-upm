@@ -18,7 +18,7 @@ export function OnboardingPage() {
   const navigate = useNavigate()
   const { operator } = useAuth()
   const [step, setStep] = useState<0 | 1 | 2>(0)
-  const [countries, setCountries] = useState<CountryCode[]>(['AR', 'BR', 'UY', 'PY'])
+  const [countries, setCountries] = useState<CountryCode[]>(['AR', 'BR', 'UY', 'PY', 'BO', 'CL'])
   const [topics, setTopics] = useState<Topic[]>(['ambiente', 'integracion-regional', 'corredores-bioceanicos'])
   const [frequency, setFrequency] = useState<Frequency>('diario')
 

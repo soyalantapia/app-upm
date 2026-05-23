@@ -375,7 +375,7 @@ export const DEMO_OPERATOR = {
 }
 
 export const DEFAULT_PREFS = {
-  countries: ['AR', 'BR', 'UY', 'PY'] as CountryCode[],
+  countries: ['AR', 'BR', 'UY', 'PY', 'BO', 'CL'] as CountryCode[],
   topics: ['ambiente', 'integracion-regional', 'corredores-bioceanicos', 'mercosur'] as Topic[],
   frequency: 'diario' as const,
   language: 'es' as const,
