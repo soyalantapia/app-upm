@@ -14,11 +14,10 @@ import {
   Search,
   Stamp,
   Wifi,
-  WifiOff,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { Badge, Button, Card, Chip, EmptyState, Eyebrow, PageHeader } from '@/components/ui'
+import { Badge, Button, Card, Chip, EmptyState } from '@/components/ui'
 import { COUNTRIES, DOCUMENTS, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocStatus, DocType, Topic } from '@/lib/types'
 import { useUI } from '@/lib/ui-provider'
@@ -68,7 +67,6 @@ export function LibraryPage() {
     () => (feed?.items ?? []).filter(i => i.type === 'ley' || i.type === 'decreto' || i.type === 'reglamento').slice(0, 6),
     [feed],
   )
-  const liveStatus = feed?.status ?? 'mock'
   const [q, setQ] = useState('')
   const [category, setCategory] = useState<CategoryKey>('all')
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
@@ -114,33 +112,24 @@ export function LibraryPage() {
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
-      <PageHeader
-        eyebrow={<Eyebrow icon={<Library size={11} />}>Biblioteca UPM</Eyebrow>}
-        title="Memoria institucional, accesible y trabajable"
-        description="Documentos institucionales, convenios, actas, informes y materiales por foro. Buscá por tema, país o palabra."
-        actions={
-          <>
-            {liveStatus === 'live' && (
-              <Badge tone="success">
-                <Wifi size={11} /> En vivo
-              </Badge>
-            )}
-            {liveStatus === 'mixed' && (
-              <Badge tone="info">
-                <Wifi size={11} /> Vivo + muestra
-              </Badge>
-            )}
-            {liveStatus === 'mock' && (
-              <Badge tone="warning">
-                <WifiOff size={11} /> Datos de muestra
-              </Badge>
-            )}
-            <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
-              <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} /> Actualizar
-            </Button>
-          </>
-        }
-      />
+      {/* Header compacto */}
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+            <Library size={11} /> Biblioteca UPM
+          </div>
+          <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
+            Memoria institucional
+          </h1>
+          <p className="mt-0.5 text-[11.5px] text-ink-500">
+            Documentos curados por UPM · convenios, actas, informes por foro.
+          </p>
+        </div>
+        <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
+          <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} />
+          <span className="hidden sm:inline">Actualizar</span>
+        </Button>
+      </div>
 
       {/* Acceso rápido al feed en vivo · Biblioteca es memoria curada,
           este banner solo es un atajo al feed normativo del Radar. */}

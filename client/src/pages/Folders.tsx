@@ -18,7 +18,7 @@ import {
   X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { Badge, Button, Card, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
+import { Badge, Button, Card, EmptyState } from '@/components/ui'
 import { store, useStore, type SavedItem, type SavedType } from '@/lib/store'
 import { useUI } from '@/lib/ui-provider'
 import { Drawer } from '@/components/Drawer'
@@ -80,19 +80,23 @@ export function FoldersPage() {
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1100px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
-      <PageHeader
-        eyebrow={<Eyebrow icon={<FolderClosed size={11} />}>Mi carpeta</Eyebrow>}
-        title="Tu espacio privado de trabajo"
-        description="Guardá briefs, documentos, minutas y respuestas. Privado, solo visible para vos."
-        actions={
-          <>
-            <Badge tone="ghost"><Lock size={11} /> Privado</Badge>
-            <Button size="md" onClick={() => setCreating(v => !v)}>
-              <FolderPlus size={15} /> Crear carpeta
-            </Button>
-          </>
-        }
-      />
+      {/* Header compacto · título + Crear carpeta */}
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+            <FolderClosed size={11} /> Mi carpeta
+          </div>
+          <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
+            Tu espacio privado
+          </h1>
+          <p className="mt-0.5 inline-flex items-center gap-1.5 text-[11.5px] text-ink-500">
+            <Lock size={11} /> Solo visible para vos · briefs, minutas, leyes guardadas
+          </p>
+        </div>
+        <Button size="sm" onClick={() => setCreating(v => !v)}>
+          <FolderPlus size={13} /> Crear carpeta
+        </Button>
+      </div>
 
       {creating && (
         <Card className="animate-fade-in flex flex-col gap-2 sm:flex-row sm:items-center">

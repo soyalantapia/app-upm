@@ -17,7 +17,7 @@ import {
   Trash2,
   Wrench,
 } from 'lucide-react'
-import { Badge, Button, Card, Chip, Eyebrow, PageHeader } from '@/components/ui'
+import { Badge, Button, Card, Chip } from '@/components/ui'
 import { Drawer } from '@/components/Drawer'
 import { useAuth } from '@/lib/auth'
 import { useStore, store, type Alert } from '@/lib/store'
@@ -67,11 +67,14 @@ export function ProfilePage() {
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1100px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
-      <PageHeader
-        eyebrow={<Eyebrow icon={<CircleUser size={11} />}>Perfil del legislador</Eyebrow>}
-        title="Personalización y membresía"
-        description="Tu perfil, preferencias del Radar y plan UPM."
-      />
+      <div>
+        <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+          <CircleUser size={11} /> Perfil
+        </div>
+        <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
+          Mi cuenta y preferencias
+        </h1>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="flex flex-col gap-4">

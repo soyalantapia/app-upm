@@ -22,9 +22,8 @@ import {
   Tag,
   Timer,
   Users,
-  Wifi,
 } from 'lucide-react'
-import { Badge, Button, Eyebrow, PageHeader } from '@/components/ui'
+import { Badge, Button } from '@/components/ui'
 import { countryByCode, topicById } from '@/lib/data'
 import { formatDate } from '@/lib/format'
 import { store, useStore } from '@/lib/store'
@@ -234,23 +233,25 @@ export function LawsPage() {
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
-      <PageHeader
-        eyebrow={<Eyebrow icon={<BookOpen size={11} />}>Hablar con leyes</Eyebrow>}
-        title="Leyes sancionadas · texto completo"
-        description="Consultá leyes nacionales con su sumario íntegro y palabras clave oficiales. Después podés conversar con el Asistente sobre cualquiera."
-        actions={
-          <>
-            {liveStatus === 'live' && (
-              <Badge tone="success">
-                <Wifi size={11} /> En vivo
-              </Badge>
-            )}
-            <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
-              <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} /> Actualizar
-            </Button>
-          </>
-        }
-      />
+      {/* Header compacto · título + freshness + Actualizar */}
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+            <BookOpen size={11} /> Hablar con leyes
+          </div>
+          <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
+            Leyes sancionadas
+          </h1>
+          <p className="mt-0.5 text-[11.5px] text-ink-500">
+            {liveStatus === 'live' && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft align-middle" />}
+            {laws.length} leyes con texto íntegro · listo para preguntar al Asistente
+          </p>
+        </div>
+        <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
+          <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} />
+          <span className="hidden sm:inline">Actualizar</span>
+        </Button>
+      </div>
 
       {isLoading ? (
         <div className="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)]">

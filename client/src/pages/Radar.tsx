@@ -5,7 +5,6 @@ import {
   CalendarRange,
   ChevronDown,
   Filter,
-  LayoutGrid,
   LayoutList,
   Radar,
   RefreshCw,
@@ -14,7 +13,7 @@ import {
   Wifi,
   X,
 } from 'lucide-react'
-import { Badge, Button, Chip, Eyebrow, EmptyState, PageHeader } from '@/components/ui'
+import { Button, Chip, EmptyState } from '@/components/ui'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
 import { useStore } from '@/lib/store'
@@ -79,7 +78,7 @@ export function RadarPage() {
   const [sourcesOpen, setSourcesOpen] = useState(false)
   // Tier 1+2 features state
   const [preset, setPreset] = useState<FilterPresetId>('all')
-  const [density, setDensity] = useState<'comfortable' | 'compact'>('comfortable')
+  const [density] = useState<'comfortable' | 'compact'>('comfortable')
   const [viewMode, setViewMode] = useState<'list' | 'timeline' | 'clusters'>('list')
   // Paginación incremental · Radar tiene 1700+ items, montar todo crashea perf.
   // Empezamos con 50, agregamos 50 cada "Ver más".
@@ -254,79 +253,88 @@ export function RadarPage() {
   }, [viewMode, citationGraph, filtered])
 
   return (
-    <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
-      <PageHeader
-        eyebrow={<Eyebrow icon={<Radar size={11} />}>Radar normativo</Eyebrow>}
-        title="Te avisa lo importante por país y tema"
-        description="Sin perder horas revisando fuentes. Datos en vivo de fuentes oficiales del MERCOSUR ampliado, refrescados automáticamente."
-        actions={
-          <>
-            {liveStatus === 'live' && (
-              <Badge tone="success">
-                <Wifi size={11} /> En vivo
-              </Badge>
-            )}
-            <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
-              <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} /> Actualizar
-            </Button>
-          </>
-        }
-      />
+    <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-5 sm:px-6 sm:py-8">
+      {/* Header compacto · título + freshness + acciones */}
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+            <Radar size={11} /> Radar normativo
+          </div>
+          <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
+            Novedades en vivo
+          </h1>
+          {feed?.fetchedAt && (
+            <p className="mt-0.5 text-[11.5px] text-ink-500">
+              {liveStatus === 'live' && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft align-middle" />}
+              Actualizado {new Date(feed.fetchedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+              {liveSources.length > 0 && ` · ${liveSources.filter(s => s.ok).length}/${liveSources.length} fuentes`}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setSourcesOpen(v => !v)}
+            className={
+              'inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[11.5px] font-semibold ring-1 transition ' +
+              (sourcesOpen ? 'bg-upm-50 text-upm-700 ring-upm-200' : 'bg-white text-ink-600 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
+            }
+            title="Ver fuentes"
+          >
+            <Wifi size={12} /> Fuentes
+          </button>
+          <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
+            <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} />
+            <span className="hidden sm:inline">Actualizar</span>
+          </Button>
+        </div>
+      </div>
 
       {/* Stats por fuente · colapsado por defecto para no ocupar tanto espacio */}
-      {liveSources.length > 0 && (() => {
+      {sourcesOpen && liveSources.length > 0 && (() => {
         const okCount = liveSources.filter(s => s.ok).length
         // Contar ítems del feed real (después de dedupe), no la suma de counts.
         const totalItems = NEWS.length
         const countriesSet = new Set(liveSources.filter(s => s.ok).map(s => s.country))
         return (
-          <div className="rounded-2xl bg-white ring-1 ring-ink-100 shadow-card">
-            <button
-              onClick={() => setSourcesOpen(v => !v)}
-              className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-upm-50/30 rounded-2xl transition"
-              aria-expanded={sourcesOpen}
-              aria-label="Fuentes activas"
-            >
-              <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Fuentes</span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-[11px] font-bold text-success-fg ring-1 ring-success-bg">
+          <div className="rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card">
+            <div className="flex flex-wrap items-center gap-2 pb-2 text-[11.5px]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-500">Fuentes activas</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-[10.5px] font-bold text-success-fg ring-1 ring-success-bg">
                 <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft" />
-                {okCount}/{liveSources.length} en vivo
+                {okCount}/{liveSources.length}
               </span>
-              <span className="text-[11.5px] font-semibold text-ink-700 tabular-nums">{totalItems} ítems</span>
-              <span className="hidden sm:inline text-[11.5px] text-ink-500">
+              <span className="font-semibold text-ink-700 tabular-nums">{totalItems} ítems</span>
+              <span className="hidden sm:inline text-ink-500">
                 {[...countriesSet].map(c => countryByCode(c).flag).join(' ')}
               </span>
-              {feed?.fetchedAt && (
-                <span className="ml-auto hidden sm:inline text-[10.5px] text-ink-400 tabular-nums">
-                  {new Date(feed.fetchedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              )}
-              <ChevronDown
-                size={14}
-                className={'shrink-0 text-ink-500 transition ' + (sourcesOpen ? 'rotate-180' : '') + (feed?.fetchedAt ? '' : ' ml-auto')}
-              />
-            </button>
-            {sourcesOpen && (
-              <div className="flex flex-wrap items-center gap-1.5 border-t border-ink-100 px-3 py-2.5">
-                {liveSources.map(s => (
-                  <button
-                    key={s.id}
-                    onClick={() => setCountry(s.country)}
-                    className={
-                      'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition whitespace-nowrap ' +
-                      (s.ok
-                        ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
-                        : 'bg-ink-50 text-ink-400 ring-1 ring-ink-100')
-                    }
-                    title={s.error ?? `${s.count} ítems desde ${s.label}`}
-                  >
-                    <span className={`h-1.5 w-1.5 rounded-full ${s.ok ? 'bg-success' : 'bg-ink-300'}`} />
-                    {countryByCode(s.country).flag} {s.label}
-                    <span className="ml-0.5 rounded bg-white/60 px-1 text-[10px] tabular-nums">{s.count}</span>
-                  </button>
-                ))}
-              </div>
-            )}
+              <button
+                onClick={() => setSourcesOpen(false)}
+                className="ml-auto rounded-full p-1 text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+                aria-label="Cerrar"
+                title="Cerrar"
+              >
+                <ChevronDown size={14} className="rotate-180" />
+              </button>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5 border-t border-ink-100 pt-2.5">
+              {liveSources.map(s => (
+                <button
+                  key={s.id}
+                  onClick={() => setCountry(s.country)}
+                  className={
+                    'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition whitespace-nowrap ' +
+                    (s.ok
+                      ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
+                      : 'bg-ink-50 text-ink-400 ring-1 ring-ink-100')
+                  }
+                  title={s.error ?? `${s.count} ítems desde ${s.label}`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${s.ok ? 'bg-success' : 'bg-ink-300'}`} />
+                  {countryByCode(s.country).flag} {s.label}
+                  <span className="ml-0.5 rounded bg-white/60 px-1 text-[10px] tabular-nums">{s.count}</span>
+                </button>
+              ))}
+            </div>
           </div>
         )
       })()}
@@ -522,25 +530,6 @@ export function RadarPage() {
               <Boxes size={11} /> Ecosistemas
             </button>
           </div>
-          {/* Density toggle · solo en lista */}
-          {viewMode === 'list' && (
-            <div className="flex items-center gap-0.5 rounded-full bg-ink-50 p-0.5 ring-1 ring-ink-100">
-              <button
-                onClick={() => setDensity('comfortable')}
-                className={'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold transition ' + (density === 'comfortable' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
-                title="Densidad cómoda"
-              >
-                <LayoutGrid size={11} />
-              </button>
-              <button
-                onClick={() => setDensity('compact')}
-                className={'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold transition ' + (density === 'compact' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
-                title="Densidad compacta"
-              >
-                <LayoutList size={11} />
-              </button>
-            </div>
-          )}
         </div>
       </div>
 

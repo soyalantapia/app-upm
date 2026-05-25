@@ -10,7 +10,7 @@ import {
   Network,
   GitCompareArrows,
 } from 'lucide-react'
-import { Badge, Button, PageHeader, Eyebrow } from '@/components/ui'
+import { Badge, Button } from '@/components/ui'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import { formatDate, decodeHtml } from '@/lib/format'
 import { useLiveFeed } from '@/lib/use-live-feed'
@@ -143,11 +143,17 @@ export function BriefingPage() {
 
       {/* Form de filtros · oculto al imprimir */}
       <div className="flex flex-col gap-4 rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card print:hidden">
-        <PageHeader
-          eyebrow={<Eyebrow icon={<Sparkles size={11} />}>Pre-sesión · armá tu briefing en 30 segundos</Eyebrow>}
-          title="Briefing parlamentario regional"
-          description="Elegí tema, países y ventana temporal. La app destila las 5 normas clave + 3 cambios recientes + 3 cuestiones cruzadas en una hoja imprimible para tu comisión."
-        />
+        <div>
+          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+            <Sparkles size={11} /> Briefing pre-sesión
+          </div>
+          <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
+            Armá tu 1-pager
+          </h1>
+          <p className="mt-0.5 text-[11.5px] text-ink-500">
+            Elegí tema, países y ventana. Destilamos 5 normas clave + 3 cambios + 3 cuestiones cruzadas.
+          </p>
+        </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="flex flex-col gap-1.5">

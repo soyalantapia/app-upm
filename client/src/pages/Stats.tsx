@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BarChart3, TrendingUp, Network, MapPin, Tag, Activity, Flame, Radio, CheckCircle2, XCircle } from 'lucide-react'
-import { Eyebrow, PageHeader } from '@/components/ui'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { useCitationGraph } from '@/lib/use-citations'
 import { computeTrendingLaws } from '@/lib/trending'
@@ -36,11 +35,17 @@ export function StatsPage() {
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
-      <PageHeader
-        eyebrow={<Eyebrow icon={<BarChart3 size={11} />}>Estadísticas del corpus</Eyebrow>}
-        title="El estado del Mercosur regulatorio"
-        description="Métricas en vivo sobre los 45 feeds oficiales. Lo que está pasando ahora, dónde, y por qué importa."
-      />
+      <div>
+        <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+          <BarChart3 size={11} /> Estadísticas
+        </div>
+        <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
+          El estado del Mercosur regulatorio
+        </h1>
+        <p className="mt-0.5 text-[11.5px] text-ink-500">
+          Métricas en vivo sobre 45 feeds oficiales · qué se está moviendo y dónde.
+        </p>
+      </div>
 
       {/* Hero stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
