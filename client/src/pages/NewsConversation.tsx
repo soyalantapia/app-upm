@@ -44,6 +44,7 @@ import { BudgetPanel } from '@/components/BudgetPanel'
 import { VotosBRPanel } from '@/components/VotosBRPanel'
 import { ModificatoriasTimeline } from '@/components/ModificatoriasTimeline'
 import { HighlightedText } from '@/components/HighlightedText'
+import { PageTOC, type TOCSection } from '@/components/PageTOC'
 import { LazyMount } from '@/components/LazyMount'
 import { RelevanciaPanel } from '@/components/RelevanciaPanel'
 
@@ -282,8 +283,19 @@ export function NewsConversationPage() {
           </div>
         )}
 
+        {/* Tabla de contenidos · sticky desktop + chip mobile */}
+        <PageTOC sections={[
+          { id: 'sec-relevancia', label: '¿Por qué importa?' },
+          { id: 'sec-impacto', label: 'Análisis de impacto' },
+          { id: 'sec-similares', label: 'Normas similares' },
+          { id: 'sec-backlinks', label: 'Quién la cita' },
+          { id: 'sec-fulltext', label: 'Texto completo' },
+        ] satisfies TOCSection[]} />
+
         {/* ¿Por qué importa? · relevancia personalizada */}
-        <RelevanciaPanel item={news} prefs={prefs} />
+        <div id="sec-relevancia">
+          <RelevanciaPanel item={news} prefs={prefs} />
+        </div>
 
         {/* Grid de contexto extraído · 4 columnas en desktop, stack en mobile */}
         {(ctx.decretos.length > 0 || ctx.resoluciones.length > 0 || ctx.montos.length > 0 || ctx.plazos.length > 0 || ctx.provincias.length > 0 || ctx.instituciones.length > 0) && (
@@ -363,7 +375,9 @@ export function NewsConversationPage() {
 
         {/* Mapa de la Ley · análisis de impacto + sectores + modificaciones +
             jurisprudencia + glosario. Panel maestro de información conectada. */}
-        <LawMap item={news} />
+        <div id="sec-impacto">
+          <LawMap item={news} />
+        </div>
 
         {/* Legisladores autores · si detectamos firmas conocidas */}
         <AuthorChips authorsString={news.authors} />
@@ -391,14 +405,18 @@ export function NewsConversationPage() {
         </LazyMount>
 
         {/* Normas equivalentes en la región · TF-IDF cross-país */}
-        <SimilarItemsPanel itemId={news.id} basePath="/radar" />
+        <div id="sec-similares">
+          <SimilarItemsPanel itemId={news.id} basePath="/radar" />
+        </div>
 
         {/* Backlinks invertidos · solo para leyes nacionales (renderiza null si no aplica) */}
-        <BacklinksPanel itemId={news.id} />
+        <div id="sec-backlinks">
+          <BacklinksPanel itemId={news.id} />
+        </div>
 
         {/* Texto completo (ementa o ementaDetalhada) */}
         {news.fullText && news.fullText.length > 0 && (
-          <div>
+          <div id="sec-fulltext">
             <div className="flex items-center justify-between gap-2">
               <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Texto completo</div>
               {highlightTerms.length > 0 && (

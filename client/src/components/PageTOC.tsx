@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { List, ChevronDown } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -41,7 +42,7 @@ export function PageTOC({ sections }: { sections: TOCSection[] }) {
     setOpen(false)
   }
 
-  return (
+  return createPortal(
     <>
       {/* Mobile: chip flotante abajo a la derecha */}
       <div className="fixed bottom-20 right-4 z-30 lg:hidden">
@@ -109,6 +110,7 @@ export function PageTOC({ sections }: { sections: TOCSection[] }) {
           </nav>
         </div>
       </aside>
-    </>
+    </>,
+    document.body,
   )
 }

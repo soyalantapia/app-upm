@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Bookmark,
   ClipboardList,
@@ -40,6 +41,7 @@ const TYPE_META: Record<SavedType, { label: string; icon: LucideIcon; tone: stri
 }
 
 export function FoldersPage() {
+  const navigate = useNavigate()
   const { openDocument } = useUI()
   const folders = useStore(s => s.folders)
   const saved = useStore(s => s.saved)
@@ -239,8 +241,14 @@ export function FoldersPage() {
         width="md"
       >
         {folderItems.length === 0 ? (
-          <div className="rounded-2xl bg-white p-6 text-center text-[13px] text-ink-500 ring-1 ring-ink-100">
-            Esta carpeta aún no tiene ítems. Mové uno desde "Guardados" usando el icono de mover.
+          <div className="rounded-2xl bg-gradient-to-br from-upm-50/40 to-white p-6 text-center ring-1 ring-upm-100">
+            <div className="mx-auto grid h-10 w-10 place-items-center rounded-2xl bg-upm-100 text-upm-700">
+              📁
+            </div>
+            <p className="mt-3 text-[13px] font-semibold text-ink-800">Esta carpeta está vacía</p>
+            <p className="mt-1 text-[12px] leading-relaxed text-ink-500">
+              Para sumar normas: andá al <button onClick={() => navigate('/radar')} className="font-bold text-upm-700 underline-offset-2 hover:underline">Radar</button> o a <button onClick={() => navigate('/leyes')} className="font-bold text-upm-700 underline-offset-2 hover:underline">Leyes</button>, tocá "Guardar" en una norma y luego movela acá con el icono de mover.
+            </p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">

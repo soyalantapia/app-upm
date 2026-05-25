@@ -18,6 +18,7 @@ import { BrandLockup, BrandMark } from '@/components/Brand'
 import { SouthAmericaBackdrop } from '@/components/SouthAmerica'
 import { NotificationsBell } from '@/components/NotificationsBell'
 import { GlobalSearch } from '@/components/GlobalSearch'
+import { SourceHealthBanner } from '@/components/SourceHealthBanner'
 
 type NavItem = {
   to: string
@@ -159,6 +160,7 @@ export function AppShell() {
 
         {/* Main */}
         <main className="min-w-0 flex-1 pb-32 md:pb-6">
+          <SourceHealthBanner />
           <Outlet />
         </main>
       </div>
