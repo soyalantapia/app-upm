@@ -273,11 +273,11 @@ export function LawsPage() {
           {/* Lista de leyes */}
           <div className="flex flex-col gap-2">
             {/* Tabs principales: Todas | Guardadas */}
-            <div className="flex items-center gap-1 rounded-full bg-white p-1 ring-1 ring-ink-100 shadow-card">
+            <div className="flex w-full min-w-0 items-center gap-1 rounded-full bg-white p-1 ring-1 ring-ink-100 shadow-card">
               <button
                 onClick={() => setSidebarTab('all')}
                 className={
-                  'flex-1 rounded-full px-3 py-1.5 text-[12px] font-bold transition ' +
+                  'flex-1 min-w-0 truncate rounded-full px-3 py-1.5 text-[12px] font-bold transition ' +
                   (sidebarTab === 'all' ? 'bg-upm-700 text-white shadow-cta' : 'text-ink-600 hover:bg-ink-50')
                 }
               >
@@ -286,12 +286,12 @@ export function LawsPage() {
               <button
                 onClick={() => setSidebarTab('saved')}
                 className={
-                  'flex-1 inline-flex items-center justify-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-bold transition ' +
+                  'flex-1 min-w-0 inline-flex items-center justify-center gap-1 truncate rounded-full px-3 py-1.5 text-[12px] font-bold transition ' +
                   (sidebarTab === 'saved' ? 'bg-upm-700 text-white shadow-cta' : 'text-ink-600 hover:bg-ink-50')
                 }
                 title="Solo leyes que guardaste o tenés en seguimiento"
               >
-                <Bookmark size={11} /> Guardadas ({savedCount})
+                <Bookmark size={11} className="shrink-0" /> Guardadas ({savedCount})
               </button>
             </div>
             <label className="flex items-center gap-2 rounded-2xl bg-white px-3 py-2 ring-1 ring-ink-100 shadow-card focus-within:ring-upm-400">

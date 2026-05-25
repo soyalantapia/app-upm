@@ -118,7 +118,7 @@ export function ExportRadarButton({ items, disabled }: { items: NewsItem[]; disa
         <Download size={12} /> Exportar ({items.length})
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-30 mt-1 w-52 rounded-2xl bg-white p-1 ring-1 ring-ink-100 shadow-floating">
+        <div className="absolute left-0 sm:right-0 sm:left-auto top-full z-30 mt-1 w-52 rounded-2xl bg-white p-1 ring-1 ring-ink-100 shadow-floating">
           <button
             onClick={() => handle('csv')}
             className="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-[12px] text-ink-700 transition hover:bg-upm-50 hover:text-upm-700"
