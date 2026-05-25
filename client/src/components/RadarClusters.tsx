@@ -16,6 +16,13 @@ export function RadarClusters({ clusters, singletonsCount }: { clusters: Cluster
     )
   }
 
+  const scrollToCluster = (id: string) => {
+    const el = document.getElementById(`cluster-${id}`)
+    if (!el) return
+    const top = el.getBoundingClientRect().top + window.scrollY - 80
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="rounded-2xl bg-upm-50/40 p-3 ring-1 ring-upm-100">
@@ -25,6 +32,23 @@ export function RadarClusters({ clusters, singletonsCount }: { clusters: Cluster
           <span className="font-bold">{clusters.reduce((s, c) => s + c.size, 0)} normas</span> con
           <span className="font-bold"> {singletonsCount} sueltas</span> sin ecosistema detectado.
           Cada cluster ordena ley raíz + decretos reglamentarios + resoluciones implementadoras.
+        </div>
+        {/* Índice de clusters · 1 chip por cluster con count, click → scroll */}
+        <div className="mt-2.5 flex flex-wrap gap-1.5 border-t border-upm-100 pt-2.5">
+          {clusters.map((c, i) => (
+            <button
+              key={c.id}
+              onClick={() => scrollToCluster(c.id)}
+              className="group inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-ink-700 ring-1 ring-ink-100 transition hover:-translate-y-0.5 hover:bg-upm-50 hover:text-upm-700"
+              title={clusterDisplayName(c)}
+            >
+              <span className="rounded bg-upm-50 px-1 text-[9.5px] font-bold tabular-nums text-upm-700 group-hover:bg-upm-100">
+                {i + 1}
+              </span>
+              <span className="line-clamp-1 max-w-[140px]">{clusterDisplayName(c)}</span>
+              <span className="rounded-full bg-ink-50 px-1.5 text-[9.5px] tabular-nums text-ink-600">{c.size}</span>
+            </button>
+          ))}
         </div>
       </div>
       <ul className="flex flex-col gap-2.5">
@@ -37,7 +61,7 @@ export function RadarClusters({ clusters, singletonsCount }: { clusters: Cluster
 }
 
 function ClusterRow({ cluster, index }: { cluster: Cluster; index: number }) {
-  const [open, setOpen] = useState(index < 3) // primeros 3 abiertos por default
+  const [open, setOpen] = useState(index === 0) // solo primero abierto por default
   const navigate = useNavigate()
   const country = countryByCode(cluster.root.country)
   const displayName = clusterDisplayName(cluster)
@@ -51,7 +75,8 @@ function ClusterRow({ cluster, index }: { cluster: Cluster; index: number }) {
 
   return (
     <li
-      className="animate-fade-up rounded-2xl bg-white ring-1 ring-ink-100 shadow-card"
+      id={`cluster-${cluster.id}`}
+      className="animate-fade-up rounded-2xl bg-white ring-1 ring-ink-100 shadow-card scroll-mt-20"
       style={{ animationDelay: `${Math.min(index, 15) * 30}ms` }}
     >
       <button

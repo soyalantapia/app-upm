@@ -32,6 +32,21 @@ export function LawMap({ item }: { item: NewsItem }) {
   const sectoresByCat = useMemo(() => groupSectorsByCategory(impact.sectoresDetectados), [impact.sectoresDetectados])
   const glosario = useMemo(() => extractGlossary(item), [item])
 
+  // Para items que no son normas (ej: eventos, audiencias, sesiones), todos los
+  // métricos de impacto son 0. En esos casos, omitir el card entero — mostrarlo
+  // con muchos ceros es engañoso y ocupa real estate.
+  const hasImpactSignal = (
+    impact.articulosModificados > 0 ||
+    impact.leyesCitadasOut > 0 ||
+    impact.citasIn > 0 ||
+    impact.decretosReglamentarios > 0 ||
+    impact.resolucionesAplicativas > 0 ||
+    impact.provincias > 0 ||
+    impact.organismos > 0 ||
+    impact.sectores > 0 ||
+    fallos.length > 0
+  )
+
   const scoreColor =
     impact.scoreLabel === 'masivo' ? 'text-danger-fg bg-danger-bg/40 ring-danger-bg' :
     impact.scoreLabel === 'alto' ? 'text-warning-fg bg-warning-bg/40 ring-warning-bg' :
@@ -40,31 +55,34 @@ export function LawMap({ item }: { item: NewsItem }) {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Card · Análisis de impacto */}
-      <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-            <TrendingUp size={11} /> Análisis de impacto regulatorio
+      {/* Card · Análisis de impacto · solo si hay señal (no para eventos
+          o audiencias donde todos los métricos serían 0). */}
+      {hasImpactSignal && (
+        <div className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
+              <TrendingUp size={11} /> Análisis de impacto regulatorio
+            </div>
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ${scoreColor}`}>
+              <Sparkles size={10} /> Impacto {impact.scoreLabel} · {impact.scoreImpacto}/100
+            </span>
           </div>
-          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ring-1 ${scoreColor}`}>
-            <Sparkles size={10} /> Impacto {impact.scoreLabel} · {impact.scoreImpacto}/100
-          </span>
-        </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
-          <Metric icon={Hash} label="Modifica artículos" value={impact.articulosModificados} />
-          <Metric icon={Network} label="Cita leyes" value={impact.leyesCitadasOut} />
-          <Metric icon={GitCompareArrows} label="La citan" value={impact.citasIn} accent />
-          <Metric icon={FileText} label="Decretos reglament." value={impact.decretosReglamentarios} />
-          <Metric icon={Gavel} label="Resoluciones aplic." value={impact.resolucionesAplicativas} />
-          <Metric icon={Scale} label="Fallos asociados" value={fallosLoading ? '…' : fallos.length} accent />
-          <Metric icon={MapPin} label="Provincias" value={impact.provincias} />
-          <Metric icon={Building2} label="Organismos" value={impact.organismos} />
-          <Metric icon={Users} label="Sectores" value={impact.sectores} />
-          <Metric icon={Activity} label="Países menc." value={impact.paisesMencionados} />
-          <Metric icon={FileText} label="Palabras" value={impact.totalPalabras} small />
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+            {impact.articulosModificados > 0 && <Metric icon={Hash} label="Modifica artículos" value={impact.articulosModificados} />}
+            {impact.leyesCitadasOut > 0 && <Metric icon={Network} label="Cita leyes" value={impact.leyesCitadasOut} />}
+            {impact.citasIn > 0 && <Metric icon={GitCompareArrows} label="La citan" value={impact.citasIn} accent />}
+            {impact.decretosReglamentarios > 0 && <Metric icon={FileText} label="Decretos reglament." value={impact.decretosReglamentarios} />}
+            {impact.resolucionesAplicativas > 0 && <Metric icon={Gavel} label="Resoluciones aplic." value={impact.resolucionesAplicativas} />}
+            {(fallosLoading || fallos.length > 0) && <Metric icon={Scale} label="Fallos asociados" value={fallosLoading ? '…' : fallos.length} accent />}
+            {impact.provincias > 0 && <Metric icon={MapPin} label="Provincias" value={impact.provincias} />}
+            {impact.organismos > 0 && <Metric icon={Building2} label="Organismos" value={impact.organismos} />}
+            {impact.sectores > 0 && <Metric icon={Users} label="Sectores" value={impact.sectores} />}
+            {impact.paisesMencionados > 0 && <Metric icon={Activity} label="Países menc." value={impact.paisesMencionados} />}
+            {impact.totalPalabras > 0 && <Metric icon={FileText} label="Palabras" value={impact.totalPalabras} small />}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Card · Sectores afectados (si hay) */}
       {impact.sectoresDetectados.length > 0 && (

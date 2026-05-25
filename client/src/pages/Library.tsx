@@ -142,25 +142,25 @@ export function LibraryPage() {
         }
       />
 
-      {/* Banner de proyectos en vivo */}
+      {/* Acceso rápido al feed en vivo · Biblioteca es memoria curada,
+          este banner solo es un atajo al feed normativo del Radar. */}
       {liveLaws.length > 0 && (
-        <div className="rounded-3xl bg-gradient-to-br from-success-bg to-white p-5 ring-1 ring-success-bg">
+        <div className="rounded-2xl bg-gradient-to-br from-success-bg/30 to-white p-3.5 ring-1 ring-success-bg/60">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <div className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">
-                <Wifi size={11} /> En vivo · Proyectos legislativos
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-success-fg">
+                <Wifi size={10} /> Atajo · Feed normativo en vivo
               </div>
-              <div className="mt-1 text-[14px] font-bold text-ink-900">
-                {liveLaws.length} proyectos recientes traídos directo de fuentes oficiales
+              <div className="mt-0.5 text-[12.5px] text-ink-700">
+                {liveLaws.length} proyectos recientes en el Radar. La Biblioteca cura los documentos institucionales UPM.
               </div>
-              <div className="text-[12px] text-ink-500">Brasil (Câmara dos Deputados) · Colombia (Senado)</div>
             </div>
             <Button size="sm" variant="soft" onClick={() => navigate('/radar')}>
-              Ver en Radar
+              Ir al Radar
             </Button>
           </div>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {liveLaws.slice(0, 4).map(item => {
+            {liveLaws.slice(0, 2).map(item => {
               const c = countryByCode(item.country)
               return (
                 <button

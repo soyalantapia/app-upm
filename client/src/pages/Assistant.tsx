@@ -92,7 +92,7 @@ export function AssistantPage() {
     }
   }, [])
 
-  // RAG real sobre el corpus de 1601 normas via TF-IDF + coseno (lib/rag.ts).
+  // RAG real sobre el corpus en vivo via TF-IDF + coseno (lib/rag.ts).
   // Si la query no matchea ninguna norma con score >= 0.04, hace fallback al
   // motor de patrones legacy (lib/respond.ts) para no dejar al usuario sin nada.
   const send = async (text?: string) => {

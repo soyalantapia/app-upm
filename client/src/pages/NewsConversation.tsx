@@ -37,6 +37,7 @@ import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
 import { AuthorChips } from '@/components/AuthorChips'
 import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
+import { AddToCalendarButton } from '@/components/AddToCalendarButton'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
@@ -166,6 +167,8 @@ export function NewsConversationPage() {
             {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
             {isSaved ? 'Guardado' : 'Guardar'}
           </button>
+          {/* Agregar al calendario · solo si el item es un evento convocado */}
+          <AddToCalendarButton item={news} variant="compact" />
           <button
             onClick={() => {
               store.pushToast('info', 'El Asistente preparó preguntas sobre este tema')

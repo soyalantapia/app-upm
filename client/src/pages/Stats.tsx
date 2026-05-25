@@ -21,7 +21,14 @@ export function StatsPage() {
   const { graph } = useCitationGraph()
   const items: NewsItem[] = feed?.items ?? []
 
-  const stats = useMemo(() => computeStats(items), [items])
+  // Total de backlinks en el grafo de citas (suma de backlinks por ley)
+  const totalBacklinks = useMemo(() => {
+    if (!graph) return 0
+    let total = 0
+    for (const list of graph.backlinks.values()) total += list.length
+    return total
+  }, [graph])
+  const stats = useMemo(() => computeStats(items, totalBacklinks), [items, totalBacklinks])
   const topCitadas = useMemo(() => {
     if (!graph) return []
     return computeTrendingLaws(graph, items, 8, 365)
@@ -246,7 +253,7 @@ type ComputedStats = {
   byYear: { year: string; count: number }[]
 }
 
-function computeStats(items: NewsItem[]): ComputedStats {
+function computeStats(items: NewsItem[], totalBacklinks: number = 0): ComputedStats {
   const byCountry = new Map<CountryCode, number>()
   const byTopic = new Map<Topic, number>()
   const byYearMap = new Map<string, number>()
@@ -270,7 +277,7 @@ function computeStats(items: NewsItem[]): ComputedStats {
   return {
     altaRelevancia,
     paisesActivos: byCountry.size,
-    totalBacklinks: 0, // placeholder, sería del graph
+    totalBacklinks, // calculado real desde el grafo de citas
     byCountry,
     byTopic,
     byYear,

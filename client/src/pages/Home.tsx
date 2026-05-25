@@ -5,7 +5,6 @@ import {
   ArrowUpRight,
   BookOpen,
   Bookmark,
-  CalendarDays,
   FlaskConical,
   Library,
   MessageSquareText,
@@ -322,29 +321,10 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-gradient-to-br from-upm-700 to-upm-900 p-5 text-white shadow-floating ring-1 ring-white/10">
-            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-upm-200">Tip institucional</div>
-            <p className="mt-2 text-[13px] leading-relaxed text-white/85">
-              El Asistente UPM trabaja sobre <span className="font-bold text-white">biblioteca y normativa cargada por la institución</span>. Cuando responde con respaldo lo verás marcado como "Con fuentes UPM".
-            </p>
-            <Button size="sm" variant="secondary" className="mt-3" onClick={() => navigate('/asistente')}>
-              <Sparkles size={13} /> Probar el Asistente
-            </Button>
-          </div>
-
-          <button
-            onClick={() => navigate('/radar')}
-            className="group flex items-center gap-3 rounded-3xl bg-white p-4 text-left ring-1 ring-ink-100 shadow-card transition hover:-translate-y-0.5 hover:ring-upm-100 hover:shadow-card-hover"
-          >
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-success-bg text-success-fg">
-              <CalendarDays size={16} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-success-fg">Radar al día</div>
-              <div className="mt-0.5 text-[12.5px] text-ink-700">Actualizado hace 8 minutos · {NEWS.length} novedades</div>
-            </div>
-            <ArrowRight size={14} className="shrink-0 text-ink-300 group-hover:text-upm-600" />
-          </button>
+          {/* Tip institucional y "Radar al día" eliminados:
+              - Tip era educational solo útil en primer login (ver onboarding)
+              - "Radar al día" duplicaba el counter del hero
+              Quitarlos reduce 200+px de scroll sin perder info accionable. */}
         </div>
       </div>
     </div>

@@ -209,6 +209,7 @@ export function MercosurChoropleth() {
             <ul className="mt-2 flex flex-col gap-1">
               {COUNTRY_LABELS_ORDER
                 .map(code => ({ code, count: counts.total.get(code) ?? 0, alta: counts.alta.get(code) ?? 0 }))
+                .filter(({ count }) => count > 0)  // ocultar países sin fuentes activas
                 .sort((a, b) => b.count - a.count)
                 .map(({ code, count, alta }) => {
                   const c = countryByCode(code)

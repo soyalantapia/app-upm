@@ -36,6 +36,7 @@ import { GenealogyBreadcrumb } from '@/components/GenealogyBreadcrumb'
 import { ArticuladoPanel } from '@/components/ArticuladoPanel'
 import { SuggestedComparison } from '@/components/SuggestedComparison'
 import { JurisprudenciaPanel } from '@/components/JurisprudenciaPanel'
+import { PageTOC, type TOCSection } from '@/components/PageTOC'
 import { SimilarItemsPanel } from '@/components/SimilarItemsPanel'
 import { BacklinksPanel } from '@/components/BacklinksPanel'
 import { LawMap } from '@/components/LawMap'
@@ -395,6 +396,21 @@ export function LawsPage() {
           {/* Detalle de la ley seleccionada */}
           {active && (
             <div className="flex flex-col gap-4">
+              {/* Tabla de contenidos · sticky desktop + chip mobile */}
+              <PageTOC sections={[
+                { id: 'sec-genealogia', label: 'Genealogía' },
+                { id: 'sec-comparativa', label: 'Equivalente regional' },
+                { id: 'sec-impacto', label: 'Análisis de impacto' },
+                { id: 'sec-articulado', label: 'Articulado' },
+                { id: 'sec-tramitacion', label: 'Tramitación' },
+                { id: 'sec-presupuesto', label: 'Impacto fiscal' },
+                { id: 'sec-modificatorias', label: 'Modificatorias' },
+                { id: 'sec-similares', label: 'Normas similares' },
+                { id: 'sec-backlinks', label: 'Quién la cita' },
+                { id: 'sec-jurisprudencia', label: 'Jurisprudencia' },
+                { id: 'sec-notas', label: 'Mis notas' },
+              ] satisfies TOCSection[]} />
+
               {/* Barra de acciones */}
               <div className="flex flex-wrap items-center gap-2">
                 <button
@@ -595,47 +611,68 @@ export function LawsPage() {
                 </div>
               )}
 
-              {/* Articulado (si fue parseable) · con búsqueda within +
-                  paginación + botón "Asistente" por artículo */}
-              <ArticuladoPanel
-                articulos={ctx.articulos}
-                lawId={active.id}
-                lawTitle={active.title}
-              />
+              {/* === BLOQUE CONTEXTUAL (arriba) ===
+                  Genealogía → Comparativa → Análisis de impacto.
+                  El legislador necesita el "contexto" antes del articulado detallado. */}
 
-              {/* Genealogía regulatoria · madre → ESTA → hijas.
-                  Visible solo si la ley tiene modificatorias detectables. */}
-              <GenealogyBreadcrumb
-                item={active}
-                laws={laws}
-                onSelect={id => {
-                  const ley = laws.find(l => l.id === id)
-                  if (ley) setActive(ley)
-                }}
-              />
+              {/* Genealogía regulatoria · madre → ESTA → hijas. */}
+              <div id="sec-genealogia">
+                <GenealogyBreadcrumb
+                  item={active}
+                  laws={laws}
+                  onSelect={id => {
+                    const ley = laws.find(l => l.id === id)
+                    if (ley) setActive(ley)
+                  }}
+                />
+              </div>
 
               {/* Sugerencia automática de comparación cross-país · 1 click → comparator */}
-              <SuggestedComparison item={active} onCompare={() => setShowComparator(true)} />
+              <div id="sec-comparativa">
+                <SuggestedComparison item={active} onCompare={() => setShowComparator(true)} />
+              </div>
 
-              {/* Mapa de la Ley · panel maestro de información conectada */}
-              <LawMap item={active} />
+              {/* Mapa de la Ley · panel maestro de información conectada (impacto + sectores) */}
+              <div id="sec-impacto">
+                <LawMap item={active} />
+              </div>
+
+              {/* === BLOQUE DETALLE (debajo) === */}
+
+              {/* Articulado (si fue parseable) · con búsqueda within +
+                  paginación + botón "Asistente" por artículo */}
+              <div id="sec-articulado">
+                <ArticuladoPanel
+                  articulos={ctx.articulos}
+                  lawId={active.id}
+                  lawTitle={active.title}
+                />
+              </div>
 
               {/* Legisladores autores · si detectamos firmas conocidas */}
               <AuthorChips authorsString={active.authors} />
 
               {/* Flujo de tramitación · stepper visual */}
-              <TramitacionFlow item={active} />
+              <div id="sec-tramitacion">
+                <TramitacionFlow item={active} />
+              </div>
 
               {/* Inversión, contrataciones e impacto fiscal */}
-              <BudgetPanel item={active} />
+              <div id="sec-presupuesto">
+                <BudgetPanel item={active} />
+              </div>
 
               {/* Cronología de modificatorias · solo para leyes nacionales · lazy */}
-              <LazyMount minHeight={150}>
-                <ModificatoriasTimeline item={active} />
-              </LazyMount>
+              <div id="sec-modificatorias">
+                <LazyMount minHeight={150}>
+                  <ModificatoriasTimeline item={active} />
+                </LazyMount>
+              </div>
 
               {/* Anotaciones personales · localStorage */}
-              <NotesPanel itemId={active.id} />
+              <div id="sec-notas">
+                <NotesPanel itemId={active.id} />
+              </div>
 
               {/* Constelación regulatoria · SVG radial de conexiones · lazy */}
               <LazyMount minHeight={500}>
@@ -643,21 +680,27 @@ export function LawsPage() {
               </LazyMount>
 
               {/* Normas equivalentes en la región · TF-IDF cross-país */}
-              <SimilarItemsPanel itemId={active.id} basePath="/leyes" />
+              <div id="sec-similares">
+                <SimilarItemsPanel itemId={active.id} basePath="/leyes" />
+              </div>
 
               {/* Backlinks · normas que citan esta ley */}
-              <BacklinksPanel itemId={active.id} />
+              <div id="sec-backlinks">
+                <BacklinksPanel itemId={active.id} />
+              </div>
 
               {/* Jurisprudencia · fallos de CSJN/STF/SCJ que aplican esta ley.
                   Lazy fetch desde datasets en public/data. No renderiza si
                   no hay fallos relacionados. */}
-              <JurisprudenciaPanel itemId={active.id} />
+              <div id="sec-jurisprudencia">
+                <JurisprudenciaPanel itemId={active.id} />
+              </div>
 
               {/* Sumario completo */}
               {active.fullText && active.fullText.length > 0 && (
                 <div>
                   <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Sumario íntegro</div>
-                  <p className="mt-2 whitespace-pre-line text-[14.5px] leading-relaxed text-ink-800">
+                  <p className="mt-2 whitespace-pre-line break-words text-[14.5px] leading-relaxed text-ink-800">
                     {active.fullText}
                   </p>
                 </div>
