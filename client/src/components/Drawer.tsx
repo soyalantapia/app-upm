@@ -1,7 +1,8 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export function Drawer({
   open,
@@ -18,18 +19,17 @@ export function Drawer({
   children: ReactNode
   width?: 'md' | 'lg' | 'xl'
 }) {
+  const panelRef = useRef<HTMLDivElement>(null)
+  // Focus trap · Escape + Tab cycling
+  useFocusTrap(panelRef, open, onClose)
+
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
     return () => {
-      window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
     }
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
 
@@ -44,6 +44,7 @@ export function Drawer({
         className="animate-fade-in absolute inset-0 bg-upm-900/65 backdrop-blur"
       />
       <div
+        ref={panelRef}
         className={cn(
           'animate-slide-in-right absolute inset-y-0 right-0 flex w-full flex-col bg-white shadow-floating ring-1 ring-ink-100',
           widthCls,

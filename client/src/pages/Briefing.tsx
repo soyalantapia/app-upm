@@ -41,8 +41,11 @@ function withinWindow(date: string, win: Window): boolean {
 
 export function BriefingPage() {
   const navigate = useNavigate()
-  const { feed } = useLiveFeed()
+  const { feed, loading: feedLoading } = useLiveFeed()
   const items = feed?.items ?? []
+  // Estados clave: cargando feed vs feed cargado pero corpus vacío
+  const isInitialLoading = feedLoading && !feed
+  const isCorpusEmpty = !feedLoading && feed && items.length === 0
 
   const [searchParams] = useSearchParams()
   // Deep-link · ?window=7d&topic=all activa el modo Briefing Semanal automático
@@ -124,6 +127,41 @@ export function BriefingPage() {
 
   const handlePrint = () => {
     window.print()
+  }
+
+  // Loading state · feed inicial
+  if (isInitialLoading) {
+    return (
+      <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
+        <div className="flex items-center gap-2 text-[13px] text-ink-500">
+          <span className="h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
+          Trayendo normas oficiales del MERCOSUR…
+        </div>
+        <div className="skeleton h-32 w-full rounded-3xl" />
+        <div className="skeleton h-64 w-full rounded-3xl" />
+      </div>
+    )
+  }
+
+  // Empty state · corpus vacío
+  if (isCorpusEmpty) {
+    return (
+      <div className="mx-auto flex w-full max-w-[640px] flex-col items-center gap-4 px-4 py-16 text-center">
+        <div className="grid h-12 w-12 place-items-center rounded-2xl bg-warning-bg text-warning-fg">
+          <Sparkles size={22} />
+        </div>
+        <h2 className="text-[18px] font-bold text-ink-900">No hay normas en el corpus</h2>
+        <p className="text-[13px] text-ink-500">
+          Las fuentes oficiales no devolvieron novedades en este momento. Probá actualizar en un rato.
+        </p>
+        <button
+          onClick={() => navigate('/radar')}
+          className="rounded-full bg-upm-700 px-4 py-2 text-[13px] font-bold text-white shadow-cta hover:bg-upm-800"
+        >
+          Volver al Radar
+        </button>
+      </div>
+    )
   }
 
   return (

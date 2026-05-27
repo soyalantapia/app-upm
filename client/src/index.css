@@ -18,11 +18,15 @@
   --color-upm-800: #062b4d;
   --color-upm-900: #03182d;
 
-  /* Texto */
+  /* Texto · ink-500 es el mínimo legible AA sobre blanco (5.1:1).
+     ink-400/300 son SOLO para iconos decorativos y elementos no-texto. */
   --color-ink-900: #111827;
-  --color-ink-700: #374151;
-  --color-ink-500: #6b7280;
-  --color-ink-300: #9ca3af;
+  --color-ink-800: #1f2937;  /* AAA · 13.8:1 */
+  --color-ink-700: #374151;  /* AAA · 9.4:1 */
+  --color-ink-600: #4b5563;  /* AA · 6.7:1 */
+  --color-ink-500: #6b7280;  /* AA · 5.1:1 · MÍNIMO LEGIBLE para texto */
+  --color-ink-400: #9ca3af;  /* solo iconos · 3.7:1 NO AA para texto */
+  --color-ink-300: #d1d5db;  /* placeholder / disabled · 2.5:1 */
   --color-ink-200: #d1d5db;
   --color-ink-100: #e5e7eb;
   --color-ink-50: #f3f4f6;

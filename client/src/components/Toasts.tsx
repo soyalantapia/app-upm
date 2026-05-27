@@ -18,12 +18,17 @@ const TONE_RING = {
 
 export function Toasts() {
   const toasts = useStore(s => s.toasts)
-  if (!toasts.length) return null
   return (
-    <div className="pointer-events-none fixed top-4 left-1/2 z-[80] flex w-full max-w-sm -translate-x-1/2 flex-col gap-2 px-4">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="false"
+      className="pointer-events-none fixed top-4 left-1/2 z-[80] flex w-full max-w-sm -translate-x-1/2 flex-col gap-2 px-4"
+    >
       {toasts.map(t => (
         <div
           key={t.id}
+          role={t.tone === 'danger' ? 'alert' : undefined}
           className={cn(
             'animate-toast-in pointer-events-auto flex items-start gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-toast ring-1',
             TONE_RING[t.tone],

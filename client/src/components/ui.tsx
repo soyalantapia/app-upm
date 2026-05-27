@@ -49,15 +49,33 @@ export function Card({
   className,
   children,
   interactive,
+  onClick,
+  onKeyDown,
   ...props
 }: HTMLAttributes<HTMLDivElement> & { interactive?: boolean }) {
+  // Cards interactivas: keyboard-navigable via Enter/Space, role=button,
+  // tabIndex=0 y focus visible.
+  const handleKeyDown = interactive && onClick
+    ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          ;(onClick as (e: React.MouseEvent<HTMLDivElement>) => void)(e as unknown as React.MouseEvent<HTMLDivElement>)
+        }
+        onKeyDown?.(e)
+      }
+    : onKeyDown
+
   return (
     <div
       className={cn(
         'rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card transition-all duration-300 ease-out',
-        interactive && 'hover:-translate-y-0.5 hover:shadow-card-hover hover:ring-upm-100 cursor-pointer',
+        interactive && 'hover:-translate-y-0.5 hover:shadow-card-hover hover:ring-upm-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-upm-500',
         className,
       )}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role={interactive && onClick ? 'button' : undefined}
+      tabIndex={interactive && onClick ? 0 : undefined}
       {...props}
     >
       {children}

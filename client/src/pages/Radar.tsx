@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   ArrowDownUp,
   Boxes,
@@ -64,7 +65,8 @@ export function RadarPage() {
   const NEWS = feed?.items ?? []
   const liveStatus = feed?.status ?? 'mock'
   const liveSources = feed?.sources ?? []
-  const [q, setQ] = useState('')
+  const [searchParams] = useSearchParams()
+  const [q, setQ] = useState(() => searchParams.get('q') ?? '')
   // Debounced para no re-filtrar 1700+ items en cada keystroke
   const debouncedQ = useDebounced(q, 200)
   const [country, setCountry] = useState<CountryCode | 'all'>('all')
@@ -136,6 +138,9 @@ export function RadarPage() {
   // Loading inicial mientras se trae el feed real
   const isLoadingInitial = feedLoading && !feed
 
+  // Now estable por mount · evita Date.now() durante render (react-hooks/purity)
+  const now = useMemo(() => Date.now(), [])
+
   const filtered = useMemo(() => {
     const term = debouncedQ.trim().toLowerCase()
     let items = NEWS.filter(n => {
@@ -185,7 +190,7 @@ export function RadarPage() {
     } else if (preset === 'hot') {
       items = items.filter(n => n.relevance === 'alta')
     } else if (preset === 'recent-sancionadas') {
-      const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
+      const monthAgo = now - 30 * 24 * 60 * 60 * 1000
       items = items.filter(n => {
         const isLey = /^(?:ar|uy)-ley-/.test(n.id) || /sancion|promulgad/i.test(n.status ?? '')
         const d = new Date(n.date ?? '').getTime()
@@ -195,7 +200,7 @@ export function RadarPage() {
       const otrosPaises = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|MERCOSUR|MERCOSUL)\b/i
       items = items.filter(n => otrosPaises.test((n.fullText ?? '') + ' ' + (n.title ?? '')))
     } else if (preset === 'this-week') {
-      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+      const weekAgo = now - 7 * 24 * 60 * 60 * 1000
       items = items.filter(n => {
         const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
         return !Number.isNaN(d) && d >= weekAgo
@@ -219,8 +224,8 @@ export function RadarPage() {
       (relevance === 'all' || n.relevance === relevance) &&
       (organismo === 'all' || (n.authors ?? '').includes(organismo)),
     )
-    const monthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
-    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+    const monthAgo = now - 30 * 24 * 60 * 60 * 1000
+    const weekAgo = now - 7 * 24 * 60 * 60 * 1000
     const otrosPaises = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|MERCOSUR|MERCOSUL)\b/i
     const userTopics = new Set(prefs?.topics ?? [])
     const userCountries = new Set(prefs?.countries ?? [])

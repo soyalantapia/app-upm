@@ -144,9 +144,12 @@ function extractFeedEvents(items: NewsItem[] | undefined, todayMs: number, horiz
 
 export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
   const navigate = useNavigate()
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const todayMs = today.getTime()
+  // Today estable por mount · evita new Date() durante render (react-hooks/purity)
+  const { today, todayMs } = useMemo(() => {
+    const d = new Date()
+    d.setHours(0, 0, 0, 0)
+    return { today: d, todayMs: d.getTime() }
+  }, [])
 
   // Combina eventos institucionales fijos (cumbres, plazos) con eventos
   // automáticos detectados del feed (convocatorias, audiencias, sesiones).

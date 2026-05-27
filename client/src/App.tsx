@@ -3,6 +3,7 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider, RequireAuth, useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
 import { UIProvider } from '@/lib/ui-provider'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { AppShell } from '@/layouts/AppShell'
 import { Toasts } from '@/components/Toasts'
 
@@ -45,11 +46,12 @@ function OnboardingGate({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <HashRouter>
-        <UIProvider>
-        <Toasts />
-        <Routes>
+    <ErrorBoundary>
+      <AuthProvider>
+        <HashRouter>
+          <UIProvider>
+          <Toasts />
+          <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<SignupPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
@@ -84,9 +86,10 @@ export default function App() {
             <Route path="perfil" element={<Suspense fallback={<PageLoader />}><ProfilePage /></Suspense>} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        </UIProvider>
-      </HashRouter>
-    </AuthProvider>
+          </Routes>
+          </UIProvider>
+        </HashRouter>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }

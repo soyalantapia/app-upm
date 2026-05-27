@@ -19,10 +19,9 @@ function formatToday(): string {
   return new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'long' })
 }
 
-function computeStats(items: NewsItem[]) {
-  const now = Date.now()
+function computeStats(items: NewsItem[], now: number) {
   const week = now + 7 * 24 * 60 * 60 * 1000
-  const today = new Date()
+  const today = new Date(now)
   today.setHours(0, 0, 0, 0)
 
   // Alertas urgentes: alta relevancia + dataPublicacao hoy o futuro
@@ -54,7 +53,9 @@ function computeStats(items: NewsItem[]) {
 export function HomeHero({ items, userName }: { items: NewsItem[]; userName: string }) {
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
-  const stats = useMemo(() => computeStats(items), [items])
+  // Now estable por mount · evita Date.now() durante render (react-hooks/purity)
+  const now = useMemo(() => Date.now(), [])
+  const stats = useMemo(() => computeStats(items, now), [items, now])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()

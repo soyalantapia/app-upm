@@ -259,17 +259,31 @@ export function AssistantPage() {
             />
           ))}
           {thinking && (
-            <div className="flex items-center gap-2 px-1 text-[12.5px] text-ink-500">
-              <div className="flex gap-1">
-                {[0, 1, 2].map(i => (
-                  <span
-                    key={i}
-                    className="block h-1.5 w-1.5 animate-pulse-soft rounded-full bg-upm-400"
-                    style={{ animationDelay: `${i * 0.15}s` }}
-                  />
-                ))}
+            <div className="flex flex-col gap-3">
+              {/* Indicador "pensando" enriquecido · skeleton + texto explicativo */}
+              <div className="w-full max-w-[92%] rounded-3xl rounded-tl-md bg-upm-50/40 p-4 ring-1 ring-upm-100">
+                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
+                  <div className="flex gap-1">
+                    {[0, 1, 2].map(i => (
+                      <span
+                        key={i}
+                        className="block h-1.5 w-1.5 animate-pulse-soft rounded-full bg-upm-500"
+                        style={{ animationDelay: `${i * 0.15}s` }}
+                      />
+                    ))}
+                  </div>
+                  Buscando en el corpus
+                </div>
+                <div className="mt-3 flex flex-col gap-2">
+                  <div className="skeleton h-3 w-3/4 rounded" />
+                  <div className="skeleton h-3 w-full rounded" />
+                  <div className="skeleton h-3 w-5/6 rounded" />
+                </div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <div className="skeleton h-12 rounded-xl" />
+                  <div className="skeleton h-12 rounded-xl" />
+                </div>
               </div>
-              Buscando fuentes UPM…
             </div>
           )}
         </div>
