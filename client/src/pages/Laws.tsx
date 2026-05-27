@@ -43,6 +43,7 @@ import { RegulatoryConstellation } from '@/components/RegulatoryConstellation'
 import { AuthorChips } from '@/components/AuthorChips'
 import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
+import { OverflowActions } from '@/components/OverflowActions'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
@@ -412,14 +413,9 @@ export function LawsPage() {
                 { id: 'sec-notas', label: 'Mis notas' },
               ] satisfies TOCSection[]} />
 
-              {/* Barra de acciones */}
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  onClick={() => shareLink(active.title, '/leyes')}
-                  className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
-                >
-                  <Share2 size={12} /> Compartir
-                </button>
+              {/* Barra de acciones · 3 visibles (Guardar, Comparar, Asistente)
+                  + Más con resto (Compartir, Multi-país, Watch, Export). */}
+              <OverflowActions visibleCount={3}>
                 <button
                   onClick={handleSave}
                   className={
@@ -437,20 +433,8 @@ export function LawsPage() {
                   className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-upm-700 ring-1 ring-upm-200 shadow-cta transition hover:-translate-y-0.5 hover:bg-upm-50"
                   title="Comparar esta ley con su equivalente en otro país del Mercosur"
                 >
-                  <GitCompareArrows size={12} />
-                  <span className="hidden sm:inline">Comparar con…</span>
-                  <span className="sm:hidden">Comparar</span>
+                  <GitCompareArrows size={12} /> Comparar
                 </button>
-                <button
-                  onClick={() => setShowMultiComparator(true)}
-                  className="group inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-upm-700 ring-1 ring-upm-200 shadow-cta transition hover:-translate-y-0.5 hover:bg-upm-50"
-                  title="Comparar con hasta 3 países a la vez"
-                >
-                  <GitCompareArrows size={12} />
-                  <span className="hidden sm:inline">Multi-país</span>
-                </button>
-                <WatchToggleButton item={active} variant="compact" />
-                <ExportLawButton item={active} variant="compact" />
                 <button
                   onClick={() => {
                     store.pushToast('info', 'El Asistente preparó preguntas sobre esta ley')
@@ -458,12 +442,26 @@ export function LawsPage() {
                   }}
                   className="group inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3 py-1.5 text-[12px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
                 >
-                  <MessageSquareText size={12} />
-                  <span className="hidden sm:inline">Hablar con Asistente</span>
-                  <span className="sm:hidden">Asistente</span>
+                  <MessageSquareText size={12} /> Asistente
                   <span className="transition group-hover:translate-x-0.5">→</span>
                 </button>
-              </div>
+                {/* En "Más" ↓ */}
+                <button
+                  onClick={() => shareLink(active.title, '/leyes')}
+                  className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
+                >
+                  <Share2 size={12} /> Compartir
+                </button>
+                <button
+                  onClick={() => setShowMultiComparator(true)}
+                  className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-upm-700 ring-1 ring-upm-200 hover:bg-upm-50"
+                  title="Comparar con hasta 3 países a la vez"
+                >
+                  <GitCompareArrows size={12} /> Multi-país
+                </button>
+                <WatchToggleButton item={active} variant="compact" />
+                <ExportLawButton item={active} variant="compact" />
+              </OverflowActions>
 
               {/* Identificación + Fuente verificada · barra compacta */}
               <div className="flex flex-col gap-2 rounded-2xl bg-white p-3 ring-1 ring-ink-100 shadow-card sm:p-3.5">

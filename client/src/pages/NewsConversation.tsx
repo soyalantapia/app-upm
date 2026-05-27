@@ -39,6 +39,7 @@ import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
 import { AddToCalendarButton } from '@/components/AddToCalendarButton'
 import { OverflowActions } from '@/components/OverflowActions'
+import { looksPortuguese, translatePtEs } from '@/lib/pt-es'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
@@ -246,6 +247,16 @@ export function NewsConversationPage() {
         <h1 className="text-[24px] font-bold leading-tight tracking-tight text-ink-900 sm:text-[28px]">
           {news.title}
         </h1>
+        {/* Traducción aproximada al ES si el título está en portugués */}
+        {looksPortuguese(news.title) && (() => {
+          const traducido = translatePtEs(news.title)
+          if (traducido === news.title) return null
+          return (
+            <p className="text-[14px] italic leading-relaxed text-ink-500" lang="es" title="Traducción aproximada">
+              ≈ {traducido}
+            </p>
+          )
+        })()}
 
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge tone="brand"><Globe size={10} /> {country.flag} {country.name}</Badge>

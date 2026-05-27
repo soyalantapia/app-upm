@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { reportError } from '@/lib/telemetry'
 
 // ErrorBoundary · React class component que captura errores de cualquier
 // componente hijo y muestra un fallback amigable en lugar de la blank
@@ -22,9 +23,10 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // En prod esto iría a Sentry / Datadog
-    // eslint-disable-next-line no-console
-    console.error('[ErrorBoundary]', error, info.componentStack)
+    reportError(error, {
+      context: 'ErrorBoundary',
+      componentStack: info.componentStack ?? undefined,
+    })
   }
 
   reset = () => {
