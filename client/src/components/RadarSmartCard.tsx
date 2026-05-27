@@ -15,6 +15,7 @@ import { countryByCode, topicById } from '@/lib/data'
 import { formatDate, formatDateTime } from '@/lib/format'
 import { extractContext } from '@/lib/extract-context'
 import { buildRelevanceHint, type RelevanceHint } from '@/components/RelevanciaPanel'
+import { looksPortuguese, translatePtEs } from '@/lib/pt-es'
 import type { NewsItem, Preferences } from '@/lib/types'
 
 const HINT_STYLES: Record<RelevanceHint['tone'], { bg: string; ring: string; text: string; icon: string }> = {
@@ -147,6 +148,17 @@ export function RadarSmartCard({
           >
             <Highlighted text={item.title} query={searchQuery} />
           </h3>
+          {/* Traducción inline PT→ES si el título parece portugués (cards BR).
+              Ayuda al legislador hispanohablante sin romper el original oficial. */}
+          {density !== 'compact' && looksPortuguese(item.title) && (() => {
+            const traducido = translatePtEs(item.title)
+            if (traducido === item.title) return null
+            return (
+              <p className="mt-0.5 text-[11.5px] italic text-ink-500" lang="es" title="Traducción aproximada">
+                ≈ {traducido.length > 90 ? traducido.slice(0, 90) + '…' : traducido}
+              </p>
+            )
+          })()}
 
           {/* Resumen 1-line · solo en comfortable, suplanta al excerpt original */}
           {density !== 'compact' && oneLine && (

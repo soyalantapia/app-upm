@@ -8,6 +8,7 @@ import { DiffSinceLastVisit } from '@/components/DiffSinceLastVisit'
 import { AgendaMercosur } from '@/components/AgendaMercosur'
 import { HomeHero } from '@/components/HomeHero'
 import { HomeRadarPreview } from '@/components/HomeRadarPreview'
+import { HomeTour } from '@/components/HomeTour'
 
 // Home V2 · Dashboard del legislador
 //
@@ -36,6 +37,9 @@ export function HomePage() {
 
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[900px] flex-col gap-5 px-4 py-5 sm:px-6 sm:py-8">
+      {/* Tour de bienvenida · solo aparece la primera vez */}
+      <HomeTour />
+
       {/* Hero compacto · saludo + search + 3 stats HOY */}
       <HomeHero items={NEWS} userName={lastName} />
 

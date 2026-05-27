@@ -13,6 +13,7 @@ import {
   RefreshCw,
   Search,
   Stamp,
+  Upload,
   Wifi,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -22,6 +23,8 @@ import { COUNTRIES, DOCUMENTS, TOPICS, countryByCode, topicById } from '@/lib/da
 import type { CountryCode, DocStatus, DocType, Topic } from '@/lib/types'
 import { useUI } from '@/lib/ui-provider'
 import { store, useStore } from '@/lib/store'
+import { useAuth } from '@/lib/auth'
+import { can } from '@/lib/permissions'
 import { useLiveFeed } from '@/lib/use-live-feed'
 
 type CategoryKey = 'all' | 'convenios' | 'actas' | 'comunicados' | 'informes' | 'documentos-base' | 'normativa' | 'academico'
@@ -56,6 +59,8 @@ function matchesCategory(doc: { type: DocType; status: DocStatus }, category: Ca
 export function LibraryPage() {
   const navigate = useNavigate()
   const { openDocument } = useUI()
+  const { operator } = useAuth()
+  const canWrite = can(operator?.cargo, 'library:write')
   const saved = useStore(s => s.saved)
   const prefs = useStore(s => s.prefs)
   const savedRefs = useMemo(
@@ -125,10 +130,21 @@ export function LibraryPage() {
             Documentos curados por UPM · convenios, actas, informes por foro.
           </p>
         </div>
-        <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
-          <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} />
-          <span className="hidden sm:inline">Actualizar</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          {canWrite && (
+            <Button
+              size="sm"
+              onClick={() => store.pushToast('info', 'Subida de documentos: disponible para Secretaría UPM en versión completa')}
+              title="Solo Secretaría UPM y Admin"
+            >
+              <Upload size={13} /> Subir documento
+            </Button>
+          )}
+          <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>
+            <RefreshCw size={12} className={feedLoading ? 'animate-spin' : ''} />
+            <span className="hidden sm:inline">Actualizar</span>
+          </Button>
+        </div>
       </div>
 
       {/* Acceso rápido al feed en vivo · Biblioteca es memoria curada,

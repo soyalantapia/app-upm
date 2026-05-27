@@ -60,7 +60,7 @@ const DICT: [RegExp, string][] = [
   [/\be\b/g, 'y'],
 ]
 
-const PT_HINT = /(çã|ção|tação|õe|ção|Pública|Não|São|seu|sua|seus|suas|pelos|pelas|aos)\b/
+const PT_HINT = /(çã|ção|tação|õe|ção|Pública|Não|São|Sessão|Sanção|Comissão|Audiência|Câmara|Ministério|Decreto-Lei|seu|sua|seus|suas|pelos|pelas|aos)/i
 
 /**
  * Traduce aproximadamente un texto en portugués al español.

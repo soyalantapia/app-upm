@@ -38,6 +38,7 @@ import { AuthorChips } from '@/components/AuthorChips'
 import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
 import { AddToCalendarButton } from '@/components/AddToCalendarButton'
+import { OverflowActions } from '@/components/OverflowActions'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
@@ -147,15 +148,8 @@ export function NewsConversationPage() {
         <Link to="/radar" className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-upm-700 hover:text-upm-800">
           <ArrowLeft size={14} /> Volver al Radar
         </Link>
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => shareLink(news.title, `/radar/${news.id}`)}
-            className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
-          >
-            <Share2 size={12} /> Compartir
-          </button>
-          <WatchToggleButton item={news} variant="compact" />
-          <ExportLawButton item={news} variant="compact" />
+        {/* Action bar compacta · 3 visibles + Más con resto */}
+        <OverflowActions visibleCount={3}>
           <button
             onClick={handleSave}
             className={
@@ -168,8 +162,12 @@ export function NewsConversationPage() {
             {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
             {isSaved ? 'Guardado' : 'Guardar'}
           </button>
-          {/* Agregar al calendario · solo si el item es un evento convocado */}
-          <AddToCalendarButton item={news} variant="compact" />
+          <button
+            onClick={() => shareLink(news.title, `/radar/${news.id}`)}
+            className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"
+          >
+            <Share2 size={12} /> Compartir
+          </button>
           <button
             onClick={() => {
               store.pushToast('info', 'El Asistente preparó preguntas sobre este tema')
@@ -177,12 +175,14 @@ export function NewsConversationPage() {
             }}
             className="group inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3 py-1.5 text-[12px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
           >
-            <MessageSquareText size={12} />
-            <span className="hidden sm:inline">Hablar con Asistente</span>
-            <span className="sm:hidden">Asistente</span>
+            <MessageSquareText size={12} /> Asistente
             <span className="transition group-hover:translate-x-0.5">→</span>
           </button>
-        </div>
+          {/* En "Más" ↓ */}
+          <WatchToggleButton item={news} variant="compact" />
+          <ExportLawButton item={news} variant="compact" />
+          <AddToCalendarButton item={news} variant="compact" />
+        </OverflowActions>
       </div>
 
       {/* Identificación + Fuente verificada · barra compacta sobre el article */}

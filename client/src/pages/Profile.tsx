@@ -20,6 +20,7 @@ import {
 import { Badge, Button, Card, Chip } from '@/components/ui'
 import { Drawer } from '@/components/Drawer'
 import { useAuth } from '@/lib/auth'
+import { roleOf, roleLabel } from '@/lib/permissions'
 import { useStore, store, type Alert } from '@/lib/store'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, Topic } from '@/lib/types'
@@ -91,6 +92,9 @@ export function ProfilePage() {
                 <h2 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900">{operator?.name}</h2>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-[12.5px] text-ink-500">
                   <span className="inline-flex items-center gap-1"><Building2 size={13} /> {operator?.cargo}</span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-upm-50 px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-upm-700 ring-1 ring-upm-100" title="Rol derivado del cargo">
+                    {roleLabel(roleOf(operator?.cargo))}
+                  </span>
                   <span>·</span>
                   <span className="inline-flex items-center gap-1"><Globe size={13} /> {countryByCode(operator?.pais ?? 'UY').flag} {countryByCode(operator?.pais ?? 'UY').name}</span>
                   <span>·</span>
