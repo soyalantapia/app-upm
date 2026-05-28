@@ -1,0 +1,87 @@
+{
+  "fuente": "Asamblea Legislativa Plurinacional del Estado Plurinacional de Bolivia",
+  "url": "https://www.abo.gob.bo",
+  "fetchedAt": "2026-05-23T00:00:00Z",
+  "items": [
+    {
+      "id": "asamblea-bo-001",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 1.641 de Integración al Corredor Bioceánico Central y Fondo de Infraestructura",
+      "fecha": "2026-05-19",
+      "organo": "Asamblea Legislativa Plurinacional",
+      "ementa": "Aprueba el marco normativo para la participación del Estado Plurinacional de Bolivia en el Corredor Bioceánico Central que une los puertos de Ilo y Matarani en el Pacífico con Santos y Paranaguá en el Atlántico a través del territorio boliviano. Crea el Fondo Nacional de Infraestructura de Integración (FONII) con USD 800 millones provenientes de regalías del litio y el gas natural. Establece el Comité Nacional del Corredor Bioceánico con representación del Ministerio de Obras Públicas, la ABC y las gobernaciones de Santa Cruz, Beni y Pando. Declara de prioridad nacional las rutas nacionales 4, 7 y 10 que conforman el corredor."
+    },
+    {
+      "id": "asamblea-bo-002",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 1.638 del Litio: Industrialización y Exportación de Derivados de la Cadena del Litio",
+      "fecha": "2026-05-17",
+      "organo": "Asamblea Legislativa Plurinacional",
+      "ementa": "Establece el marco legal para la industrialización del litio boliviano y la exportación de carbonato de litio, hidróxido de litio y baterías de litio-ion. Crea la Empresa Boliviana de Industrialización del Litio (EBIL), dependiente del Ministerio de Hidrocarburos y Energías. Fija el porcentaje mínimo de valor agregado nacional en el 30% para los productos derivados del litio exportados. Establece la regalía del 15% sobre el valor de exportación de derivados. Regula las asociaciones estratégicas con empresas extranjeras de tecnología de baterías manteniendo la propiedad estatal del 51%. Bolivia tiene el 42% de las reservas mundiales de litio en el Salar de Uyuni."
+    },
+    {
+      "id": "asamblea-bo-003",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 1.635 de Acceso al Mar: Agenda Reivindicativa y Diplomacia Bilateral con Chile",
+      "fecha": "2026-05-14",
+      "organo": "Asamblea Legislativa Plurinacional",
+      "ementa": "Refuerza la política de Estado sobre la reivindicación del acceso soberano al Océano Pacífico, perdida tras la Guerra del Pacífico de 1879. Instruye al Ministerio de Relaciones Exteriores a activar los mecanismos del fallo de la Corte Internacional de Justicia de 2018 para continuar las negociaciones bilaterales. Crea el Fondo de la Causa Marítima para financiar la diplomacia internacional. Establece el Día del Mar el 23 de marzo como jornada de reflexión nacional. Encomienda al Canciller continuar las negociaciones en el marco del Tratado de 1904 y resoluciones de la OEA."
+    },
+    {
+      "id": "asamblea-bo-004",
+      "tipoDocumento": "DECRETO",
+      "title": "Decreto Supremo N° 5.219: Programa de Agua Segura y Saneamiento Rural para comunidades indígenas del Chaco",
+      "fecha": "2026-05-12",
+      "organo": "Poder Ejecutivo",
+      "ementa": "Aprueba el Programa de Agua Segura y Saneamiento Rural (PASAR-Chaco) con una inversión de Bs. 450 millones para garantizar acceso al agua potable y sistemas de saneamiento básico en 120 comunidades de los pueblos guaraní, weenhayek y tapiete del Gran Chaco boliviano. El programa es ejecutado por el Ministerio de Medio Ambiente y Agua en coordinación con las gobernaciones de Tarija, Chuquisaca y Santa Cruz. Contempla la instalación de 80 sistemas de agua y 200 baños ecológicos. Financiado con fondos del BID, el BNDES y el Tesoro General de la Nación."
+    },
+    {
+      "id": "asamblea-bo-005",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 1.629 de Educación Intracultural, Intercultural y Plurilingüe · Reforma del Modelo Educativo",
+      "fecha": "2026-05-09",
+      "organo": "Asamblea Legislativa Plurinacional",
+      "ementa": "Reforma la Ley Avelino Siñani-Elizardo Pérez (Ley N° 070) para fortalecer la educación intracultural, intercultural y plurilingüe en el marco de la Constitución Política del Estado Plurinacional. Establece la obligatoriedad de la enseñanza en lengua originaria (aimara, quechua, guaraní u otra) en el primer ciclo escolar en las zonas donde se habla mayoritariamente dicha lengua. Crea el Instituto Plurinacional de Educación e Investigación en Lenguas y Culturas (IPEILC). Introduce la tecnología productiva comunitaria como área curricular obligatoria en el nivel secundario."
+    },
+    {
+      "id": "asamblea-bo-006",
+      "tipoDocumento": "RESOLUCION",
+      "title": "Resolución Cameral sobre la situación del Río Pilcomayo y acuerdos con Argentina y Paraguay",
+      "fecha": "2026-05-07",
+      "organo": "Cámara de Diputados",
+      "ementa": "La Cámara de Diputados instruye al Ministerio de Relaciones Exteriores a convocar con urgencia a una reunión de la Comisión Trinacional del Río Pilcomayo (Bolivia-Argentina-Paraguay) por la crisis de sedimentación que amenaza la navegabilidad del río y el acceso al agua de las comunidades del Gran Chaco. Solicita al BID y la CAF financiamiento urgente para obras de dragado y regularización del cauce. Exhorta al Canciller a presentar la situación ante la Secretaría General de la OEA. El Pilcomayo es fundamental para los pueblos originarios del Chaco boliviano, argentino y paraguayo."
+    },
+    {
+      "id": "asamblea-bo-007",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 1.625 de Fomento a las Energías Alternativas y Transición Energética",
+      "fecha": "2026-05-03",
+      "organo": "Asamblea Legislativa Plurinacional",
+      "ementa": "Establece el marco regulatorio para la promoción y desarrollo de energías alternativas en Bolivia: solar, eólica, geotérmica y pequeñas centrales hidroeléctricas. Crea el Plan Nacional de Transición Energética (PNTE 2026-2035) con la meta de alcanzar el 20% de generación renovable al 2030. Establece el Bono Solar para comunidades rurales aisladas sin conexión a la red eléctrica. Crea el Fondo de Energía Renovable (FER) con aportes de las empresas del sector hidrocarburos. Modifica la Ley de Electricidad para permitir la generación distribuida y el net metering residencial."
+    },
+    {
+      "id": "asamblea-bo-008",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 1.620 de Protección de la Amazonia Boliviana y Territorios Indígenas",
+      "fecha": "2026-04-29",
+      "organo": "Asamblea Legislativa Plurinacional",
+      "ementa": "Declara de máxima protección los territorios indígenas de la Amazonia boliviana (Beni, Pando y norte de La Paz) frente a la expansión de la frontera agrícola, la tala ilegal y el narcotráfico. Crea el Sistema de Áreas Protegidas Amazónicas (SAPA) con 18 territorios intangibles. Establece el delito de ecocidio amazónico con penas de hasta 15 años de prisión. Fomenta el manejo comunitario de bosques como alternativa económica. Se enmarca en el Acuerdo de Leticia sobre Amazonia (2019) y el Acuerdo de Glasgow sobre bosques (COP26). Incluye a los pueblos tacana, mojeño, yuracaré y tsimane entre los beneficiarios."
+    },
+    {
+      "id": "asamblea-bo-009",
+      "tipoDocumento": "DECRETO",
+      "title": "Decreto Supremo N° 5.208: Exportaciones de Gas Natural al Brasil — renovación del contrato GSA",
+      "fecha": "2026-04-25",
+      "organo": "Poder Ejecutivo",
+      "ementa": "Aprueba los términos de renovación del Contrato de Compraventa de Gas Natural (GSA) entre YPFB y Petrobras para la exportación de gas boliviano al Brasil por el gasoducto GASBOL hasta 2035. Fija el volumen garantizado de entrega en 20 MMm3/día con un precio ligado al WTI con factor de ajuste. Establece el mecanismo de revisión de precios trimestral y las penalidades por incumplimiento. El gas boliviano abastece a los estados de São Paulo, Mato Grosso do Sul, Mato Grosso, Goiás y el Distrito Federal. Es el mayor contrato de exportación de energía de Bolivia y clave para la integración energética del Mercosur."
+    },
+    {
+      "id": "asamblea-bo-010",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 1.615 de Derechos de las Mujeres Indígenas y Eliminación de la Violencia Comunitaria",
+      "fecha": "2026-04-21",
+      "organo": "Asamblea Legislativa Plurinacional",
+      "ementa": "Reconoce los derechos específicos de las mujeres indígenas bolivianas en el marco del pluralismo jurídico constitucional. Establece la obligatoriedad del consentimiento informado en prácticas comunitarias que afecten los derechos de las mujeres. Crea el Servicio Plurinacional de la Mujer Indígena (SEPLAMI) con representación en todas las TIOC (Territorios Indígena Originario Campesinos). Penaliza las prácticas de chamaneo forzado, retiro del derecho a la tierra y violencia basada en usos y costumbres. Contempla centros de atención especializados en 8 departamentos. Armoniza la Ley N° 348 con el Convenio 169 de la OIT."
+    }
+  ]
+}

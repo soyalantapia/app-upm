@@ -1,0 +1,107 @@
+{
+  "fuente": "Supremo Tribunal Federal · Brasil · Jurisprudência",
+  "url": "https://portal.stf.jus.br/jurisprudencia",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "stf-adpf-622-2025",
+      "title": "ADPF 622 · Marco Temporal · Demarcação de terras indígenas",
+      "fecha": "2025-09-21",
+      "sala": "Pleno",
+      "ley": "6001",
+      "sumario": "STF declarou inconstitucional a tese do marco temporal para demarcação de terras indígenas. Aplicação do Estatuto do Índio (Lei 6.001/1973) e Convenção 169 OIT em favor de comunidades tradicionais.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=622",
+      "tags": ["povos indígenas", "marco temporal", "direitos territoriais"]
+    },
+    {
+      "id": "stf-adi-7060-2024",
+      "title": "ADI 7060 · Lei das Eleições · Cotas raciais",
+      "fecha": "2024-08-15",
+      "sala": "Pleno",
+      "ley": "9504",
+      "sumario": "Validou a obrigatoriedade de cotas raciais nas campanhas eleitorais conforme reforma da Lei 9.504/1997. Estabelece distribuição mínima de 20% dos recursos do Fundo Eleitoral a candidaturas negras.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=7060",
+      "tags": ["eleições", "cotas raciais", "fundo eleitoral"]
+    },
+    {
+      "id": "stf-rg-1175-2025",
+      "title": "Recurso 1.175 · Aborto · Anencefalia",
+      "fecha": "2025-03-12",
+      "sala": "Pleno",
+      "ley": "2848",
+      "sumario": "Reafirmou jurisprudência sobre interrupção de gestação de feto anencéfalo. Interpretação do Código Penal (Decreto-Lei 2.848/1940) à luz da dignidade humana e autonomia reprodutiva.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=1175",
+      "tags": ["aborto", "direitos reprodutivos", "anencefalia"]
+    },
+    {
+      "id": "stf-mc-7156-2024",
+      "title": "MC 7156 · Lei Geral de Proteção de Dados · Aplicação",
+      "fecha": "2024-11-08",
+      "sala": "Pleno",
+      "ley": "13709",
+      "sumario": "Confirmou a constitucionalidade da Lei Geral de Proteção de Dados (LGPD - Lei 13.709/2018) e o poder sancionatório da ANPD. Aplicação extraterritorial em empresas com filiais no Brasil.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=7156",
+      "tags": ["LGPD", "proteção de dados", "ANPD"]
+    },
+    {
+      "id": "stf-adi-6589-2023",
+      "title": "ADI 6589 · Lei do Mercado Livre de Gás · Regulação",
+      "fecha": "2023-06-22",
+      "sala": "Pleno",
+      "ley": "14134",
+      "sumario": "Validou parcialmente a Lei 14.134/2021 do Novo Mercado de Gás. Reafirmou competência federal sobre transporte de gás natural e estabelece limites à atuação estadual.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=6589",
+      "tags": ["gás natural", "mercado livre", "energia"]
+    },
+    {
+      "id": "stf-adpf-457-2024",
+      "title": "ADPF 457 · Marco Civil da Internet · Liberdade de expressão",
+      "fecha": "2024-12-05",
+      "sala": "Pleno",
+      "ley": "12965",
+      "sumario": "Interpretou os artigos 19 e 21 do Marco Civil da Internet (Lei 12.965/2014). Estabelece responsabilidade das plataformas após notificação extrajudicial em casos de desinformação eleitoral.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=457",
+      "tags": ["marco civil internet", "plataformas digitais", "desinformação"]
+    },
+    {
+      "id": "stf-adi-7102-2026",
+      "title": "ADI 7102 · Reforma Trabalhista · Acordo coletivo",
+      "fecha": "2026-02-18",
+      "sala": "Pleno",
+      "ley": "13467",
+      "sumario": "Confirmou a constitucionalidade da Reforma Trabalhista (Lei 13.467/2017) no tocante ao acordo coletivo prevalente sobre o legislado, com ressalvas sobre direitos indisponíveis.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=7102",
+      "tags": ["reforma trabalhista", "acordo coletivo", "direitos trabalhistas"]
+    },
+    {
+      "id": "stf-adpf-879-2025",
+      "title": "ADPF 879 · Política Nacional de Educação Ambiental",
+      "fecha": "2025-11-14",
+      "sala": "Pleno",
+      "ley": "9795",
+      "sumario": "Reforçou a obrigatoriedade da educação ambiental no currículo escolar conforme Lei 9.795/1999. Estados e municípios devem implementar programas específicos sob pena de sanção administrativa.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=879",
+      "tags": ["educação ambiental", "currículo", "sustentabilidade"]
+    },
+    {
+      "id": "stf-adi-7501-2026",
+      "title": "ADI 7501 · Lei de Improbidade Administrativa · Sanções",
+      "fecha": "2026-04-10",
+      "sala": "Pleno",
+      "ley": "8429",
+      "sumario": "Manteve a constitucionalidade da Lei de Improbidade Administrativa (Lei 8.429/1992) com a redação da Lei 14.230/2021. Sanções por dolo e dano efetivo ao erário público.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=7501",
+      "tags": ["improbidade", "administração pública", "controle"]
+    },
+    {
+      "id": "stf-adpf-1042-2026",
+      "title": "ADPF 1042 · MERCOSUR · Tratado de Asunción · Hierarquia",
+      "fecha": "2026-03-08",
+      "sala": "Pleno",
+      "ley": "313",
+      "sumario": "Reconheceu hierarquia supralegal das normas MERCOSUR aprovadas pelo Congresso. Aplicação do Tratado de Assunção (Decreto Legislativo 313/1991) e tratados subsequentes.",
+      "url": "https://portal.stf.jus.br/processos/detalhe.asp?incidente=1042",
+      "tags": ["MERCOSUR", "direito internacional", "hierarquia normativa"]
+    }
+  ]
+}

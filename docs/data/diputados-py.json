@@ -1,0 +1,87 @@
+{
+  "fuente": "Cámara de Diputados de la República del Paraguay",
+  "url": "https://www.diputados.gov.py",
+  "fetchedAt": "2026-05-23T00:00:00Z",
+  "items": [
+    {
+      "id": "diputados-py-001",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley que modifica el régimen de royalties de ITAIPU y crea el Fondo Soberano del Paraguay",
+      "fecha": "2026-05-21",
+      "comision": "Hacienda",
+      "ementa": "Modifica el Artículo 20 del Acuerdo de ITAIPU para incrementar en un 35% el monto de los royalties percibidos por el Paraguay, actualizando la tarifa de energía eléctrica cedida al Brasil. Crea el Fondo Soberano de Paraguay (FSP) administrado por el Banco Central, con los recursos adicionales derivados de la renegociación. El FSP tiene por objetivo la inversión en infraestructura vial del Chaco, educación técnica y transición energética. Establece un Comité Directivo integrado por representantes del Ejecutivo, Legislativo y la sociedad civil."
+    },
+    {
+      "id": "diputados-py-002",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Empleo Juvenil y Primer Empleo para jóvenes de 18 a 29 años",
+      "fecha": "2026-05-19",
+      "comision": "Trabajo",
+      "ementa": "Crea el Programa Nacional de Primer Empleo para jóvenes de 18 a 29 años, con subsidio del 50% del salario mínimo por 12 meses para empresas que contraten a jóvenes sin experiencia laboral previa. Establece la cuota obligatoria del 10% de jóvenes en planillas de empresas con más de 50 empleados. Crea el Portal Laboral Juvenil del SNPP para conectar oferta y demanda de empleo. Incluye exoneraciones de IPS para los primeros 18 meses de contratación. Se financia con recursos del Fondo Nacional de Inversión Pública y Desarrollo (FONACIDE)."
+    },
+    {
+      "id": "diputados-py-003",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 7.349/2026 de Presupuesto General de la Nación Ejercicio Fiscal 2026 · Modificación",
+      "fecha": "2026-05-17",
+      "comision": "Hacienda",
+      "ementa": "Modifica el Presupuesto General de la Nación para el Ejercicio Fiscal 2026, ampliando el crédito del Ministerio de Obras Públicas y Comunicaciones en PYG 680.000 millones para obras del Corredor Bioceánico y la ampliación del puerto de Pilar. Redistribuye fondos del Ministerio de Agricultura para el Programa de Apoyo a la Agricultura Familiar Campesina. Crea la partida presupuestaria del Consejo Nacional de Ciencia y Tecnología con PYG 120.000 millones."
+    },
+    {
+      "id": "diputados-py-004",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Educación Bilingüe Guaraní-Castellano en el Sistema Educativo Nacional",
+      "fecha": "2026-05-16",
+      "comision": "Educación",
+      "ementa": "Establece la obligatoriedad de la educación bilingüe guaraní-castellano en todos los niveles del sistema educativo paraguayo. Crea el Instituto Superior de Lengua y Cultura Guaraní como entidad rectora de la estandarización del guaraní escrito. Dispone que el 40% de los materiales didácticos sean redactados en guaraní o en formato bilingüe. Establece la habilitación de profesores bilingües como requisito gradual en un plazo de 5 años. Se enmarca en el reconocimiento constitucional del guaraní como idioma oficial y en los estándares de la UNESCO sobre educación en idiomas indígenas."
+    },
+    {
+      "id": "diputados-py-005",
+      "tipoDocumento": "RESOLUCION",
+      "title": "Resolución de la Cámara de Diputados sobre el estado de las obras del Corredor Bioceánico en Paraguay",
+      "fecha": "2026-05-13",
+      "comision": "Obras Públicas",
+      "ementa": "La Cámara de Diputados resuelve: (1) convocar al Ministro de Obras Públicas y Comunicaciones para que informe sobre el estado de avance de las obras del Corredor Bioceánico en territorio paraguayo; (2) requerir al MOPC un cronograma actualizado con hitos trimestrales; (3) instar al Poder Ejecutivo a gestionar ante el BID y el CAF el desembolso de USD 380 millones comprometidos para el tramo Pozo Colorado-Concepción; (4) crear una Comisión Bicameral de Seguimiento del Corredor Bioceánico con reuniones mensuales."
+    },
+    {
+      "id": "diputados-py-006",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Incentivos a la Inversión en Energías Renovables no Convencionales",
+      "fecha": "2026-05-11",
+      "comision": "Energía",
+      "ementa": "Establece un régimen de incentivos fiscales para la inversión en energías renovables no convencionales (solar, eólica, biomasa) en el Paraguay. Otorga exoneración del 100% del Impuesto al Valor Agregado (IVA) en la importación de equipos de generación renovable. Crea el Bono de Carbono Paraguayo (BOCA-PY) como instrumento de mercado para la venta de créditos de carbono. Fija la meta de que el 30% de la energía consumida en el Paraguay provenga de fuentes renovables no convencionales al año 2035. Complementa la generación hidráulica de ITAIPU y YACYRETÁ con una matriz más diversificada."
+    },
+    {
+      "id": "diputados-py-007",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 7.344/2026 de Acceso a la Información Pública y Transparencia Gubernamental",
+      "fecha": "2026-05-09",
+      "comision": "Asuntos Constitucionales",
+      "ementa": "Moderniza la Ley N° 5.282/14 de Libre Acceso a la Información Pública, estableciendo plazos máximos de 15 días hábiles para la respuesta a solicitudes de información. Crea el Portal de Datos Abiertos del Estado Paraguayo (datos.gov.py) con actualización automática de las bases de datos públicas. Incorpora la obligatoriedad de publicar contratos, licitaciones y declaraciones patrimoniales de funcionarios en formato abierto y legible por máquinas. Establece multas de hasta 100 jornales mínimos para funcionarios que incumplan los plazos. Crea la Unidad de Gobierno Abierto en la Presidencia de la República."
+    },
+    {
+      "id": "diputados-py-008",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Reforma Procesal Penal y Descongestión Judicial",
+      "fecha": "2026-05-07",
+      "comision": "Asuntos Constitucionales",
+      "ementa": "Introduce modificaciones al Código Procesal Penal que buscan agilizar los procesos judiciales y reducir la mora procesal en el Paraguay. Incorpora la figura del juicio abreviado para delitos con pena máxima de 5 años. Crea el Centro de Mediación Judicial para la resolución alternativa de conflictos. Establece plazos improrrogables para la elevación a juicio oral. Prevé la implementación de audiencias virtuales para casos de prisión preventiva. Se busca reducir la población carcelaria en prisión preventiva del 70% actual al 40% en un plazo de 3 años."
+    },
+    {
+      "id": "diputados-py-009",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 7.338/2026 de Protección de la Infancia y Adolescencia frente a Contenidos Digitales Nocivos",
+      "fecha": "2026-05-04",
+      "comision": "Niñez y Adolescencia",
+      "ementa": "Establece el marco legal para la protección de niñas, niños y adolescentes frente a contenidos nocivos en plataformas digitales y redes sociales. Prohíbe a menores de 14 años la creación de perfiles en redes sociales sin consentimiento parental verificado. Obliga a las plataformas digitales a implementar mecanismos de verificación de edad y controles parentales. Crea el Registro de Denuncias de Contenido Nocivo administrado por la CONACYT. Establece sanciones de hasta USD 500.000 para plataformas que incumplan. Se enmarca en el Protocolo Facultativo de la Convención sobre los Derechos del Niño."
+    },
+    {
+      "id": "diputados-py-010",
+      "tipoDocumento": "DECLARACION",
+      "title": "Declaración de la Cámara de Diputados sobre el centenario de la Guerra del Chaco 1932-2032",
+      "fecha": "2026-04-30",
+      "comision": "Relaciones Exteriores",
+      "ementa": "La Cámara de Diputados declara de interés nacional la preparación de los actos conmemorativos del centenario de la Guerra del Chaco (1932-1935), que se celebrará entre 2032 y 2035. Crea la Comisión Nacional del Centenario de la Guerra del Chaco integrada por representantes del Poder Ejecutivo, Legislativo, las Fuerzas Armadas y la sociedad civil. Insta al Ministerio de Relaciones Exteriores a promover conjuntamente con Bolivia un proceso de reflexión histórica y reconciliación bilateral. Aprueba la construcción del Museo Nacional del Chaco en Mariscal Estigarribia con financiamiento mixto público-privado."
+    }
+  ]
+}

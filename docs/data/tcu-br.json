@@ -1,0 +1,87 @@
+{
+  "fuente": "Tribunal de Contas da União · Brasil · Acórdãos",
+  "url": "https://portal.tcu.gov.br",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "br-tcu-2026-1842",
+      "tipoDocumento": "Acórdão 1842/2026-TCU-Plenário",
+      "title": "TCU 1842/26 · CONTRATOS PETROBRAS · IRREGULARIDADES NA PRODUÇÃO",
+      "fecha": "2026-04-30",
+      "tipo": "informe",
+      "ementa": "Determina à Petrobras revisão de 47 contratos de exploração offshore na Bacia de Santos por sobrepreços identificados de R$ 2,8 bilhões. Aplicação da Lei 14.133/2021 de Licitações."
+    },
+    {
+      "id": "br-tcu-2026-1923",
+      "tipoDocumento": "Acórdão 1923/2026-TCU-Plenário",
+      "title": "TCU 1923/26 · MINHA CASA MINHA VIDA · AUDITORIA OPERACIONAL",
+      "fecha": "2026-04-22",
+      "tipo": "informe",
+      "ementa": "Auditoria operacional do Programa Minha Casa Minha Vida. Identifica 12% de unidades habitacionais com defeitos estruturais e atraso médio de 18 meses na entrega. Sanção a construtoras inadimplentes."
+    },
+    {
+      "id": "br-tcu-2026-2087",
+      "tipoDocumento": "Acórdão 2087/2026-TCU-Plenário",
+      "title": "TCU 2087/26 · EDUCAÇÃO BÁSICA · APLICAÇÃO DO FUNDEB",
+      "fecha": "2026-04-15",
+      "tipo": "informe",
+      "ementa": "Auditoria sobre aplicação do Fundo de Manutenção e Desenvolvimento da Educação Básica (FUNDEB). Detecta desvios em 8 estados, recomenda devolução de R$ 450 milhões e responsabilização de gestores."
+    },
+    {
+      "id": "br-tcu-2026-2145",
+      "tipoDocumento": "Acórdão 2145/2026-TCU-Plenário",
+      "title": "TCU 2145/26 · CONTROLE DE GASTOS COM SAÚDE · COVID PÓS-PANDEMIA",
+      "fecha": "2026-04-08",
+      "tipo": "informe",
+      "ementa": "Relatório sobre execução do orçamento de saúde no período 2024-2026. Identifica R$ 1,2 bilhão em contratos emergenciais ainda em pagamento. Aplicação da Lei 13.979/2020."
+    },
+    {
+      "id": "br-tcu-2026-2298",
+      "tipoDocumento": "Acórdão 2298/2026-TCU-Plenário",
+      "title": "TCU 2298/26 · TRANSPOSIÇÃO DO SÃO FRANCISCO · OBRAS INACABADAS",
+      "fecha": "2026-04-01",
+      "tipo": "informe",
+      "ementa": "Auditoria do projeto de Transposição do Rio São Francisco. Conclui que 23% das obras complementares estão inacabadas após R$ 12 bilhões investidos. Determina cronograma vinculante."
+    },
+    {
+      "id": "br-tcu-2026-2412",
+      "tipoDocumento": "Acórdão 2412/2026-TCU-Plenário",
+      "title": "TCU 2412/26 · CONTRATOS DE TI · SOBREPREÇOS GENERALIZADOS",
+      "fecha": "2026-03-26",
+      "tipo": "informe",
+      "ementa": "Auditoria nacional de contratos de tecnologia da informação na administração federal. Detecta sobrepreços médios de 32% e baixa qualidade de contraprestação em 67% dos órgãos auditados."
+    },
+    {
+      "id": "br-tcu-2026-2589",
+      "tipoDocumento": "Acórdão 2589/2026-TCU-Plenário",
+      "title": "TCU 2589/26 · ENERGIA · LINHAS DE TRANSMISSÃO · ATRASOS",
+      "fecha": "2026-03-18",
+      "tipo": "informe",
+      "ementa": "Avaliação do programa de expansão das linhas de transmissão elétrica. ANEEL deve aplicar multas a concessionárias com atraso superior a 24 meses, equivalentes a R$ 380 milhões."
+    },
+    {
+      "id": "br-tcu-2026-2734",
+      "tipoDocumento": "Acórdão 2734/2026-TCU-Plenário",
+      "title": "TCU 2734/26 · BNDES · FINANCIAMENTO MERCOSUL · PRESTAÇÃO DE CONTAS",
+      "fecha": "2026-03-12",
+      "tipo": "informe",
+      "ementa": "Auditoria sobre financiamentos do BNDES a obras de integração regional do MERCOSUR. Recomenda transparência ampliada e prestação de contas semestral ao Congresso Nacional."
+    },
+    {
+      "id": "br-tcu-2026-2891",
+      "tipoDocumento": "Acórdão 2891/2026-TCU-Plenário",
+      "title": "TCU 2891/26 · PROTEÇÃO AMBIENTAL · IBAMA · MONITORAMENTO AMAZÔNICO",
+      "fecha": "2026-03-05",
+      "tipo": "informe",
+      "ementa": "Avaliação da capacidade operacional do IBAMA para monitoramento amazônico. Identifica déficit de 38% em fiscais, recomenda concurso emergencial e fortalecimento de tecnologia de satélite."
+    },
+    {
+      "id": "br-tcu-2026-3047",
+      "tipoDocumento": "Acórdão 3047/2026-TCU-Plenário",
+      "title": "TCU 3047/26 · PREVIDÊNCIA SOCIAL · INSS · TEMPO MÉDIO DE CONCESSÃO",
+      "fecha": "2026-02-26",
+      "tipo": "informe",
+      "ementa": "Auditoria sobre desempenho do INSS na concessão de benefícios previdenciários. Tempo médio atual de 142 dias supera em 280% o prazo legal de 45 dias. Determina plano de superação em 90 dias."
+    }
+  ]
+}

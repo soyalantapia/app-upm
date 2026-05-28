@@ -1,0 +1,103 @@
+{
+  "fuente": "Parlamento del Mercosur (Parlasur) · Recomendaciones y declaraciones",
+  "url": "https://www.parlamentomercosur.org",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "parlasur-rec-2026-018",
+      "tipoDocumento": "Recomendación 18/26",
+      "title": "Recomendación 18/26 · PARLASUR · INTEGRACIÓN ENERGÉTICA REGIONAL",
+      "fecha": "2026-04-30",
+      "tipo": "reglamento",
+      "ementa": "Recomienda a los Estados Parte avanzar en la interconexión eléctrica regional, armonización de marcos regulatorios de energías renovables y creación de un mercado mayorista del MERCOSUR. Plazo de implementación: 36 meses."
+    },
+    {
+      "id": "parlasur-rec-2026-017",
+      "tipoDocumento": "Recomendación 17/26",
+      "title": "Recomendación 17/26 · CIUDADANÍA MERCOSUR · DOCUMENTO ÚNICO",
+      "fecha": "2026-04-22",
+      "tipo": "reglamento",
+      "ementa": "Propone la implementación del Documento Único de Identidad MERCOSUR para ciudadanos de los Estados Parte. Facilita libre tránsito, residencia y trabajo, reconocimiento mutuo de títulos profesionales."
+    },
+    {
+      "id": "parlasur-decl-2026-009",
+      "tipoDocumento": "Declaración 9/26",
+      "title": "Declaración 9/26 · PARLASUR · DERECHOS HUMANOS Y MEMORIA HISTÓRICA",
+      "fecha": "2026-04-15",
+      "tipo": "comunicado",
+      "ementa": "Compromiso regional con la verdad, justicia, memoria y reparación. Apoyo a las investigaciones sobre violaciones de DDHH durante las dictaduras del Cono Sur, archivos abiertos del Plan Cóndor."
+    },
+    {
+      "id": "parlasur-rec-2026-016",
+      "tipoDocumento": "Recomendación 16/26",
+      "title": "Recomendación 16/26 · TRANSICIÓN DIGITAL DEL MERCOSUR",
+      "fecha": "2026-04-08",
+      "tipo": "reglamento",
+      "ementa": "Marco regulatorio común para identidad digital, firma electrónica, factura electrónica e interoperabilidad de plataformas de gobierno electrónico. Inversión conjunta en fibra óptica transfronteriza."
+    },
+    {
+      "id": "parlasur-rec-2026-015",
+      "tipoDocumento": "Recomendación 15/26",
+      "title": "Recomendación 15/26 · ARMONIZACIÓN TRIBUTARIA Y DOBLE IMPOSICIÓN",
+      "fecha": "2026-04-02",
+      "tipo": "reglamento",
+      "ementa": "Avance hacia la armonización tributaria entre Estados Parte. Eliminación de doble imposición en servicios digitales transfronterizos, intercambio automático de información fiscal y arancel externo común actualizado."
+    },
+    {
+      "id": "parlasur-decl-2026-008",
+      "tipoDocumento": "Declaración 8/26",
+      "title": "Declaración 8/26 · IGUALDAD DE GÉNERO Y NO VIOLENCIA",
+      "fecha": "2026-03-26",
+      "tipo": "comunicado",
+      "ementa": "Compromiso regional con la erradicación de la violencia de género. Armonización de protocolos de atención, registro único regional de femicidios y educación con perspectiva de género."
+    },
+    {
+      "id": "parlasur-rec-2026-014",
+      "tipoDocumento": "Recomendación 14/26",
+      "title": "Recomendación 14/26 · CORREDOR BIOCEÁNICO CENTRAL",
+      "fecha": "2026-03-20",
+      "tipo": "reglamento",
+      "ementa": "Impulso al Corredor Bioceánico Central (Brasil-Paraguay-Argentina-Chile). Inversión multilateral en ferrocarriles, puertos secos, facilitación aduanera y digitalización del comercio."
+    },
+    {
+      "id": "parlasur-rec-2026-013",
+      "tipoDocumento": "Recomendación 13/26",
+      "title": "Recomendación 13/26 · AGUA Y RECURSOS HÍDRICOS COMPARTIDOS",
+      "fecha": "2026-03-12",
+      "tipo": "reglamento",
+      "ementa": "Gestión integrada de cuencas transfronterizas (La Plata, Pilcomayo, Bermejo). Crear Observatorio Regional del Agua, compartir información hidrológica y protocolos de actuación ante sequía."
+    },
+    {
+      "id": "parlasur-decl-2026-007",
+      "tipoDocumento": "Declaración 7/26",
+      "title": "Declaración 7/26 · APOYO A AMÉRICA LATINA · MULTILATERALISMO",
+      "fecha": "2026-03-05",
+      "tipo": "comunicado",
+      "ementa": "Defensa del multilateralismo y respeto al derecho internacional. Solidaridad con países de la región frente a presiones externas, apoyo a la integración latinoamericana y a CELAC."
+    },
+    {
+      "id": "parlasur-rec-2026-012",
+      "tipoDocumento": "Recomendación 12/26",
+      "title": "Recomendación 12/26 · AGRICULTURA FAMILIAR Y SOBERANÍA ALIMENTARIA",
+      "fecha": "2026-02-28",
+      "tipo": "reglamento",
+      "ementa": "Política regional de fomento a la agricultura familiar campesina e indígena. Creación del Fondo Regional de Apoyo, sello MERCOSUR Agroecológico y compras públicas con cupo del 30%."
+    },
+    {
+      "id": "parlasur-rec-2026-011",
+      "tipoDocumento": "Recomendación 11/26",
+      "title": "Recomendación 11/26 · LITIO · CADENA DE VALOR REGIONAL",
+      "fecha": "2026-02-22",
+      "tipo": "reglamento",
+      "ementa": "Estrategia común del Triángulo del Litio (Argentina, Bolivia, Chile). Procesamiento local mínimo del 50%, cuotas de exportación, investigación regional en baterías y movilidad eléctrica."
+    },
+    {
+      "id": "parlasur-decl-2026-006",
+      "tipoDocumento": "Declaración 6/26",
+      "title": "Declaración 6/26 · CONDENA A LA TRATA DE PERSONAS",
+      "fecha": "2026-02-15",
+      "tipo": "comunicado",
+      "ementa": "Compromiso regional con la erradicación de la trata de personas. Cooperación policial reforzada, asistencia integral a víctimas, sanción severa a redes y campañas de prevención conjuntas."
+    }
+  ]
+}
