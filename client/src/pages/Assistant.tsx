@@ -72,6 +72,8 @@ export function AssistantPage() {
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [historyOpen, setHistoryOpen] = useState(false)
+  // Timestamp del último submit · para prevenir double-click rapidísimo
+  const lastSubmitRef = useRef<number>(0)
   const scrollerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -98,6 +100,10 @@ export function AssistantPage() {
   const send = async (text?: string) => {
     const value = (text ?? input).trim()
     if (!value || thinking) return
+    // Rate-limit · prevenir double-click (< 500ms entre submits)
+    const now = Date.now()
+    if (now - lastSubmitRef.current < 500) return
+    lastSubmitRef.current = now
     setMessages(prev => [...prev, userMessage(value)])
     setInput('')
     setThinking(true)
@@ -360,9 +366,10 @@ export function AssistantPage() {
             }}
             rows={1}
             placeholder="Pregunta, redactá, resumí, preparate una reunión…"
+            aria-label="Mensaje para el Asistente AI"
             className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl bg-upm-50/40 px-4 py-3 text-[14.5px] text-ink-900 ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
           />
-          <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3">
+          <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3" aria-label="Enviar mensaje">
             <ArrowUp size={17} />
           </Button>
         </form>

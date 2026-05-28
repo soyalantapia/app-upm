@@ -73,9 +73,10 @@ export function buildClusters(items: NewsItem[], graph: CitationGraph, minSize =
   // 4. Items no agrupados
   const singletons = items.filter(it => !itemToCluster.has(it.id))
 
-  if (typeof window !== 'undefined' && window.console) {
+  if (typeof window !== 'undefined' && import.meta.env?.DEV) {
     const ms = (performance.now() - t0).toFixed(0)
-    console.log(
+    // eslint-disable-next-line no-console
+    console.debug(
       `[clusters] built in ${ms}ms · ${clusters.length} clusters agrupan ` +
       `${items.length - singletons.length}/${items.length} items, ${singletons.length} sueltos`,
     )

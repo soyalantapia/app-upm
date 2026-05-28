@@ -4,8 +4,8 @@
     {
       "name": "app-upm-client",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "client"],
-      "port": 5173
+      "runtimeArgs": ["run", "dev", "--prefix", "client", "--", "--port", "5183"],
+      "port": 5183
     }
   ]
 }

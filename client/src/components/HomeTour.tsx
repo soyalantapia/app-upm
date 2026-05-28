@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowRight, X, Sparkles, Radar, Calendar } from 'lucide-react'
 
@@ -39,14 +39,15 @@ const STEPS: Step[] = [
 export function HomeTour() {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(0)
-  const [dismissed, setDismissed] = useState(true)
-
-  useEffect(() => {
+  // Lazy init · evita setState in effect (react-hooks/purity)
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === 'undefined') return true
     try {
-      const v = window.localStorage.getItem(STORAGE_KEY)
-      setDismissed(v === '1')
-    } catch { /* ignore */ }
-  }, [])
+      return window.localStorage.getItem(STORAGE_KEY) === '1'
+    } catch {
+      return true
+    }
+  })
 
   const persistDismiss = () => {
     try {

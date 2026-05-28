@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowRight, Lock, Sparkles, ShieldCheck, Radar, FileStack, UserPlus } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
@@ -13,17 +13,26 @@ export function LoginPage() {
   const { operator, signIn } = useAuth()
   const onboarded = useStore(s => s.onboarded)
   const navigate = useNavigate()
+  const location = useLocation()
+  // Deep-link preservation · si llegaste acá por RequireAuth, location.state.from
+  // tiene la ruta original. Post-signin, volvemos ahí (no a Home plano).
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
+  const postAuthTarget = (() => {
+    // Si tiene onboarding pendiente, primero forzamos onboarding
+    if (!onboarded) return '/onboarding'
+    return from && from !== '/login' ? from : '/'
+  })()
   const [email, setEmail] = useState('martin.pereira@upm.org')
   const [password, setPassword] = useState('demo-upm-2026')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (operator) {
-      navigate(onboarded ? '/' : '/onboarding', { replace: true })
+      navigate(postAuthTarget, { replace: true })
     }
-  }, [operator, onboarded, navigate])
+  }, [operator, postAuthTarget, navigate])
 
-  if (operator) return <Navigate to={onboarded ? '/' : '/onboarding'} replace />
+  if (operator) return <Navigate to={postAuthTarget} replace />
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -31,7 +40,8 @@ export function LoginPage() {
     setTimeout(() => {
       signIn(email)
       store.pushToast('success', 'Bienvenido al ecosistema UPM')
-      navigate('/onboarding', { replace: true })
+      // Si ya estaba onboarded de antes (deep-link), respetamos from; sino → onboarding
+      navigate(onboarded && from ? from : '/onboarding', { replace: true })
     }, 650)
   }
 
@@ -41,7 +51,7 @@ export function LoginPage() {
       signIn(DEMO_OPERATOR.email)
       store.setDefaults()
       store.pushToast('info', 'Sesión demo iniciada como Dr. Martín Pereira')
-      navigate('/', { replace: true })
+      navigate(from && from !== '/login' ? from : '/', { replace: true })
     }, 400)
   }
 

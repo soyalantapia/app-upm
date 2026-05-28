@@ -40,9 +40,11 @@ export function CheckoutPage() {
   const navigate = useNavigate()
   const [draft, setDraft] = useState<Draft | null>(null)
   const [holder, setHolder] = useState('')
-  const [card, setCard] = useState('4242 4242 4242 4242')
-  const [expiry, setExpiry] = useState('12/28')
-  const [cvv, setCvv] = useState('123')
+  // Modo demo · campos vacíos por default · usuario puede usar
+  // "Rellenar con datos demo" si quiere ahorrarse tipear.
+  const [card, setCard] = useState('')
+  const [expiry, setExpiry] = useState('')
+  const [cvv, setCvv] = useState('')
   const [billingCountry, setBillingCountry] = useState<CountryCode>('UY')
   const [processing, setProcessing] = useState(false)
 
@@ -126,10 +128,24 @@ export function CheckoutPage() {
             <div className="rounded-2xl bg-info-bg/40 p-3 ring-1 ring-info-bg">
               <div className="flex items-start gap-2 text-[11.5px] leading-relaxed text-info-fg">
                 <ShieldCheck size={14} className="mt-0.5 shrink-0" />
-                <span>
-                  Demostración institucional: este checkout simula el flujo de cobro.
-                  Podés ingresar cualquier número (ej. <span className="font-semibold tabular-nums">4242 4242 4242 4242</span>) para probar.
-                </span>
+                <div className="flex-1">
+                  <span className="block font-bold">Modo demo · sin cargo real</span>
+                  <span>
+                    Este checkout simula el flujo de cobro. Ningún medio de pago real será debitado.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHolder('Dr. Martín Pereira')
+                      setCard('4242 4242 4242 4242')
+                      setExpiry('12/28')
+                      setCvv('123')
+                    }}
+                    className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10.5px] font-bold text-info-fg ring-1 ring-info-bg hover:bg-info-bg/60"
+                  >
+                    Rellenar con datos demo
+                  </button>
+                </div>
               </div>
             </div>
 

@@ -33,6 +33,14 @@ export function OnboardingPage() {
     navigate('/', { replace: true })
   }
 
+  // Skip · setea defaults razonables y va al Home. El usuario puede ajustar
+  // después en /perfil.
+  const skip = () => {
+    store.setDefaults()
+    store.pushToast('info', 'Configuramos defaults · podés ajustar en Perfil')
+    navigate('/', { replace: true })
+  }
+
   const stepInfo = [
     { eyebrow: 'Paso 1 de 3', title: 'Países que querés seguir', desc: 'Tus prioridades regionales filtran el Radar y la Biblioteca UPM.' },
     { eyebrow: 'Paso 2 de 3', title: 'Temas que te importan', desc: 'Seleccioná los ejes que querés ver primero.' },
@@ -135,7 +143,14 @@ export function OnboardingPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            type="button"
+            onClick={skip}
+            className="inline-flex items-center gap-1 text-[12.5px] font-semibold text-ink-500 underline-offset-2 hover:text-upm-700 hover:underline"
+          >
+            Saltar por ahora
+          </button>
           {step < 2 ? (
             <Button
               size="lg"

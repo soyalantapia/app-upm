@@ -11,7 +11,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',  // notifica al usuario antes de aplicar update
       injectRegister: 'auto',
       devOptions: { enabled: false },
       manifest: {

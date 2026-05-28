@@ -104,9 +104,10 @@ export function buildSimilarityIndex(items: NewsItem[]): SimilarityIndex {
     norms.set(id, Math.sqrt(sumSq) || 1)
   }
 
-  if (typeof window !== 'undefined' && window.console) {
+  if (typeof window !== 'undefined' && import.meta.env?.DEV) {
     const ms = (performance.now() - t0).toFixed(0)
-    console.log(`[similarity] indexed ${items.length} items in ${ms}ms · vocab=${idf.size}`)
+    // eslint-disable-next-line no-console
+    console.debug(`[similarity] indexed ${items.length} items in ${ms}ms · vocab=${idf.size}`)
   }
 
   return { vectors, norms, itemsById, builtAt: Date.now(), size: items.length }

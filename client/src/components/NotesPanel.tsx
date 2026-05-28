@@ -5,7 +5,8 @@ import { addNote, deleteNote, getNotesForItem, updateNote, type Note } from '@/l
 // Panel de anotaciones personales del legislador sobre una norma específica.
 // Notas + tags, persistidas en localStorage.
 export function NotesPanel({ itemId }: { itemId: string }) {
-  const [notes, setNotes] = useState<Note[]>([])
+  // Lazy init · evita setState in effect en el mount (react-hooks/purity)
+  const [notes, setNotes] = useState<Note[]>(() => getNotesForItem(itemId))
   const [composing, setComposing] = useState(false)
   const [draft, setDraft] = useState('')
   const [draftTags, setDraftTags] = useState('')
@@ -13,6 +14,7 @@ export function NotesPanel({ itemId }: { itemId: string }) {
   const [editingText, setEditingText] = useState('')
   const [editingTags, setEditingTags] = useState('')
 
+  // Re-cargar cuando cambia itemId (después del mount inicial)
   useEffect(() => {
     setNotes(getNotesForItem(itemId))
   }, [itemId])

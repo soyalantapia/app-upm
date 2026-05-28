@@ -220,9 +220,15 @@ export const store = {
   pushToast(tone: Toast['tone'], message: string) {
     const id = randId('t-')
     update(s => ({ ...s, toasts: [...s.toasts, { id, tone, message }] }))
+    // Duración por tono · errores quedan más tiempo, success se va rápido
+    const duration =
+      tone === 'success' ? 3000 :
+      tone === 'info'    ? 4000 :
+      tone === 'warning' ? 5000 :
+                           6000  // danger
     setTimeout(() => {
       update(s => ({ ...s, toasts: s.toasts.filter(t => t.id !== id) }))
-    }, 3200)
+    }, duration)
   },
   dismissToast(id: string) {
     update(s => ({ ...s, toasts: s.toasts.filter(t => t.id !== id) }))

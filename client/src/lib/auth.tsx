@@ -37,14 +37,59 @@ function deriveName(email: string): { name: string; cargo: string; pais: Country
   return { name: `Dr. ${name}`, cargo: 'Legislador', pais: 'UY' }
 }
 
+// Detecta si localStorage está bloqueado (modo incógnito, cuota llena, etc).
+// Cuando lo está, la sesión no persiste y RequireAuth genera un loop login→home.
+function isStorageAvailable(): boolean {
+  if (typeof window === 'undefined') return false
+  try {
+    const k = '__upm_storage_test__'
+    window.localStorage.setItem(k, '1')
+    window.localStorage.removeItem(k)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [operator, setOperator] = useState<Operator | null>(null)
   const [ready, setReady] = useState(false)
+  const [storageBlocked, setStorageBlocked] = useState(false)
 
   useEffect(() => {
+    if (!isStorageAvailable()) {
+      setStorageBlocked(true)
+      setReady(true)
+      return
+    }
     setOperator(readOperator())
     setReady(true)
   }, [])
+
+  // Si el navegador bloquea localStorage, mostrar fallback amigable
+  // antes de cualquier child que dependa de auth.
+  if (ready && storageBlocked) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
+        <div className="text-[40px]">🔒</div>
+        <h1 className="text-[20px] font-bold text-ink-900">Almacenamiento bloqueado</h1>
+        <p className="text-[13.5px] leading-relaxed text-ink-600">
+          UPM necesita guardar tu sesión y preferencias en este dispositivo. Detectamos que el
+          navegador bloquea esto (probablemente <strong>modo incógnito</strong> o
+          cookies/almacenamiento deshabilitados).
+        </p>
+        <p className="text-[12.5px] leading-relaxed text-ink-500">
+          Salí del modo privado, habilitá cookies para este sitio, y recargá.
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-full bg-upm-700 px-4 py-2 text-[13px] font-bold text-white shadow-cta hover:bg-upm-800"
+        >
+          Reintentar
+        </button>
+      </div>
+    )
+  }
 
   const signIn = useCallback((email: string) => {
     const { name, cargo, pais } = deriveName(email)

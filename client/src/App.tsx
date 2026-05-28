@@ -4,6 +4,8 @@ import { AuthProvider, RequireAuth, useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
 import { UIProvider } from '@/lib/ui-provider'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { PWAUpdateBanner } from '@/components/PWAUpdateBanner'
+import { OfflineBanner } from '@/components/OfflineBanner'
 import { AppShell } from '@/layouts/AppShell'
 import { Toasts } from '@/components/Toasts'
 
@@ -51,6 +53,8 @@ export default function App() {
         <HashRouter>
           <UIProvider>
           <Toasts />
+          <OfflineBanner />
+          <PWAUpdateBanner />
           <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<SignupPage />} />

@@ -74,9 +74,10 @@ export function buildCitationGraph(items: NewsItem[]): CitationGraph {
     })
   }
 
-  if (typeof window !== 'undefined' && window.console) {
+  if (typeof window !== 'undefined' && import.meta.env?.DEV) {
     const ms = (performance.now() - t0).toFixed(0)
-    console.log(
+    // eslint-disable-next-line no-console
+    console.debug(
       `[citations] graph built in ${ms}ms · ${backlinks.size} leyes citadas, ` +
       `${Array.from(backlinks.values()).reduce((s, l) => s + l.length, 0)} backlinks totales`,
     )
