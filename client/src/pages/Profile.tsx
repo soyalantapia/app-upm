@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { Badge, Button, Card, Chip } from '@/components/ui'
 import { Drawer } from '@/components/Drawer'
+import { PreferencesDrawer } from '@/components/PreferencesDrawer'
 import { useAuth } from '@/lib/auth'
 import { roleOf, roleLabel } from '@/lib/permissions'
 import { useStore, store, type Alert } from '@/lib/store'
@@ -35,6 +36,7 @@ export function ProfilePage() {
 
   const [editOpen, setEditOpen] = useState(false)
   const [alertsOpen, setAlertsOpen] = useState(false)
+  const [prefsOpen, setPrefsOpen] = useState(false)
   const [editName, setEditName] = useState(operator?.name ?? '')
   const [editEmail, setEditEmail] = useState(operator?.email ?? '')
   const [editCargo, setEditCargo] = useState(operator?.cargo ?? 'Legislador')
@@ -125,7 +127,7 @@ export function ProfilePage() {
                     const co = countryByCode(c)
                     return <Chip key={c} size="sm" active><span aria-hidden>{co.flag}</span>{co.name}</Chip>
                   })}
-                  <Chip size="sm" onClick={() => navigate('/onboarding')}>+ Editar</Chip>
+                  <Chip size="sm" onClick={() => setPrefsOpen(true)}>+ Editar</Chip>
                 </div>
                 <div className="mt-1 text-[11px] text-ink-500">Disponibles: {COUNTRIES.length}</div>
               </div>
@@ -136,7 +138,7 @@ export function ProfilePage() {
                   {(prefs?.topics ?? []).map(t => (
                     <Chip key={t} size="sm" active><Tag size={10} />{topicById(t).label}</Chip>
                   ))}
-                  <Chip size="sm" onClick={() => navigate('/onboarding')}>+ Editar</Chip>
+                  <Chip size="sm" onClick={() => setPrefsOpen(true)}>+ Editar</Chip>
                 </div>
                 <div className="mt-1 text-[11px] text-ink-500">Disponibles: {TOPICS.length}</div>
               </div>
@@ -167,7 +169,7 @@ export function ProfilePage() {
           </Card>
 
           <div className="flex flex-wrap gap-2">
-            <Button size="md" variant="secondary" onClick={() => navigate('/onboarding')}>
+            <Button size="md" variant="secondary" onClick={() => setPrefsOpen(true)}>
               <Wrench size={14} /> Editar preferencias
             </Button>
             <Button size="md" variant="ghost" onClick={() => setAlertsOpen(true)}>
@@ -232,6 +234,9 @@ export function ProfilePage() {
       >
         <AlertasPanel alerts={alerts} />
       </Drawer>
+
+      {/* Drawer Preferencias del Radar */}
+      <PreferencesDrawer open={prefsOpen} onClose={() => setPrefsOpen(false)} />
 
       {/* Drawer Editar perfil */}
       <Drawer

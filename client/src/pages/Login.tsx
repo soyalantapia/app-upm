@@ -145,6 +145,14 @@ export function LoginPage() {
             </div>
           </label>
 
+          <button
+            type="button"
+            onClick={() => store.pushToast('info', 'Para recuperar tu contraseña escribí a soporte@upm.org')}
+            className="self-start text-[12px] font-semibold text-upm-700 hover:text-upm-800"
+          >
+            Olvidé mi contraseña
+          </button>
+
           <Button type="submit" size="lg" disabled={loading} className="w-full">
             {loading ? 'Verificando…' : (
               <>

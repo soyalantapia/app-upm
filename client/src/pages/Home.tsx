@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, BookOpen, Radar, Sparkles } from 'lucide-react'
+import { ArrowRight, BookOpen, FileText, Radar, Sparkles } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
 import { NEWS as MOCK_NEWS } from '@/lib/data'
@@ -58,7 +58,7 @@ export function HomePage() {
         <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
           Ir a
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <button
             onClick={() => navigate('/radar')}
             className="group flex flex-col items-center gap-1.5 rounded-2xl bg-white p-3.5 ring-1 ring-ink-100 shadow-card transition hover:-translate-y-0.5 hover:shadow-floating hover:ring-upm-200"
@@ -88,6 +88,16 @@ export function HomePage() {
             </div>
             <span className="text-[12.5px] font-bold text-ink-900">Asistente</span>
             <span className="text-[10.5px] text-ink-500">Brief, resumen, Biblioteca</span>
+          </button>
+          <button
+            onClick={() => navigate('/briefing')}
+            className="group flex flex-col items-center gap-1.5 rounded-2xl bg-white p-3.5 ring-1 ring-ink-100 shadow-card transition hover:-translate-y-0.5 hover:shadow-floating hover:ring-upm-200"
+          >
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-upm-500 to-upm-700 text-white">
+              <FileText size={17} />
+            </div>
+            <span className="text-[12.5px] font-bold text-ink-900">Briefing</span>
+            <span className="text-[10.5px] text-ink-500">Pre-sesión 1-pager</span>
           </button>
         </div>
         <button

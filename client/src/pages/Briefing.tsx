@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowLeft,
+  Bookmark,
   FileText,
   Globe,
   Printer,
@@ -11,6 +12,7 @@ import {
   GitCompareArrows,
 } from 'lucide-react'
 import { Badge, Button } from '@/components/ui'
+import { store } from '@/lib/store'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import { formatDate, decodeHtml } from '@/lib/format'
 import { useLiveFeed } from '@/lib/use-live-feed'
@@ -174,9 +176,26 @@ export function BriefingPage() {
         >
           <ArrowLeft size={14} /> Volver
         </button>
-        <Button onClick={handlePrint} size="md">
-          <Printer size={15} /> Imprimir o exportar a PDF
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => {
+              store.saveItem({
+                id: 'brf-' + Date.now(),
+                type: 'brief',
+                title: `Briefing: ${topicMeta ? topicMeta.label : 'Panorama regional'} · ${WINDOW_LABEL[win]}`,
+                body: top5.map((item, idx) => `${idx + 1}. ${item.title}`).join('\n'),
+              })
+              store.pushToast('success', 'Briefing guardado en Mi carpeta')
+            }}
+          >
+            <Bookmark size={15} /> Guardar en Mi carpeta
+          </Button>
+          <Button onClick={handlePrint} size="md">
+            <Printer size={15} /> Imprimir o exportar a PDF
+          </Button>
+        </div>
       </div>
 
       {/* Form de filtros · oculto al imprimir */}

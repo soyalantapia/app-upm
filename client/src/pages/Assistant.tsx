@@ -26,9 +26,9 @@ import { useUI } from '@/lib/ui-provider'
 import type { ChatMessage } from '@/lib/types'
 
 const SUGGESTIONS = [
-  'Explicame las novedades de ambiente de esta semana.',
-  'Preparame un brief para una reunión sobre corredores bioceánicos.',
-  '¿Qué puntos debería revisar antes de la comisión?',
+  'Novedades de ambiente esta semana',
+  'Brief para mi próxima comisión',
+  '¿Qué revisar antes de la sesión?',
 ]
 
 const CAPABILITIES: { icon: typeof PenLine; label: string; desc: string }[] = [
@@ -347,31 +347,38 @@ export function AssistantPage() {
         )}
 
         {/* Input */}
-        <form
-          onSubmit={e => {
-            e.preventDefault()
-            send()
-          }}
-          className="flex items-end gap-2 border-t border-ink-100 bg-white p-3 sm:p-4"
-        >
-          <textarea
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault()
-                send()
-              }
+        <div className="flex flex-col border-t border-ink-100 bg-white p-3 sm:p-4">
+          <form
+            onSubmit={e => {
+              e.preventDefault()
+              send()
             }}
-            rows={1}
-            placeholder="Pregunta, redactá, resumí, preparate una reunión…"
-            aria-label="Mensaje para el Asistente AI"
-            className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl bg-upm-50/40 px-4 py-3 text-[14.5px] text-ink-900 ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
-          />
-          <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3" aria-label="Enviar mensaje">
-            <ArrowUp size={17} />
-          </Button>
-        </form>
+            className="flex items-end gap-2"
+          >
+            <textarea
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  send()
+                }
+              }}
+              rows={1}
+              placeholder="Pregunta, redactá, resumí, preparate una reunión…"
+              aria-label="Mensaje para el Asistente AI"
+              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl bg-upm-50/40 px-4 py-3 text-[14.5px] text-ink-900 ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
+            />
+            <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3" aria-label="Enviar mensaje">
+              <ArrowUp size={17} />
+            </Button>
+          </form>
+          {messages.length > 1 && (
+            <p className="mt-1.5 px-1 text-[10.5px] text-ink-400">
+              Conversación guardada automáticamente al iniciar una nueva.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   )

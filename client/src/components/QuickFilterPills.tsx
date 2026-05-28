@@ -45,6 +45,7 @@ export function QuickFilterPills({
           <button
             key={preset.id}
             onClick={() => onChange(preset.id)}
+            title={preset.special ? 'Filtra según los países y temas configurados en tu Perfil' : undefined}
             className={
               'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-bold transition ring-1 hover:-translate-y-0.5 ' +
               (isActive
