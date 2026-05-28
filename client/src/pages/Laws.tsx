@@ -103,6 +103,7 @@ export function LawsPage() {
     () => new Set(savedItems.map(i => i.ref).filter(Boolean) as string[]),
     [savedItems],
   )
+  const [lawsVisible, setLawsVisible] = useState(50)
   const [showComparator, setShowComparator] = useState(false)
   const [showMultiComparator, setShowMultiComparator] = useState(false)
   const [vigenciaFilter, setVigenciaFilter] = useState<VigenciaStatus | 'all'>('all')
@@ -364,7 +365,7 @@ export function LawsPage() {
               )}
             </div>
             <div className="flex max-h-[640px] flex-col gap-1.5 overflow-y-auto pr-1">
-              {filteredFinal.slice(0, 50).map(l => {
+              {filteredFinal.slice(0, lawsVisible).map(l => {
                 const c = countryByCode(l.country)
                 return (
                   <button
@@ -393,6 +394,14 @@ export function LawsPage() {
                 )
               })}
             </div>
+            {filteredFinal.length > lawsVisible && (
+              <button
+                onClick={() => setLawsVisible(v => v + 50)}
+                className="mt-1 w-full rounded-2xl bg-upm-50 py-2 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-100"
+              >
+                Ver {Math.min(50, filteredFinal.length - lawsVisible)} más ({filteredFinal.length - lawsVisible} restantes)
+              </button>
+            )}
           </div>
 
           {/* Detalle de la ley seleccionada */}
@@ -437,7 +446,12 @@ export function LawsPage() {
                 </button>
                 <button
                   onClick={() => {
-                    store.pushToast('info', 'El Asistente preparó preguntas sobre esta ley')
+                    try {
+                      sessionStorage.setItem('upm.asistente.prefill', JSON.stringify({
+                        suggestedQuestion: `¿Qué puntos importantes tiene "${active.title.replace(/^Ley \d+\s*·\s*/, '')}" y cómo impacta en la agenda legislativa?`,
+                      }))
+                    } catch { /* ignore */ }
+                    store.pushToast('info', 'Abriendo Asistente con contexto de esta ley')
                     navigate('/asistente')
                   }}
                   className="group inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3 py-1.5 text-[12px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"

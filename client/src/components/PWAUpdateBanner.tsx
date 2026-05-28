@@ -36,7 +36,7 @@ export function PWAUpdateBanner() {
   }
 
   return (
-    <div className="fixed bottom-20 left-1/2 z-30 -translate-x-1/2 md:bottom-4">
+    <div className="fixed bottom-28 left-1/2 z-30 -translate-x-1/2 md:bottom-4">
       <div className="flex items-center gap-2 rounded-full bg-upm-700 px-3 py-2 shadow-floating ring-1 ring-upm-800">
         <RefreshCw size={13} className="text-white" />
         <span className="text-[12px] font-bold text-white">Nueva versión disponible</span>

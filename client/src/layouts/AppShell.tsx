@@ -28,11 +28,11 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { to: '/', label: 'Inicio', icon: Home, primary: true },
-  { to: '/asistente', label: 'Asistente AI', icon: Sparkles, primary: true },
+  { to: '/asistente', label: 'Asistente', icon: Sparkles, primary: true },
   { to: '/radar', label: 'Radar', icon: Radar, primary: true },
-  { to: '/leyes', label: 'Leyes', icon: ScrollText },
+  { to: '/leyes', label: 'Leyes', icon: ScrollText, primary: true },
   { to: '/biblioteca', label: 'Biblioteca', icon: Library, primary: true },
-  { to: '/carpetas', label: 'Mi carpeta', icon: FolderClosed, primary: true },
+  { to: '/carpetas', label: 'Mi carpeta', icon: FolderClosed },
   { to: '/perfil', label: 'Perfil', icon: User },
 ]
 

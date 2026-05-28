@@ -530,9 +530,9 @@ export function RadarPage() {
             <button
               onClick={() => setViewMode('clusters')}
               className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition ' + (viewMode === 'clusters' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
-              title="Agrupado por ecosistema normativo"
+              title="Ver normas agrupadas por vínculos de citas"
             >
-              <Boxes size={11} /> Ecosistemas
+              <Boxes size={11} /> Redes
             </button>
           </div>
         </div>

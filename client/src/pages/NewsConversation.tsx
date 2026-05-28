@@ -171,7 +171,12 @@ export function NewsConversationPage() {
           </button>
           <button
             onClick={() => {
-              store.pushToast('info', 'El Asistente preparó preguntas sobre este tema')
+              try {
+                sessionStorage.setItem('upm.asistente.prefill', JSON.stringify({
+                  suggestedQuestion: `¿Qué puntos importantes tiene "${news.title}" y cómo impacta en la agenda legislativa?`,
+                }))
+              } catch { /* ignore */ }
+              store.pushToast('info', 'Abriendo Asistente con contexto de esta norma')
               navigate('/asistente')
             }}
             className="group inline-flex items-center gap-1 rounded-full bg-gradient-to-br from-upm-500 to-upm-700 px-3 py-1.5 text-[12px] font-semibold text-white shadow-cta transition hover:-translate-y-0.5 hover:shadow-floating"
@@ -297,10 +302,10 @@ export function NewsConversationPage() {
         {/* Tabla de contenidos · sticky desktop + chip mobile */}
         <PageTOC sections={[
           { id: 'sec-relevancia', label: '¿Por qué importa?' },
+          { id: 'sec-fulltext', label: 'Texto completo' },
           { id: 'sec-impacto', label: 'Análisis de impacto' },
           { id: 'sec-similares', label: 'Normas similares' },
           { id: 'sec-backlinks', label: 'Quién la cita' },
-          { id: 'sec-fulltext', label: 'Texto completo' },
         ] satisfies TOCSection[]} />
 
         {/* ¿Por qué importa? · relevancia personalizada */}
@@ -384,6 +389,26 @@ export function NewsConversationPage() {
           </div>
         )}
 
+        {/* Texto completo · ubicado antes del análisis para que el legislador
+            pueda leer el texto original antes de profundizar en el análisis. */}
+        {news.fullText && news.fullText.length > 0 ? (
+          <div id="sec-fulltext">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Texto completo</div>
+              {highlightTerms.length > 0 && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-warning-bg/60 px-2 py-0.5 text-[10px] font-bold text-warning-fg ring-1 ring-warning-bg">
+                  Highlight: {highlightTerms.join(' · ')}
+                </span>
+              )}
+            </div>
+            <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-ink-800">
+              <HighlightedText text={news.fullText} terms={highlightTerms} />
+            </p>
+          </div>
+        ) : (
+          <p className="text-[15px] leading-relaxed text-ink-700">{news.excerpt}</p>
+        )}
+
         {/* Mapa de la Ley · análisis de impacto + sectores + modificaciones +
             jurisprudencia + glosario. Panel maestro de información conectada. */}
         <div id="sec-impacto">
@@ -424,27 +449,6 @@ export function NewsConversationPage() {
         <div id="sec-backlinks">
           <BacklinksPanel itemId={news.id} />
         </div>
-
-        {/* Texto completo (ementa o ementaDetalhada) */}
-        {news.fullText && news.fullText.length > 0 && (
-          <div id="sec-fulltext">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Texto completo</div>
-              {highlightTerms.length > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-warning-bg/60 px-2 py-0.5 text-[10px] font-bold text-warning-fg ring-1 ring-warning-bg">
-                  Highlight: {highlightTerms.join(' · ')}
-                </span>
-              )}
-            </div>
-            <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-ink-800">
-              <HighlightedText text={news.fullText} terms={highlightTerms} />
-            </p>
-          </div>
-        )}
-
-        {!news.fullText && (
-          <p className="text-[15px] leading-relaxed text-ink-700">{news.excerpt}</p>
-        )}
 
         {/* Leyes relacionadas · extraídas con regex del texto completo */}
         {(() => {

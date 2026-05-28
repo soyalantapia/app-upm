@@ -87,7 +87,7 @@ export function HomePage() {
               <Sparkles size={17} />
             </div>
             <span className="text-[12.5px] font-bold text-ink-900">Asistente</span>
-            <span className="text-[10.5px] text-ink-500">Brief, resumen, RAG</span>
+            <span className="text-[10.5px] text-ink-500">Brief, resumen, Biblioteca</span>
           </button>
         </div>
         <button

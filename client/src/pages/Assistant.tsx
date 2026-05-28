@@ -14,7 +14,6 @@ import {
   ScrollText,
   Share2,
   Sparkles,
-  Trash2,
 } from 'lucide-react'
 import { Badge, Button, Card, Eyebrow, PageHeader } from '@/components/ui'
 import { Markdown } from '@/components/Markdown'
@@ -343,7 +342,7 @@ export function AssistantPage() {
             />
             <QuickButton icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />
             <QuickButton icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />
-            <QuickButton icon={Trash2} label="Nueva" onClick={newConversation} tone="danger" />
+            <QuickButton icon={Plus} label="Nueva" onClick={newConversation} />
           </div>
         )}
 

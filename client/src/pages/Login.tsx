@@ -22,8 +22,8 @@ export function LoginPage() {
     if (!onboarded) return '/onboarding'
     return from && from !== '/login' ? from : '/'
   })()
-  const [email, setEmail] = useState('martin.pereira@upm.org')
-  const [password, setPassword] = useState('demo-upm-2026')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
