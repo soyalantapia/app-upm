@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, BookOpen, FileText, Radar, Sparkles } from 'lucide-react'
+import { BookOpen, FileText, Radar, Sparkles } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
 import { NEWS as MOCK_NEWS } from '@/lib/data'
@@ -100,12 +100,6 @@ export function HomePage() {
             <span className="text-[10.5px] text-ink-500">Pre-sesión 1-pager</span>
           </button>
         </div>
-        <button
-          onClick={() => navigate('/briefing')}
-          className="inline-flex items-center justify-center gap-1.5 self-center rounded-full px-3 py-1.5 text-[12px] font-semibold text-upm-700 hover:bg-upm-50"
-        >
-          ¿Pre-sesión? Armá un briefing en 30 segundos <ArrowRight size={11} />
-        </button>
       </div>
     </div>
   )

@@ -119,6 +119,7 @@ export function HomeHero({ items, userName }: { items: NewsItem[]; userName: str
 
           <button
             onClick={() => navigate('/radar?preset=with-tramite')}
+            title="Normas con votación o tramitación activa en los países de tu Radar — esta semana"
             className="group flex flex-col gap-1.5 rounded-2xl bg-white p-3 ring-1 ring-warning/20 shadow-card transition hover:-translate-y-0.5 hover:shadow-floating hover:ring-warning/40"
           >
             <div className="flex items-center gap-1.5">

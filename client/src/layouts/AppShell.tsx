@@ -5,6 +5,7 @@ import {
   Sparkles,
   Radar,
   ScrollText,
+  FileText,
   Library,
   FolderClosed,
   User,
@@ -31,7 +32,8 @@ const NAV: NavItem[] = [
   { to: '/asistente', label: 'Asistente', icon: Sparkles, primary: true },
   { to: '/radar', label: 'Radar', icon: Radar, primary: true },
   { to: '/leyes', label: 'Leyes', icon: ScrollText, primary: true },
-  { to: '/biblioteca', label: 'Biblioteca', icon: Library, primary: true },
+  { to: '/briefing', label: 'Briefing', icon: FileText, primary: true },
+  { to: '/biblioteca', label: 'Biblioteca', icon: Library },
   { to: '/carpetas', label: 'Mi carpeta', icon: FolderClosed },
   { to: '/perfil', label: 'Perfil', icon: User },
 ]
@@ -151,6 +153,7 @@ export function AppShell() {
               }}
               className="rounded-full p-1.5 text-ink-500 hover:bg-white hover:text-danger"
               aria-label="Cerrar sesión"
+              title="Cerrar sesión"
             >
               <LogOut size={15} />
             </button>

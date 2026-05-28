@@ -36,8 +36,16 @@ export function PreferencesDrawer({
 
   const handleSave = (e: FormEvent) => {
     e.preventDefault()
+    const hasChanges =
+      JSON.stringify([...countries].sort()) !== JSON.stringify([...(prefs?.countries ?? [])].sort()) ||
+      JSON.stringify([...topics].sort()) !== JSON.stringify([...(prefs?.topics ?? [])].sort()) ||
+      frequency !== (prefs?.frequency ?? 'diario')
     store.setPrefs({ countries, topics, frequency, language: prefs?.language ?? 'es', notifications: prefs?.notifications ?? true })
-    store.pushToast('success', 'Preferencias actualizadas · el Radar ya las aplica')
+    if (hasChanges) {
+      store.pushToast('success', 'Preferencias actualizadas · el Radar ya las aplica')
+    } else {
+      store.pushToast('info', 'Sin cambios · todo sigue igual')
+    }
     onClose()
   }
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowDownUp,
   Boxes,
@@ -10,6 +10,7 @@ import {
   Radar,
   RefreshCw,
   Search,
+  Sparkles,
   Tag,
   Wifi,
   X,
@@ -55,6 +56,7 @@ const SORT_OPTIONS: { id: Sort; label: string }[] = [
 ]
 
 export function RadarPage() {
+  const navigate = useNavigate()
   const saved = useStore(s => s.saved)
   const prefs = useStore(s => s.prefs)
   const savedRefs = useMemo(
@@ -556,11 +558,37 @@ export function RadarPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <EmptyState
-          icon={<Filter size={22} />}
-          title="No encontramos novedades"
-          description="Probá con otro país, tema, palabra clave o quitando el preset activo. El Radar UPM se actualiza varias veces al día."
-        />
+        preset === 'mi-comision' ? (
+          (!prefs?.countries?.length && !prefs?.topics?.length) ? (
+            <EmptyState
+              icon={<Sparkles size={22} />}
+              title="Tu comisión no está configurada"
+              description="Configurá tus países y temas de interés en Perfil para ver solo lo que te importa."
+              action={
+                <Button size="md" variant="secondary" onClick={() => navigate('/perfil')}>
+                  Ir a Preferencias
+                </Button>
+              }
+            />
+          ) : (
+            <EmptyState
+              icon={<Sparkles size={22} />}
+              title="Sin novedades para tu comisión hoy"
+              description={`No hay novedades que coincidan con tus filtros activos (${[...(prefs?.countries ?? []), ...(prefs?.topics ?? [])].slice(0, 3).join(' · ')}). Probá ampliar el período o ver todo el Radar.`}
+              action={
+                <Button size="md" variant="secondary" onClick={() => setPreset('all')}>
+                  Ver todas las novedades
+                </Button>
+              }
+            />
+          )
+        ) : (
+          <EmptyState
+            icon={<Filter size={22} />}
+            title="No encontramos novedades"
+            description="Probá con otro país, tema, palabra clave o quitando el preset activo. El Radar UPM se actualiza varias veces al día."
+          />
+        )
       ) : viewMode === 'timeline' ? (
         <RadarTimeline items={filtered} />
       ) : viewMode === 'clusters' ? (

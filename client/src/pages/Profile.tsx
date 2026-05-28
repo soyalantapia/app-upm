@@ -28,6 +28,17 @@ import type { CountryCode, Topic } from '@/lib/types'
 
 const CARGOS = ['Legislador', 'Senador', 'Diputado', 'Coordinador de foro', 'Secretaría UPM', 'Asesor parlamentario']
 
+const INSTITUTION_BY_COUNTRY: Record<string, string> = {
+  UY: 'Parlamento Nacional',
+  AR: 'Honorable Congreso de la Nación',
+  BR: 'Câmara dos Deputados / Senado Federal',
+  PY: 'Congreso Nacional',
+  CL: 'Congreso Nacional',
+  BO: 'Asamblea Legislativa Plurinacional',
+  PE: 'Congreso de la República',
+  CO: 'Congreso de la República',
+}
+
 export function ProfilePage() {
   const { operator, signOut, updateOperator } = useAuth()
   const prefs = useStore(s => s.prefs)
@@ -217,7 +228,7 @@ export function ProfilePage() {
             <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Datos institucionales</div>
             <div className="mt-2 flex flex-col gap-1.5 text-[12.5px] text-ink-700">
               <div><span className="font-semibold text-ink-900">Temas prioritarios:</span> Ambiente, integración regional, corredores bioceánicos</div>
-              <div><span className="font-semibold text-ink-900">Institución:</span> Parlamento Nacional · Uruguay</div>
+              <div><span className="font-semibold text-ink-900">Institución:</span> {INSTITUTION_BY_COUNTRY[operator?.pais ?? 'UY'] ?? 'Parlamento'} · {countryByCode(operator?.pais ?? 'UY').name}</div>
               <div><span className="font-semibold text-ink-900">Acreditación:</span> Miembro UPM · 2026</div>
             </div>
           </Card>

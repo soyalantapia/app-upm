@@ -300,7 +300,7 @@ export function BriefingPage() {
         {/* Sección 1 · Las 5 que valen la pena */}
         <section>
           <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
-            <Sparkles size={12} /> 5 normas clave para tu sesión
+            <Sparkles size={12} /> {top5.length} norma{top5.length !== 1 ? 's' : ''} clave para tu sesión
           </div>
           {top5.length === 0 ? (
             <p className="mt-3 text-[12.5px] italic text-ink-500">

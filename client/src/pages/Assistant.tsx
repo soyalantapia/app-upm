@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { Badge, Button, Card, Eyebrow, PageHeader } from '@/components/ui'
+import { OverflowActions } from '@/components/OverflowActions'
 import { Markdown } from '@/components/Markdown'
 import { SourceCard } from '@/components/SourceCard'
 import { generateAssistantResponse } from '@/lib/respond'
@@ -326,23 +327,29 @@ export function AssistantPage() {
 
         {/* Quick actions sobre la última respuesta */}
         {lastAssistant && (
-          <div className="flex flex-wrap items-center gap-1.5 border-t border-ink-100 px-4 py-2.5 sm:px-6">
-            <span className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-500 mr-1">Acciones</span>
-            <QuickButton icon={Copy} label="Copiar" onClick={copyLastAssistant} />
-            <QuickButton icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />
-            <QuickButton
-              icon={FileStack}
-              label="Brief"
-              onClick={() => openCreateBrief({ title: `Brief: ${lastAssistantTitle}`, body: lastAssistantBody })}
-            />
-            <QuickButton
-              icon={ScrollText}
-              label="Minuta"
-              onClick={() => openCreateMinuta({ title: `Minuta: ${lastAssistantTitle}`, body: lastAssistantBody })}
-            />
-            <QuickButton icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />
-            <QuickButton icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />
-            <QuickButton icon={Plus} label="Nueva" onClick={newConversation} />
+          <div className="flex items-center gap-1.5 border-t border-ink-100 px-4 py-2.5 sm:px-6">
+            <span className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-500 mr-1 shrink-0">Acciones</span>
+            <OverflowActions visibleCount={4}>
+              {[
+                <QuickButton key="copy" icon={Copy} label="Copiar" onClick={copyLastAssistant} />,
+                <QuickButton key="save" icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />,
+                <QuickButton
+                  key="brief"
+                  icon={FileStack}
+                  label="Brief"
+                  onClick={() => openCreateBrief({ title: `Brief: ${lastAssistantTitle}`, body: lastAssistantBody })}
+                />,
+                <QuickButton
+                  key="minuta"
+                  icon={ScrollText}
+                  label="Minuta"
+                  onClick={() => openCreateMinuta({ title: `Minuta: ${lastAssistantTitle}`, body: lastAssistantBody })}
+                />,
+                <QuickButton key="share" icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />,
+                <QuickButton key="regen" icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />,
+                <QuickButton key="new" icon={Plus} label="Nueva" onClick={newConversation} />,
+              ]}
+            </OverflowActions>
           </div>
         )}
 

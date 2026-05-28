@@ -18,8 +18,8 @@ export function OnboardingPage() {
   const navigate = useNavigate()
   const { operator } = useAuth()
   const [step, setStep] = useState<0 | 1 | 2>(0)
-  const [countries, setCountries] = useState<CountryCode[]>(['AR', 'BR', 'UY', 'PY', 'BO', 'CL'])
-  const [topics, setTopics] = useState<Topic[]>(['ambiente', 'integracion-regional', 'corredores-bioceanicos'])
+  const [countries, setCountries] = useState<CountryCode[]>([])
+  const [topics, setTopics] = useState<Topic[]>([])
   const [frequency, setFrequency] = useState<Frequency>('diario')
 
   const toggleCountry = (c: CountryCode) =>
@@ -84,13 +84,20 @@ export function OnboardingPage() {
         )}
 
         {step === 1 && (
-          <div className="flex flex-wrap gap-2">
-            {TOPICS.map(t => (
-              <Chip key={t.id} active={topics.includes(t.id)} onClick={() => toggleTopic(t.id)}>
-                <Tag size={11} />
-                {t.label}
-              </Chip>
-            ))}
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap gap-2">
+              {TOPICS.map(t => (
+                <Chip key={t.id} active={topics.includes(t.id)} onClick={() => toggleTopic(t.id)}>
+                  <Tag size={11} />
+                  {t.label}
+                </Chip>
+              ))}
+            </div>
+            {topics.length === 0 && (
+              <p className="text-[11.5px] text-ink-500">
+                Seleccioná al menos un tema para continuar.
+              </p>
+            )}
           </div>
         )}
 

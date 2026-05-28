@@ -12,7 +12,6 @@ import {
   MessageSquareQuote,
   Move,
   Newspaper,
-  Plus,
   Sparkles,
   Trash2,
   X,
@@ -22,6 +21,7 @@ import { Badge, Button, Card, EmptyState } from '@/components/ui'
 import { store, useStore, type SavedItem, type SavedType } from '@/lib/store'
 import { useUI } from '@/lib/ui-provider'
 import { Drawer } from '@/components/Drawer'
+import { Markdown } from '@/components/Markdown'
 import { cn } from '@/lib/cn'
 
 const SEED: { id: string; type: SavedType; title: string; ref?: string }[] = [
@@ -49,6 +49,7 @@ export function FoldersPage() {
   const [name, setName] = useState('')
   const [openFolderId, setOpenFolderId] = useState<string | null>(null)
   const [moveTarget, setMoveTarget] = useState<SavedItem | null>(null)
+  const [readItem, setReadItem] = useState<SavedItem | null>(null)
 
   useEffect(() => {
     if (saved.length === 0) {
@@ -75,6 +76,10 @@ export function FoldersPage() {
       openDocument(item.ref)
     } else if (item.type === 'novedad' && item.ref) {
       window.location.hash = `#/radar/${item.ref}`
+    } else if (item.body) {
+      setReadItem(item)
+    } else {
+      store.pushToast('info', 'Este ítem no tiene vista disponible aún')
     }
   }
 
@@ -164,7 +169,7 @@ export function FoldersPage() {
               icon={<Bookmark size={22} />}
               title="Aún no guardaste nada"
               description="Cuando guardes una novedad, respuesta o documento aparecerá acá. Probá desde el Radar o el Asistente."
-              action={<Button size="md" variant="soft"><Sparkles size={14} /> Ir al Asistente</Button>}
+              action={<Button size="md" variant="soft" onClick={() => navigate('/asistente')}><Sparkles size={14} /> Ir al Asistente</Button>}
             />
           </div>
         ) : (
@@ -222,12 +227,6 @@ export function FoldersPage() {
               )
             })}
 
-            <button
-              onClick={() => SEED.forEach(s => store.saveItem({ id: s.id, type: s.type, title: s.title, ref: s.ref }))}
-              className="self-start text-[12px] font-semibold text-upm-700 hover:text-upm-800"
-            >
-              <Plus size={12} className="mr-1 inline" /> Restaurar guardados de ejemplo
-            </button>
           </div>
         )}
       </div>
@@ -306,6 +305,38 @@ export function FoldersPage() {
           </Button>
         </div>
       </Drawer>
+
+      {/* Drawer leer ítem guardado (brief / respuesta / minuta) */}
+      {readItem && (
+        <Drawer
+          open={Boolean(readItem)}
+          onClose={() => setReadItem(null)}
+          title={
+            <span className="flex items-center gap-2">
+              {(() => { const meta = TYPE_META[readItem.type]; const Icon = meta.icon; return <Icon size={15} className="text-upm-600" /> })()}
+              <span className="line-clamp-1">{readItem.title}</span>
+            </span>
+          }
+          description={
+            <span className="flex items-center gap-1.5">
+              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${TYPE_META[readItem.type].tone}`}>
+                {TYPE_META[readItem.type].label}
+              </span>
+              <span>·</span>
+              <span>{new Date(readItem.savedAt).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+            </span>
+          }
+          width="lg"
+        >
+          <div className="prose-sm max-w-none">
+            {readItem.body ? (
+              <Markdown content={readItem.body} />
+            ) : (
+              <p className="text-[13px] text-ink-500 italic">Este ítem no tiene contenido de texto disponible.</p>
+            )}
+          </div>
+        </Drawer>
+      )}
 
       {/* Drawer mover */}
       {moveTarget && (
