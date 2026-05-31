@@ -397,7 +397,7 @@ function AlertasPanel({ alerts }: { alerts: Alert[] }) {
             <button
               onClick={() => {
                 store.removeAlert(a.id)
-                store.pushToast('info', 'Alerta eliminada')
+                store.pushToast('info', 'Alerta eliminada', { label: 'Deshacer', onClick: () => store.createAlert({ ...a }) })
               }}
               className="shrink-0 p-1.5 text-ink-300 hover:text-danger transition-colors"
               title="Eliminar alerta"

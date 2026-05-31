@@ -1,25 +1,47 @@
+import type { ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 
-function renderInline(text: string, key: string) {
-  const parts: (string | { bold: string })[] = []
-  const regex = /\*\*([^*]+)\*\*/g
+// Normaliza la URL de un enlace markdown a un href usable.
+// Internos (#/… o /…) → hash-link del HashRouter; http(s) → externo.
+function linkHref(url: string): { href: string; external: boolean } {
+  if (/^https?:\/\//i.test(url) || /^mailto:/i.test(url)) return { href: url, external: /^https?:/i.test(url) }
+  if (url.startsWith('#')) return { href: url, external: false }
+  if (url.startsWith('/')) return { href: '#' + url, external: false }
+  return { href: '#/' + url, external: false }
+}
+
+// Tokeniza inline: enlaces [texto](url), **negrita** y *itálica*.
+// El orden de las alternativas importa (negrita antes que itálica).
+function renderInline(text: string, key: string): ReactNode {
+  const nodes: ReactNode[] = []
+  const regex = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|\*([^*\n]+)\*/g
   let last = 0
+  let i = 0
   let match: RegExpExecArray | null
   while ((match = regex.exec(text))) {
-    if (match.index > last) parts.push(text.slice(last, match.index))
-    parts.push({ bold: match[1] })
+    if (match.index > last) nodes.push(<span key={`t-${key}-${i}`}>{text.slice(last, match.index)}</span>)
+    if (match[1] !== undefined) {
+      const { href, external } = linkHref(match[2])
+      nodes.push(
+        <a
+          key={`a-${key}-${i}`}
+          href={href}
+          {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          className="font-semibold text-upm-700 underline decoration-upm-300 underline-offset-2 hover:text-upm-800"
+        >
+          {match[1]}
+        </a>,
+      )
+    } else if (match[3] !== undefined) {
+      nodes.push(<strong key={`b-${key}-${i}`} className="font-bold text-ink-900">{match[3]}</strong>)
+    } else if (match[4] !== undefined) {
+      nodes.push(<em key={`i-${key}-${i}`} className="italic">{match[4]}</em>)
+    }
     last = match.index + match[0].length
+    i++
   }
-  if (last < text.length) parts.push(text.slice(last))
-  return (
-    <span key={key}>
-      {parts.map((p, i) =>
-        typeof p === 'string'
-          ? <span key={`s-${key}-${i}`}>{p}</span>
-          : <strong key={`b-${key}-${i}`} className="font-bold text-ink-900">{p.bold}</strong>,
-      )}
-    </span>
-  )
+  if (last < text.length) nodes.push(<span key={`t-${key}-end`}>{text.slice(last)}</span>)
+  return <span key={key}>{nodes}</span>
 }
 
 export function Markdown({ content, className }: { content: string; className?: string }) {

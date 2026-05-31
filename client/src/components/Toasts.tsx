@@ -36,6 +36,14 @@ export function Toasts() {
         >
           <div className="mt-0.5">{TONE_ICON[t.tone]}</div>
           <p className="flex-1 text-sm text-ink-900">{t.message}</p>
+          {t.action && (
+            <button
+              onClick={() => { t.action!.onClick(); store.dismissToast(t.id) }}
+              className="shrink-0 self-center rounded-full bg-upm-50 px-2.5 py-1 text-[12px] font-bold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-100"
+            >
+              {t.action.label}
+            </button>
+          )}
           <button
             onClick={() => store.dismissToast(t.id)}
             className="rounded-full p-1 text-ink-300 hover:bg-ink-50 hover:text-ink-700"

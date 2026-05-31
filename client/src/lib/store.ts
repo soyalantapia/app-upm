@@ -34,7 +34,12 @@ export type Conversation = {
   updatedAt: string
 }
 
-type Toast = { id: string; tone: 'success' | 'info' | 'warning' | 'danger'; message: string }
+type Toast = {
+  id: string
+  tone: 'success' | 'info' | 'warning' | 'danger'
+  message: string
+  action?: { label: string; onClick: () => void }
+}
 
 export type Alert = {
   id: string
@@ -217,11 +222,12 @@ export const store = {
       saved: s.saved.map(i => (i.folderId === id ? { ...i, folderId: undefined } : i)),
     }))
   },
-  pushToast(tone: Toast['tone'], message: string) {
+  pushToast(tone: Toast['tone'], message: string, action?: Toast['action']) {
     const id = randId('t-')
-    update(s => ({ ...s, toasts: [...s.toasts, { id, tone, message }] }))
-    // Duración por tono · errores quedan más tiempo, success se va rápido
-    const duration =
+    update(s => ({ ...s, toasts: [...s.toasts, { id, tone, message, action }] }))
+    // Duración por tono · errores quedan más tiempo, success se va rápido.
+    // Si hay acción (ej. "Deshacer") damos más tiempo para alcanzar a usarla.
+    const duration = action ? 7000 :
       tone === 'success' ? 3000 :
       tone === 'info'    ? 4000 :
       tone === 'warning' ? 5000 :

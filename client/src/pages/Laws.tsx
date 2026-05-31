@@ -33,6 +33,7 @@ import type { NewsItem } from '@/lib/types'
 import { extractContext } from '@/lib/extract-context'
 import { GenealogyBreadcrumb } from '@/components/GenealogyBreadcrumb'
 import { ArticuladoPanel } from '@/components/ArticuladoPanel'
+import { isPlaceholderText } from '@/lib/law-content'
 import { SuggestedComparison } from '@/components/SuggestedComparison'
 import { JurisprudenciaPanel } from '@/components/JurisprudenciaPanel'
 import { PageTOC, type TOCSection } from '@/components/PageTOC'
@@ -247,7 +248,7 @@ export function LawsPage() {
           </h1>
           <p className="mt-0.5 text-[11.5px] text-ink-500">
             {liveStatus === 'live' && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft align-middle" />}
-            {laws.length} leyes con texto íntegro · listo para preguntar al Asistente
+            {laws.length} leyes indexadas · metadata oficial y texto íntegro cuando la fuente lo publica
           </p>
         </div>
         <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
@@ -274,9 +275,9 @@ export function LawsPage() {
           </Button>
         </div>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
           {/* Lista de leyes */}
-          <div className="flex flex-col gap-2">
+          <div className="flex min-w-0 flex-col gap-2">
             {/* Tabs principales: Todas | Guardadas */}
             <div className="flex w-full min-w-0 items-center gap-1 rounded-full bg-white p-1 ring-1 ring-ink-100 shadow-card">
               <button
@@ -386,7 +387,7 @@ export function LawsPage() {
                     <div className="text-[12.5px] font-semibold leading-snug text-ink-900 line-clamp-2">
                       {l.title.replace(/^Ley \d+\s*·\s*/, '')}
                     </div>
-                    {l.excerpt && l.excerpt !== l.title && (
+                    {l.excerpt && l.excerpt !== l.title && !isPlaceholderText(l.excerpt) && (
                       <p className="text-[11.5px] leading-relaxed text-ink-500 line-clamp-3">
                         {l.excerpt}
                       </p>
@@ -407,7 +408,7 @@ export function LawsPage() {
 
           {/* Detalle de la ley seleccionada */}
           {active && (
-            <div className="flex flex-col gap-4">
+            <div className="flex min-w-0 flex-col gap-4 overflow-x-hidden lg:overflow-x-visible">
               {/* Tabla de contenidos · sticky desktop + chip mobile */}
               <PageTOC sections={[
                 { id: 'sec-genealogia', label: 'Genealogía' },
@@ -549,8 +550,8 @@ export function LawsPage() {
                 {active.title.replace(/^Ley \d+\s*·\s*/, '')}
               </h2>
 
-              {/* Resumen ejecutivo extraído del articulado */}
-              {ctx.resumen && ctx.resumen.length > 50 && (
+              {/* Resumen ejecutivo extraído del articulado · solo si el texto base es real */}
+              {ctx.resumen && ctx.resumen.length > 50 && !isPlaceholderText(active.fullText) && (
                 <div className="rounded-2xl bg-upm-50/40 p-4 ring-1 ring-upm-100">
                   <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
                     <Sparkles size={11} /> Resumen ejecutivo
@@ -656,11 +657,17 @@ export function LawsPage() {
               {/* Articulado (si fue parseable) · con búsqueda within +
                   paginación + botón "Asistente" por artículo */}
               <div id="sec-articulado">
-                <ArticuladoPanel
-                  articulos={ctx.articulos}
-                  lawId={active.id}
-                  lawTitle={active.title}
-                />
+                {isPlaceholderText(active.fullText) ? (
+                  <div className="rounded-2xl bg-ink-50/60 p-4 text-[13px] italic leading-relaxed text-ink-500 ring-1 ring-ink-100">
+                    El texto íntegro de esta norma todavía no está disponible en el corpus. Consultá la fuente oficial para el articulado completo.
+                  </div>
+                ) : (
+                  <ArticuladoPanel
+                    articulos={ctx.articulos}
+                    lawId={active.id}
+                    lawTitle={active.title}
+                  />
+                )}
               </div>
 
               {/* Legisladores autores · si detectamos firmas conocidas */}
@@ -710,8 +717,8 @@ export function LawsPage() {
                 <JurisprudenciaPanel itemId={active.id} />
               </div>
 
-              {/* Sumario completo */}
-              {active.fullText && active.fullText.length > 0 && (
+              {/* Sumario completo · solo si es texto real (no plantilla scrapeada) */}
+              {!isPlaceholderText(active.fullText) && (
                 <div>
                   <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Sumario íntegro</div>
                   <p className="mt-2 whitespace-pre-line break-words text-[14.5px] leading-relaxed text-ink-800">
@@ -720,7 +727,7 @@ export function LawsPage() {
                 </div>
               )}
 
-              {!active.fullText && (
+              {isPlaceholderText(active.fullText) && !isPlaceholderText(active.excerpt) && (
                 <p className="text-[14.5px] leading-relaxed text-ink-700">{active.excerpt}</p>
               )}
 

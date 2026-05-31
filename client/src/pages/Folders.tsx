@@ -231,7 +231,7 @@ export function FoldersPage() {
                         <Move size={13} />
                       </button>
                       <button
-                        onClick={() => { store.removeSaved(item.id); store.pushToast('info', 'Eliminado de guardados') }}
+                        onClick={() => { store.removeSaved(item.id); store.pushToast('info', 'Eliminado de guardados', { label: 'Deshacer', onClick: () => store.saveItem(item) }) }}
                         className="rounded-full p-2 text-ink-400 hover:bg-danger-bg/40 hover:text-danger"
                         aria-label="Eliminar"
                       >
@@ -310,11 +310,24 @@ export function FoldersPage() {
             size="sm"
             variant="danger"
             onClick={() => {
-              if (openFolderId) {
-                store.removeFolder(openFolderId)
-                store.pushToast('info', 'Carpeta eliminada')
-                setOpenFolderId(null)
-              }
+              if (!openFolderId) return
+              const folder = folders.find(f => f.id === openFolderId)
+              const itemIds = saved.filter(i => i.folderId === openFolderId).map(i => i.id)
+              store.removeFolder(openFolderId)
+              setOpenFolderId(null)
+              store.pushToast(
+                'info',
+                `Carpeta "${folder?.title ?? ''}" eliminada`,
+                folder
+                  ? {
+                      label: 'Deshacer',
+                      onClick: () => {
+                        const newId = store.createFolder(folder.title, folder.description)
+                        itemIds.forEach(id => store.moveSavedToFolder(id, newId))
+                      },
+                    }
+                  : undefined,
+              )
             }}
           >
             <Trash2 size={12} /> Eliminar carpeta
