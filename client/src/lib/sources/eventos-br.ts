@@ -41,9 +41,13 @@ function detectTopic(text: string): Topic {
 
 function detectRelevance(tipo: string, desc: string): 'alta' | 'media' | 'baja' {
   const t = `${tipo} ${desc}`.toLowerCase()
-  if (/sessão deliberativa|votação|deliberativ/i.test(t)) return 'alta'
-  if (/audiência|comissão especial/i.test(t)) return 'media'
-  if (/reunião técnica|encontro|seminári/i.test(t)) return 'baja'
+  // Ceremonial / protocolar → baja. Va PRIMERO porque "Sessão Não Deliberativa
+  // Solene" contiene "deliberativa" y se colaba como alta.
+  if (/solene|homenagem|comemora|celebra[çc]|posse|condecora|n[ãa]o deliberativ/i.test(t)) return 'baja'
+  // Deliberativa REAL (excluye "não deliberativa", ya descartada arriba)
+  if (/sess[ãa]o deliberativa|vota[çc][ãa]o|reuni[ãa]o deliberativa|deliberativ/i.test(t)) return 'alta'
+  if (/audi[êe]ncia|comiss[ãa]o especial/i.test(t)) return 'media'
+  if (/reuni[ãa]o t[ée]cnica|encontro|semin[áa]ri/i.test(t)) return 'baja'
   return 'media'
 }
 

@@ -126,15 +126,25 @@ export async function generateRAGAnswer(question: string): Promise<ChatMessage> 
 
   const lines: string[] = []
 
+  // Fuerza de coincidencia · honestidad sobre qué tan relevante es cada hit.
+  // Solo contamos como "relevantes" las coincidencias por encima del umbral.
+  const STRONG = 0.14
+  const strongCount = hits.filter(h => h.score >= STRONG).length
+  const partialCount = hits.length - strongCount
+  const partialTail = partialCount > 0 ? ` (+${partialCount} parcial${partialCount > 1 ? 'es' : ''})` : ''
+  const plural = (n: number) => (n === 1 ? '' : 's')
+
   // Header
-  if (wantsCompare) {
-    lines.push(`**Comparativa regional** · sobre tu consulta encontré ${hits.length} normas relevantes en el corpus.`)
+  if (strongCount === 0) {
+    lines.push(`No encontré coincidencias fuertes para tu consulta. Te muestro las ${hits.length} normas más cercanas del corpus — revisalas con criterio:`)
+  } else if (wantsCompare) {
+    lines.push(`**Comparativa regional** · encontré ${strongCount} norma${plural(strongCount)} relevante${plural(strongCount)}${partialTail} en el corpus.`)
   } else if (wantsList) {
-    lines.push(`**${hits.length} normas relevantes** que matchean tu consulta:`)
+    lines.push(`**${strongCount} norma${plural(strongCount)} relevante${plural(strongCount)}**${partialTail} que matchean tu consulta:`)
   } else if (wantsBrief) {
     lines.push(`**Brief regional sobre tu consulta** · destilado de ${hits.length} normas del corpus.`)
   } else {
-    lines.push(`Encontré ${hits.length} normas relevantes en el corpus regional. Lo destilo así:`)
+    lines.push(`Encontré ${strongCount} norma${plural(strongCount)} relevante${plural(strongCount)}${partialTail} en el corpus regional. Lo destilo así:`)
   }
   lines.push('')
 
@@ -148,11 +158,12 @@ export async function generateRAGAnswer(question: string): Promise<ChatMessage> 
 
     lines.push(`### ${idx + 1}. ${country.flag} ${item.title}`)
     lines.push('')
+    const strengthLabel = hit.score >= 0.28 ? 'fuerte' : hit.score >= STRONG ? 'media' : 'parcial'
     const meta: string[] = [
       `**País:** ${country.name}`,
       `**Tema:** ${topic.label}`,
       `**Tipo:** ${item.tipoDocumento ?? item.type}`,
-      `**Match:** ${pct}%`,
+      `**Coincidencia:** ${strengthLabel} · ${pct}%`,
     ]
     lines.push(meta.join(' · '))
     lines.push('')

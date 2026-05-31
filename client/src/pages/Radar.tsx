@@ -179,14 +179,16 @@ export function RadarPage() {
     })
     // Aplicar preset de quick filters
     if (preset === 'mi-comision') {
-      // Mi comisión · usa prefs del usuario (topics + countries).
+      // Mi comisión · CURA: país Y tema de tus prefs + piso de relevancia
+      // (excluye lo de baja relevancia para no devolver medio corpus).
       // Si el usuario no tiene prefs seteadas, se comporta como 'all'.
       const userTopics = new Set(prefs?.topics ?? [])
       const userCountries = new Set(prefs?.countries ?? [])
       if (userTopics.size > 0 || userCountries.size > 0) {
         items = items.filter(n =>
           (userTopics.size === 0 || userTopics.has(n.topic)) &&
-          (userCountries.size === 0 || userCountries.has(n.country)),
+          (userCountries.size === 0 || userCountries.has(n.country)) &&
+          n.relevance !== 'baja',
         )
       }
     } else if (preset === 'hot') {
@@ -235,7 +237,8 @@ export function RadarPage() {
       'mi-comision': (userTopics.size > 0 || userCountries.size > 0)
         ? baseFiltered.filter(n =>
             (userTopics.size === 0 || userTopics.has(n.topic)) &&
-            (userCountries.size === 0 || userCountries.has(n.country)),
+            (userCountries.size === 0 || userCountries.has(n.country)) &&
+            n.relevance !== 'baja',
           ).length
         : baseFiltered.length,
       hot: baseFiltered.filter(n => n.relevance === 'alta').length,
