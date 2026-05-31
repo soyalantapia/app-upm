@@ -5,7 +5,7 @@
       "name": "app-upm",
       "runtimeExecutable": "/opt/homebrew/opt/node@22/bin/npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 5180
+      "port": 5181
     }
   ]
 }

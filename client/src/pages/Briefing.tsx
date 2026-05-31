@@ -208,7 +208,7 @@ export function BriefingPage() {
             Armá tu 1-pager
           </h1>
           <p className="mt-0.5 text-[11.5px] text-ink-500">
-            Elegí tema, países y ventana. Destilamos 5 normas clave + 3 cambios + 3 cuestiones cruzadas.
+            Elegí tema, países y ventana. Destilamos hasta 5 normas clave, cambios de estado y cuestiones cruzadas según tus filtros.
           </p>
         </div>
 

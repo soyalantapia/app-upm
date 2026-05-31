@@ -4,6 +4,7 @@ import { ArrowRight, Radar, Sparkles } from 'lucide-react'
 import type { NewsItem, Preferences } from '@/lib/types'
 import { countryByCode, topicById } from '@/lib/data'
 import { buildRelevanceHint, type RelevanceHint } from './RelevanciaPanel'
+import { dedupeRepeats } from '@/lib/pt-es'
 
 // HomeRadarPreview · Muestra 3 ítems del Radar filtrados por las preferencias
 // del usuario (topics + countries). Si no hay prefs, muestra alta relevancia.
@@ -89,7 +90,7 @@ export function HomeRadarPreview({ items, prefs }: { items: NewsItem[]; prefs: P
                   <span className="text-ink-500">{topic.shortLabel}</span>
                 </div>
                 <h4 className="mt-1 text-[13.5px] font-bold leading-snug text-ink-900 line-clamp-2 group-hover:text-upm-800">
-                  {item.title}
+                  {dedupeRepeats(item.title)}
                 </h4>
                 {hint && (() => {
                   const s = HINT_STYLES[hint.tone]

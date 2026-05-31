@@ -54,6 +54,7 @@ import { LawComparator } from '@/components/LawComparator'
 import { MultiComparator } from '@/components/MultiComparator'
 import { useCitationGraph } from '@/lib/use-citations'
 import { computeVigencia, type VigenciaStatus } from '@/lib/vigencia'
+import { humanizeSourceUrl } from '@/lib/source-url'
 import { matchesQuery } from '@/lib/synonyms'
 import { useDebounced } from '@/lib/use-debounced'
 import { GitCompareArrows } from 'lucide-react'
@@ -509,9 +510,9 @@ export function LawsPage() {
                     </span>
                     <span className="text-[12.5px] font-semibold text-ink-800 line-clamp-1">{active.source}</span>
                   </div>
-                  {active.sourceUrl && (
+                  {humanizeSourceUrl(active.sourceUrl) && (
                     <a
-                      href={active.sourceUrl}
+                      href={humanizeSourceUrl(active.sourceUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"

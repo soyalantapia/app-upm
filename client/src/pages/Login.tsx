@@ -40,8 +40,8 @@ export function LoginPage() {
     setTimeout(() => {
       signIn(email)
       store.pushToast('success', 'Bienvenido al ecosistema UPM')
-      // Si ya estaba onboarded de antes (deep-link), respetamos from; sino → onboarding
-      navigate(onboarded && from ? from : '/onboarding', { replace: true })
+      // Ya onboarded → su deep-link o Home. Solo el usuario nuevo va a onboarding.
+      navigate(onboarded ? (from || '/') : '/onboarding', { replace: true })
     }, 650)
   }
 
@@ -143,15 +143,15 @@ export function LoginPage() {
               />
               <Lock size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
             </div>
+            <span className="text-[11px] text-ink-400">Demo institucional · ingresá cualquier credencial para continuar.</span>
           </label>
 
-          <button
-            type="button"
-            onClick={() => store.pushToast('info', 'Para recuperar tu contraseña escribí a soporte@upm.org')}
+          <a
+            href="mailto:soporte@upm.org?subject=Recuperar%20acceso%20UPM&body=Hola%2C%20necesito%20recuperar%20el%20acceso%20a%20mi%20cuenta%20UPM."
             className="self-start text-[12px] font-semibold text-upm-700 hover:text-upm-800"
           >
             Olvidé mi contraseña
-          </button>
+          </a>
 
           <Button type="submit" size="lg" disabled={loading} className="w-full">
             {loading ? 'Verificando…' : (

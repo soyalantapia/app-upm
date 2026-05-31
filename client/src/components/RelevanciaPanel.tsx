@@ -22,10 +22,18 @@ function buildBullets(item: NewsItem, prefs: Preferences | null): Bullet[] {
   const userTopics = prefs?.topics ?? []
   const topicMatch = userTopics.includes(item.topic)
   if (topicMatch) {
-    bullets.push({
-      strong: `Prioridad alta:`,
-      text: `Este ítem pertenece a "${topic.label}", uno de tus temas prioritarios.`,
-    })
+    // El rótulo debe respetar la relevancia real del ítem (no afirmar "alta" si es baja).
+    if (item.relevance === 'alta') {
+      bullets.push({
+        strong: `Prioridad alta:`,
+        text: `Este ítem pertenece a "${topic.label}", uno de tus temas prioritarios.`,
+      })
+    } else {
+      bullets.push({
+        strong: `Coincide con tu tema:`,
+        text: `Pertenece a "${topic.label}", uno de tus temas, con relevancia ${item.relevance}.`,
+      })
+    }
   } else {
     bullets.push({
       strong: `Tema:`,

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { Bell, ArrowUpRight, CheckCircle2 } from 'lucide-react'
 import { computeDiff, writeSnapshot } from '@/lib/visit-tracker'
 import { countryByCode } from '@/lib/data'
+import { dedupeRepeats } from '@/lib/pt-es'
 import type { CountryCode, NewsItem } from '@/lib/types'
 
 // Banner "Desde tu última visita" · solo aparece si hay snapshot previo
@@ -109,7 +110,7 @@ export function DiffSinceLastVisit({ items }: { items: NewsItem[] }) {
                     )}
                   </div>
                   <p className="mt-1.5 text-[12.5px] font-semibold leading-snug text-white line-clamp-2 group-hover:text-white">
-                    {item.title}
+                    {dedupeRepeats(item.title)}
                   </p>
                 </button>
               </li>

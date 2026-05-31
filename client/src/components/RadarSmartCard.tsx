@@ -15,7 +15,8 @@ import { countryByCode, topicById } from '@/lib/data'
 import { formatDate, formatDateTime } from '@/lib/format'
 import { extractContext } from '@/lib/extract-context'
 import { buildRelevanceHint, type RelevanceHint } from '@/components/RelevanciaPanel'
-import { looksPortuguese, translatePtEs } from '@/lib/pt-es'
+import { looksPortuguese, translatePtEs, dedupeRepeats } from '@/lib/pt-es'
+import { humanizeSourceUrl } from '@/lib/source-url'
 import type { NewsItem, Preferences } from '@/lib/types'
 
 const HINT_STYLES: Record<RelevanceHint['tone'], { bg: string; ring: string; text: string; icon: string }> = {
@@ -67,6 +68,10 @@ export function RadarSmartCard({
   const country = countryByCode(item.country)
   const topicMeta = topicById(item.topic)
   const rel = RELEVANCE[item.relevance]
+  // Título limpio · colapsa repeticiones scrapeadas ("X … X")
+  const cleanTitle = useMemo(() => dedupeRepeats(item.title), [item.title])
+  // Solo mostrar "ver" si la fuente lleva a una página legible (no a un JSON de API)
+  const verUrl = humanizeSourceUrl(item.sourceUrl)
 
   // Extraer contexto · resumen 1-line + métricas
   const ctx = useMemo(() => extractContext(item.fullText ?? item.excerpt ?? ''), [item.fullText, item.excerpt])
@@ -146,13 +151,13 @@ export function RadarSmartCard({
               (density === 'compact' ? 'text-[14.5px]' : 'text-[16px]')
             }
           >
-            <Highlighted text={item.title} query={searchQuery} />
+            <Highlighted text={cleanTitle} query={searchQuery} />
           </h3>
           {/* Traducción inline PT→ES si el título parece portugués (cards BR).
               Ayuda al legislador hispanohablante sin romper el original oficial. */}
-          {density !== 'compact' && looksPortuguese(item.title) && (() => {
-            const traducido = translatePtEs(item.title)
-            if (traducido === item.title) return null
+          {density !== 'compact' && looksPortuguese(cleanTitle) && (() => {
+            const traducido = translatePtEs(cleanTitle)
+            if (traducido === cleanTitle) return null
             return (
               <p className="mt-0.5 text-[11.5px] italic text-ink-500" lang="es" title="Traducción aproximada">
                 ≈ {traducido.length > 90 ? traducido.slice(0, 90) + '…' : traducido}
@@ -160,17 +165,18 @@ export function RadarSmartCard({
             )
           })()}
 
-          {/* Resumen 1-line · solo en comfortable, suplanta al excerpt original */}
-          {density !== 'compact' && oneLine && (
-            <p className="mt-1.5 text-[13px] leading-relaxed text-ink-600 line-clamp-2">
-              <Highlighted text={oneLine} query={searchQuery} />
-            </p>
-          )}
-          {density !== 'compact' && !oneLine && (
-            <p className="mt-1.5 text-[13px] leading-relaxed text-ink-600 line-clamp-2">
-              <Highlighted text={item.excerpt ?? ''} query={searchQuery} />
-            </p>
-          )}
+          {/* Resumen 1-line · solo en comfortable. Suplanta al excerpt original.
+              Se oculta si solo repetiría el título (evita subtítulo = título). */}
+          {density !== 'compact' && (() => {
+            const subtitle = (oneLine ?? item.excerpt ?? '').trim()
+            if (!subtitle) return null
+            if (cleanTitle.toLowerCase().includes(subtitle.toLowerCase())) return null
+            return (
+              <p className="mt-1.5 text-[13px] leading-relaxed text-ink-600 line-clamp-2">
+                <Highlighted text={subtitle} query={searchQuery} />
+              </p>
+            )
+          })()}
 
           {/* Hint de relevancia · 1-línea que responde "¿por qué importa?"
               basado en prefs del usuario + heurística del contenido. */}
@@ -199,9 +205,9 @@ export function RadarSmartCard({
                   {item.status}
                 </span>
               )}
-              {item.sourceUrl && (
+              {verUrl && (
                 <a
-                  href={item.sourceUrl}
+                  href={verUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={e => e.stopPropagation()}

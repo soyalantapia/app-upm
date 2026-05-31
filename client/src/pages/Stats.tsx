@@ -43,7 +43,7 @@ export function StatsPage() {
           El estado del Mercosur regulatorio
         </h1>
         <p className="mt-0.5 text-[11.5px] text-ink-500">
-          Métricas en vivo sobre 45 feeds oficiales · qué se está moviendo y dónde.
+          Métricas en vivo sobre {feed?.sources?.length ?? 0} fuentes oficiales · qué se está moviendo y dónde.
         </p>
       </div>
 
@@ -52,7 +52,7 @@ export function StatsPage() {
         <BigStat label="Items en corpus" value={items.length} icon={Activity} accent />
         <BigStat label="Alta relevancia" value={stats.altaRelevancia} icon={Flame} />
         <BigStat label="Países cubiertos" value={stats.paisesActivos} icon={MapPin} />
-        <BigStat label="Backlinks en grafo" value={stats.totalBacklinks} icon={Network} />
+        <BigStat label="Conexiones entre normas" value={stats.totalBacklinks} icon={Network} />
       </div>
 
       {/* Heatmap calendario · actividad regulatoria por día */}

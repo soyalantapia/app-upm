@@ -11,6 +11,9 @@ import {
   User,
   LogOut,
   Search,
+  BarChart3,
+  LayoutGrid,
+  X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
@@ -38,13 +41,23 @@ const NAV: NavItem[] = [
   { to: '/perfil', label: 'Perfil', icon: User },
 ]
 
-const MOBILE_NAV = NAV.filter(n => n.primary).slice(0, 5)
+// Mobile · 4 accesos directos + "Más" con el resto (todo alcanzable sin sidebar)
+const MOBILE_NAV = NAV.filter(n => n.primary).slice(0, 4)
+const MORE_NAV: NavItem[] = [
+  { to: '/briefing', label: 'Briefing', icon: FileText },
+  { to: '/biblioteca', label: 'Biblioteca', icon: Library },
+  { to: '/carpetas', label: 'Mi carpeta', icon: FolderClosed },
+  { to: '/estadisticas', label: 'Estadísticas', icon: BarChart3 },
+  { to: '/perfil', label: 'Perfil', icon: User },
+]
 
 export function AppShell() {
   const { operator, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [searchOpen, setSearchOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
+  const moreActive = MORE_NAV.some(n => location.pathname.startsWith(n.to))
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -61,9 +74,10 @@ export function AppShell() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // Scroll-to-top on route change
+  // Scroll-to-top on route change · y cerrar el menú "Más" del mobile
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+    setMoreOpen(false)
   }, [location.pathname])
 
   return (
@@ -193,7 +207,59 @@ export function AppShell() {
             )}
           </NavLink>
         ))}
+        <button
+          onClick={() => setMoreOpen(v => !v)}
+          aria-label="Más secciones"
+          aria-expanded={moreOpen}
+          className={cn(
+            'flex flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl py-2 text-[10px] font-semibold transition-all duration-200',
+            moreActive || moreOpen
+              ? 'bg-gradient-to-br from-upm-500 to-upm-700 text-white shadow-cta'
+              : 'text-ink-500 hover:text-upm-700',
+          )}
+        >
+          <LayoutGrid size={19} strokeWidth={moreActive || moreOpen ? 2.4 : 2} />
+          <span>Más</span>
+        </button>
       </nav>
+
+      {/* Sheet "Más" · acceso a las secciones que no entran en la barra inferior */}
+      {moreOpen && (
+        <div className="fixed inset-0 z-40 md:hidden" onClick={() => setMoreOpen(false)}>
+          <div className="absolute inset-0 bg-ink-900/30 backdrop-blur-sm" />
+          <div
+            className="absolute inset-x-3 bottom-[5.5rem] rounded-3xl bg-white p-3 shadow-floating ring-1 ring-ink-100"
+            style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="mb-1.5 flex items-center justify-between px-1">
+              <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Más secciones</span>
+              <button onClick={() => setMoreOpen(false)} aria-label="Cerrar" className="grid h-7 w-7 place-items-center rounded-full text-ink-500 hover:bg-ink-50">
+                <X size={15} />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-1.5">
+              {MORE_NAV.map(item => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-2.5 rounded-2xl px-3 py-3 text-[13px] font-semibold transition-all',
+                      isActive
+                        ? 'bg-upm-50 text-upm-800 ring-1 ring-upm-100'
+                        : 'text-ink-700 hover:bg-upm-50/70 hover:text-upm-800',
+                    )
+                  }
+                >
+                  <item.icon size={17} className="text-upm-600" />
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>

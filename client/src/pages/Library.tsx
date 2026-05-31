@@ -79,11 +79,11 @@ export function LibraryPage() {
   const [topic, setTopic] = useState<Topic | 'all'>('all')
   const [loading, setLoading] = useState(true)
 
+  // Skeleton solo en la carga inicial · filtrar es local e instantáneo (no fingir latencia por tecla)
   useEffect(() => {
-    setLoading(true)
     const id = setTimeout(() => setLoading(false), 480)
     return () => clearTimeout(id)
-  }, [q, category, country, status, topic])
+  }, [])
 
   const results = useMemo(
     () =>
@@ -134,10 +134,11 @@ export function LibraryPage() {
           {canWrite && (
             <Button
               size="sm"
-              onClick={() => store.pushToast('info', 'Subida de documentos: disponible para Secretaría UPM en versión completa')}
-              title="Solo Secretaría UPM y Admin"
+              variant="ghost"
+              onClick={() => store.pushToast('info', 'Subir documentos llega en la versión completa para Secretaría UPM.')}
+              title="Próximamente · Secretaría UPM"
             >
-              <Upload size={13} /> Subir documento
+              <Upload size={13} /> Subir documento <span className="ml-1 rounded-full bg-ink-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink-500">Pronto</span>
             </Button>
           )}
           <Button size="sm" variant="ghost" onClick={refresh} disabled={feedLoading}>

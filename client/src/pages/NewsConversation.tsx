@@ -40,6 +40,7 @@ import { ExportLawButton } from '@/components/ExportLawButton'
 import { AddToCalendarButton } from '@/components/AddToCalendarButton'
 import { OverflowActions } from '@/components/OverflowActions'
 import { looksPortuguese, translatePtEs } from '@/lib/pt-es'
+import { humanizeSourceUrl } from '@/lib/source-url'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
 import { BudgetPanel } from '@/components/BudgetPanel'
@@ -122,6 +123,15 @@ export function NewsConversationPage() {
   const topic = topicById(news.topic)
   const relTone = news.relevance === 'alta' ? 'danger' : news.relevance === 'media' ? 'warning' : 'info'
 
+  // "Texto completo" solo es real si aporta algo más que el título (no repetir el título como cuerpo).
+  const _ft = (news.fullText ?? '').trim()
+  const _titleN = news.title.trim().toLowerCase()
+  const hasRealFullText = _ft.length > 40 && !_titleN.includes(_ft.toLowerCase())
+  const _excerpt = (news.excerpt ?? '').trim()
+  const hasUsefulExcerpt = _excerpt.length > 0 && !_titleN.includes(_excerpt.toLowerCase())
+  // Fuente legible · preferir PDF directo; sino la URL humanizada (oculta endpoints de API)
+  const verUrl = news.pdfUrl || humanizeSourceUrl(news.sourceUrl)
+
   const handleSave = () => {
     if (isSaved) {
       const i = store.getSnapshot().saved.find(x => x.ref === news.id)
@@ -202,7 +212,7 @@ export function NewsConversationPage() {
             value={fmt(news.dataPublicacao ?? news.date) ?? formatDate(news.date)}
           />
           {news.tipoDocumento && (
-            <MetaChip icon={Hash} label="Identificación" value={news.tipoDocumento} />
+            <MetaChip icon={Hash} label="Categoría" value={news.tipoDocumento} />
           )}
           {news.tipoConteudo && news.tipoConteudo !== news.tipoDocumento && (
             <MetaChip icon={FileText} label="Tipo" value={news.tipoConteudo} />
@@ -224,9 +234,9 @@ export function NewsConversationPage() {
             <span className="text-[12.5px] font-semibold text-ink-800 line-clamp-1">{news.source}</span>
             <span className="text-[11px] text-ink-500 tabular-nums">{formatDate(news.date)}</span>
           </div>
-          {news.sourceUrl && (
+          {verUrl && (
             <a
-              href={news.sourceUrl}
+              href={verUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1 text-[11.5px] font-semibold text-upm-700 ring-1 ring-upm-100 hover:bg-upm-50"
@@ -391,7 +401,7 @@ export function NewsConversationPage() {
 
         {/* Texto completo · ubicado antes del análisis para que el legislador
             pueda leer el texto original antes de profundizar en el análisis. */}
-        {news.fullText && news.fullText.length > 0 ? (
+        {hasRealFullText ? (
           <div id="sec-fulltext">
             <div className="flex items-center justify-between gap-2">
               <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Texto completo</div>
@@ -402,11 +412,15 @@ export function NewsConversationPage() {
               )}
             </div>
             <p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-ink-800">
-              <HighlightedText text={news.fullText} terms={highlightTerms} />
+              <HighlightedText text={news.fullText!} terms={highlightTerms} />
             </p>
           </div>
-        ) : (
+        ) : hasUsefulExcerpt ? (
           <p className="text-[15px] leading-relaxed text-ink-700">{news.excerpt}</p>
+        ) : (
+          <p className="text-[13.5px] italic leading-relaxed text-ink-500">
+            Esta entrada no tiene texto normativo cargado. Consultá la fuente oficial para el detalle completo.
+          </p>
         )}
 
         {/* Mapa de la Ley · análisis de impacto + sectores + modificaciones +

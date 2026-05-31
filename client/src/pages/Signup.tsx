@@ -19,6 +19,7 @@ import type { LucideIcon } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
 import { COUNTRIES } from '@/lib/data'
+import { store } from '@/lib/store'
 
 const BENEFITS: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: Sparkles, title: 'Asistente AI 24h', desc: 'Resumen, brief y redacción institucional' },
@@ -43,7 +44,7 @@ export function SignupPage() {
   const [pais, setPais] = useState('UY')
   const [institucion, setInstitucion] = useState('')
   const [phone, setPhone] = useState('')
-  const [accepted, setAccepted] = useState(true)
+  const [accepted, setAccepted] = useState(false)
 
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -229,11 +230,19 @@ export function SignupPage() {
               />
               <span className="text-[11.5px] leading-relaxed text-ink-700">
                 Acepto los{' '}
-                <a href="#" className="font-semibold text-upm-700 hover:underline">
+                <a
+                  href="mailto:soporte@upm.org?subject=T%C3%A9rminos%20UPM"
+                  onClick={e => { e.preventDefault(); store.pushToast('info', 'Términos UPM (versión preliminar) · te los enviamos a tu correo institucional al activar la cuenta.') }}
+                  className="font-semibold text-upm-700 hover:underline"
+                >
                   Términos
                 </a>{' '}
                 y la{' '}
-                <a href="#" className="font-semibold text-upm-700 hover:underline">
+                <a
+                  href="mailto:soporte@upm.org?subject=Privacidad%20UPM"
+                  onClick={e => { e.preventDefault(); store.pushToast('info', 'Política de Privacidad UPM (versión preliminar) · disponible a pedido en soporte@upm.org.') }}
+                  className="font-semibold text-upm-700 hover:underline"
+                >
                   Privacidad
                 </a>
                 . Mi cuenta queda vinculada a mi institución.

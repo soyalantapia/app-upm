@@ -82,3 +82,26 @@ export function translatePtEs(text: string | undefined | null): string {
 export function looksPortuguese(text: string | undefined | null): boolean {
   return !!text && PT_HINT.test(text)
 }
+
+/**
+ * Colapsa una frase que se repite a sí misma de forma consecutiva.
+ * Casos reales del feed: títulos scrapeados como
+ *   "Sessão … · Homenagem aos 30 anos … \n Homenagem aos 30 anos …"
+ * donde el mismo bloque aparece dos veces seguidas.
+ * Compara el bloque final de N palabras con el inmediatamente anterior;
+ * si coinciden, elimina la repetición. Conservador: mínimo 3 palabras.
+ */
+export function dedupeRepeats(text: string | undefined | null): string {
+  if (!text) return ''
+  const s = text.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim()
+  const words = s.split(' ')
+  const n = words.length
+  for (let block = Math.floor(n / 2); block >= 3; block--) {
+    const tail = words.slice(n - block).join(' ').toLowerCase()
+    const prev = words.slice(n - 2 * block, n - block).join(' ').toLowerCase()
+    if (tail && tail === prev) {
+      return words.slice(0, n - block).join(' ').replace(/[·\-–—\s]+$/, '').trim()
+    }
+  }
+  return s
+}

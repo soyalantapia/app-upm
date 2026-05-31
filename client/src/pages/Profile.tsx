@@ -227,7 +227,7 @@ export function ProfilePage() {
           <Card>
             <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Datos institucionales</div>
             <div className="mt-2 flex flex-col gap-1.5 text-[12.5px] text-ink-700">
-              <div><span className="font-semibold text-ink-900">Temas prioritarios:</span> Ambiente, integración regional, corredores bioceánicos</div>
+              <div><span className="font-semibold text-ink-900">Temas prioritarios:</span> {prefs?.topics?.length ? prefs.topics.map(t => topicById(t)?.label ?? t).join(', ') : 'Configurá tus temas en Preferencias'}</div>
               <div><span className="font-semibold text-ink-900">Institución:</span> {INSTITUTION_BY_COUNTRY[operator?.pais ?? 'UY'] ?? 'Parlamento'} · {countryByCode(operator?.pais ?? 'UY').name}</div>
               <div><span className="font-semibold text-ink-900">Acreditación:</span> Miembro UPM · 2026</div>
             </div>
