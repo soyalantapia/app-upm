@@ -11,8 +11,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'prompt',  // notifica al usuario antes de aplicar update
+      registerType: 'autoUpdate',  // el SW se actualiza solo · evita que el usuario quede en versión vieja
       injectRegister: 'auto',
+      workbox: { clientsClaim: true, skipWaiting: true },
       devOptions: { enabled: false },
       manifest: {
         name: 'Asistente AI UPM',
