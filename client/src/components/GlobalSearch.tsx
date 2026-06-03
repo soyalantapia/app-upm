@@ -4,6 +4,7 @@ import { ArrowRight, FileText, Newspaper, Search, Sparkles, User } from 'lucide-
 import { Modal } from './Modal'
 import { Badge } from './ui'
 import { DOCUMENTS, NEWS as MOCK_NEWS, countryByCode, topicById } from '@/lib/data'
+import { cleanTitle } from '@/lib/pt-es'
 import { useUI } from '@/lib/ui-provider'
 import { cn } from '@/lib/cn'
 import { useLiveFeed } from '@/lib/use-live-feed'
@@ -135,7 +136,7 @@ export function GlobalSearch({
                     <ResultItem
                       key={n.id}
                       icon={<Newspaper size={14} className="text-warning" />}
-                      title={n.title}
+                      title={cleanTitle(n.title)}
                       desc={`${c.flag} ${c.name} · ${topicById(n.topic).shortLabel}${n.tipoDocumento ? ` · ${n.tipoDocumento}` : ''}`}
                       tone="news"
                       onClick={() => {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { CalendarDays, ChevronRight, Globe, Users } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { countryByCode } from '@/lib/data'
+import { cleanTitle } from '@/lib/pt-es'
 import type { NewsItem } from '@/lib/types'
 
 type MercosurEvent = {
@@ -125,7 +126,7 @@ function extractFeedEvents(items: NewsItem[] | undefined, todayMs: number, horiz
     events.push({
       id: `feed-${item.id}`,
       date: dateStr.slice(0, 10),
-      title: item.title.length > 90 ? item.title.slice(0, 90) + '…' : item.title,
+      title: (t => (t.length > 90 ? t.slice(0, 90) + '…' : t))(cleanTitle(item.title)),
       type,
       countries: [c.flag],
       description: item.source ?? item.excerpt?.slice(0, 80) ?? '',

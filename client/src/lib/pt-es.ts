@@ -105,3 +105,14 @@ export function dedupeRepeats(text: string | undefined | null): string {
   }
   return s
 }
+
+/**
+ * Título listo para mostrar en contextos compactos (Home, Agenda, búsqueda):
+ * traduce PT→ES aproximado + colapsa repeticiones scrapeadas. Para un
+ * hispanohablante en una tarjeta sin espacio para el original + nota.
+ */
+export function cleanTitle(text: string | undefined | null): string {
+  const s = dedupeRepeats(translatePtEs(text ?? ''))
+  // La traducción PT→ES puede dejar la inicial en minúscula ("Sessão"→"sesión")
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s
+}
