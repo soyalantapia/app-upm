@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { Badge, Button, Card, Eyebrow, PageHeader } from '@/components/ui'
 import { OverflowActions } from '@/components/OverflowActions'
-import { Markdown } from '@/components/Markdown'
+import { StreamingMarkdown } from '@/components/StreamingMarkdown'
 import { SourceCard } from '@/components/SourceCard'
 import { generateAssistantResponse } from '@/lib/respond'
 import { generateRAGAnswer } from '@/lib/rag'
@@ -44,7 +44,7 @@ const INITIAL: ChatMessage = {
   role: 'assistant',
   content:
     '**Asistente del Legislador**\n\n' +
-    'Estoy listo para trabajar. Puedo resumir, redactar, preparar briefs y consultar la Biblioteca UPM con fuentes verificables.\n\n' +
+    'Busco en el corpus normativo del Mercosur — leyes, novedades y la Biblioteca UPM — y te respondo con **fuentes verificables**. Puedo resumir, redactar y preparar briefs.\n\n' +
     'Probá una pregunta o usá las sugerencias.',
   isInstitutional: true,
   createdAt: new Date().toISOString(),
@@ -467,7 +467,7 @@ function ChatBubble({
           )}
         </div>
         <div className="mt-3">
-          <Markdown content={message.content} />
+          <StreamingMarkdown content={message.content} animate={message.id !== 'init'} />
         </div>
         {message.sources && message.sources.length > 0 && (
           <div className="mt-3 grid gap-2 sm:grid-cols-2">

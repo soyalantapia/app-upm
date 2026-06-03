@@ -46,4 +46,38 @@
 
 ---
 
-> _Próximas páginas (mismo molde): Asistente · Radar · Leyes · Briefing · Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._
+## 🤖 Asistente — `/asistente`
+
+🎯 **Job-to-be-done:** hacerle una pregunta y que la resuelva (resumen, redacción, brief, consulta) **con fuentes verificables** — como tener un asesor que leyó todo el corpus.
+👤 **Usuario + momento:** legislador que necesita preparar algo rápido (un discurso, un brief, entender una norma) sin leer 1.700 normas.
+📍 **Rol en el producto:** **el corazón del value-prop.** Donde se demuestra la "inteligencia". Si esta página no se siente mágica, el producto no se diferencia de un buscador.
+
+### Estado actual (honesto)
+- **Funcional:** empty state con capacidades + sugerencias; respuesta con **citas clickeables**, etiqueta de fuerza de coincidencia (fuerte/media/parcial) y barra de acciones (Copiar/Guardar/Brief/Minuta/Más). Sólido (arreglado en la sesión de auditoría).
+- **Diseño:** chat limpio, ordenado.
+- **Veredicto:** **3.5/5.** Funciona y es honesto, pero la respuesta **aparecía de golpe** — no transmitía la sensación de "IA pensando/respondiendo" que vende inteligencia.
+
+### Diagnóstico PM
+- ✅ **Fortalezas:** citas verificables clickeables, etiquetas de coincidencia honestas, acciones útiles sobre cada respuesta, thinking state con skeleton.
+- ⚠️ **Gaps funcionales:** el empty state no comunicaba el **poder/alcance** (qué corpus hay detrás).
+- 🎨 **Gaps de diseño/UX:** respuesta sin **aparición progresiva** (el gesto premium por excelencia de un asistente AI); fuentes podrían tener más presencia (tarjetas con país/tipo).
+- 💰 **Gaps de valor (demo/wow):** no se sentía "mágico". La diferencia entre "una app que busca" y "un copiloto que piensa" está justamente en cómo entrega la respuesta.
+
+### Plan de la página (priorizado)
+| # | Mejora | Tipo | Impacto | Esfuerzo | Cuándo |
+|---|--------|------|---------|----------|--------|
+| 1 | **Reveal de respuesta bloque por bloque** (efecto "IA escribiendo" + cursor) sin romper el markdown | Diseño+Valor | **Alto** | Medio | **Ahora** |
+| 2 | **Empty state que vende el corpus**: "Busco en el corpus normativo del Mercosur… con fuentes verificables" | Valor | Medio | Bajo | **Ahora** |
+| 3 | Fuentes como tarjetas más ricas (país + tipo + "oficial") | Diseño | Medio | Medio | Próximo |
+| 4 | Sugerencias que muestren el rango de capacidades (redactar/comparar/brief) | Valor | Bajo | Bajo | Próximo |
+
+### North Star de la página
+> *"Le preguntás y ves a la IA **construir la respuesta en vivo**, citando fuentes oficiales que podés abrir — se siente como un asesor experto que leyó todo el Mercosur y te responde al instante."*
+
+### Ejecutado en esta pasada
+- ✅ #1 StreamingMarkdown (reveal bloque por bloque + cursor, respeta reduced-motion, no rompe citas) · ✅ #2 Empty state reforzado
+- (#3/#4 anotados para la próxima pasada)
+
+---
+
+> _Próximas páginas (mismo molde): Radar · Leyes · Briefing · Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._
