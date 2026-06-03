@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle, Calendar, Flame, Search } from 'lucide-react'
+import { CountUp } from './CountUp'
+import { LiveCoverageBar } from './LiveCoverageBar'
+import type { AggregatedFeed } from '@/lib/sources'
 import type { NewsItem } from '@/lib/types'
 
 // HomeHero · header compacto + search prominente + 3 stats HOY.
@@ -50,7 +53,7 @@ function computeStats(items: NewsItem[], now: number) {
   return { urgentes, votaciones, audiencias }
 }
 
-export function HomeHero({ items, userName }: { items: NewsItem[]; userName: string }) {
+export function HomeHero({ items, userName, feed }: { items: NewsItem[]; userName: string; feed?: AggregatedFeed | null }) {
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
   // Now estable por mount · evita Date.now() durante render (react-hooks/purity)
@@ -77,6 +80,9 @@ export function HomeHero({ items, userName }: { items: NewsItem[]; userName: str
           </p>
         </div>
       </div>
+
+      {/* Centro de comando · cobertura en vivo + pulso regional */}
+      <LiveCoverageBar feed={feed ?? null} />
 
       {/* Search prominente */}
       <form onSubmit={handleSearch} className="relative">
@@ -105,9 +111,7 @@ export function HomeHero({ items, userName }: { items: NewsItem[]; userName: str
               <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-danger text-white">
                 <Flame size={13} />
               </div>
-              <span className="text-[20px] font-bold tabular-nums text-ink-900">
-                {stats.urgentes.toLocaleString('es-AR')}
-              </span>
+              <CountUp value={stats.urgentes} className="text-[20px] font-bold tabular-nums text-ink-900" />
             </div>
             <div className="text-[11px] font-semibold leading-tight text-ink-700">
               Alta relevancia
@@ -126,9 +130,7 @@ export function HomeHero({ items, userName }: { items: NewsItem[]; userName: str
               <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-warning text-warning-fg">
                 <AlertTriangle size={13} />
               </div>
-              <span className="text-[20px] font-bold tabular-nums text-ink-900">
-                {stats.votaciones.toLocaleString('es-AR')}
-              </span>
+              <CountUp value={stats.votaciones} className="text-[20px] font-bold tabular-nums text-ink-900" />
             </div>
             <div className="text-[11px] font-semibold leading-tight text-ink-700">
               Por votar
@@ -146,9 +148,7 @@ export function HomeHero({ items, userName }: { items: NewsItem[]; userName: str
               <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-upm-600 text-white">
                 <Calendar size={13} />
               </div>
-              <span className="text-[20px] font-bold tabular-nums text-ink-900">
-                {stats.audiencias.toLocaleString('es-AR')}
-              </span>
+              <CountUp value={stats.audiencias} className="text-[20px] font-bold tabular-nums text-ink-900" />
             </div>
             <div className="text-[11px] font-semibold leading-tight text-ink-700">
               Audiencias / sesiones

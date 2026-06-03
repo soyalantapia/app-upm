@@ -36,25 +36,34 @@ export function HomePage() {
   const lastName = operator?.name.split(' ').slice(-1)[0] ?? 'Legislador'
 
   return (
-    <div className="animate-fade-up mx-auto flex w-full max-w-[900px] flex-col gap-5 px-4 py-5 sm:px-6 sm:py-8">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5 px-4 py-5 sm:px-6 sm:py-8">
       {/* Tour de bienvenida · solo aparece la primera vez */}
       <HomeTour />
 
-      {/* Hero compacto · saludo + search + 3 stats HOY */}
-      <HomeHero items={NEWS} userName={lastName} />
+      {/* Entrada escalonada · cada sección entra con un fade-up con delay creciente */}
+      {/* Hero compacto · saludo + cobertura en vivo + search + 3 stats HOY */}
+      <div className="animate-fade-up [animation-fill-mode:both]" style={{ animationDelay: '0ms' }}>
+        <HomeHero items={NEWS} userName={lastName} feed={feed} />
+      </div>
 
       {/* Diff "qué cambió desde tu última visita" */}
-      <DiffSinceLastVisit items={NEWS} />
+      <div className="animate-fade-up [animation-fill-mode:both]" style={{ animationDelay: '80ms' }}>
+        <DiffSinceLastVisit items={NEWS} />
+      </div>
 
       {/* En tu Radar · filtrado por prefs */}
-      <HomeRadarPreview items={NEWS} prefs={prefs} />
+      <div className="animate-fade-up [animation-fill-mode:both]" style={{ animationDelay: '160ms' }}>
+        <HomeRadarPreview items={NEWS} prefs={prefs} />
+      </div>
 
       {/* Agenda MERCOSUR próximos 7 días · combina eventos institucionales fijos
           con convocatorias automáticas detectadas del feed */}
-      <AgendaMercosur items={NEWS} />
+      <div className="animate-fade-up [animation-fill-mode:both]" style={{ animationDelay: '240ms' }}>
+        <AgendaMercosur items={NEWS} />
+      </div>
 
       {/* 3 acciones primarias · simple, no overwhelm */}
-      <div className="flex flex-col gap-2.5 pt-2">
+      <div className="animate-fade-up [animation-fill-mode:both] flex flex-col gap-2.5 pt-2" style={{ animationDelay: '320ms' }}>
         <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
           Ir a
         </div>

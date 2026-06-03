@@ -46,7 +46,7 @@ export function DiffSinceLastVisit({ items }: { items: NewsItem[] }) {
   }
 
   return (
-    <div className="animate-fade-up rounded-3xl bg-gradient-to-br from-upm-700 via-upm-800 to-upm-900 p-5 text-white shadow-floating ring-1 ring-upm-500/30 sm:p-6">
+    <div className="rounded-3xl bg-gradient-to-br from-upm-700 via-upm-800 to-upm-900 p-5 text-white shadow-floating ring-1 ring-upm-500/30 sm:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-1 items-start gap-3">
           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/25">
