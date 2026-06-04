@@ -85,4 +85,41 @@
 
 ---
 
-> _Próximas páginas (mismo molde): Radar · Leyes · Briefing · Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._
+## 📡 Radar — `/radar`
+
+🎯 **Job-to-be-done:** ver de un vistazo qué se movió en la normativa que me importa, filtrar a lo relevante y abrir lo que necesito — sin ahogarme en 1.700 normas.
+👤 **Usuario + momento:** legislador escaneando novedades, varias veces/semana, buscando lo de su comisión/tema.
+📍 **Rol en el producto:** la **pantalla de trabajo central** — donde pasa más tiempo. Densa.
+
+### Estado actual (honesto)
+- **Funcional:** Pulso de hoy (3 cards), filtros con contadores, búsqueda, vistas (lista/timeline/redes), export, cards ricas. Muy completo.
+- **Diseño:** denso pero ordenado.
+- **Veredicto:** **4/5.** Potente, pero (a) el "Pulso de hoy" tenía un contador en 0 y los mismos problemas de robustez que Inicio, y (b) **la lista era un muro de portugués** — pésimo para un producto en español.
+
+### Diagnóstico PM
+- ✅ **Fortalezas:** densidad útil, filtros con contadores, Pulso accionable, cards con relevancia + fuente + excerpt real.
+- ⚠️ **Gaps funcionales:** "Recién sancionadas" en 0 (ventana de 7 días, casi siempre vacía) e inconsistente con el preset que linkea (30 días).
+- 🎨 **Gaps de diseño/UX:** títulos de la lista en **portugués crudo**; números del Pulso estáticos y volátiles (caían a 0 al refrescar).
+- 💰 **Gaps de valor (demo/wow):** un legislador hispanohablante ve una pared de PT y números que parpadean → no se siente premium ni confiable.
+
+### Plan de la página (priorizado)
+| # | Mejora | Tipo | Impacto | Esfuerzo | Cuándo |
+|---|--------|------|---------|----------|--------|
+| 1 | **Lista en español** (Spanish-first): título traducido como principal, original en el hover | Valor+Diseño | **Alto** | Medio | **Ahora** |
+| 2 | **Pulso robusto**: count-up + high-water (nunca cae/0) + ventana de 30 días alineada con el preset | Valor+Diseño | **Alto** | Bajo | **Ahora** |
+| 3 | **Diccionario PT→ES ampliado** (Deliberação, Discussão, Aprovada, Redação, Parecer…) → mejora Pulso, Home y Asistente | Valor | Medio | Bajo | **Ahora** |
+| 4 | Reconciliar Pulso vs chips (mismos rótulos, números distintos) | Confianza | Medio | Medio | Próximo |
+| 5 | Densidad: modo "compacto" más accesible / agrupar por relevancia | Diseño | Medio | Medio | Visión |
+
+### North Star de la página
+> *"Abrís el Radar y en español, de un vistazo, ves el pulso del día (qué se sancionó, qué se vota, qué cruza fronteras) y una lista limpia y escaneables de lo que te importa — sin una palabra de portugués crudo ni un número que parpadee."*
+
+### Ejecutado en esta pasada
+- ✅ #1 Lista Spanish-first (RadarSmartCard: `cleanTitle` traducido como título, original en hover; sin PT crudo en 50/50 cards)
+- ✅ #2 Pulso con count-up + high-water + ventana 30 días → **27 · 44 · 855** (antes 0 · 44 · 855)
+- ✅ #3 Diccionario PT→ES ampliado (20+ términos) · previews del Pulso 100% en español
+- (#4/#5 anotados)
+
+---
+
+> _Próximas páginas (mismo molde): Leyes · Briefing · Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._

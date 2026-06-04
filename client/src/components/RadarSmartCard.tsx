@@ -15,7 +15,7 @@ import { countryByCode, topicById } from '@/lib/data'
 import { formatDate, formatDateTime } from '@/lib/format'
 import { extractContext } from '@/lib/extract-context'
 import { buildRelevanceHint, type RelevanceHint } from '@/components/RelevanciaPanel'
-import { looksPortuguese, translatePtEs, dedupeRepeats } from '@/lib/pt-es'
+import { cleanTitle } from '@/lib/pt-es'
 import { humanizeSourceUrl } from '@/lib/source-url'
 import type { NewsItem, Preferences } from '@/lib/types'
 
@@ -68,8 +68,9 @@ export function RadarSmartCard({
   const country = countryByCode(item.country)
   const topicMeta = topicById(item.topic)
   const rel = RELEVANCE[item.relevance]
-  // Título limpio · colapsa repeticiones scrapeadas ("X … X")
-  const cleanTitle = useMemo(() => dedupeRepeats(item.title), [item.title])
+  // Título para mostrar · traduce PT→ES + colapsa repeticiones scrapeadas.
+  // Spanish-first: la lista se lee en español; el original queda en el hover (title).
+  const displayTitle = useMemo(() => cleanTitle(item.title), [item.title])
   // Solo mostrar "ver" si la fuente lleva a una página legible (no a un JSON de API)
   const verUrl = humanizeSourceUrl(item.sourceUrl)
 
@@ -146,31 +147,21 @@ export function RadarSmartCard({
           </div>
 
           <h3
+            title={item.title !== displayTitle ? `Original: ${item.title}` : undefined}
             className={
               'mt-2 font-bold leading-snug text-ink-900 ' +
               (density === 'compact' ? 'text-[14.5px]' : 'text-[16px]')
             }
           >
-            <Highlighted text={cleanTitle} query={searchQuery} />
+            <Highlighted text={displayTitle} query={searchQuery} />
           </h3>
-          {/* Traducción inline PT→ES si el título parece portugués (cards BR).
-              Ayuda al legislador hispanohablante sin romper el original oficial. */}
-          {density !== 'compact' && looksPortuguese(cleanTitle) && (() => {
-            const traducido = translatePtEs(cleanTitle)
-            if (traducido === cleanTitle) return null
-            return (
-              <p className="mt-0.5 text-[11.5px] italic text-ink-500" lang="es" title="Traducción aproximada">
-                ≈ {traducido.length > 90 ? traducido.slice(0, 90) + '…' : traducido}
-              </p>
-            )
-          })()}
 
           {/* Resumen 1-line · solo en comfortable. Suplanta al excerpt original.
               Se oculta si solo repetiría el título (evita subtítulo = título). */}
           {density !== 'compact' && (() => {
             const subtitle = (oneLine ?? item.excerpt ?? '').trim()
             if (!subtitle) return null
-            if (cleanTitle.toLowerCase().includes(subtitle.toLowerCase())) return null
+            if (displayTitle.toLowerCase().includes(subtitle.toLowerCase())) return null
             return (
               <p className="mt-1.5 text-[13px] leading-relaxed text-ink-600 line-clamp-2">
                 <Highlighted text={subtitle} query={searchQuery} />

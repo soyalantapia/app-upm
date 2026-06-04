@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { Flame, Gavel, GitCompareArrows, ArrowRight } from 'lucide-react'
 import type { NewsItem } from '@/lib/types'
 import { countryByCode } from '@/lib/data'
+import { cleanTitle } from '@/lib/pt-es'
+import { CountUp } from './CountUp'
 import type { FilterPresetId } from './QuickFilterPills'
 
 // PulseToday · Hero de Radar.
@@ -19,13 +21,15 @@ type Stats = {
 
 function computeStats(items: NewsItem[]): Stats {
   const now = Date.now()
-  const weekAgo = now - 7 * 24 * 60 * 60 * 1000
+  // Ventana de 30 días · alineada con el preset 'recent-sancionadas' del Radar
+  // (antes 7 días → casi siempre 0 porque hay pocas sanciones en una semana).
+  const monthAgo = now - 30 * 24 * 60 * 60 * 1000
 
-  // Sancionadas en últimos 7 días
+  // Sancionadas recientes (últimos 30 días)
   const sancionadasItems = items.filter(n => {
     const isLey = /^(?:ar|uy|co)-ley-/.test(n.id) || /sancion|promulgad|aprobad/i.test(n.status ?? '')
     const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
-    return isLey && !Number.isNaN(d) && d >= weekAgo
+    return isLey && !Number.isNaN(d) && d >= monthAgo
   })
 
   // Por votar / agendado / convocada
@@ -60,8 +64,9 @@ function computeStats(items: NewsItem[]): Stats {
 function formatExample(item?: NewsItem): { country: string; title: string } | null {
   if (!item) return null
   const c = countryByCode(item.country)
-  // Truncar título a algo legible
-  const title = item.title.length > 50 ? item.title.slice(0, 50) + '…' : item.title
+  // Limpia el título (traduce PT→ES + dedup) y trunca a algo legible
+  const clean = cleanTitle(item.title)
+  const title = clean.length > 50 ? clean.slice(0, 50) + '…' : clean
   return { country: `${c.flag} ${c.code}`, title }
 }
 
@@ -74,14 +79,24 @@ export function PulseToday({
 }) {
   const stats = useMemo(() => computeStats(items), [items])
 
+  // High-water · una vez que un contador muestra un valor, no cae aunque el feed
+  // fluctúe al refrescar → el "Pulso de hoy" nunca vuelve a 0 a la vista.
+  const hwRef = useRef({ sancionadas: 0, porVotar: 0, cruzadas: 0 })
+  const dCounts = {
+    sancionadas: Math.max(stats.sancionadas.count, hwRef.current.sancionadas),
+    porVotar: Math.max(stats.porVotar.count, hwRef.current.porVotar),
+    cruzadas: Math.max(stats.cruzadas.count, hwRef.current.cruzadas),
+  }
+  hwRef.current = dCounts
+
   const cards = [
     {
       key: 'sancionadas' as const,
       preset: 'recent-sancionadas' as FilterPresetId,
       icon: Flame,
-      label: 'Sancionadas esta semana',
-      sub: 'leyes promulgadas en últimos 7 días',
-      count: stats.sancionadas.count,
+      label: 'Recién sancionadas',
+      sub: 'leyes promulgadas en los últimos 30 días',
+      count: dCounts.sancionadas,
       example: formatExample(stats.sancionadas.example),
       gradient: 'from-danger to-warning',
       ring: 'ring-danger/20',
@@ -94,7 +109,7 @@ export function PulseToday({
       icon: Gavel,
       label: 'Por votar / en trámite',
       sub: 'votaciones pendientes o comisión',
-      count: stats.porVotar.count,
+      count: dCounts.porVotar,
       example: formatExample(stats.porVotar.example),
       gradient: 'from-warning to-warning-fg',
       ring: 'ring-warning/30',
@@ -107,7 +122,7 @@ export function PulseToday({
       icon: GitCompareArrows,
       label: 'Cuestiones cruzadas MERCOSUR',
       sub: 'normas que mencionan a otros países',
-      count: stats.cruzadas.count,
+      count: dCounts.cruzadas,
       example: formatExample(stats.cruzadas.example),
       gradient: 'from-upm-500 to-upm-700',
       ring: 'ring-upm-200',
@@ -140,9 +155,7 @@ export function PulseToday({
                   <Icon size={16} />
                 </div>
                 <div className="text-right">
-                  <div className="text-[26px] font-bold tabular-nums leading-none text-ink-900">
-                    {card.count.toLocaleString('es-AR')}
-                  </div>
+                  <CountUp value={card.count} className="text-[26px] font-bold tabular-nums leading-none text-ink-900" />
                 </div>
               </div>
               <div className="relative">

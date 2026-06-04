@@ -36,9 +36,9 @@ export default defineConfig({
     alias: { '@': path.resolve(__dirname, './src') },
   },
   server: {
-    port: 5181,
+    port: 5188,
     host: '127.0.0.1',
-    strictPort: false,
+    strictPort: true,
   },
   test: {
     environment: 'jsdom',
