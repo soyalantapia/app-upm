@@ -22,6 +22,7 @@ import { store, useStore, type SavedItem, type SavedType } from '@/lib/store'
 import { useUI } from '@/lib/ui-provider'
 import { Drawer } from '@/components/Drawer'
 import { Markdown } from '@/components/Markdown'
+import { cleanTitle } from '@/lib/pt-es'
 import { cn } from '@/lib/cn'
 
 const SEED: { id: string; type: SavedType; title: string; ref?: string; body?: string }[] = [
@@ -214,7 +215,7 @@ export function FoldersPage() {
                       </div>
                       <button onClick={() => handleItemClick(item)} className="mt-1.5 block text-left">
                         <div className="text-[13.5px] font-semibold leading-snug text-ink-900 hover:text-upm-700">
-                          {item.title}
+                          {cleanTitle(item.title)}
                         </div>
                       </button>
                       <div className="mt-0.5 text-[10.5px] text-ink-500 tabular-nums">
@@ -282,7 +283,7 @@ export function FoldersPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <Badge tone="brand">{meta.label}</Badge>
-                      <div className="mt-1 text-[13px] font-semibold leading-snug text-ink-900">{item.title}</div>
+                      <div className="mt-1 text-[13px] font-semibold leading-snug text-ink-900">{cleanTitle(item.title)}</div>
                       <div className="mt-0.5 text-[10.5px] text-ink-500 tabular-nums">
                         {new Date(item.savedAt).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </div>

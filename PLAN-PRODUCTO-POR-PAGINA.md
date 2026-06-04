@@ -188,4 +188,36 @@
 
 ---
 
-> _Próximas páginas (mismo molde): Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._
+## 🧩 Secundarias (pasada 6 · en lote)
+
+Páginas de **soporte** — ya bastante saneadas en la auditoría. Wins más chicos: consistencia premium (count-up + español) y honestidad de números. Diagnóstico + ejecución resumidos.
+
+### 📊 Estadísticas — `/estadisticas`
+🎯 **JTBD:** ver el estado macro del corpus regulatorio del Mercosur. 📍 Soporte/análisis.
+- **Estado:** dashboard denso (4 BigStats + heatmap + coroplético + ranking por país + sectores + presupuesto + frecuencia de términos). Ya con fuente dinámica (no "45 feeds" hardcodeado) y label "Conexiones entre normas" (no jerga).
+- **Ejecutado:** ✅ **count-up** en los 4 BigStats hero (Items / Alta relevancia / Países / Conexiones) → "1.747 · 830 · 7 · 892" animados.
+- **Pendiente:** loading/empty guard formal (hoy mitigado por high-water del feed); el mapa duplicado del Home.
+
+### 📚 Biblioteca — `/biblioteca`
+🎯 **JTBD:** consultar los documentos institucionales curados de la UPM. 📍 Soporte/archivo.
+- **Estado:** grilla de documentos + filtros; ya con "Subir documento" atenuado (no dead-end) y sin skeleton falso por tecla.
+- **Ejecutado:** ✅ **cleanTitle** (Spanish-first) en los títulos de documentos (consistencia).
+- **Pendiente:** diferenciar más Biblioteca vs Radar (banner que empuja a irse).
+
+### 🗂️ Mi carpeta — `/carpetas`
+🎯 **JTBD:** volver a lo que guardé (novedades, briefs, minutas). 📍 Espacio privado.
+- **Estado:** ya con seeds marcados "Ejemplo", todos los ítems abribles, **deshacer** en borrados, y confirmación.
+- **Ejecutado:** ✅ **cleanTitle** en los títulos de ítems guardados (un BR guardado se lee en español).
+- **Pendiente:** targets de mover/borrar más grandes en mobile.
+
+### 👤 Perfil — `/perfil`
+🎯 **JTBD:** ver/editar mi cuenta y preferencias. 📍 Configuración.
+- **Estado:** ya con institución dinámica por país, temas reales desde prefs, **deshacer** en alertas, PreferencesDrawer.
+- **Ejecutado:** sin cambios nuevos (no muestra títulos de normas; ya estaba pulida). Honesto: no había win que mueva la aguja.
+
+### North Star (secundarias)
+> *"Soporte sólido y consistente: mismos números que respiran, mismo español, mismos estados seguros que en las páginas core — nada que desentone."*
+
+---
+
+> _Pendientes opcionales: flujo de acceso/onboarding (Login/Registro/Checkout) — ya QA-eado funcional, con mejoras de copy anotadas en REPORTE-AUDITORIA-UX-R4.md._

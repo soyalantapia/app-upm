@@ -20,6 +20,7 @@ import type { LucideIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { Badge, Button, Card, Chip, EmptyState } from '@/components/ui'
 import { COUNTRIES, DOCUMENTS, TOPICS, countryByCode, topicById } from '@/lib/data'
+import { cleanTitle } from '@/lib/pt-es'
 import type { CountryCode, DocStatus, DocType, Topic } from '@/lib/types'
 import { useUI } from '@/lib/ui-provider'
 import { store, useStore } from '@/lib/store'
@@ -325,7 +326,7 @@ export function LibraryPage() {
                       {d.status === 'aporte' && <Badge tone="warning">Aporte de foro</Badge>}
                       {c && <Badge tone="ghost">{c.flag} {c.name}</Badge>}
                     </div>
-                    <h3 className="mt-2 text-[15px] font-bold leading-snug text-ink-900">{d.title}</h3>
+                    <h3 className="mt-2 text-[15px] font-bold leading-snug text-ink-900">{cleanTitle(d.title)}</h3>
                     <p className="mt-1 text-[12.5px] leading-relaxed text-ink-500 line-clamp-2">{d.excerpt}</p>
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 text-[11px] text-ink-500">

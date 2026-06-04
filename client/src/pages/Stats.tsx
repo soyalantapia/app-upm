@@ -5,6 +5,7 @@ import { useLiveFeed } from '@/lib/use-live-feed'
 import { useCitationGraph } from '@/lib/use-citations'
 import { computeTrendingLaws } from '@/lib/trending'
 import { COUNTRIES, TOPICS } from '@/lib/data'
+import { CountUp } from '@/components/CountUp'
 import { ActivityHeatmap } from '@/components/ActivityHeatmap'
 import { MercosurChoropleth } from '@/components/MercosurChoropleth'
 import { SectorHeatmap } from '@/components/SectorHeatmap'
@@ -244,7 +245,7 @@ function BigStat({
       <div className={'flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] ' + (accent ? 'text-white/70' : 'text-ink-500')}>
         <Icon size={11} /> {label}
       </div>
-      <div className="text-[28px] font-bold tabular-nums">{value.toLocaleString('es-AR')}</div>
+      <CountUp value={value} className="text-[28px] font-bold tabular-nums" />
     </div>
   )
 }
