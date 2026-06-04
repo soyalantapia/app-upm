@@ -20,6 +20,8 @@ import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
 import { COUNTRIES } from '@/lib/data'
 import { store } from '@/lib/store'
+import { FlowSteps } from '@/components/FlowSteps'
+import { CoverageProof } from '@/components/CoverageProof'
 
 const BENEFITS: { icon: LucideIcon; title: string; desc: string }[] = [
   { icon: Sparkles, title: 'Asistente AI 24h', desc: 'Resumen, brief y redacción institucional' },
@@ -67,7 +69,11 @@ export function SignupPage() {
           <ArrowLeft size={11} /> Ingresar
         </Link>
 
-        <div className="grid gap-6 pt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-start lg:gap-8 lg:pt-0">
+        <div className="mb-7 pt-12 lg:mb-9 lg:pt-2">
+          <FlowSteps current="datos" />
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-start lg:gap-8 lg:pt-0">
           {/* Pitch visible mobile y desktop, layout adaptativo */}
           <div className="flex flex-col gap-5 text-white">
             <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/85 ring-1 ring-white/20">
@@ -82,6 +88,8 @@ export function SignupPage() {
             <p className="max-w-md text-[14px] leading-relaxed text-white/75 sm:text-[15px]">
               Asistente AI institucional, radar normativo regional y biblioteca UPM curada, todo desde un mismo espacio.
             </p>
+
+            <CoverageProof className="max-w-md" />
 
             {/* Pricing card mobile-friendly */}
             <div className="relative overflow-hidden rounded-3xl bg-white/5 p-5 ring-1 ring-white/15 backdrop-blur sm:p-6">

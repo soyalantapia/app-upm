@@ -8,6 +8,7 @@ import { useStore, store } from '@/lib/store'
 import { DEMO_OPERATOR } from '@/lib/data'
 import { BrandMark } from '@/components/Brand'
 import { PhoneMockup } from '@/components/PhoneMockup'
+import { CoverageProof } from '@/components/CoverageProof'
 
 export function LoginPage() {
   const { operator, signIn } = useAuth()
@@ -77,8 +78,12 @@ export function LoginPage() {
               { icon: Radar, title: 'Radar normativo', desc: 'Por país, tema y tipo' },
               { icon: FileStack, title: 'Biblioteca UPM', desc: 'Memoria institucional' },
               { icon: ShieldCheck, title: 'Con respaldo', desc: 'Fuentes verificables' },
-            ].map(item => (
-              <div key={item.title} className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 ring-1 ring-white/10 backdrop-blur">
+            ].map((item, i) => (
+              <div
+                key={item.title}
+                className="animate-fade-up flex items-center gap-3 rounded-2xl bg-white/5 p-3 ring-1 ring-white/10 backdrop-blur"
+                style={{ animationDelay: `${120 + i * 90}ms` }}
+              >
                 <div className="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-upm-200 ring-1 ring-white/15">
                   <item.icon size={16} />
                 </div>
@@ -89,6 +94,8 @@ export function LoginPage() {
               </div>
             ))}
           </div>
+
+          <CoverageProof className="animate-fade-up" />
 
           <div className="text-[12px] text-white/55">
             Ecosistema cerrado · UPM. Acceso institucional para miembros y autoridades autorizadas.
@@ -112,6 +119,9 @@ export function LoginPage() {
               <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-ink-500">Acceso institucional</div>
             </div>
           </div>
+
+          {/* Cobertura "en vivo" para mobile (en desktop ya está en el pitch lateral) */}
+          <CoverageProof tone="light" className="lg:hidden" />
 
           <div>
             <h2 className="text-[22px] font-bold tracking-tight text-ink-900">Acceso al ecosistema</h2>
@@ -177,6 +187,9 @@ export function LoginPage() {
           <Button type="button" variant="ghost" size="md" onClick={onDemo} disabled={loading} className="w-full">
             Entrar con cuenta demo
           </Button>
+          <p className="-mt-3 text-center text-[11px] text-ink-400">
+            Explorá la plataforma sin registrarte.
+          </p>
 
           <div className="flex flex-col gap-1.5 text-center text-[11.5px] text-ink-500">
             <span>Acceso exclusivo para miembros y autoridades autorizadas.</span>

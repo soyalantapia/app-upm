@@ -221,3 +221,36 @@ Páginas de **soporte** — ya bastante saneadas en la auditoría. Wins más chi
 ---
 
 > _Pendientes opcionales: flujo de acceso/onboarding (Login/Registro/Checkout) — ya QA-eado funcional, con mejoras de copy anotadas en REPORTE-AUDITORIA-UX-R4.md._
+
+---
+
+## 🔑 Flujo de acceso (pasada 7 · en lote) — `/login` · `/registro` · `/checkout` · `/cuenta-activada` · `/onboarding`
+
+🎯 **JTBD:** que quien abre la demo *entre rápido*, entienda el valor en 5 segundos y llegue al producto sin fricción — y que cada paso se sienta premium y confiable (es la **primera impresión**).
+
+### Estado actual (honesto)
+No estaba flojo: Login ya es 3-columnas (pitch + phone mockup + glass card) con botón demo y deep-link; Signup tiene pitch + pricing + FAQ; Onboarding es un wizard de 3 pasos con resumen vivo; Checkout tiene formateo de tarjeta + resumen + trial; Activada tiene summary + confirmación por mail. **No es rescate, es elevación.**
+
+### Diagnóstico PM
+1. **El funnel no se ve como funnel.** Signup → Checkout → Activada son 3 pantallas aisladas: el visitante no sabe cuántos pasos faltan ni dónde está. Falta un **indicador de progreso** compartido.
+2. **El norte "dato vivo / cobertura" no aparece en la puerta de entrada.** El pitch lista features de forma estática. La login es lo primero que se ve y no comunica *escala real* (países, fuentes oficiales conectadas).
+3. **El pico emocional (cuenta activada) es plano.** El éxito es el momento más vendedor de la demo y hoy es un check estático — desaprovechado.
+4. **Onboarding sin progreso visual.** Tiene "Paso 1 de 3" en texto pero ninguna barra que dé sensación de avance.
+5. **En una demo, "Entrar con cuenta demo" es la acción clave** y está enterrada bajo un divisor.
+
+### Plan de la página (priorizado)
+- **P0 · Funnel stepper compartido** (`FlowSteps`): Datos → Pago → Listo, arriba de Signup/Checkout/Activada. Orienta y da sensación premium guiada.
+- **P0 · Prueba de cobertura "en vivo"** (`CoverageProof`): count-up sobre números **reales** del corpus (8 países · 45 fuentes oficiales · en vivo) en Login y Signup. Mismo lenguaje que la cinta del Home.
+- **P0 · Delight de activación:** badge con *pop* elástico + anillos concéntricos + confetti sutil (`motion-safe`, respeta reduced-motion). El cierre que se recuerda.
+- **P1 · Barra de progreso en Onboarding** (3 segmentos) coherente con el stepper.
+- **P1 · Microdetalles:** entrada escalonada del pitch de Login + hint "explorá sin registrarte" en el CTA demo.
+
+### North Star de la página
+> *"La puerta de entrada vende sola: en 5 segundos ves escala real (países + fuentes en vivo), sabés exactamente cuántos pasos faltan, y cuando activás la cuenta el producto te celebra. Premium de la primera pantalla a la última."*
+
+### Ejecutado en esta pasada
+- ✅ `FlowSteps` (Datos·Pago·Listo) en Signup/Checkout/Activada.
+- ✅ `CoverageProof` (8 países · 45 fuentes oficiales · en vivo, count-up) en Login (dark + light mobile) y Signup.
+- ✅ Activada: `badge-pop` + anillos + confetti `motion-safe` + stagger del contenido.
+- ✅ Onboarding: barra de progreso de 3 segmentos.
+- ✅ Login: stagger del pitch + hint en el CTA demo.

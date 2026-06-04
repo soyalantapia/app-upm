@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
+import { FlowSteps } from '@/components/FlowSteps'
 import { COUNTRIES, countryByCode } from '@/lib/data'
 import type { CountryCode } from '@/lib/types'
 
@@ -105,6 +106,10 @@ export function CheckoutPage() {
         >
           <ArrowLeft size={13} /> Volver a datos
         </Link>
+
+        <div className="mb-7 lg:mb-9">
+          <FlowSteps current="pago" />
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
           {/* Form de pago */}

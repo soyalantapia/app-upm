@@ -64,6 +64,19 @@ export function OnboardingPage() {
           )}
         </div>
 
+        {/* Barra de progreso de los 3 pasos */}
+        <div className="flex items-center gap-1.5" aria-hidden>
+          {[0, 1, 2].map(i => (
+            <span
+              key={i}
+              className={
+                'h-1.5 flex-1 rounded-full transition-colors duration-500 ' +
+                (i <= step ? 'bg-upm-500' : 'bg-ink-100')
+              }
+            />
+          ))}
+        </div>
+
         <div>
           <h2 className="text-[26px] font-bold tracking-tight text-ink-900">{stepInfo.title}</h2>
           <p className="mt-1 text-[14px] text-ink-500">
