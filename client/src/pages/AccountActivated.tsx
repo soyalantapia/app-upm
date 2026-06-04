@@ -43,17 +43,19 @@ export function AccountActivatedPage() {
 
   const country = countryByCode(data.pais)
 
+  // Cierre del circuito: tras activar, el último paso es el onboarding
+  // (configurar el Radar). Por eso NO seteamos defaults acá — dejamos que el
+  // usuario "viva" el onboarding, que es quien marca onboarded=true al terminar.
   const enterApp = () => {
     signIn(data.email)
-    store.setDefaults()
     store.pushNotification({
       type: 'sistema',
       title: 'Bienvenida a UPM Premium',
       description: `Tu suscripción está activa. Período gratuito hasta el ${new Date(Date.now() + 7 * 86400000).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}.`,
     })
-    store.pushToast('success', '¡Listo! Bienvenido al ecosistema UPM')
+    store.pushToast('success', '¡Cuenta activa! Un paso más: personalizá tu Radar.')
     sessionStorage.removeItem('upm.signup.completed')
-    navigate('/', { replace: true })
+    navigate('/onboarding', { replace: true })
   }
 
   return (
@@ -104,7 +106,7 @@ export function AccountActivatedPage() {
 
           <div className="flex w-full flex-col gap-2">
             <Button size="lg" onClick={enterApp} className="w-full">
-              <Sparkles size={15} /> Empezar a usar UPM
+              <Sparkles size={15} /> Continuar a tu Radar
               <ArrowRight size={15} />
             </Button>
             <Link

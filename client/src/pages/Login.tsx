@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowRight, Lock, Sparkles, ShieldCheck, Radar, FileStack, UserPlus } from 'lucide-react'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { ArrowRight, ChevronRight, Eye, EyeOff, FileStack, PlayCircle, Radar, ShieldCheck, Sparkles } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button } from '@/components/ui'
 import { useAuth } from '@/lib/auth'
@@ -25,6 +25,7 @@ export function LoginPage() {
   })()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -110,7 +111,7 @@ export function LoginPage() {
         {/* Card login */}
         <form
           onSubmit={onSubmit}
-          className="glass-strong animate-fade-up flex flex-col gap-5 rounded-3xl p-7 ring-1 ring-white/40"
+          className="glass-strong animate-fade-up flex flex-col gap-4 rounded-3xl p-7 ring-1 ring-white/40"
         >
           <div className="flex items-center gap-3 lg:hidden">
             <BrandMark size={42} />
@@ -124,10 +125,47 @@ export function LoginPage() {
           <CoverageProof tone="light" className="lg:hidden" />
 
           <div>
-            <h2 className="text-[22px] font-bold tracking-tight text-ink-900">Acceso al ecosistema</h2>
+            <h2 className="text-[22px] font-bold tracking-tight text-ink-900">Conocé UPM por dentro</h2>
             <p className="mt-1 text-[13.5px] text-ink-500">
-              Asesor AI para legisladores, con radar normativo y fuentes verificables.
+              Viví el recorrido completo en 2 minutos: alta, activación y tu Radar configurado. Sin tarjeta real.
             </p>
+          </div>
+
+          {/* PRIMARIO · arranca el circuito completo (reemplaza al viejo "Crear cuenta") */}
+          <div className="flex flex-col gap-2">
+            <Button
+              type="button"
+              size="lg"
+              onClick={() => navigate('/registro')}
+              disabled={loading}
+              className="group w-full"
+            >
+              <PlayCircle size={18} /> Vivir el recorrido completo
+              <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
+            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-0.5 text-[10.5px] font-medium text-ink-400">
+              <span>Alta</span>
+              <ChevronRight size={10} className="text-ink-300" />
+              <span>Pago demo</span>
+              <ChevronRight size={10} className="text-ink-300" />
+              <span>Activación</span>
+              <ChevronRight size={10} className="text-ink-300" />
+              <span>Onboarding</span>
+              <ChevronRight size={10} className="text-ink-300" />
+              <span className="font-bold text-upm-700">Tu panel</span>
+            </div>
+          </div>
+
+          {/* SECUNDARIO · saltar directo al producto */}
+          <Button type="button" variant="ghost" size="md" onClick={onDemo} disabled={loading} className="w-full">
+            o entrar directo a la demo
+          </Button>
+
+          {/* Acceso de miembros · login institucional compacto y secundario */}
+          <div className="flex items-center gap-3 pt-1">
+            <div className="h-px flex-1 bg-ink-100" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-300">¿Ya sos miembro?</span>
+            <div className="h-px flex-1 bg-ink-100" />
           </div>
 
           <label className="flex flex-col gap-1.5">
@@ -137,70 +175,56 @@ export function LoginPage() {
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full rounded-2xl bg-white px-4 py-3 text-[15px] ring-1 ring-ink-100 shadow-card focus:outline-none focus:ring-2 focus:ring-upm-400"
+              placeholder="nombre@parlamento.gov"
+              className="w-full rounded-2xl bg-white px-4 py-3 text-[15px] ring-1 ring-ink-100 shadow-card placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
             />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-[12px] font-bold uppercase tracking-[0.16em] text-ink-500">Contraseña</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[12px] font-bold uppercase tracking-[0.16em] text-ink-500">Contraseña</span>
+              <a
+                href="mailto:soporte@upm.org?subject=Recuperar%20acceso%20UPM&body=Hola%2C%20necesito%20recuperar%20el%20acceso%20a%20mi%20cuenta%20UPM."
+                className="text-[11px] font-semibold text-upm-700 hover:text-upm-800"
+              >
+                Olvidé mi contraseña
+              </a>
+            </div>
             <div className="relative">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full rounded-2xl bg-white px-4 py-3 pr-10 text-[15px] ring-1 ring-ink-100 shadow-card focus:outline-none focus:ring-2 focus:ring-upm-400"
+                className="w-full rounded-2xl bg-white px-4 py-3 pr-11 text-[15px] ring-1 ring-ink-100 shadow-card focus:outline-none focus:ring-2 focus:ring-upm-400"
               />
-              <Lock size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-300" />
+              <button
+                type="button"
+                onClick={() => setShowPassword(v => !v)}
+                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-ink-50 hover:text-ink-700"
+              >
+                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
             </div>
-            <span className="text-[11px] text-ink-400">Demo institucional · ingresá cualquier credencial para continuar.</span>
+            <span className="text-[11px] text-ink-400">Demo · ingresá cualquier credencial para continuar.</span>
           </label>
 
-          <a
-            href="mailto:soporte@upm.org?subject=Recuperar%20acceso%20UPM&body=Hola%2C%20necesito%20recuperar%20el%20acceso%20a%20mi%20cuenta%20UPM."
-            className="self-start text-[12px] font-semibold text-upm-700 hover:text-upm-800"
-          >
-            Olvidé mi contraseña
-          </a>
-
-          <Button type="submit" size="lg" disabled={loading} className="w-full">
+          <Button type="submit" variant="secondary" size="md" disabled={loading} className="w-full">
             {loading ? 'Verificando…' : (
               <>
-                Ingresar <ArrowRight size={17} />
+                Ingresar con mi cuenta <ArrowRight size={16} />
               </>
             )}
           </Button>
 
-          <Link
-            to="/registro"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-[15px] font-semibold text-upm-800 ring-2 ring-upm-200 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:bg-upm-50 hover:ring-upm-400 hover:shadow-card-hover active:translate-y-0 active:scale-[0.98]"
+          <button
+            type="button"
+            onClick={() => store.pushToast('info', 'Tu solicitud fue registrada. La Secretaría UPM la revisará en 48hs.')}
+            className="text-center text-[11.5px] font-semibold text-upm-700 hover:text-upm-800"
           >
-            <UserPlus size={17} /> Crear cuenta
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-ink-100" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink-300">o</span>
-            <div className="h-px flex-1 bg-ink-100" />
-          </div>
-
-          <Button type="button" variant="ghost" size="md" onClick={onDemo} disabled={loading} className="w-full">
-            Entrar con cuenta demo
-          </Button>
-          <p className="-mt-3 text-center text-[11px] text-ink-400">
-            Explorá la plataforma sin registrarte.
-          </p>
-
-          <div className="flex flex-col gap-1.5 text-center text-[11.5px] text-ink-500">
-            <span>Acceso exclusivo para miembros y autoridades autorizadas.</span>
-            <button
-              type="button"
-              onClick={() => store.pushToast('info', 'Tu solicitud fue registrada. La Secretaría UPM la revisará en 48hs.')}
-              className="font-semibold text-upm-700 hover:text-upm-800"
-            >
-              ¿Sos autoridad? Solicitar acceso institucional
-            </button>
-          </div>
+            ¿Sos autoridad? Solicitar acceso institucional
+          </button>
         </form>
       </div>
     </FullBleedShell>

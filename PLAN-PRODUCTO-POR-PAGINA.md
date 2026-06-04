@@ -254,3 +254,10 @@ No estaba flojo: Login ya es 3-columnas (pitch + phone mockup + glass card) con 
 - ✅ Activada: `badge-pop` + anillos + confetti `motion-safe` + stagger del contenido.
 - ✅ Onboarding: barra de progreso de 3 segmentos.
 - ✅ Login: stagger del pitch + hint en el CTA demo.
+
+### Iteración 7b · Login "circuito-first" + circuito lineal (más intuitivo / más fácil)
+**Insight del usuario:** *"necesito que pueda vivir todo el circuito"* — el botón demo teletransportaba al home y **salteaba todo el flujo premium** (registro→pago→activación→onboarding). El login dejó de ser "poné credenciales" y pasó a ser **el arranque del recorrido**.
+- ✅ **Jerarquía nueva del card:** CTA hero **"Vivir el recorrido completo"** (→ registro) con breadcrumb *Alta › Pago demo › Activación › Onboarding › Tu panel*; **reemplaza** al redundante "Crear cuenta". Debajo, escape *"o entrar directo a la demo"* (ghost). El **login institucional** queda compacto y secundario bajo un divisor *"¿Ya sos miembro?"* (variant `secondary`).
+- ✅ **Menos fricción en el form:** mostrar/ocultar contraseña (Eye/EyeOff), "Olvidé" inline junto al label, placeholder de email, 5 CTAs → jerarquía clara 1·2·3.
+- ✅ **Circuito lineal:** `AccountActivated` ya no hace `setDefaults`+home; ahora **Activada → Onboarding → panel**. El recorrido se vive de punta a punta: alta → pago → activación → onboarding → tu panel.
+- 🎯 *North star de la iteración:* "Desde el login, en un tap, se puede vivir el recorrido completo de la plataforma — sin saltear nada — y el acceso de miembros sigue ahí, compacto."
