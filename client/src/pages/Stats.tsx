@@ -52,7 +52,7 @@ export function StatsPage() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <BigStat label="Items en corpus" value={items.length} icon={Activity} accent />
         <BigStat label="Alta relevancia" value={stats.altaRelevancia} icon={Flame} />
-        <BigStat label="Países cubiertos" value={stats.paisesActivos} icon={MapPin} />
+        <BigStat label="Países cubiertos" value={COUNTRIES.length} icon={MapPin} />
         <BigStat label="Conexiones entre normas" value={stats.totalBacklinks} icon={Network} />
       </div>
 

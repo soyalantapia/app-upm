@@ -130,13 +130,47 @@ export function dedupeRepeats(text: string | undefined | null): string {
   return s
 }
 
+// Siglas que NO se "de-gritan" (se mantienen en mayúsculas).
+const ACRONYMS = new Set([
+  'UPM', 'MERCOSUR', 'ONU', 'OEA', 'OMC', 'FMI', 'BID', 'UE',
+  'PEC', 'MP', 'PL', 'PLP', 'PLC', 'PLN', 'DPN', 'STF', 'STJ', 'CCJ', 'TCU',
+  'BR', 'AR', 'UY', 'PY', 'CL', 'BO', 'PE', 'CO', 'EE', 'UU',
+  'IVA', 'PIB', 'ICMS', 'CO2', 'ONG', 'DNU',
+])
+// Conectores que van en minúscula dentro de un título (Title Case con stop-words).
+const STOP = new Set([
+  'de', 'da', 'do', 'das', 'dos', 'del', 'la', 'el', 'los', 'las',
+  'y', 'e', 'o', 'a', 'al', 'en', 'con', 'por', 'para', 'su', 'sus',
+  'un', 'una', 'the', 'of', 'to', 'and', 'que',
+])
+
 /**
- * Título listo para mostrar en contextos compactos (Home, Agenda, búsqueda):
- * traduce PT→ES aproximado + colapsa repeticiones scrapeadas. Para un
- * hispanohablante en una tarjeta sin espacio para el original + nota.
+ * "De-grita" un título scrapeado EN MAYÚSCULAS: convierte cada palabra
+ * TODO-MAYÚSCULAS a Title Case (conectores en minúscula), preservando siglas
+ * conocidas y abreviaturas con símbolo (p. ej. "Nº"). Las palabras que ya
+ * traen minúsculas (bien escritas) quedan intactas → no rompe nombres propios.
+ * Corre ANTES de traducir, así el diccionario (en minúscula) matchea limpio y
+ * no quedan restos tipo "sujetA" (capturas en mayúscula) ni "DE" sueltos.
+ */
+export function deShout(text: string): string {
+  return text.replace(/\p{L}[\p{L}'’.-]*/gu, word => {
+    if (word !== word.toUpperCase()) return word // ya tiene minúsculas → normal
+    const bare = word.replace(/[^\p{L}]/gu, '')
+    if (bare.length <= 1) return /^[AEOUY]$/i.test(bare) ? word.toLowerCase() : word
+    if (ACRONYMS.has(bare)) return word // sigla conocida → intacta
+    const lower = word.toLowerCase()
+    if (STOP.has(lower)) return lower
+    return lower.charAt(0).toUpperCase() + lower.slice(1)
+  })
+}
+
+/**
+ * Título listo para mostrar (Home, Radar, Biblioteca, detalle, búsqueda):
+ * de-grita MAYÚSCULAS → traduce PT→ES aproximado → colapsa repeticiones
+ * scrapeadas. Para un hispanohablante en una tarjeta o en el detalle.
  */
 export function cleanTitle(text: string | undefined | null): string {
-  const s = dedupeRepeats(translatePtEs(text ?? ''))
+  const s = dedupeRepeats(translatePtEs(deShout(text ?? '')))
   // La traducción PT→ES puede dejar la inicial en minúscula ("Sessão"→"sesión")
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s
 }

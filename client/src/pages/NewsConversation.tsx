@@ -39,7 +39,7 @@ import { NotesPanel } from '@/components/NotesPanel'
 import { ExportLawButton } from '@/components/ExportLawButton'
 import { AddToCalendarButton } from '@/components/AddToCalendarButton'
 import { OverflowActions } from '@/components/OverflowActions'
-import { looksPortuguese, translatePtEs } from '@/lib/pt-es'
+import { cleanTitle, looksPortuguese } from '@/lib/pt-es'
 import { humanizeSourceUrl } from '@/lib/source-url'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
@@ -143,7 +143,7 @@ export function NewsConversationPage() {
       store.saveItem({
         id: 'sav-news-' + news.id,
         type: 'novedad',
-        title: news.title,
+        title: cleanTitle(news.title),
         ref: news.id,
         meta: { country: news.country, topic: news.topic, relevance: news.relevance, date: news.date },
       })
@@ -260,18 +260,14 @@ export function NewsConversationPage() {
         </div>
 
         <h1 className="text-[24px] font-bold leading-tight tracking-tight text-ink-900 sm:text-[28px]">
-          {news.title}
+          {cleanTitle(news.title)}
         </h1>
-        {/* Traducción aproximada al ES si el título está en portugués */}
-        {looksPortuguese(news.title) && (() => {
-          const traducido = translatePtEs(news.title)
-          if (traducido === news.title) return null
-          return (
-            <p className="text-[14px] italic leading-relaxed text-ink-500" lang="es" title="Traducción aproximada">
-              ≈ {traducido}
-            </p>
-          )
-        })()}
+        {/* Texto original de la fuente (PT) como referencia, si difiere del traducido */}
+        {looksPortuguese(news.title) && cleanTitle(news.title) !== news.title.trim() && (
+          <p className="text-[13px] italic leading-relaxed text-ink-400" lang="pt" title="Texto original de la fuente">
+            Original: {news.title}
+          </p>
+        )}
 
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge tone="brand"><Globe size={10} /> {country.flag} {country.name}</Badge>

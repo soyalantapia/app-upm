@@ -173,7 +173,7 @@ export function LibraryPage() {
                 <button
                   key={item.id}
                   onClick={() => navigate(`/radar/${item.id}`)}
-                  className="flex items-start gap-2 rounded-2xl bg-white px-3 py-2.5 text-left ring-1 ring-success-bg/60 transition hover:-translate-y-0.5 hover:ring-success"
+                  className="flex min-w-0 items-start gap-2 overflow-hidden rounded-2xl bg-white px-3 py-2.5 text-left ring-1 ring-success-bg/60 transition hover:-translate-y-0.5 hover:ring-success"
                 >
                   <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-success-bg text-success-fg">
                     <FileText size={14} />
@@ -182,7 +182,7 @@ export function LibraryPage() {
                     <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-success-fg">
                       {c.flag} {c.name} · En vivo
                     </span>
-                    <span className="mt-0.5 block truncate text-[12.5px] font-semibold text-ink-900">{item.title}</span>
+                    <span className="mt-0.5 block truncate text-[12.5px] font-semibold text-ink-900">{cleanTitle(item.title)}</span>
                   </span>
                 </button>
               )

@@ -27,34 +27,41 @@ function relTime(iso: string | undefined, now: number): string {
 }
 
 export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
-  // High-water mark · el feed en vivo fluctúa (un refresh parcial reemplaza al
-  // completo y vuelve a subir). Para el Home mostramos SIEMPRE el snapshot más
-  // completo visto → los números solo crecen (efecto "contador en vivo"), nunca
-  // caen de 1.706 a 298 a la vista del usuario.
-  const bestRef = useRef<AggregatedFeed | null>(null)
-  if (feed && (feed.items?.length ?? 0) >= (bestRef.current?.items?.length ?? 0)) {
-    bestRef.current = feed
+  // High-water · el feed en vivo fluctúa (un refresh parcial reemplaza al
+  // completo). Acumulamos lo MÁXIMO visto por país, por fuentes y por total
+  // para que los números SOLO crezcan, nunca caigan (1.706 → 298) ni "bajen"
+  // la cobertura (8 países → 7 / 45 → 44). El pulso usa el mismo máximo por
+  // país → el conteo de países siempre coincide con las banderas mostradas.
+  const lastRef = useRef<AggregatedFeed | null>(null)
+  const hwByCountry = useRef<Record<string, number>>({})
+  const hwFuentes = useRef(0)
+  const hwNormas = useRef(0)
+  if (feed) {
+    lastRef.current = feed
+    const by: Record<string, number> = { ...(feed.byCountry ?? {}) }
+    if (Object.keys(by).length === 0) {
+      for (const it of feed.items ?? []) by[it.country] = (by[it.country] ?? 0) + 1
+    }
+    for (const code of Object.keys(by)) {
+      hwByCountry.current[code] = Math.max(hwByCountry.current[code] ?? 0, by[code])
+    }
+    hwFuentes.current = Math.max(hwFuentes.current, feed.sources?.length ?? 0)
+    hwNormas.current = Math.max(hwNormas.current, feed.items?.length ?? 0)
   }
-  const f = bestRef.current ?? feed
+  const f = lastRef.current
 
   const now = useMemo(() => Date.now(), [f?.fetchedAt])
 
-  const { totalNormas, fuentes, paises, porPais } = useMemo(() => {
-    const items = f?.items ?? []
-    const sources = f?.sources ?? []
-    const by: Record<string, number> = { ...(f?.byCountry ?? {}) }
-    if (Object.keys(by).length === 0) {
-      for (const it of items) by[it.country] = (by[it.country] ?? 0) + 1
-    }
-    const porPais = COUNTRIES
-      .map(c => ({ code: c.code as CountryCode, flag: c.flag, name: c.name, count: by[c.code] ?? 0 }))
-      .filter(c => c.count > 0)
-      .sort((a, b) => b.count - a.count)
-    // Países = los que aparecen en el pulso (consistencia garantizada con las
-    // banderas mostradas) · fallback al total cubierto cuando aún no hay items.
-    const paises = porPais.length || COUNTRIES.length
-    return { totalNormas: items.length, fuentes: sources.length, paises, porPais }
-  }, [f])
+  const porPais = COUNTRIES
+    .map(c => ({ code: c.code as CountryCode, flag: c.flag, name: c.name, count: hwByCountry.current[c.code] ?? 0 }))
+    .filter(c => c.count > 0)
+    .sort((a, b) => b.count - a.count)
+  // Países = amplitud del corpus (lo que UPM monitorea), estable y coherente
+  // con el login y Estadísticas. El "Pulso regional" de abajo muestra los que
+  // tuvieron actividad (puede ser menos: otra métrica, otra etiqueta).
+  const paises = COUNTRIES.length
+  const fuentes = hwFuentes.current
+  const totalNormas = hwNormas.current
 
   // Skeleton solo en el arranque frío real (sin feed todavía)
   if (!f || fuentes === 0) {
