@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BookOpen, FileText, Radar, Sparkles } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
@@ -30,7 +31,17 @@ export function HomePage() {
 
   // Feed real (live) en lugar del mock estático
   const { feed } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
-  const NEWS = feed?.items?.length ? feed.items : MOCK_NEWS
+
+  // High-water mark · el feed en vivo fluctúa (un refresh parcial reemplaza al
+  // completo y vuelve a subir). Guardamos el snapshot MÁS COMPLETO visto y lo
+  // usamos en todo el Home → cobertura y stats "HOY" estables, nunca caen a 0.
+  const bestRef = useRef<typeof feed>(null)
+  if (feed && (feed.items?.length ?? 0) >= (bestRef.current?.items?.length ?? 0)) {
+    bestRef.current = feed
+  }
+  const bestFeed = bestRef.current ?? feed
+  const NEWS = bestFeed?.items?.length ? bestFeed.items : MOCK_NEWS
+  const loading = !bestFeed || (bestFeed.items?.length ?? 0) === 0
 
   // Apellido para el saludo
   const lastName = operator?.name.split(' ').slice(-1)[0] ?? 'Legislador'
@@ -43,7 +54,7 @@ export function HomePage() {
       {/* Entrada escalonada · cada sección entra con un fade-up con delay creciente */}
       {/* Hero compacto · saludo + cobertura en vivo + search + 3 stats HOY */}
       <div className="animate-fade-up [animation-fill-mode:both]" style={{ animationDelay: '0ms' }}>
-        <HomeHero items={NEWS} userName={lastName} feed={feed} />
+        <HomeHero items={NEWS} userName={lastName} feed={bestFeed} loading={loading} />
       </div>
 
       {/* Diff "qué cambió desde tu última visita" */}

@@ -40,9 +40,14 @@
 ### North Star de la página
 > *"Abrís Inicio y en 5 segundos sentís que un sistema serio está vigilando toda la normativa del Mercosur por vos — en vivo, 8 países, miles de normas — y ya tenés tus 3 cosas de hoy. Una pantalla que se siente de producto premium."*
 
-### Ejecutado en esta pasada
+### Ejecutado · pasada 1
 - ✅ #1 Cinta de cobertura en vivo · ✅ #2 Pulso regional (banderas) · ✅ #3 Count-up · ✅ #4 Stagger · ✅ #5 Microdetalles + reduced-motion
-- (#6/#7 quedan anotados para la próxima pasada de Inicio)
+
+### Ejecutado · pasada 2 (profundización)
+- ✅ **Fix del hero "HOY" en 0/0/0**: `computeStats` pedía `fecha ≥ hoy` (solo hoy-o-futuro) → siempre 0 porque las novedades recientes están fechadas días atrás. Ahora cuenta ventanas reales (alta relevancia últimos 7 días, en trámite 14 días, audiencias ±2 semanas) → 15 · 24 · 4 en vez de 0 · 0 · 0.
+- ✅ **High-water mark unificado a nivel Home**: cobertura y stats usan el snapshot más completo visto → los números solo crecen, nunca caen aunque el feed fluctúe.
+- ✅ **Skeleton** en los stats mientras el feed está vacío (sin 0/0/0 feo en arranque frío).
+- Verificado desktop + mobile: stats nunca 0/0/0, banderas = nº países, sin overflow.
 
 ---
 

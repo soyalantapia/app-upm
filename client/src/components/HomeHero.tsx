@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle, Calendar, Flame, Search } from 'lucide-react'
 import { CountUp } from './CountUp'
@@ -23,42 +23,52 @@ function formatToday(): string {
 }
 
 function computeStats(items: NewsItem[], now: number) {
-  const week = now + 7 * 24 * 60 * 60 * 1000
-  const today = new Date(now)
-  today.setHours(0, 0, 0, 0)
+  const day = 24 * 60 * 60 * 1000
+  const dateOf = (n: NewsItem) => new Date(n.dataPublicacao ?? n.date ?? '').getTime()
 
-  // Alertas urgentes: alta relevancia + dataPublicacao hoy o futuro
+  // Alta relevancia "para revisar ya" · alta relevancia reciente (últimos 7 días)
+  // o futura. (Antes pedía solo hoy-o-futuro → siempre 0 porque las novedades
+  // recientes están fechadas en días anteriores.)
   const urgentes = items.filter(n => {
     if (n.relevance !== 'alta') return false
-    const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
-    return !Number.isNaN(d) && d >= today.getTime()
+    const d = dateOf(n)
+    return !Number.isNaN(d) && d >= now - 7 * day
   }).length
 
-  // Votaciones esta semana
+  // Por votar / en trámite · activo en las últimas 2 semanas o próximo
   const votaciones = items.filter(n => {
     const blob = ((n.status ?? '') + ' ' + (n.tipoConteudo ?? '') + ' ' + (n.title ?? '')).toLowerCase()
-    if (!/votaci[óo]n|votação|voto\s+nominal/i.test(blob)) return false
-    const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
-    return !Number.isNaN(d) && d >= now && d <= week
+    if (!/votaci[óo]n|votaç|voto\s+nominal|en\s+tr[aá]mite|tramitaç|deliberativ/i.test(blob)) return false
+    const d = dateOf(n)
+    return !Number.isNaN(d) && d >= now - 14 * day
   }).length
 
-  // Audiencias / sesiones próximas
+  // Audiencias / sesiones · próximos / muy recientes (±2 semanas)
   const audiencias = items.filter(n => {
     const blob = ((n.status ?? '') + ' ' + (n.tipoConteudo ?? '') + ' ' + (n.tipoDocumento ?? '') + ' ' + (n.title ?? '')).toLowerCase()
-    if (!/audi[eê]ncia\s+p[uú]blica|audiencia\s+p[uú]blica|sess[ãa]o|sesi[óo]n/i.test(blob)) return false
-    const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
-    return !Number.isNaN(d) && d >= now && d <= week
+    if (!/audi[eê]ncia|audiencia|sess[ãa]o|sesi[óo]n|reuni[ãa]o|reuni[óo]n/i.test(blob)) return false
+    const d = dateOf(n)
+    return !Number.isNaN(d) && d >= now - 2 * day && d <= now + 14 * day
   }).length
 
   return { urgentes, votaciones, audiencias }
 }
 
-export function HomeHero({ items, userName, feed }: { items: NewsItem[]; userName: string; feed?: AggregatedFeed | null }) {
+export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]; userName: string; feed?: AggregatedFeed | null; loading?: boolean }) {
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
   // Now estable por mount · evita Date.now() durante render (react-hooks/purity)
   const now = useMemo(() => Date.now(), [])
   const stats = useMemo(() => computeStats(items, now), [items, now])
+  // High-water de los 3 stats · una vez que muestran un valor, no caen (el feed
+  // fluctúa al refrescar) → el hero "HOY" nunca vuelve a 0/0/0 a la vista.
+  const hwRef = useRef({ urgentes: 0, votaciones: 0, audiencias: 0 })
+  const dStats = {
+    urgentes: Math.max(stats.urgentes, hwRef.current.urgentes),
+    votaciones: Math.max(stats.votaciones, hwRef.current.votaciones),
+    audiencias: Math.max(stats.audiencias, hwRef.current.audiencias),
+  }
+  hwRef.current = dStats
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -111,7 +121,7 @@ export function HomeHero({ items, userName, feed }: { items: NewsItem[]; userNam
               <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-danger text-white">
                 <Flame size={13} />
               </div>
-              <CountUp value={stats.urgentes} className="text-[20px] font-bold tabular-nums text-ink-900" />
+              {loading ? <span className="skeleton my-1 inline-block h-5 w-7 rounded" /> : <CountUp value={dStats.urgentes} className="text-[20px] font-bold tabular-nums text-ink-900" />}
             </div>
             <div className="text-[11px] font-semibold leading-tight text-ink-700">
               Alta relevancia
@@ -130,7 +140,7 @@ export function HomeHero({ items, userName, feed }: { items: NewsItem[]; userNam
               <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-warning text-warning-fg">
                 <AlertTriangle size={13} />
               </div>
-              <CountUp value={stats.votaciones} className="text-[20px] font-bold tabular-nums text-ink-900" />
+              {loading ? <span className="skeleton my-1 inline-block h-5 w-7 rounded" /> : <CountUp value={dStats.votaciones} className="text-[20px] font-bold tabular-nums text-ink-900" />}
             </div>
             <div className="text-[11px] font-semibold leading-tight text-ink-700">
               Por votar
@@ -148,7 +158,7 @@ export function HomeHero({ items, userName, feed }: { items: NewsItem[]; userNam
               <div className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-upm-600 text-white">
                 <Calendar size={13} />
               </div>
-              <CountUp value={stats.audiencias} className="text-[20px] font-bold tabular-nums text-ink-900" />
+              {loading ? <span className="skeleton my-1 inline-block h-5 w-7 rounded" /> : <CountUp value={dStats.audiencias} className="text-[20px] font-bold tabular-nums text-ink-900" />}
             </div>
             <div className="text-[11px] font-semibold leading-tight text-ink-700">
               Audiencias / sesiones
