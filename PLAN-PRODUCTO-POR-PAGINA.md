@@ -156,4 +156,36 @@
 
 ---
 
-> _Próximas páginas (mismo molde): Briefing · Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._
+## 📋 Briefing — `/briefing`
+
+🎯 **Job-to-be-done:** en 30 segundos armar un 1-pager para preparar mi comisión/sesión — normas clave, cambios, cuestiones cruzadas — que pueda guardar o imprimir.
+👤 **Usuario + momento:** legislador justo antes de una comisión/sesión.
+📍 **Rol en el producto:** **salida/producción** — genera un artefacto reutilizable.
+
+### Estado actual (honesto)
+- **Funcional:** filtros (tema/países/ventana) → 1-pager generado (top normas + cambios + cruzadas) + guardar + imprimir/PDF.
+- **Veredicto:** **3.5/5.** Útil, pero (a) los defaults estaban **hardcodeados** (AR/BR/UY, ignorando tus prefs), (b) "Guardar" **duplicaba** en cada click sin reflejar estado, y (c) títulos de normas en PT.
+
+### Diagnóstico PM
+- ✅ **Fortalezas:** flujo claro, promesa dinámica ("hasta 5 normas… según tus filtros"), imprimible.
+- ⚠️ **Gaps funcionales (B01/B02):** defaults ajenos a tus prefs; guardar duplicaba (id con timestamp).
+- 🎨 **Gaps:** números estáticos; títulos en portugués crudo.
+- 💰 **Demo/wow:** un briefing que arranca con "tus" países y no duplica al guardar se siente personal y pulido.
+
+### Plan de la página (priorizado)
+| # | Mejora | Tipo | Impacto | Esfuerzo | Cuándo |
+|---|--------|------|---------|----------|--------|
+| 1 | **Defaults desde tus prefs** (B01): países + tema arrancan de tu configuración | Valor | **Alto** | Bajo | **Ahora** |
+| 2 | **Guardar idempotente** (B02): id determinístico por filtros + estado "Guardado" + sin duplicar | Valor | **Alto** | Bajo | **Ahora** |
+| 3 | **Spanish-first** + count-up en el contador de normas | Diseño | Medio | Bajo | **Ahora** |
+| 4 | Agregar al calendario (.ics) la sesión del briefing | Valor | Medio | Medio | Próximo |
+
+### North Star de la página
+> *"Entrás, ya está armado con TUS países y temas, ajustás la ventana, y en un click tenés tu 1-pager guardado (sin duplicar) o impreso — listo para la comisión."*
+
+### Ejecutado en esta pasada
+- ✅ #1 Defaults desde prefs (verificado: 4 países AR/BR/UY/CO) · ✅ #2 Guardar idempotente (id determinístico, botón "Guardado", no duplica) · ✅ #3 count-up + cleanTitle
+
+---
+
+> _Próximas páginas (mismo molde): Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._

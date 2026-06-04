@@ -12,9 +12,11 @@ import {
   GitCompareArrows,
 } from 'lucide-react'
 import { Badge, Button } from '@/components/ui'
-import { store } from '@/lib/store'
+import { store, useStore } from '@/lib/store'
 import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import { formatDate, decodeHtml } from '@/lib/format'
+import { cleanTitle } from '@/lib/pt-es'
+import { CountUp } from '@/components/CountUp'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { extractContext } from '@/lib/extract-context'
 import type { CountryCode, NewsItem, Topic } from '@/lib/types'
@@ -43,6 +45,7 @@ function withinWindow(date: string, win: Window): boolean {
 
 export function BriefingPage() {
   const navigate = useNavigate()
+  const prefs = useStore(s => s.prefs)
   const { feed, loading: feedLoading } = useLiveFeed()
   const items = feed?.items ?? []
   // Estados clave: cargando feed vs feed cargado pero corpus vacío
@@ -52,14 +55,19 @@ export function BriefingPage() {
   const [searchParams] = useSearchParams()
   // Deep-link · ?window=7d&topic=all activa el modo Briefing Semanal automático
   const initialWin = (searchParams.get('window') as Window | null) ?? '30d'
-  const initialTopic = (searchParams.get('topic') as Topic | 'all' | null) ?? 'integracion-regional'
+  // Default desde las prefs del usuario (no hardcodeado) · fallback razonable.
+  const initialTopic = (searchParams.get('topic') as Topic | 'all' | null) ?? (prefs?.topics?.[0] as Topic) ?? 'integracion-regional'
   const isWeekly = initialWin === '7d'
 
   const [topic, setTopic] = useState<Topic | 'all'>(initialTopic)
   const [countries, setCountries] = useState<Set<CountryCode>>(
-    new Set(isWeekly ? ['AR', 'BR', 'UY', 'CO'] : ['AR', 'BR', 'UY']),
+    new Set(prefs?.countries?.length ? prefs.countries : (isWeekly ? ['AR', 'BR', 'UY', 'CO'] : ['AR', 'BR', 'UY'])),
   )
   const [win, setWin] = useState<Window>(initialWin)
+
+  // Id determinístico por filtros · guardar no duplica y el botón refleja "Guardado"
+  const briefId = 'brf-' + topic + '-' + win + '-' + Array.from(countries).sort().join('')
+  const isSaved = useStore(s => s.saved.some(x => x.id === briefId))
 
   const fechaHoy = new Date().toLocaleDateString('es-AR', {
     day: '2-digit', month: 'long', year: 'numeric',
@@ -182,15 +190,15 @@ export function BriefingPage() {
             size="md"
             onClick={() => {
               store.saveItem({
-                id: 'brf-' + Date.now(),
+                id: briefId,
                 type: 'brief',
                 title: `Briefing: ${topicMeta ? topicMeta.label : 'Panorama regional'} · ${WINDOW_LABEL[win]}`,
-                body: top5.map((item, idx) => `${idx + 1}. ${item.title}`).join('\n'),
+                body: top5.map((item, idx) => `${idx + 1}. ${cleanTitle(item.title)}`).join('\n'),
               })
-              store.pushToast('success', 'Briefing guardado en Mi carpeta')
+              store.pushToast(isSaved ? 'info' : 'success', isSaved ? 'Este briefing ya estaba guardado' : 'Briefing guardado en Mi carpeta')
             }}
           >
-            <Bookmark size={15} /> Guardar en Mi carpeta
+            <Bookmark size={15} /> {isSaved ? 'Guardado en Mi carpeta' : 'Guardar en Mi carpeta'}
           </Button>
           <Button onClick={handlePrint} size="md">
             <Printer size={15} /> Imprimir o exportar a PDF
@@ -266,7 +274,7 @@ export function BriefingPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-upm-50/60 p-3 text-[12px] ring-1 ring-upm-100">
-          <span className="font-bold text-upm-800">{selected.length}</span>
+          <CountUp value={selected.length} className="font-bold text-upm-800" />
           <span className="text-ink-600">normas matchean tus filtros · de las que destilamos {top5.length} para el briefing.</span>
         </div>
       </div>
@@ -334,7 +342,7 @@ export function BriefingPage() {
                           )}
                         </div>
                         <h3 className="mt-1.5 text-[14.5px] font-bold leading-snug text-ink-900">
-                          {decodeHtml(item.title)}
+                          {cleanTitle(decodeHtml(item.title))}
                         </h3>
                         {ctx.resumen && ctx.resumen.length > 50 && (
                           <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-700 line-clamp-3">
@@ -372,7 +380,7 @@ export function BriefingPage() {
                     <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-upm-500" />
                     <div className="flex-1">
                       <span className="font-bold">{country.flag} {country.code}</span> ·{' '}
-                      <span>{decodeHtml(item.title)}</span>
+                      <span>{cleanTitle(decodeHtml(item.title))}</span>
                       {item.status && (
                         <span className="ml-1 rounded-md bg-success-bg/60 px-1.5 py-0.5 text-[10px] font-bold text-success-fg ring-1 ring-success-bg">
                           {item.status}
@@ -400,7 +408,7 @@ export function BriefingPage() {
                     <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-upm-500" />
                     <div className="flex-1">
                       <span className="font-bold">{country.flag} {country.code}</span> ·{' '}
-                      <span>{decodeHtml(item.title)}</span>
+                      <span>{cleanTitle(decodeHtml(item.title))}</span>
                     </div>
                   </li>
                 )
