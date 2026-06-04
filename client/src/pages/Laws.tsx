@@ -24,6 +24,8 @@ import {
   Users,
 } from 'lucide-react'
 import { Badge, Button } from '@/components/ui'
+import { CountUp } from '@/components/CountUp'
+import { cleanTitle } from '@/lib/pt-es'
 import { countryByCode, topicById } from '@/lib/data'
 import { formatDate } from '@/lib/format'
 import { store, useStore } from '@/lib/store'
@@ -248,7 +250,7 @@ export function LawsPage() {
           </h1>
           <p className="mt-0.5 text-[11.5px] text-ink-500">
             {liveStatus === 'live' && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft align-middle" />}
-            {laws.length} leyes indexadas · metadata oficial y texto íntegro cuando la fuente lo publica
+            <CountUp value={laws.length} /> leyes indexadas · metadata oficial y texto íntegro cuando la fuente lo publica
           </p>
         </div>
         <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
@@ -287,7 +289,7 @@ export function LawsPage() {
                   (sidebarTab === 'all' ? 'bg-upm-700 text-white shadow-cta' : 'text-ink-600 hover:bg-ink-50')
                 }
               >
-                Todas ({laws.length})
+                Todas (<CountUp value={laws.length} />)
               </button>
               <button
                 onClick={() => setSidebarTab('saved')}
@@ -385,7 +387,7 @@ export function LawsPage() {
                       <Badge tone="success">Sancionada</Badge>
                     </div>
                     <div className="text-[12.5px] font-semibold leading-snug text-ink-900 line-clamp-2">
-                      {l.title.replace(/^Ley \d+\s*·\s*/, '')}
+                      {cleanTitle(l.title.replace(/^Ley \d+\s*·\s*/, ''))}
                     </div>
                     {l.excerpt && l.excerpt !== l.title && !isPlaceholderText(l.excerpt) && (
                       <p className="text-[11.5px] leading-relaxed text-ink-500 line-clamp-3">
@@ -547,7 +549,7 @@ export function LawsPage() {
               )}
 
               <h2 className="text-[22px] font-bold leading-tight tracking-tight text-ink-900 sm:text-[26px]">
-                {active.title.replace(/^Ley \d+\s*·\s*/, '')}
+                {cleanTitle(active.title.replace(/^Ley \d+\s*·\s*/, ''))}
               </h2>
 
               {/* Resumen ejecutivo extraído del articulado · solo si el texto base es real */}

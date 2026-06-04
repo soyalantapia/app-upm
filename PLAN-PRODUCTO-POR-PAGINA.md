@@ -122,4 +122,38 @@
 
 ---
 
-> _Próximas páginas (mismo molde): Leyes · Briefing · Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._
+## 📜 Leyes — `/leyes`
+
+🎯 **Job-to-be-done:** encontrar una ley, entenderla rápido (qué hace, en qué estado está, qué la cita, jurisprudencia) y poder "hablar" con ella vía el Asistente.
+👤 **Usuario + momento:** legislador/asesor investigando una norma puntual o el ecosistema alrededor.
+📍 **Rol en el producto:** la **pantalla de contenido profundo** — el "expediente" de cada ley.
+
+### Estado actual (honesto)
+- **Funcional:** lista dos-paneles con tabs/búsqueda/filtros de estado; detalle riquísimo (Genealogía, Equivalente regional, Articulado, Tramitación, Impacto fiscal, Modificatorias, Quién la cita, Jurisprudencia, Mis notas) + "hablar con la ley".
+- **Diseño:** denso, dos paneles, con TOC sticky.
+- **Veredicto:** **4/5.** Ya saneada en la ronda de auditoría (oculta boilerplate scrapeado, articulado placeholder y "resumen ejecutivo" equivocado; header honesto; responsive mobile arreglado). Faltaba el pulido premium + consistencia con Radar.
+
+### Diagnóstico PM
+- ✅ **Fortalezas:** profundidad enorme (11 secciones), filtros por estado con color, comparador, "hablar con la ley" (diferenciador), corpus mayormente en español (UY/AR/CO).
+- ⚠️ **Gaps:** el contador "730 leyes" estático; títulos de leyes BR (las pocas que hay) en portugués → inconsistente con la lista del Radar ya en español.
+- 💰 **Demo/wow:** la profundidad ya impresiona; faltaba que el número "respire" y que todo lea en español.
+
+### Plan de la página (priorizado)
+| # | Mejora | Tipo | Impacto | Esfuerzo | Cuándo |
+|---|--------|------|---------|----------|--------|
+| 1 | **Spanish-first** en títulos de lista y detalle (cleanTitle) — consistencia con Radar | Valor+Diseño | Medio | Bajo | **Ahora** |
+| 2 | **Count-up** en el contador de leyes (header + tab "Todas") | Diseño | Bajo | Bajo | **Ahora** |
+| 3 | Hero del detalle más premium (vigencia + genealogía con más jerarquía) | Diseño | Medio | Medio | Próximo |
+| 4 | "Ley · LEY No. …" → limpiar prefijo redundante en títulos COL | Microcopy | Bajo | Bajo | Próximo |
+| 5 | Articulado/contenido real (texto íntegro) | Datos | Alto | Alto | Producción |
+
+### North Star de la página
+> *"Buscás una ley y en un panel se te abre su expediente completo en español — qué hace, en qué estado está, quién la cita, qué jurisprudencia la aplica — y podés preguntarle lo que quieras al Asistente."*
+
+### Ejecutado en esta pasada
+- ✅ #1 Spanish-first (cleanTitle en título de card + detalle) · ✅ #2 Count-up en "730 leyes" + tab
+- (#3/#4 anotados · #5 = producción)
+
+---
+
+> _Próximas páginas (mismo molde): Briefing · Estadísticas · Biblioteca · Mi carpeta · Perfil · (acceso/onboarding)._
