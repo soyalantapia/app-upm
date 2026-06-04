@@ -138,21 +138,21 @@ export function LoginPage() {
               size="lg"
               onClick={() => navigate('/registro')}
               disabled={loading}
-              className="group w-full"
+              className="group relative w-full overflow-hidden before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/2 before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:content-[''] motion-safe:before:animate-[shine-sweep_1.5s_ease-out_0.6s_both]"
             >
-              <PlayCircle size={18} /> Vivir el recorrido completo
+              <PlayCircle size={18} className="transition-transform duration-200 group-hover:scale-110" /> Vivir el recorrido completo
               <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
             </Button>
             <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-0.5 text-[10.5px] font-medium text-ink-400">
-              <span>Alta</span>
+              <span className="inline-block motion-safe:animate-step-wave" style={{ animationDelay: '0s' }}>Alta</span>
               <ChevronRight size={10} className="text-ink-300" />
-              <span>Pago demo</span>
+              <span className="inline-block motion-safe:animate-step-wave" style={{ animationDelay: '0.45s' }}>Pago demo</span>
               <ChevronRight size={10} className="text-ink-300" />
-              <span>Activación</span>
+              <span className="inline-block motion-safe:animate-step-wave" style={{ animationDelay: '0.9s' }}>Activación</span>
               <ChevronRight size={10} className="text-ink-300" />
-              <span>Onboarding</span>
+              <span className="inline-block motion-safe:animate-step-wave" style={{ animationDelay: '1.35s' }}>Onboarding</span>
               <ChevronRight size={10} className="text-ink-300" />
-              <span className="font-bold text-upm-700">Tu panel</span>
+              <span className="inline-block font-bold text-upm-700 motion-safe:animate-step-wave" style={{ animationDelay: '1.8s' }}>Tu panel</span>
             </div>
           </div>
 

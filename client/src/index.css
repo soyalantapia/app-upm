@@ -133,6 +133,18 @@ body {
 @utility animate-badge-pop { animation: badge-pop 620ms var(--ease-out-expo) both; }
 @utility animate-ring-expand { animation: ring-expand 1.8s ease-out infinite; }
 @utility animate-confetti { animation: confetti 1.5s var(--ease-out-expo) forwards; }
+/* Login · brillo de entrada del CTA hero + onda del breadcrumb "recorrido" */
+@keyframes shine-sweep {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  18%  { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { transform: translateX(220%); opacity: 0; }
+}
+@keyframes step-wave {
+  0%, 55%, 100% { opacity: 0.5; transform: translateY(0); }
+  28% { opacity: 1; transform: translateY(-1px); }
+}
+@utility animate-step-wave { animation: step-wave 3.6s ease-in-out infinite; }
 
 /* Glass card */
 @utility glass {
