@@ -49,7 +49,7 @@ export function LazyMount({
     <div ref={ref} style={mounted ? undefined : { minHeight }}>
       {mounted ? children : (
         <div className="flex items-center justify-center rounded-3xl bg-ink-50/30 ring-1 ring-ink-100" style={{ minHeight }}>
-          <span className="text-[11px] text-ink-400">Cargando…</span>
+          <span className="text-[11px] text-ink-500">Cargando…</span>
         </div>
       )}
     </div>

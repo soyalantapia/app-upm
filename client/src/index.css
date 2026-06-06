@@ -205,6 +205,20 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Foco de teclado VISIBLE por defecto en toda la app (WCAG 2.4.7 AA).
+   Los componentes que traen su propio anillo lo siguen pisando. */
 :focus-visible {
-  outline: none;
+  outline: 2px solid var(--color-upm-500);
+  outline-offset: 2px;
+}
+
+/* Respeto a prefers-reduced-motion: calma TODAS las animaciones/transiciones
+   (las decorativas ya usan motion-safe; esto cubre fade-up/pulse/shimmer/ping). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

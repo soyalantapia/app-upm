@@ -85,7 +85,7 @@ export function WatchlistPanel() {
                     <p className="mt-0.5 text-[10.5px] text-ink-500">Sin cambios desde que la seguís</p>
                   )}
                 </div>
-                <ArrowUpRight size={13} className="mt-0.5 text-ink-400 transition group-hover:text-upm-600" />
+                <ArrowUpRight size={13} className="mt-0.5 text-ink-500 transition group-hover:text-upm-600" />
               </button>
             </li>
           )

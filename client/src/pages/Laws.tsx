@@ -313,7 +313,7 @@ export function LawsPage() {
               {q && (
                 <button
                   onClick={() => setQ('')}
-                  className="rounded-full p-1 text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+                  className="rounded-full p-1 text-ink-500 hover:bg-ink-50 hover:text-ink-700"
                   aria-label="Limpiar búsqueda"
                   title="Limpiar"
                 >
@@ -324,7 +324,7 @@ export function LawsPage() {
             {/* Sugerencias de búsqueda · click → setea la query */}
             {!q && (
               <div className="flex flex-wrap items-center gap-1 px-1">
-                <span className="text-[10px] font-bold uppercase tracking-wide text-ink-400">Probá:</span>
+                <span className="text-[10px] font-bold uppercase tracking-wide text-ink-500">Probá:</span>
                 {[
                   { label: '27742', q: '27742' },
                   { label: 'ambiente', q: 'ambiente' },
@@ -365,7 +365,7 @@ export function LawsPage() {
             <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">
               {filteredFinal.length} {filteredFinal.length === 1 ? 'ley' : 'leyes'}
               {vigenciaFilter !== 'all' && (
-                <span className="ml-1 normal-case text-ink-400">/ {filtered.length} totales</span>
+                <span className="ml-1 normal-case text-ink-500">/ {filtered.length} totales</span>
               )}
             </div>
             <div className="flex max-h-[640px] flex-col gap-1.5 overflow-y-auto pr-1">
@@ -780,7 +780,7 @@ function LawMetaChip({
 }) {
   return (
     <span className={'inline-flex items-baseline gap-1.5 ' + (truncate ? 'min-w-0 max-w-[460px]' : '')}>
-      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-400">
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
         <Icon size={10} /> {label}
       </span>
       <span className={'font-semibold text-ink-800 ' + (truncate ? 'truncate' : '')}>{value}</span>

@@ -99,6 +99,7 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
         <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-upm-600" />
         <input
           type="search"
+          aria-label="Buscar normativa, ley, tema o número"
           value={searchValue}
           onChange={e => setSearchValue(e.target.value)}
           placeholder="Buscar normativa, ley, tema o número…"

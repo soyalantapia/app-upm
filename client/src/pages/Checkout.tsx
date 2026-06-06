@@ -160,7 +160,7 @@ export function CheckoutPage() {
                 onChange={e => setHolder(e.target.value)}
                 placeholder="Nombre como aparece en la tarjeta"
                 required
-                className="w-full rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                className="w-full rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
               />
             </Field>
 
@@ -174,7 +174,7 @@ export function CheckoutPage() {
                   inputMode="numeric"
                   autoComplete="cc-number"
                   required
-                  className="w-full rounded-2xl bg-white py-3 pl-10 pr-4 text-[14.5px] tabular-nums ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                  className="w-full rounded-2xl bg-white py-3 pl-10 pr-4 text-[14.5px] tabular-nums ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
                 />
               </div>
             </Field>
@@ -190,7 +190,7 @@ export function CheckoutPage() {
                     inputMode="numeric"
                     autoComplete="cc-exp"
                     required
-                    className="w-full rounded-2xl bg-white py-3 pl-9 pr-3 text-[14.5px] tabular-nums ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                    className="w-full rounded-2xl bg-white py-3 pl-9 pr-3 text-[14.5px] tabular-nums ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
                   />
                 </div>
               </Field>
@@ -204,7 +204,7 @@ export function CheckoutPage() {
                     inputMode="numeric"
                     autoComplete="cc-csc"
                     required
-                    className="w-full rounded-2xl bg-white py-3 pl-9 pr-3 text-[14.5px] tabular-nums ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                    className="w-full rounded-2xl bg-white py-3 pl-9 pr-3 text-[14.5px] tabular-nums ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
                   />
                 </div>
               </Field>

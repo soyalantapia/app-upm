@@ -143,7 +143,7 @@ export function LoginPage() {
               <PlayCircle size={18} className="transition-transform duration-200 group-hover:scale-110" /> Vivir el recorrido completo
               <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
             </Button>
-            <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-0.5 text-[10.5px] font-medium text-ink-400">
+            <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-0.5 text-[10.5px] font-medium text-ink-500">
               <span className="inline-block motion-safe:animate-step-wave" style={{ animationDelay: '0s' }}>Alta</span>
               <ChevronRight size={10} className="text-ink-300" />
               <span className="inline-block motion-safe:animate-step-wave" style={{ animationDelay: '0.45s' }}>Pago demo</span>
@@ -176,7 +176,7 @@ export function LoginPage() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="nombre@parlamento.gov"
-              className="w-full rounded-2xl bg-white px-4 py-3 text-[15px] ring-1 ring-ink-100 shadow-card placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+              className="w-full rounded-2xl bg-white px-4 py-3 text-[15px] ring-1 ring-ink-100 shadow-card placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
             />
           </label>
 
@@ -202,12 +202,12 @@ export function LoginPage() {
                 type="button"
                 onClick={() => setShowPassword(v => !v)}
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-lg text-ink-400 transition-colors hover:bg-ink-50 hover:text-ink-700"
+                className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-ink-500 transition-colors hover:bg-ink-50 hover:text-ink-700"
               >
                 {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
-            <span className="text-[11px] text-ink-400">Demo · ingresá cualquier credencial para continuar.</span>
+            <span className="text-[11px] text-ink-500">Demo · ingresá cualquier credencial para continuar.</span>
           </label>
 
           <Button type="submit" variant="secondary" size="md" disabled={loading} className="w-full">

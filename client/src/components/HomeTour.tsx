@@ -124,7 +124,7 @@ export function HomeTour() {
           <button
             onClick={persistDismiss}
             aria-label="Saltar tour"
-            className="rounded-full p-1 text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+            className="rounded-full p-1 text-ink-500 hover:bg-ink-50 hover:text-ink-700"
             title="Saltar"
           >
             <X size={14} />

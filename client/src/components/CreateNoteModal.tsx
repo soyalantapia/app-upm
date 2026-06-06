@@ -96,7 +96,7 @@ export function CreateNoteModal({
             value={title}
             onChange={e => setTitle(e.target.value)}
             placeholder={isMinuta ? 'Minuta: Reunión...' : 'Brief: Tema...'}
-            className="rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+            className="rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
           />
         </label>
 
@@ -111,7 +111,7 @@ export function CreateNoteModal({
                 ? '1. Tema\n2. Participantes\n3. Puntos tratados\n4. Acuerdos\n5. Próximos pasos'
                 : '1. Resumen\n2. Marco normativo\n3. Preguntas para reunión\n4. Próximos pasos'
             }
-            className="resize-none rounded-2xl bg-white px-4 py-3 text-[13.5px] leading-relaxed ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+            className="resize-none rounded-2xl bg-white px-4 py-3 text-[13.5px] leading-relaxed ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
           />
         </label>
 

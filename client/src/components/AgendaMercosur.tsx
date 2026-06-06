@@ -220,13 +220,13 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
                   )}
                   <span className={cn(
                     'ml-auto text-[10px] font-bold tabular-nums',
-                    daysUntil <= 7 ? 'text-danger' : daysUntil <= 14 ? 'text-warning-dark' : 'text-ink-400',
+                    daysUntil <= 7 ? 'text-danger' : daysUntil <= 14 ? 'text-warning-dark' : 'text-ink-500',
                   )}>
                     en {daysUntil}d
                   </span>
                 </div>
                 <p className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-800">{ev.title}</p>
-                <p className="mt-0.5 line-clamp-1 text-[11px] text-ink-400">{ev.description}</p>
+                <p className="mt-0.5 line-clamp-1 text-[11px] text-ink-500">{ev.description}</p>
               </div>
             </li>
           )
@@ -234,12 +234,12 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
       </ul>
 
       <div className="mt-3 flex items-center gap-1.5 border-t border-ink-50 pt-3">
-        <Globe size={11} className="text-ink-400" />
-        <span className="text-[10.5px] text-ink-400">
+        <Globe size={11} className="text-ink-500" />
+        <span className="text-[10.5px] text-ink-500">
           {AGENDA.length} institucionales{feedCount > 0 ? ` · ${feedCount} convocatorias detectadas` : ''}
         </span>
         <Users size={11} className="ml-auto text-ink-300" />
-        <span className="text-[10.5px] text-ink-400">5 países</span>
+        <span className="text-[10.5px] text-ink-500">5 países</span>
       </div>
     </div>
   )

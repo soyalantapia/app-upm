@@ -319,7 +319,7 @@ export function RadarPage() {
               </span>
               <button
                 onClick={() => setSourcesOpen(false)}
-                className="ml-auto rounded-full p-1 text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+                className="ml-auto rounded-full p-1 text-ink-500 hover:bg-ink-50 hover:text-ink-700"
                 aria-label="Cerrar"
                 title="Cerrar"
               >
@@ -335,7 +335,7 @@ export function RadarPage() {
                     'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition whitespace-nowrap ' +
                     (s.ok
                       ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
-                      : 'bg-ink-50 text-ink-400 ring-1 ring-ink-100')
+                      : 'bg-ink-50 text-ink-500 ring-1 ring-ink-100')
                   }
                   title={s.error ?? `${s.count} ítems desde ${s.label}`}
                 >
@@ -513,7 +513,7 @@ export function RadarPage() {
             <span><span className="font-bold text-upm-800 tabular-nums">{filtered.length}</span> novedades</span>
           )}
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
           {/* Export · CSV o Markdown del listado filtrado */}
           <ExportRadarButton items={filtered} disabled={loading || isLoadingInitial} />
           {/* View mode toggle */}

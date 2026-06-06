@@ -264,7 +264,7 @@ export function NewsConversationPage() {
         </h1>
         {/* Texto original de la fuente (PT) como referencia, si difiere del traducido */}
         {looksPortuguese(news.title) && cleanTitle(news.title) !== news.title.trim() && (
-          <p className="text-[13px] italic leading-relaxed text-ink-400" lang="pt" title="Texto original de la fuente">
+          <p className="text-[13px] italic leading-relaxed text-ink-500" lang="pt" title="Texto original de la fuente">
             Original: {news.title}
           </p>
         )}
@@ -563,7 +563,7 @@ function MetaChip({
 }) {
   return (
     <span className={'inline-flex items-baseline gap-1.5 ' + (truncate ? 'min-w-0 max-w-[420px]' : '')}>
-      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-400">
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">
         <Icon size={10} /> {label}
       </span>
       <span className={'font-semibold text-ink-800 ' + (truncate ? 'truncate' : '')}>{value}</span>

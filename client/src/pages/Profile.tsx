@@ -263,7 +263,7 @@ export function ProfilePage() {
               value={editName}
               onChange={e => setEditName(e.target.value)}
               required
-              className="w-full rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+              className="w-full rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
             />
           </Field>
           <Field label="Email institucional" required>
@@ -272,7 +272,7 @@ export function ProfilePage() {
               value={editEmail}
               onChange={e => setEditEmail(e.target.value)}
               required
-              className="w-full rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+              className="w-full rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
             />
           </Field>
           <Field label="Cargo">
@@ -363,7 +363,7 @@ function AlertasPanel({ alerts }: { alerts: Alert[] }) {
             <button
               onClick={() => store.toggleAlert(a.id)}
               className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl transition-colors ${
-                a.active ? 'bg-upm-50 text-upm-600' : 'bg-ink-50 text-ink-400'
+                a.active ? 'bg-upm-50 text-upm-600' : 'bg-ink-50 text-ink-500'
               }`}
               title={a.active ? 'Desactivar alerta' : 'Activar alerta'}
             >
@@ -377,7 +377,7 @@ function AlertasPanel({ alerts }: { alerts: Alert[] }) {
                     const co = countryByCode(c)
                     return <span key={c} className="text-[10.5px] text-ink-500">{co.flag} {co.code}</span>
                   })
-                  : <span className="text-[10.5px] text-ink-400">Todos los países</span>
+                  : <span className="text-[10.5px] text-ink-500">Todos los países</span>
                 }
                 {a.topics.length > 0 && (
                   <>
@@ -481,7 +481,7 @@ function AlertasPanel({ alerts }: { alerts: Alert[] }) {
         </form>
       )}
 
-      <p className="text-[11.5px] text-ink-400">
+      <p className="text-[11.5px] text-ink-500">
         Las alertas se evalúan cuando el Radar carga nuevos ítems. Recibís una notificación si hay coincidencias.
       </p>
     </div>

@@ -112,7 +112,7 @@ export function GenealogyBreadcrumb({
                 )}
               </button>
             ))}
-            <ArrowRight size={13} className="text-ink-400" />
+            <ArrowRight size={13} className="text-ink-500" />
           </>
         )}
 
@@ -125,7 +125,7 @@ export function GenealogyBreadcrumb({
         {/* Hijas */}
         {hijas.length > 0 && (
           <>
-            <ArrowRight size={13} className="text-ink-400" />
+            <ArrowRight size={13} className="text-ink-500" />
             <span className="text-[10.5px] font-bold uppercase tracking-wide text-ink-500">Modificada por:</span>
             {hijas.map(h => (
               <button

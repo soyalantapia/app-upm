@@ -32,7 +32,7 @@ export function Button({
     <button
       className={cn(
         'inline-flex items-center justify-center font-semibold transition-all duration-200',
-        'focus-visible:ring-2 focus-visible:ring-upm-400 focus-visible:ring-offset-2',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-upm-400 focus-visible:ring-offset-2',
         'disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-none',
         VARIANTS[variant],
         SIZES[size],
@@ -228,7 +228,7 @@ export function Input(props: InputHTMLAttributes<HTMLInputElement> & { className
     <input
       {...rest}
       className={cn(
-        'w-full rounded-2xl bg-white px-4 py-3 text-[15px] text-ink-900 ring-1 ring-ink-100 shadow-card placeholder:text-ink-300',
+        'w-full rounded-2xl bg-white px-4 py-3 text-[15px] text-ink-900 ring-1 ring-ink-100 shadow-card placeholder:text-ink-400',
         'focus:outline-none focus:ring-2 focus:ring-upm-400 transition-all duration-200',
         className,
       )}

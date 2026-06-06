@@ -107,7 +107,7 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
           <Metric icon={<Radio size={14} />} value={fuentes} label="fuentes oficiales" />
           <span className="hidden h-4 w-px bg-ink-100 sm:block" />
           {syncing ? (
-            <span className="inline-flex items-center gap-1.5 text-[12px] text-ink-400">
+            <span className="inline-flex items-center gap-1.5 text-[12px] text-ink-500">
               <ScrollText size={14} className="text-upm-600" />
               <span className="inline-block h-1.5 w-1.5 animate-pulse-soft rounded-full bg-upm-400" />
               sincronizando corpus…
@@ -118,13 +118,13 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
         </div>
 
         {/* Actualizado */}
-        {updated && <span className="text-[11px] font-medium text-ink-400">actualizado {updated}</span>}
+        {updated && <span className="text-[11px] font-medium text-ink-500">actualizado {updated}</span>}
       </div>
 
       {/* Pulso regional · banderas con contador */}
       {porPais.length > 0 && (
         <div className="relative mt-3 flex flex-wrap items-center gap-1.5 border-t border-ink-100/70 pt-3">
-          <span className="mr-0.5 text-[9.5px] font-bold uppercase tracking-[0.16em] text-ink-400">Pulso regional</span>
+          <span className="mr-0.5 text-[9.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Pulso regional</span>
           {porPais.map(c => (
             <span
               key={c.code}
@@ -157,7 +157,7 @@ function Metric({
   const numClass = 'font-bold tabular-nums ' + (highlight ? 'text-[18px] text-upm-800' : 'text-[16px] text-ink-900')
   return (
     <span className="inline-flex items-baseline gap-1.5">
-      <span className={highlight ? 'text-upm-600' : 'text-ink-400'}>{icon}</span>
+      <span className={highlight ? 'text-upm-600' : 'text-ink-500'}>{icon}</span>
       {animate ? (
         <CountUp value={value} className={numClass} />
       ) : (

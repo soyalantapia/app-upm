@@ -162,7 +162,7 @@ export function SignupPage() {
                 onChange={e => setName(e.target.value)}
                 placeholder="Dr. Martín Pereira"
                 required
-                className="w-full rounded-2xl bg-white px-4 py-2.5 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                className="w-full rounded-2xl bg-white px-4 py-2.5 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
               />
             </Field>
 
@@ -173,7 +173,7 @@ export function SignupPage() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="nombre@parlamento.gov"
                 required
-                className="w-full rounded-2xl bg-white px-4 py-2.5 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                className="w-full rounded-2xl bg-white px-4 py-2.5 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
               />
             </Field>
 
@@ -215,7 +215,7 @@ export function SignupPage() {
                   onChange={e => setInstitucion(e.target.value)}
                   placeholder="Cámara de Diputados / Senado..."
                   required
-                  className="w-full rounded-2xl bg-white py-2.5 pl-9 pr-4 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                  className="w-full rounded-2xl bg-white py-2.5 pl-9 pr-4 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
                 />
               </div>
             </Field>
@@ -225,7 +225,7 @@ export function SignupPage() {
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 placeholder="+598 99 123 456"
-                className="w-full rounded-2xl bg-white px-4 py-2.5 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+                className="w-full rounded-2xl bg-white px-4 py-2.5 text-[14px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
               />
             </Field>
 

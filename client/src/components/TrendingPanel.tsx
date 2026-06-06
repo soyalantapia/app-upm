@@ -96,7 +96,7 @@ export function TrendingPanel() {
                   key={tt.topic}
                   className="flex items-center gap-2 rounded-xl bg-ink-50/40 px-3 py-2 ring-1 ring-ink-100"
                 >
-                  <span className="text-[12px] font-bold tabular-nums text-ink-400">{idx + 1}</span>
+                  <span className="text-[12px] font-bold tabular-nums text-ink-500">{idx + 1}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-[12px] font-bold text-ink-900 line-clamp-1">{meta.label}</p>
                     <p className="text-[10.5px] text-ink-500 tabular-nums">

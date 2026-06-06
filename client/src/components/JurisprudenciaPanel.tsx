@@ -46,7 +46,7 @@ export function JurisprudenciaPanel({ itemId }: { itemId: string }) {
                 </span>
                 <span className="text-ink-500">{c.flag} {TRIBUNAL_LABEL[f.tribunal] ?? f.tribunal}</span>
                 {f.sala && (
-                  <span className="text-ink-400">· {f.sala}</span>
+                  <span className="text-ink-500">· {f.sala}</span>
                 )}
                 <span className="ml-auto inline-flex items-center gap-1 text-ink-500">
                   <Calendar size={9} /> {formatDate(f.fecha)}

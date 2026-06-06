@@ -66,7 +66,7 @@ export function ArticuladoPanel({
         </div>
         {articulos.length > 5 && (
           <label className="flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] ring-1 ring-ink-100 focus-within:ring-upm-400">
-            <Search size={11} className="text-ink-400" />
+            <Search size={11} className="text-ink-500" />
             <input
               value={q}
               onChange={e => { setQ(e.target.value); setVisibleCount(PAGE_SIZE) }}
@@ -74,7 +74,7 @@ export function ArticuladoPanel({
               className="w-40 bg-transparent text-[11.5px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
             />
             {q && (
-              <button onClick={() => setQ('')} className="text-ink-400 hover:text-ink-700" aria-label="Limpiar">
+              <button onClick={() => setQ('')} className="text-ink-500 hover:text-ink-700" aria-label="Limpiar">
                 <X size={10} />
               </button>
             )}

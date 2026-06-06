@@ -91,7 +91,7 @@ function StepNode({ step }: { step: Step; index: number; total: number }) {
         <Icon size={14} />
       </div>
       <div className="max-w-[110px] text-center">
-        <p className={'text-[10.5px] font-bold leading-tight ' + (step.state === 'pending' ? 'text-ink-400' : 'text-ink-900')}>
+        <p className={'text-[10.5px] font-bold leading-tight ' + (step.state === 'pending' ? 'text-ink-500' : 'text-ink-900')}>
           {step.label}
         </p>
         {step.detail && (

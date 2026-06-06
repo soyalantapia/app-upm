@@ -35,7 +35,7 @@ export function StatsPage() {
   }, [graph, items])
 
   return (
-    <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-10">
+    <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-6 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-10">
       <div>
         <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
           <BarChart3 size={11} /> Estadísticas
@@ -161,7 +161,7 @@ export function StatsPage() {
               <span className="flex items-center gap-1 text-success-fg">
                 <CheckCircle2 size={11} /> {feed.sources.filter(s => s.ok).length} ok
               </span>
-              <span className="flex items-center gap-1 text-ink-400">
+              <span className="flex items-center gap-1 text-ink-500">
                 <XCircle size={11} /> {feed.sources.filter(s => !s.ok).length} con error
               </span>
             </div>

@@ -381,7 +381,7 @@ export function AssistantPage() {
             </Button>
           </form>
           {messages.length > 1 && (
-            <p className="mt-1.5 px-1 text-[10.5px] text-ink-400">
+            <p className="mt-1.5 px-1 text-[10.5px] text-ink-500">
               Conversación guardada automáticamente al iniciar una nueva.
             </p>
           )}

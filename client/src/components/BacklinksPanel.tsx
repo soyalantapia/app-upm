@@ -61,7 +61,7 @@ export function BacklinksPanel({ itemId }: { itemId: string }) {
 
       {/* Distribución por país · siempre visible */}
       <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-ink-600">
-        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-400">Distribución</span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-500">Distribución</span>
         {Array.from(byCountry.entries())
           .sort((a, b) => b[1] - a[1])
           .map(([country, count]) => {

@@ -183,7 +183,7 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
                       <span className="mt-0.5 block text-[11.5px] leading-relaxed text-ink-500 line-clamp-2">
                         {n.description}
                       </span>
-                      <span className="mt-1 block text-[10.5px] text-ink-400 tabular-nums">
+                      <span className="mt-1 block text-[10.5px] text-ink-500 tabular-nums">
                         {new Date(n.createdAt).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </span>

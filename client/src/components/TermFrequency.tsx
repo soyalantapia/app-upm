@@ -76,7 +76,7 @@ export function TermFrequency({ items, topN = 20 }: { items: NewsItem[]; topN?: 
               />
             </div>
             <span className="w-10 text-right text-[11.5px] font-bold tabular-nums text-ink-600">{t.count}</span>
-            <span className="w-12 text-right text-[10.5px] text-ink-400">
+            <span className="w-12 text-right text-[10.5px] text-ink-500">
               {((t.count / max) * 100).toFixed(0)}%
             </span>
           </div>

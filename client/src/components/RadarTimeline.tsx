@@ -109,7 +109,7 @@ export function RadarTimeline({ items }: { items: NewsItem[] }) {
           <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-danger-fg" /> Alta</span>
           <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-warning-fg" /> Media</span>
           <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-upm-400" /> Baja</span>
-          <span className="ml-auto text-ink-400">Tamaño proporcional a cantidad · click en cualquier celda para abrir</span>
+          <span className="ml-auto text-ink-500">Tamaño proporcional a cantidad · click en cualquier celda para abrir</span>
         </div>
       </div>
     </div>

@@ -234,7 +234,7 @@ export function AppShell() {
           >
             <div className="mb-1.5 flex items-center justify-between px-1">
               <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Más secciones</span>
-              <button onClick={() => setMoreOpen(false)} aria-label="Cerrar" className="grid h-7 w-7 place-items-center rounded-full text-ink-500 hover:bg-ink-50">
+              <button onClick={() => setMoreOpen(false)} aria-label="Cerrar" className="grid h-9 w-9 place-items-center rounded-full text-ink-500 hover:bg-ink-50">
                 <X size={15} />
               </button>
             </div>
@@ -282,9 +282,9 @@ export function FullBleedShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="relative z-10 flex min-h-[100svh] items-center justify-center px-4 py-10">
+      <main className="relative z-10 flex min-h-[100svh] items-center justify-center px-4 py-10">
         {children}
-      </div>
+      </main>
     </div>
   )
 }

@@ -127,7 +127,7 @@ export function FoldersPage() {
             onChange={e => setName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && create()}
             placeholder="Nombre de la carpeta (ej. Comisión Ambiente)"
-            className="flex-1 rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
+            className="flex-1 rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
           />
           <div className="flex gap-2">
             <Button size="md" variant="secondary" onClick={() => { setCreating(false); setName('') }}>Cancelar</Button>
@@ -225,7 +225,7 @@ export function FoldersPage() {
                     <div className="flex flex-col gap-1">
                       <button
                         onClick={() => setMoveTarget(item)}
-                        className="rounded-full p-2 text-ink-400 hover:bg-upm-50 hover:text-upm-700"
+                        className="rounded-full p-2 text-ink-500 hover:bg-upm-50 hover:text-upm-700"
                         aria-label="Mover a carpeta"
                         title="Mover a carpeta"
                       >
@@ -233,7 +233,7 @@ export function FoldersPage() {
                       </button>
                       <button
                         onClick={() => { store.removeSaved(item.id); store.pushToast('info', 'Eliminado de guardados', { label: 'Deshacer', onClick: () => store.saveItem(item) }) }}
-                        className="rounded-full p-2 text-ink-400 hover:bg-danger-bg/40 hover:text-danger"
+                        className="rounded-full p-2 text-ink-500 hover:bg-danger-bg/40 hover:text-danger"
                         aria-label="Eliminar"
                       >
                         <Trash2 size={13} />
@@ -294,7 +294,7 @@ export function FoldersPage() {
                         store.moveSavedToFolder(item.id, undefined)
                         store.pushToast('info', 'Ítem quitado de la carpeta')
                       }}
-                      className="rounded-full p-2 text-ink-400 hover:bg-ink-50 hover:text-ink-900"
+                      className="rounded-full p-2 text-ink-500 hover:bg-ink-50 hover:text-ink-900"
                       aria-label="Quitar de carpeta"
                     >
                       <X size={13} />
