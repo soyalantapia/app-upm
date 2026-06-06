@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CalendarDays, ChevronRight, Globe, Users } from 'lucide-react'
+import { CalendarDays } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { countryByCode } from '@/lib/data'
 import { cleanTitle } from '@/lib/pt-es'
@@ -162,10 +162,6 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
       .slice(0, 6)
   }, [items, todayMs]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const feedCount = useMemo(
-    () => extractFeedEvents(items, todayMs).length,
-    [items, todayMs],
-  )
 
   if (upcoming.length === 0) return null
 
@@ -175,12 +171,6 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
         <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
           <CalendarDays size={11} /> Agenda Mercosur
         </div>
-        <button
-          onClick={() => navigate('/briefing')}
-          className="inline-flex items-center gap-1 text-[11px] font-semibold text-upm-600 hover:text-upm-700"
-        >
-          Ver briefing <ChevronRight size={12} />
-        </button>
       </div>
 
       <ul className="mt-3 flex flex-col gap-2">
@@ -233,14 +223,6 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
         })}
       </ul>
 
-      <div className="mt-3 flex items-center gap-1.5 border-t border-ink-50 pt-3">
-        <Globe size={11} className="text-ink-500" />
-        <span className="text-[10.5px] text-ink-500">
-          {AGENDA.length} institucionales{feedCount > 0 ? ` · ${feedCount} convocatorias detectadas` : ''}
-        </span>
-        <Users size={11} className="ml-auto text-ink-300" />
-        <span className="text-[10.5px] text-ink-500">5 países</span>
-      </div>
     </div>
   )
 }

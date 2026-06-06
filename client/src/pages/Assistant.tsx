@@ -22,6 +22,7 @@ import { SourceCard } from '@/components/SourceCard'
 import { generateAssistantResponse } from '@/lib/respond'
 import { generateRAGAnswer } from '@/lib/rag'
 import { store, useStore } from '@/lib/store'
+import { LAUNCH } from '@/lib/launch'
 import { copyToClipboard, shareLink } from '@/lib/share'
 import { useUI } from '@/lib/ui-provider'
 import type { ChatMessage } from '@/lib/types'
@@ -332,7 +333,7 @@ export function AssistantPage() {
             <OverflowActions visibleCount={4}>
               {[
                 <QuickButton key="copy" icon={Copy} label="Copiar" onClick={copyLastAssistant} />,
-                <QuickButton key="save" icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />,
+                ...(LAUNCH.saveToFolder ? [<QuickButton key="save" icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />] : []),
                 <QuickButton
                   key="brief"
                   icon={FileStack}

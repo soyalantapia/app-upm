@@ -16,10 +16,6 @@ const ROUTES = [
   { label: 'Asistente AI', path: '/asistente', desc: 'Chat con respaldo institucional' },
   { label: 'Radar normativo', path: '/radar', desc: 'Novedades por país y tema' },
   { label: 'Hablar con leyes', path: '/leyes', desc: 'Consultá artículos directos' },
-  { label: 'Briefing Pre-sesión', path: '/briefing', desc: '1-pager imprimible' },
-  { label: 'Estadísticas del corpus', path: '/estadisticas', desc: 'Métricas globales' },
-  { label: 'Biblioteca UPM', path: '/biblioteca', desc: 'Memoria institucional' },
-  { label: 'Mi carpeta', path: '/carpetas', desc: 'Tus guardados privados' },
   { label: 'Perfil', path: '/perfil', desc: 'Preferencias y membresía' },
 ]
 

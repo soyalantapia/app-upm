@@ -92,9 +92,9 @@ export function NotificationsBell({ compact }: { compact?: boolean }) {
     if (n.type === 'novedad' && n.ref) {
       navigate(`/radar/${n.ref}`)
     } else if (n.type === 'documento') {
-      navigate('/biblioteca')
+      navigate('/radar')
     } else if (n.type === 'foro') {
-      navigate('/biblioteca')
+      navigate('/radar')
     } else {
       navigate('/')
     }

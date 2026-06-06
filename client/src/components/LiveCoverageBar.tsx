@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { Globe2, Radio, ScrollText } from 'lucide-react'
 import { CountUp } from './CountUp'
 import { COUNTRIES } from '@/lib/data'
@@ -14,17 +14,6 @@ import type { CountryCode } from '@/lib/types'
 // apenas hay feed; el corpus y el pulso aparecen cuando cargan los items
 // (no muestra "0" feo durante la sincronización progresiva).
 
-function relTime(iso: string | undefined, now: number): string {
-  if (!iso) return ''
-  const d = new Date(iso).getTime()
-  if (Number.isNaN(d)) return ''
-  const mins = Math.max(0, Math.round((now - d) / 60000))
-  if (mins < 1) return 'recién'
-  if (mins < 60) return `hace ${mins} min`
-  const h = Math.round(mins / 60)
-  if (h < 24) return `hace ${h} h`
-  return `hace ${Math.round(h / 24)} d`
-}
 
 export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
   // High-water · el feed en vivo fluctúa (un refresh parcial reemplaza al
@@ -49,8 +38,6 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
     hwNormas.current = Math.max(hwNormas.current, feed.items?.length ?? 0)
   }
   const f = lastRef.current
-
-  const now = useMemo(() => Date.now(), [f?.fetchedAt])
 
   const porPais = COUNTRIES
     .map(c => ({ code: c.code as CountryCode, flag: c.flag, name: c.name, count: hwByCountry.current[c.code] ?? 0 }))
@@ -82,7 +69,6 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
     )
   }
 
-  const updated = relTime(f.fetchedAt, now)
   const syncing = totalNormas === 0
 
   return (
@@ -118,7 +104,6 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
         </div>
 
         {/* Actualizado */}
-        {updated && <span className="text-[11px] font-medium text-ink-500">actualizado {updated}</span>}
       </div>
 
       {/* Pulso regional · banderas con contador */}

@@ -133,10 +133,6 @@ export function PulseToday({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-1.5 px-1 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-        <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft" />
-        Pulso de hoy · qué pasó importante
-      </div>
       <div className="grid gap-2 sm:grid-cols-3">
         {cards.map(card => {
           const Icon = card.icon

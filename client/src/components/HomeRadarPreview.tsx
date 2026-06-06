@@ -46,19 +46,12 @@ export function HomeRadarPreview({ items, prefs }: { items: NewsItem[]; prefs: P
 
   if (filtered.length === 0) return null
 
-  const hasPrefs = (prefs?.topics?.length ?? 0) > 0 || (prefs?.countries?.length ?? 0) > 0
-  const prefTopicsLabels = (prefs?.topics ?? []).map(t => topicById(t).shortLabel).slice(0, 3).join(' · ')
 
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div className="flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
           <Sparkles size={11} /> En tu radar
-          {hasPrefs && (
-            <span className="rounded-full bg-upm-50 px-1.5 py-0.5 normal-case font-semibold text-[10px] text-upm-700">
-              {prefTopicsLabels}
-            </span>
-          )}
         </div>
         <button
           onClick={() => navigate('/radar?preset=mi-comision')}

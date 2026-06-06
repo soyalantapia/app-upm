@@ -40,6 +40,7 @@ import { ExportLawButton } from '@/components/ExportLawButton'
 import { AddToCalendarButton } from '@/components/AddToCalendarButton'
 import { OverflowActions } from '@/components/OverflowActions'
 import { cleanTitle, looksPortuguese } from '@/lib/pt-es'
+import { LAUNCH } from '@/lib/launch'
 import { humanizeSourceUrl } from '@/lib/source-url'
 import { WatchToggleButton } from '@/components/WatchToggleButton'
 import { TramitacionFlow } from '@/components/TramitacionFlow'
@@ -161,18 +162,20 @@ export function NewsConversationPage() {
         </Link>
         {/* Action bar compacta · 3 visibles + Más con resto */}
         <OverflowActions visibleCount={3}>
-          <button
-            onClick={handleSave}
-            className={
-              'inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-semibold transition ' +
-              (isSaved
-                ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
-                : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
-            }
-          >
-            {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
-            {isSaved ? 'Guardado' : 'Guardar'}
-          </button>
+          {LAUNCH.saveToFolder ? (
+            <button
+              onClick={handleSave}
+              className={
+                'inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-semibold transition ' +
+                (isSaved
+                  ? 'bg-success-bg text-success-fg ring-1 ring-success-bg hover:bg-success-bg/80'
+                  : 'bg-white text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
+              }
+            >
+              {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
+              {isSaved ? 'Guardado' : 'Guardar'}
+            </button>
+          ) : null}
           <button
             onClick={() => shareLink(news.title, `/radar/${news.id}`)}
             className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-700"

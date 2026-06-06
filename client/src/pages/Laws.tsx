@@ -8,6 +8,7 @@ import {
   BookmarkCheck,
   Building2,
   CalendarDays,
+  ChevronLeft,
   DollarSign,
   ExternalLink,
   FileText,
@@ -97,6 +98,9 @@ export function LawsPage() {
   )
 
   const [active, setActive] = useState<NewsItem | null>(null)
+  // Mobile: al tocar una ley pasamos a la vista enfocada (detalle full-screen);
+  // en desktop el split lista|detalle se mantiene siempre.
+  const [showDetail, setShowDetail] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
   const [q, setQ] = useState(searchParams.get('q') ?? '')
   const debouncedQ = useDebounced(q, 200)
@@ -134,7 +138,6 @@ export function LawsPage() {
   }, [laws, active])
 
   const isSaved = useStore(s => (active ? s.saved.some(i => i.ref === active.id) : false))
-  const liveStatus = feed?.status ?? 'mock'
   const isLoading = feedLoading && !feed
 
   const filtered = useMemo(() => {
@@ -223,7 +226,7 @@ export function LawsPage() {
       const item = store.getSnapshot().saved.find(i => i.ref === active.id)
       if (item) {
         store.removeSaved(item.id)
-        store.pushToast('info', 'Ley eliminada de tu carpeta')
+        store.pushToast('info', 'Ley quitada de Guardadas')
       }
     } else {
       store.saveItem({
@@ -233,7 +236,7 @@ export function LawsPage() {
         ref: active.id,
         meta: { type: active.type, country: active.country, date: active.date },
       })
-      store.pushToast('success', 'Ley guardada en tu carpeta')
+      store.pushToast('success', 'Ley guardada · la ves en la pestaña Guardadas')
     }
   }
 
@@ -248,10 +251,6 @@ export function LawsPage() {
           <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
             Leyes sancionadas
           </h1>
-          <p className="mt-0.5 text-[11.5px] text-ink-500">
-            {liveStatus === 'live' && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft align-middle" />}
-            <CountUp value={laws.length} /> leyes indexadas · metadata oficial y texto íntegro cuando la fuente lo publica
-          </p>
         </div>
         <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
           <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} />
@@ -278,8 +277,8 @@ export function LawsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
-          {/* Lista de leyes */}
-          <div className="flex min-w-0 flex-col gap-2">
+          {/* Lista de leyes · en mobile se oculta cuando hay una ley enfocada */}
+          <div className={'flex min-w-0 flex-col gap-2' + (showDetail ? ' max-lg:hidden' : '')}>
             {/* Tabs principales: Todas | Guardadas */}
             <div className="flex w-full min-w-0 items-center gap-1 rounded-full bg-white p-1 ring-1 ring-ink-100 shadow-card">
               <button
@@ -297,7 +296,7 @@ export function LawsPage() {
                   'flex-1 min-w-0 inline-flex items-center justify-center gap-1 truncate rounded-full px-3 py-1.5 text-[12px] font-bold transition ' +
                   (sidebarTab === 'saved' ? 'bg-upm-700 text-white shadow-cta' : 'text-ink-600 hover:bg-ink-50')
                 }
-                title="Solo leyes que guardaste o tenés en seguimiento"
+                title="Solo leyes que guardaste"
               >
                 <Bookmark size={11} className="shrink-0" /> Guardadas ({savedCount})
               </button>
@@ -374,7 +373,7 @@ export function LawsPage() {
                 return (
                   <button
                     key={l.id}
-                    onClick={() => setActive(l)}
+                    onClick={() => { setActive(l); setShowDetail(true); window.scrollTo({ top: 0 }) }}
                     className={
                       'flex flex-col gap-1.5 rounded-2xl border-2 p-3 text-left transition-all duration-200 ' +
                       (active?.id === l.id
@@ -385,6 +384,12 @@ export function LawsPage() {
                     <div className="flex items-center gap-1.5">
                       <Badge tone="brand">{c.flag} {l.tipoDocumento ?? 'Ley'}</Badge>
                       <Badge tone="success">Sancionada</Badge>
+                      {formatDate(l.dataPublicacao ?? l.date) && (
+                        <span className="inline-flex items-center gap-1 text-[10.5px] font-semibold tabular-nums text-ink-500">
+                          <CalendarDays size={11} className="text-ink-400" />
+                          {formatDate(l.dataPublicacao ?? l.date)}
+                        </span>
+                      )}
                     </div>
                     <div className="text-[12.5px] font-semibold leading-snug text-ink-900 line-clamp-2">
                       {cleanTitle(l.title.replace(/^Ley \d+\s*·\s*/, ''))}
@@ -408,9 +413,17 @@ export function LawsPage() {
             )}
           </div>
 
-          {/* Detalle de la ley seleccionada */}
+          {/* Detalle de la ley seleccionada · en mobile es la vista enfocada */}
           {active && (
-            <div className="flex min-w-0 flex-col gap-4 overflow-x-hidden lg:overflow-x-visible">
+            <div className={'flex min-w-0 flex-col gap-4 overflow-x-hidden lg:overflow-x-visible' + (showDetail ? '' : ' max-lg:hidden')}>
+              {/* Volver a la lista (solo mobile · en desktop el split ya muestra ambas) */}
+              <button
+                type="button"
+                onClick={() => setShowDetail(false)}
+                className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[12.5px] font-semibold text-upm-700 ring-1 ring-ink-100 shadow-card transition hover:bg-upm-50 lg:hidden"
+              >
+                <ChevronLeft size={15} /> Volver a las leyes
+              </button>
               {/* Tabla de contenidos · sticky desktop + chip mobile */}
               <PageTOC sections={[
                 { id: 'sec-genealogia', label: 'Genealogía' },

@@ -18,10 +18,6 @@ function todayPrefix(): string {
   return 'Buenas noches'
 }
 
-function formatToday(): string {
-  return new Date().toLocaleDateString('es-AR', { day: '2-digit', month: 'long' })
-}
-
 function computeStats(items: NewsItem[], now: number) {
   const day = 24 * 60 * 60 * 1000
   const dateOf = (n: NewsItem) => new Date(n.dataPublicacao ?? n.date ?? '').getTime()
@@ -85,9 +81,6 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
           <h1 className="text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
             {todayPrefix()}, {userName}
           </h1>
-          <p className="mt-0.5 text-[12.5px] text-ink-500">
-            {formatToday()} · {new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-          </p>
         </div>
       </div>
 
@@ -109,10 +102,6 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
 
       {/* HOY · 3 stats accionables */}
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-1.5 px-1 text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">
-          <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft" />
-          Hoy · qué pasa que te afecta
-        </div>
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => navigate('/radar?preset=hot')}
@@ -152,7 +141,7 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
           </button>
 
           <button
-            onClick={() => navigate('/briefing')}
+            onClick={() => navigate('/radar')}
             className="group flex flex-col gap-1.5 rounded-2xl bg-white p-3 ring-1 ring-upm-200 shadow-card transition hover:-translate-y-0.5 hover:shadow-floating hover:ring-upm-400"
           >
             <div className="flex items-center gap-1.5">

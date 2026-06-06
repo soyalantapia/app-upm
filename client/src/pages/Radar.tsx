@@ -8,11 +8,9 @@ import {
   Filter,
   LayoutList,
   Radar,
-  RefreshCw,
   Search,
   Sparkles,
   Tag,
-  Wifi,
   X,
 } from 'lucide-react'
 import { Button, Chip, EmptyState } from '@/components/ui'
@@ -63,9 +61,8 @@ export function RadarPage() {
     () => new Set(saved.map(i => i.ref).filter(Boolean) as string[]),
     [saved],
   )
-  const { feed, loading: feedLoading, revalidating, refresh } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
+  const { feed, loading: feedLoading } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
   const NEWS = feed?.items ?? []
-  const liveStatus = feed?.status ?? 'mock'
   const liveSources = feed?.sources ?? []
   const [searchParams] = useSearchParams()
   const [q, setQ] = useState(() => searchParams.get('q') ?? '')
@@ -273,29 +270,6 @@ export function RadarPage() {
           <h1 className="mt-1 text-[22px] font-bold tracking-tight text-ink-900 sm:text-[26px]">
             Novedades en vivo
           </h1>
-          {feed?.fetchedAt && (
-            <p className="mt-0.5 text-[11.5px] text-ink-500">
-              {liveStatus === 'live' && <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft align-middle" />}
-              Actualizado {new Date(feed.fetchedAt).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
-              {liveSources.length > 0 && ` · ${liveSources.filter(s => s.ok).length}/${liveSources.length} fuentes`}
-            </p>
-          )}
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => setSourcesOpen(v => !v)}
-            className={
-              'inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[11.5px] font-semibold ring-1 transition ' +
-              (sourcesOpen ? 'bg-upm-50 text-upm-700 ring-upm-200' : 'bg-white text-ink-600 ring-ink-100 hover:bg-upm-50 hover:text-upm-700')
-            }
-            title="Ver fuentes"
-          >
-            <Wifi size={12} /> Fuentes
-          </button>
-          <Button size="sm" variant="ghost" onClick={refresh} disabled={revalidating}>
-            <RefreshCw size={12} className={revalidating ? 'animate-spin' : ''} />
-            <span className="hidden sm:inline">Actualizar</span>
-          </Button>
         </div>
       </div>
 
@@ -629,9 +603,6 @@ export function RadarPage() {
               >
                 Cargar 100 más
               </button>
-              <p className="text-[10.5px] text-ink-500">
-                Mostrando {visibleCount} de {filtered.length} · perf optimizada
-              </p>
             </div>
           )}
         </>
