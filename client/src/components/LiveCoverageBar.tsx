@@ -72,12 +72,12 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
   const syncing = totalNormas === 0
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-upm-50/80 via-white to-white p-4 ring-1 ring-upm-100 shadow-card">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-upm-50/80 via-white to-white p-4 ring-1 ring-upm-100 shadow-card sm:p-5">
       {/* glow sutil de fondo */}
-      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-upm-200/30 blur-3xl" />
+      <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-upm-200/30 blur-3xl" />
 
-      <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
-        {/* Badge en vivo */}
+      {/* Header · badge en vivo + rótulo */}
+      <div className="relative flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 ring-1 ring-success-bg shadow-card">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
@@ -85,31 +85,27 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
           </span>
           <span className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-success-fg">En vivo</span>
         </div>
+        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-400">Cobertura del corpus</span>
+      </div>
 
-        {/* Métricas de cobertura */}
-        <div className="flex flex-1 flex-wrap items-center gap-x-5 gap-y-1.5">
-          <Metric icon={<Globe2 size={14} />} value={paises} label="países" animate={false} />
-          <span className="hidden h-4 w-px bg-ink-100 sm:block" />
-          <Metric icon={<Radio size={14} />} value={fuentes} label="fuentes oficiales" />
-          <span className="hidden h-4 w-px bg-ink-100 sm:block" />
-          {syncing ? (
-            <span className="inline-flex items-center gap-1.5 text-[12px] text-ink-500">
-              <ScrollText size={14} className="text-upm-600" />
-              <span className="inline-block h-1.5 w-1.5 animate-pulse-soft rounded-full bg-upm-400" />
-              sincronizando corpus…
-            </span>
-          ) : (
-            <Metric icon={<ScrollText size={14} />} value={totalNormas} label="normas en el corpus" highlight />
-          )}
-        </div>
-
-        {/* Actualizado */}
+      {/* 3 stats · grid con divisores */}
+      <div className="relative mt-4 grid grid-cols-3 divide-x divide-ink-100">
+        <Stat icon={<Globe2 size={13} />} value={paises} label="países" animate={false} />
+        <Stat icon={<Radio size={13} />} value={fuentes} label="fuentes oficiales" />
+        {syncing ? (
+          <div className="flex flex-col items-center justify-center gap-1.5 px-2 text-center">
+            <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
+            <span className="text-[10.5px] leading-tight text-ink-500">sincronizando corpus…</span>
+          </div>
+        ) : (
+          <Stat icon={<ScrollText size={13} />} value={totalNormas} label="normas en el corpus" highlight />
+        )}
       </div>
 
       {/* Pulso regional · banderas con contador */}
       {porPais.length > 0 && (
-        <div className="relative mt-3 flex flex-wrap items-center gap-1.5 border-t border-ink-100/70 pt-3">
-          <span className="mr-0.5 text-[9.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Pulso regional</span>
+        <div className="relative mt-4 flex flex-wrap items-center gap-1.5 border-t border-ink-100/70 pt-3">
+          <span className="mr-0.5 text-[9.5px] font-bold uppercase tracking-[0.16em] text-ink-400">Pulso regional</span>
           {porPais.map(c => (
             <span
               key={c.code}
@@ -126,7 +122,7 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
   )
 }
 
-function Metric({
+function Stat({
   icon,
   value,
   label,
@@ -139,16 +135,19 @@ function Metric({
   highlight?: boolean
   animate?: boolean
 }) {
-  const numClass = 'font-bold tabular-nums ' + (highlight ? 'text-[18px] text-upm-800' : 'text-[16px] text-ink-900')
+  const numClass =
+    'text-[24px] font-bold tabular-nums leading-none ' + (highlight ? 'text-upm-700' : 'text-ink-900')
   return (
-    <span className="inline-flex items-baseline gap-1.5">
-      <span className={highlight ? 'text-upm-600' : 'text-ink-500'}>{icon}</span>
+    <div className="flex flex-col items-center gap-1.5 px-1.5 text-center">
       {animate ? (
         <CountUp value={value} className={numClass} />
       ) : (
         <span className={numClass}>{value.toLocaleString('es-AR')}</span>
       )}
-      <span className="text-[11.5px] text-ink-500">{label}</span>
-    </span>
+      <span className="inline-flex items-center gap-1 text-[10.5px] leading-tight text-ink-500">
+        <span className={highlight ? 'text-upm-500' : 'text-ink-400'}>{icon}</span>
+        {label}
+      </span>
+    </div>
   )
 }

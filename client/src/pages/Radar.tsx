@@ -2,11 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowDownUp,
-  Boxes,
-  CalendarRange,
   ChevronDown,
   Filter,
-  LayoutList,
   Radar,
   Search,
   Sparkles,
@@ -20,15 +17,11 @@ import { useStore } from '@/lib/store'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { writeSnapshot } from '@/lib/visit-tracker'
 import { useCitationGraph, getCitationCount } from '@/lib/use-citations'
-import { buildClusters } from '@/lib/clusters'
 import { matchesQuery } from '@/lib/synonyms'
 import { useDebounced } from '@/lib/use-debounced'
 import { RadarSmartCard } from '@/components/RadarSmartCard'
 import { QuickFilterPills, type FilterPresetId } from '@/components/QuickFilterPills'
-import { RadarTimeline } from '@/components/RadarTimeline'
-import { RadarClusters } from '@/components/RadarClusters'
 import { PulseToday } from '@/components/PulseToday'
-import { ExportRadarButton } from '@/components/ExportRadarButton'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -80,7 +73,6 @@ export function RadarPage() {
   // Tier 1+2 features state
   const [preset, setPreset] = useState<FilterPresetId>('all')
   const [density] = useState<'comfortable' | 'compact'>('comfortable')
-  const [viewMode, setViewMode] = useState<'list' | 'timeline' | 'clusters'>('list')
   // Paginación incremental · Radar tiene 1700+ items, montar todo crashea perf.
   // Empezamos con 50, agregamos 50 cada "Ver más".
   const [visibleCount, setVisibleCount] = useState(50)
@@ -253,12 +245,6 @@ export function RadarPage() {
     } as Record<FilterPresetId, number>
   }, [NEWS, country, topic, type, relevance, organismo, prefs])
 
-  // Clusters de ecosistema normativo · solo cuando viewMode === 'clusters'
-  const clustersData = useMemo(() => {
-    if (viewMode !== 'clusters' || !citationGraph) return null
-    return buildClusters(filtered, citationGraph, 3)
-  }, [viewMode, citationGraph, filtered])
-
   return (
     <div className="animate-fade-up mx-auto flex w-full max-w-[1200px] flex-col gap-5 px-4 py-5 sm:px-6 sm:py-8">
       {/* Header compacto · título + freshness + acciones */}
@@ -329,7 +315,12 @@ export function RadarPage() {
         <PulseToday items={NEWS} onPresetClick={setPreset} />
       )}
 
-      {/* Search + Sort + Toggle filtros · search full-width en mobile */}
+      {/* Vistas rápidas · 4 presets esenciales primero (lo más intuitivo) */}
+      {!isLoadingInitial && (
+        <QuickFilterPills active={preset} onChange={setPreset} counts={presetCounts} />
+      )}
+
+      {/* Buscar + Filtros + Orden */}
       <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="flex flex-1 min-w-0 items-center gap-2 rounded-2xl bg-upm-50/40 px-3 py-2.5 ring-1 ring-upm-100 focus-within:bg-white focus-within:ring-upm-400">
@@ -466,55 +457,18 @@ export function RadarPage() {
         )}
       </div>
 
-      {/* Quick filter pills · presets de filtros que el usuario puede aplicar
-          de un click sin abrir el panel completo. */}
-      {!isLoadingInitial && (
-        <QuickFilterPills active={preset} onChange={setPreset} counts={presetCounts} />
-      )}
-
-      {/* Toolbar: count + density + view mode.
-          Mobile: header del AppShell ocupa los primeros 56px y es z-30, así que
-          posicionamos debajo (top-14) con z-20 para evitar overlap.
-          Desktop: no hay header sticky · top-2 es suficiente. */}
-      <div className="sticky top-14 z-20 flex flex-wrap items-center gap-2 rounded-2xl bg-white/80 px-3 py-2 backdrop-blur-md ring-1 ring-ink-100 shadow-card md:top-2">
-        <div className="flex items-center gap-2 text-[12.5px] font-semibold text-ink-700">
-          {loading || isLoadingInitial ? (
-            <>
-              <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
-              {isLoadingInitial ? 'Trayendo novedades en vivo de fuentes oficiales…' : 'Filtrando…'}
-            </>
-          ) : (
-            <span><span className="font-bold text-upm-800 tabular-nums">{filtered.length}</span> novedades</span>
-          )}
-        </div>
-        <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
-          {/* Export · CSV o Markdown del listado filtrado */}
-          <ExportRadarButton items={filtered} disabled={loading || isLoadingInitial} />
-          {/* View mode toggle */}
-          <div className="flex items-center gap-0.5 rounded-full bg-ink-50 p-0.5 ring-1 ring-ink-100">
-            <button
-              onClick={() => setViewMode('list')}
-              className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition ' + (viewMode === 'list' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
-              title="Vista lista"
-            >
-              <LayoutList size={11} /> Lista
-            </button>
-            <button
-              onClick={() => setViewMode('timeline')}
-              className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition ' + (viewMode === 'timeline' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
-              title="Vista timeline"
-            >
-              <CalendarRange size={11} /> Timeline
-            </button>
-            <button
-              onClick={() => setViewMode('clusters')}
-              className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold transition ' + (viewMode === 'clusters' ? 'bg-white text-upm-700 shadow-cta' : 'text-ink-500 hover:text-ink-700')}
-              title="Ver normas agrupadas por vínculos de citas"
-            >
-              <Boxes size={11} /> Redes
-            </button>
-          </div>
-        </div>
+      {/* Conteo de resultados · slim */}
+      <div className="flex items-center gap-2 px-1 text-[12.5px] font-semibold text-ink-600">
+        {loading || isLoadingInitial ? (
+          <>
+            <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
+            {isLoadingInitial ? 'Trayendo novedades en vivo…' : 'Filtrando…'}
+          </>
+        ) : (
+          <span>
+            <span className="font-bold text-upm-800 tabular-nums">{filtered.length}</span> novedades
+          </span>
+        )}
       </div>
 
       {/* Resultados */}
@@ -565,19 +519,6 @@ export function RadarPage() {
             title="No encontramos novedades"
             description="Probá con otro país, tema, palabra clave o quitando el preset activo. El Radar UPM se actualiza varias veces al día."
           />
-        )
-      ) : viewMode === 'timeline' ? (
-        <RadarTimeline items={filtered} />
-      ) : viewMode === 'clusters' ? (
-        clustersData ? (
-          <RadarClusters clusters={clustersData.clusters} singletonsCount={clustersData.singletons.length} />
-        ) : (
-          <div className="rounded-3xl bg-white p-8 text-center text-[13px] text-ink-500 ring-1 ring-ink-100">
-            <span className="inline-flex items-center gap-2">
-              <span className="h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
-              Construyendo grafo de ecosistemas normativos…
-            </span>
-          </div>
         )
       ) : (
         <>
