@@ -38,7 +38,7 @@ El producto se vende como **membresía premium USD 100/mes** a parlamentarios de
 ```bash
 cd ~/dev/app-upm/client
 PATH="/opt/homebrew/opt/node@22/bin:$PATH" npm run dev
-# → http://127.0.0.1:5181/app-upm/
+# → http://127.0.0.1:5188/app-upm/
 ```
 
 ⚠️ **Node 22 obligatorio** (no v25+). El path está configurado en `.claude/launch.json` del workspace.
