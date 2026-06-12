@@ -17,8 +17,9 @@ export async function fetchJson<T>(url: string, opts?: { timeoutMs?: number; hea
 // 2) Fallback: STATIC_DATA_BASE (GH Pages) — para Railway, donde client/ no existe.
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const LOCAL_DATA_DIRS = [
-  path.resolve(HERE, '../../../client/public/data'), // desde dist/ingest o src/ingest
+  path.resolve(HERE, '../../../client/public/data'), // monorepo local (dev)
   path.resolve(HERE, '../../../../client/public/data'),
+  path.resolve(HERE, '../../data'), // snapshot bundleado en server/data (Railway)
 ]
 
 export async function loadStaticJson<T>(id: string, staticBase: string): Promise<T> {

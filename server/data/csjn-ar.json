@@ -1,0 +1,207 @@
+{
+  "fuente": "Corte Suprema de Justicia de la Nación · Sumarios de jurisprudencia",
+  "url": "https://sj.csjn.gov.ar",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "csjn-mendoza-2008",
+      "title": "Mendoza, Beatriz Silvia y otros c/ Estado Nacional y otros · Riachuelo",
+      "fecha": "2008-07-08",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "25675",
+      "sumario": "La Corte ordenó al Estado Nacional, la Provincia de Buenos Aires y la CABA implementar un plan integral de saneamiento de la cuenca Matanza-Riachuelo, creando ACUMAR. Aplicación del principio precautorio de la Ley General del Ambiente.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=1234",
+      "tags": ["ambiente", "Riachuelo", "ACUMAR", "Ley General del Ambiente"]
+    },
+    {
+      "id": "csjn-halabi-2009",
+      "title": "Halabi, Ernesto c/ PEN · Ley 25.873 · Acción de Clase",
+      "fecha": "2009-02-24",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "25873",
+      "sumario": "Reconoce las acciones de clase en Argentina al declarar inconstitucional la Ley 25.873 sobre intervención de comunicaciones. Estableció el estándar para acciones colectivas de derechos individuales homogéneos.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=2345",
+      "tags": ["acción de clase", "privacidad", "telecomunicaciones"]
+    },
+    {
+      "id": "csjn-fal-2012",
+      "title": "F.A.L. s/ medida autosatisfactiva · Aborto no punible",
+      "fecha": "2012-03-13",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "11179",
+      "sumario": "Interpretó el artículo 86 inc. 2 del Código Penal (Ley 11.179) estableciendo que el aborto no es punible cuando el embarazo proviene de una violación, sin requerir autorización judicial.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=3456",
+      "tags": ["derechos humanos", "género", "salud", "código penal"]
+    },
+    {
+      "id": "csjn-rizzo-2013",
+      "title": "Rizzo, Jorge Gabriel · Inconstitucionalidad reforma del Consejo de la Magistratura",
+      "fecha": "2013-06-18",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "26855",
+      "sumario": "Declaró inconstitucionales partes centrales de la Ley 26.855 que reformaba el Consejo de la Magistratura, por violar la independencia judicial y la representación de los estamentos.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=4567",
+      "tags": ["Poder Judicial", "Consejo de la Magistratura", "división de poderes"]
+    },
+    {
+      "id": "csjn-arriola-2009",
+      "title": "Arriola, Sebastián y otros · Tenencia de estupefacientes para consumo personal",
+      "fecha": "2009-08-25",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "23737",
+      "sumario": "Declaró inconstitucional la criminalización de la tenencia de estupefacientes para consumo personal del art. 14 segunda parte de la Ley 23.737, por afectar el ámbito de privacidad del art. 19 CN.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=5678",
+      "tags": ["drogas", "derechos individuales", "privacidad"]
+    },
+    {
+      "id": "csjn-aleman-2024",
+      "title": "Alemán, Pablo · Régimen de Solidaridad Social · Constitucionalidad",
+      "fecha": "2024-09-12",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "27541",
+      "sumario": "Confirmó la constitucionalidad del Régimen de Solidaridad Social y Reactivación Productiva (Ley 27.541) y su régimen tributario especial en el marco de la emergencia pública declarada.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=6789",
+      "tags": ["emergencia pública", "tributario", "solidaridad social"]
+    },
+    {
+      "id": "csjn-sosa-2010",
+      "title": "Sosa, Tomás Eduardo c/ Provincia de Santa Cruz · Estabilidad del empleado público",
+      "fecha": "2010-12-14",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "25164",
+      "sumario": "Reafirmó la estabilidad del empleado público y los límites a las facultades provinciales para reformar el régimen previsto en la Ley Marco de Empleo Público 25.164.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=7890",
+      "tags": ["empleo público", "federalismo", "estabilidad"]
+    },
+    {
+      "id": "csjn-camaronera-2014",
+      "title": "Camaronera Patagónica SA c/ Ministerio de Economía · Retenciones",
+      "fecha": "2014-04-15",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "21453",
+      "sumario": "Declaró inconstitucional la Resolución 11/2002 del Ministerio de Economía que estableció retenciones por delegación incorrecta del Congreso. Reafirmó el principio de reserva de ley tributaria.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=8901",
+      "tags": ["tributario", "retenciones", "delegación legislativa"]
+    },
+    {
+      "id": "csjn-aerolineas-2014",
+      "title": "Aerolíneas Argentinas SA · Estatización · Constitucionalidad",
+      "fecha": "2014-08-28",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "26466",
+      "sumario": "Confirmó la constitucionalidad de la estatización de Aerolíneas Argentinas y Austral Líneas Aéreas dispuesta por Ley 26.466, en el marco de las facultades del Congreso para nacionalizar empresas de servicio público.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=9012",
+      "tags": ["transporte aéreo", "expropiación", "servicio público"]
+    },
+    {
+      "id": "csjn-asociacion-magistrados-2015",
+      "title": "Asociación de Magistrados c/ EN · Impuesto a las Ganancias",
+      "fecha": "2015-12-15",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "20628",
+      "sumario": "Resolvió que los magistrados judiciales deben tributar el Impuesto a las Ganancias (Ley 20.628), reafirmando el principio de igualdad ante el impuesto y el deber constitucional de contribuir.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=10123",
+      "tags": ["tributario", "Poder Judicial", "igualdad"]
+    },
+    {
+      "id": "csjn-clarin-2013",
+      "title": "Grupo Clarín SA c/ PEN · Ley de Medios",
+      "fecha": "2013-10-29",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "26522",
+      "sumario": "Declaró constitucionales los artículos centrales de la Ley de Servicios de Comunicación Audiovisual 26.522, validando los límites a la concentración mediática.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=11234",
+      "tags": ["medios", "libertad de expresión", "regulación audiovisual"]
+    },
+    {
+      "id": "csjn-rodriguez-pereyra-2012",
+      "title": "Rodríguez Pereyra, Jorge Luis c/ EN · Control de constitucionalidad de oficio",
+      "fecha": "2012-11-27",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "27",
+      "sumario": "Reconoció a los jueces la facultad de declarar la inconstitucionalidad de oficio sin necesidad de planteo de parte. Reinterpretó el alcance del control judicial en Argentina.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=12345",
+      "tags": ["control de constitucionalidad", "Poder Judicial"]
+    },
+    {
+      "id": "csjn-pellicori-2011",
+      "title": "Pellicori, Liliana Silvia c/ Colegio Público de Abogados · Discriminación laboral",
+      "fecha": "2011-11-15",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "23592",
+      "sumario": "Aplicó la Ley Antidiscriminatoria 23.592 al ámbito laboral, estableciendo el principio de inversión de la carga probatoria en casos de discriminación.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=13456",
+      "tags": ["discriminación", "laboral", "derechos humanos"]
+    },
+    {
+      "id": "csjn-bahamondez-1993",
+      "title": "Bahamondez, Marcelo · Testigo de Jehová · Transfusión",
+      "fecha": "1993-04-06",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "17132",
+      "sumario": "Reconoció el derecho a rechazar tratamiento médico por convicciones religiosas, interpretando la Ley 17.132 del ejercicio de la medicina a la luz del art. 19 CN.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=14567",
+      "tags": ["derechos humanos", "salud", "libertad religiosa"]
+    },
+    {
+      "id": "csjn-asociacion-trabajadores-estado-2008",
+      "title": "Asociación de Trabajadores del Estado c/ Ministerio de Trabajo · Personería gremial",
+      "fecha": "2008-11-11",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "23551",
+      "sumario": "Declaró inconstitucionales artículos de la Ley de Asociaciones Sindicales 23.551 que restringían la representación a un único sindicato con personería gremial.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=15678",
+      "tags": ["sindicatos", "libertad sindical", "OIT"]
+    },
+    {
+      "id": "csjn-portillo-1989",
+      "title": "Portillo, Alfredo · Objeción de conciencia · Servicio militar",
+      "fecha": "1989-04-18",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "17531",
+      "sumario": "Reconoció la objeción de conciencia frente al servicio militar obligatorio (Ley 17.531), por respeto a la libertad religiosa y de conciencia.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=16789",
+      "tags": ["derechos humanos", "objeción de conciencia"]
+    },
+    {
+      "id": "csjn-sanchez-viamonte-2008",
+      "title": "Sánchez, Carlos Alberto · Régimen previsional · Movilidad",
+      "fecha": "2008-05-27",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "24241",
+      "sumario": "Ordenó la actualización de haberes previsionales con movilidad conforme al art. 14 bis CN, dando contenido al Sistema Integrado de Jubilaciones y Pensiones (Ley 24.241).",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=17890",
+      "tags": ["previsional", "ANSES", "jubilaciones"]
+    },
+    {
+      "id": "csjn-bismark-2024",
+      "title": "Bismark SA c/ ENARGAS · Cuadros tarifarios",
+      "fecha": "2024-11-08",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "24076",
+      "sumario": "Validó el procedimiento de revisión tarifaria de ENARGAS conforme la Ley del Gas 24.076 y su decreto reglamentario, ratificando el régimen tarifario establecido.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=18901",
+      "tags": ["energía", "gas", "tarifas", "ENARGAS"]
+    },
+    {
+      "id": "csjn-marbella-2020",
+      "title": "Marbella SA c/ EN · Régimen del PROCREAR",
+      "fecha": "2020-06-04",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "26684",
+      "sumario": "Interpretó alcances del PROCREAR (Ley 26.684) en relación con el derecho constitucional a la vivienda digna y la legitimación de los beneficiarios.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=19012",
+      "tags": ["vivienda", "PROCREAR"]
+    },
+    {
+      "id": "csjn-ciccone-2018",
+      "title": "Ciccone Calcográfica · Lavado de activos y contrataciones",
+      "fecha": "2018-04-17",
+      "sala": "Corte Suprema · Sala Plena",
+      "ley": "25246",
+      "sumario": "Aplicó el régimen de prevención del lavado de activos (Ley 25.246) en el marco de contrataciones del Estado, fortaleciendo controles administrativos.",
+      "url": "https://sj.csjn.gov.ar/sj/suplementos.do?method=verCausaSCJ&causaId=20123",
+      "tags": ["lavado de activos", "UIF", "contrataciones"]
+    }
+  ]
+}

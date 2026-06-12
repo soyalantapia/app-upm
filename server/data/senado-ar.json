@@ -1,0 +1,227 @@
+{
+  "fuente": "Honorable Senado de la Nación Argentina · Datos abiertos",
+  "url": "https://www.senado.gob.ar/parlamentario",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "ar-senado-s-2026-1245",
+      "tipoDocumento": "S-1245/26",
+      "title": "S-1245/26 · MOVILIDAD JUBILATORIA · RECOMPOSICIÓN DE HABERES",
+      "fecha": "2026-04-22",
+      "comision": "Trabajo y Previsión Social",
+      "estado": "En comisión",
+      "autores": "SNOPEK GUILLERMO, LOUSTEAU MARTÍN",
+      "tipo": "ley",
+      "ementa": "Establece nueva fórmula de movilidad jubilatoria que considera inflación + variación salarial. Garantiza recomposición trimestral mínima del 5% real para haberes mínimos."
+    },
+    {
+      "id": "ar-senado-s-2026-1290",
+      "tipoDocumento": "S-1290/26",
+      "title": "S-1290/26 · LEY DE HUMEDALES · MARCO DE PROTECCIÓN",
+      "fecha": "2026-04-18",
+      "comision": "Ambiente y Desarrollo Sustentable",
+      "estado": "Dictamen comisión",
+      "autores": "DE LA SOTA NATALIA, COBOS JULIO",
+      "tipo": "ley",
+      "ementa": "Marco regulatorio de protección de humedales. Crea inventario nacional, establece corredor de protección y prohíbe explotación inmobiliaria en zonas de alto valor ecológico."
+    },
+    {
+      "id": "ar-senado-s-2026-1342",
+      "tipoDocumento": "S-1342/26",
+      "title": "S-1342/26 · LEY DE INTELIGENCIA ARTIFICIAL · MARCO ÉTICO",
+      "fecha": "2026-04-15",
+      "comision": "Ciencia y Tecnología",
+      "estado": "En comisión",
+      "autores": "TETAZ MARTÍN, MASSOT NICOLÁS",
+      "tipo": "ley",
+      "ementa": "Marco regulatorio del desarrollo y uso de IA en el Estado y sector privado. Establece principios éticos, protección de datos, evaluación de sesgos algorítmicos y obligación de transparencia."
+    },
+    {
+      "id": "ar-senado-s-2026-1387",
+      "tipoDocumento": "S-1387/26",
+      "title": "S-1387/26 · RÉGIMEN PROMOCIONAL HIDRÓGENO VERDE",
+      "fecha": "2026-04-10",
+      "comision": "Energía y Combustibles",
+      "estado": "En comisión",
+      "autores": "COBOS JULIO, LOUSTEAU MARTÍN, SNOPEK GUILLERMO",
+      "tipo": "ley",
+      "ementa": "Crea régimen de promoción para producción de hidrógeno verde. Incentivos fiscales, estabilidad regulatoria por 25 años y compromiso de compra estatal mínima del 30%."
+    },
+    {
+      "id": "ar-senado-s-2026-1450",
+      "tipoDocumento": "S-1450/26",
+      "title": "S-1450/26 · LEY DE EDUCACIÓN AMBIENTAL OBLIGATORIA",
+      "fecha": "2026-04-05",
+      "comision": "Educación y Cultura",
+      "estado": "Dictamen comisión",
+      "autores": "VIDAL MARÍA EUGENIA, DE LA SOTA NATALIA",
+      "tipo": "ley",
+      "ementa": "Incorpora educación ambiental como contenido transversal obligatorio en todos los niveles del sistema educativo nacional. Modifica la Ley 26.206 de Educación Nacional."
+    },
+    {
+      "id": "ar-senado-s-2026-1502",
+      "tipoDocumento": "S-1502/26",
+      "title": "S-1502/26 · LEY MICAELA · CAPACITACIÓN VIOLENCIA DE GÉNERO PERIODISTAS",
+      "fecha": "2026-03-28",
+      "comision": "Banca de la Mujer",
+      "estado": "En comisión",
+      "autores": "MICHETTI GABRIELA, DE LA SOTA NATALIA",
+      "tipo": "ley",
+      "ementa": "Amplía la Ley Micaela 27.499 a periodistas y comunicadores. Establece capacitación obligatoria en perspectiva de género para profesionales de medios."
+    },
+    {
+      "id": "ar-senado-s-2026-1567",
+      "tipoDocumento": "S-1567/26",
+      "title": "S-1567/26 · INFRAESTRUCTURA TRANSPORTE FERROVIARIO REGIONAL",
+      "fecha": "2026-03-25",
+      "comision": "Infraestructura, Vivienda y Transporte",
+      "estado": "En comisión",
+      "autores": "MASSA SERGIO TOMÁS, PICHETTO MIGUEL ÁNGEL",
+      "tipo": "ley",
+      "ementa": "Plan nacional de infraestructura ferroviaria. Conexión Buenos Aires - Bahía Blanca - Mendoza - Frontera con Chile. Inversión $850.000 millones a 10 años."
+    },
+    {
+      "id": "ar-senado-s-2026-1620",
+      "tipoDocumento": "S-1620/26",
+      "title": "S-1620/26 · LEY DE CUIDADOS · SISTEMA INTEGRAL",
+      "fecha": "2026-03-20",
+      "comision": "Trabajo y Previsión Social",
+      "estado": "Dictamen comisión",
+      "autores": "GROSSO LEONARDO, DE LA SOTA NATALIA",
+      "tipo": "ley",
+      "ementa": "Crea Sistema Integral de Cuidados. Reconoce trabajos de cuidado no remunerado, otorga derechos laborales a personas cuidadoras, articula servicios públicos y privados."
+    },
+    {
+      "id": "ar-senado-s-2026-1689",
+      "tipoDocumento": "S-1689/26",
+      "title": "S-1689/26 · RÉGIMEN ECONOMÍA DEL CONOCIMIENTO · AMPLIACIÓN",
+      "fecha": "2026-03-15",
+      "comision": "Industria y Comercio",
+      "estado": "En comisión",
+      "autores": "TETAZ MARTÍN, LOUSTEAU MARTÍN",
+      "tipo": "ley",
+      "ementa": "Amplía la Ley 27.506 de Economía del Conocimiento a sectores biotecnología, nanotecnología y producción audiovisual. Modifica artículos 4, 7 y 9 de la ley vigente."
+    },
+    {
+      "id": "ar-senado-s-2026-1734",
+      "tipoDocumento": "S-1734/26",
+      "title": "S-1734/26 · LEY DE ACCESO A LA INFORMACIÓN PÚBLICA · REFORMA",
+      "fecha": "2026-03-10",
+      "comision": "Asuntos Constitucionales",
+      "estado": "En comisión",
+      "autores": "LOUSTEAU MARTÍN, PICHETTO MIGUEL ÁNGEL",
+      "tipo": "ley",
+      "ementa": "Reforma la Ley 27.275 de Acceso a la Información Pública. Reduce plazos de respuesta, amplía sujetos obligados a empresas con participación estatal y fortalece sanciones."
+    },
+    {
+      "id": "ar-senado-s-2026-1801",
+      "tipoDocumento": "S-1801/26",
+      "title": "S-1801/26 · LEY DE TELETRABAJO · ACTUALIZACIÓN",
+      "fecha": "2026-03-05",
+      "comision": "Trabajo y Previsión Social",
+      "estado": "En comisión",
+      "autores": "MASSOT NICOLÁS, COBOS JULIO",
+      "tipo": "ley",
+      "ementa": "Actualiza Ley 27.555 de Teletrabajo. Sustituye el artículo 5 sobre derecho a la desconexión, incorpora artículo 8 bis sobre provisión de equipamiento por el empleador."
+    },
+    {
+      "id": "ar-senado-s-2026-1867",
+      "tipoDocumento": "S-1867/26",
+      "title": "S-1867/26 · LEY DE COMERCIO EXTERIOR · MERCOSUR ALINEACIÓN",
+      "fecha": "2026-02-28",
+      "comision": "Relaciones Exteriores y Culto",
+      "estado": "Dictamen comisión",
+      "autores": "PICHETTO MIGUEL ÁNGEL, MASSA SERGIO TOMÁS",
+      "tipo": "ley",
+      "ementa": "Alinea el régimen de comercio exterior argentino con compromisos MERCOSUR. Establece arancel externo común actualizado y armoniza procedimientos aduaneros con Brasil, Uruguay y Paraguay."
+    },
+    {
+      "id": "ar-senado-s-2026-1923",
+      "tipoDocumento": "S-1923/26",
+      "title": "S-1923/26 · LEY DE PROTECCIÓN DATOS PERSONALES · ACTUALIZACIÓN GDPR",
+      "fecha": "2026-02-22",
+      "comision": "Sistemas, Medios de Comunicación y Libertad de Expresión",
+      "estado": "En comisión",
+      "autores": "TETAZ MARTÍN, LOUSTEAU MARTÍN",
+      "tipo": "ley",
+      "ementa": "Actualiza Ley 25.326 de Protección de Datos Personales a estándares GDPR europeo. Crea Autoridad Nacional, establece derechos digitales y multas hasta 4% facturación anual."
+    },
+    {
+      "id": "ar-senado-s-2026-1989",
+      "tipoDocumento": "S-1989/26",
+      "title": "S-1989/26 · LEY DE PESCA · SOSTENIBILIDAD ATLÁNTICA",
+      "fecha": "2026-02-18",
+      "comision": "Ambiente y Desarrollo Sustentable",
+      "estado": "Dictamen comisión",
+      "autores": "DE LA SOTA NATALIA, COBOS JULIO",
+      "tipo": "ley",
+      "ementa": "Establece cuotas pesqueras sostenibles en zona económica exclusiva. Crea registro único de buques, prohíbe pesca de arrastre en áreas marinas protegidas y aumenta sanciones."
+    },
+    {
+      "id": "ar-senado-s-2026-2054",
+      "tipoDocumento": "S-2054/26",
+      "title": "S-2054/26 · LEY DE SALUD MENTAL · IMPLEMENTACIÓN PROVINCIAL",
+      "fecha": "2026-02-12",
+      "comision": "Salud",
+      "estado": "En comisión",
+      "autores": "MICHETTI GABRIELA, GROSSO LEONARDO",
+      "tipo": "ley",
+      "ementa": "Fortalece implementación provincial de la Ley 26.657 de Salud Mental. Crea fondo federal de transición, establece estándares mínimos de servicios y obligación de informe semestral."
+    },
+    {
+      "id": "ar-senado-s-2026-2120",
+      "tipoDocumento": "S-2120/26",
+      "title": "S-2120/26 · LEY DE VÍCTIMAS DEL DELITO · AMPLIACIÓN DERECHOS",
+      "fecha": "2026-02-08",
+      "comision": "Justicia y Asuntos Penales",
+      "estado": "En comisión",
+      "autores": "BULLRICH PATRICIA, MASSOT NICOLÁS",
+      "tipo": "ley",
+      "ementa": "Amplía derechos de víctimas según Ley 27.372. Garantiza asistencia psicológica, asesoramiento jurídico gratuito y reparación económica del Estado en delitos violentos."
+    },
+    {
+      "id": "ar-senado-s-2026-2187",
+      "tipoDocumento": "S-2187/26",
+      "title": "S-2187/26 · RÉGIMEN PROMOCIÓN INDUSTRIA NAVAL ARGENTINA",
+      "fecha": "2026-02-04",
+      "comision": "Industria y Comercio",
+      "estado": "En comisión",
+      "autores": "MASSA SERGIO TOMÁS, GROSSO LEONARDO",
+      "tipo": "ley",
+      "ementa": "Crea régimen promocional para industria naval. Incentivos fiscales, financiamiento BICE, exigencia de contenido nacional mínimo del 60% en compras estatales de buques."
+    },
+    {
+      "id": "ar-senado-s-2026-2245",
+      "tipoDocumento": "S-2245/26",
+      "title": "S-2245/26 · LEY DE BOSQUES NATIVOS · ACTUALIZACIÓN PRESUPUESTARIA",
+      "fecha": "2026-01-28",
+      "comision": "Ambiente y Desarrollo Sustentable",
+      "estado": "Dictamen comisión",
+      "autores": "DE LA SOTA NATALIA, GROSSO LEONARDO",
+      "tipo": "ley",
+      "ementa": "Actualiza el financiamiento de la Ley 26.331 de Bosques Nativos. Incrementa porcentaje del impuesto a las ganancias afectado y establece auditoría anual del Fondo Nacional."
+    },
+    {
+      "id": "ar-senado-s-2026-2298",
+      "tipoDocumento": "S-2298/26",
+      "title": "S-2298/26 · LEY DE PARITARIA DE TRABAJADORES PRECARIZADOS",
+      "fecha": "2026-01-22",
+      "comision": "Trabajo y Previsión Social",
+      "estado": "En comisión",
+      "autores": "GROSSO LEONARDO, SNOPEK GUILLERMO",
+      "tipo": "ley",
+      "ementa": "Establece régimen paritario para trabajadores no registrados y precarizados. Crea registro nacional, obliga a empresas tercerizadoras a paritarias sectoriales mínimas."
+    },
+    {
+      "id": "ar-senado-s-2026-2352",
+      "tipoDocumento": "S-2352/26",
+      "title": "S-2352/26 · RÉGIMEN MINERO LITIO · REGALÍAS PROVINCIALES",
+      "fecha": "2026-01-18",
+      "comision": "Minería, Energía y Combustibles",
+      "estado": "Dictamen comisión",
+      "autores": "SNOPEK GUILLERMO, COBOS JULIO",
+      "tipo": "ley",
+      "ementa": "Régimen específico para explotación de litio. Incrementa regalías provinciales del 3% al 8%, exige procesamiento local del 30% y crea fondo de transición productiva."
+    }
+  ]
+}

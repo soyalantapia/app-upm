@@ -1,0 +1,127 @@
+{
+  "fuente": "Comisión Nacional de Valores · Argentina · Resoluciones del mercado de capitales",
+  "url": "https://www.argentina.gob.ar/cnv",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "ar-cnv-2026-1058",
+      "tipoDocumento": "RESGC-2026-1058-APN-DIR#CNV",
+      "title": "RESGC-2026-1058 · NORMAS PARA EMISORAS DE INSTRUMENTOS VERDES Y SOSTENIBLES",
+      "fecha": "2026-05-02",
+      "tipo": "resolucion",
+      "ementa": "Establece nuevas exigencias de divulgación para emisores de bonos verdes, sociales y sustentables. Reporting anual ESG obligatorio, verificación por tercero independiente y registro en el panel de instrumentos verdes del MAE."
+    },
+    {
+      "id": "ar-cnv-2026-1042",
+      "tipoDocumento": "RESGC-2026-1042-APN-DIR#CNV",
+      "title": "RESGC-2026-1042 · REGULACIÓN DE CRIPTOACTIVOS · PSAV",
+      "fecha": "2026-04-25",
+      "tipo": "resolucion",
+      "ementa": "Reglamenta el registro de Proveedores de Servicios de Activos Virtuales (PSAV). Establece requisitos de capital mínimo, custodia, prevención de lavado y reporte trimestral a la Comisión."
+    },
+    {
+      "id": "ar-cnv-2026-1023",
+      "tipoDocumento": "RESGC-2026-1023-APN-DIR#CNV",
+      "title": "RESGC-2026-1023 · OFERTA PÚBLICA SIMPLIFICADA PYMES",
+      "fecha": "2026-04-18",
+      "tipo": "resolucion",
+      "ementa": "Creación del régimen simplificado de oferta pública para PYMES con facturación hasta USD 5 millones. Reducción de costos del 70%, prospectus abreviado y supervisión gradual del primer año."
+    },
+    {
+      "id": "ar-cnv-2026-1009",
+      "tipoDocumento": "RESGC-2026-1009-APN-DIR#CNV",
+      "title": "RESGC-2026-1009 · GOBIERNO CORPORATIVO · DIRECTORES INDEPENDIENTES",
+      "fecha": "2026-04-10",
+      "tipo": "resolucion",
+      "ementa": "Eleva el mínimo de directores independientes en sociedades cotizantes del 33% al 40% del directorio. Define criterios estrictos de independencia (5 años sin vínculo con accionistas controlantes)."
+    },
+    {
+      "id": "ar-cnv-2026-987",
+      "tipoDocumento": "RESGC-2026-987-APN-DIR#CNV",
+      "title": "RESGC-2026-987 · FONDOS COMUNES DE INVERSIÓN CERRADOS · INMOBILIARIOS",
+      "fecha": "2026-04-02",
+      "tipo": "resolucion",
+      "ementa": "Régimen específico para Fondos Comunes de Inversión Cerrados con cartera inmobiliaria. Diversificación mínima 80% en activos productivos, tasación independiente semestral y plan de liquidez."
+    },
+    {
+      "id": "ar-cnv-2026-965",
+      "tipoDocumento": "RESGC-2026-965-APN-DIR#CNV",
+      "title": "RESGC-2026-965 · INTELIGENCIA ARTIFICIAL EN TRADING · TRANSPARENCIA ALGORÍTMICA",
+      "fecha": "2026-03-28",
+      "tipo": "resolucion",
+      "ementa": "Establece obligaciones para entidades que utilicen algoritmos de IA en operaciones bursátiles. Registro del modelo, auditoría de sesgos, kill switch obligatorio y reporte de fallos al supervisor."
+    },
+    {
+      "id": "ar-cnv-2026-942",
+      "tipoDocumento": "RESGC-2026-942-APN-DIR#CNV",
+      "title": "RESGC-2026-942 · INSIDER TRADING · ENDURECIMIENTO SANCIONES",
+      "fecha": "2026-03-20",
+      "tipo": "resolucion",
+      "ementa": "Endurecimiento de sanciones por uso indebido de información privilegiada. Multas hasta el triple del beneficio obtenido, inhabilitación por 10 años y reporte automático a fiscalía penal."
+    },
+    {
+      "id": "ar-cnv-2026-918",
+      "tipoDocumento": "RESGC-2026-918-APN-DIR#CNV",
+      "title": "RESGC-2026-918 · MERCADO INTEGRADO MERCOSUR · INSCRIPCIÓN AUTOMÁTICA",
+      "fecha": "2026-03-12",
+      "tipo": "resolucion",
+      "ementa": "Reglamenta el reconocimiento mutuo de prospectus entre CNV (Argentina), CVM (Brasil), BCU (Uruguay) y CNV (Paraguay). Reduce a 30 días la inscripción de emisores ya autorizados en otro país miembro."
+    },
+    {
+      "id": "ar-cnv-2026-892",
+      "tipoDocumento": "RESGC-2026-892-APN-DIR#CNV",
+      "title": "RESGC-2026-892 · TOKEN DE ACTIVOS REALES (RWA) · MARCO REGULATORIO",
+      "fecha": "2026-03-05",
+      "tipo": "resolucion",
+      "ementa": "Creación del marco regulatorio para tokens respaldados por activos reales (real estate, commodities, deuda). Requisitos de custodia del subyacente, oferta pública digital y registro en RUC-CNV."
+    },
+    {
+      "id": "ar-cnv-2026-871",
+      "tipoDocumento": "RESGC-2026-871-APN-DIR#CNV",
+      "title": "RESGC-2026-871 · PROTECCIÓN AL INVERSOR MINORISTA · ASESORÍA FINANCIERA",
+      "fecha": "2026-02-26",
+      "tipo": "resolucion",
+      "ementa": "Modifica el régimen de asesores financieros. Establece test de idoneidad obligatorio, registro público de comisiones percibidas y limitaciones a la venta de productos complejos a inversores minoristas."
+    },
+    {
+      "id": "ar-cnv-2026-848",
+      "tipoDocumento": "RESGC-2026-848-APN-DIR#CNV",
+      "title": "RESGC-2026-848 · CIBERSEGURIDAD · ENTES BURSÁTILES",
+      "fecha": "2026-02-18",
+      "tipo": "resolucion",
+      "ementa": "Estándares mínimos de ciberseguridad para mercados, agentes de bolsa y depositarios. Test de penetración anual obligatorio, planes de contingencia y reporte de incidentes en 24 horas."
+    },
+    {
+      "id": "ar-cnv-2026-825",
+      "tipoDocumento": "RESGC-2026-825-APN-DIR#CNV",
+      "title": "RESGC-2026-825 · OBLIGACIONES NEGOCIABLES SIMPLES · LÍMITES",
+      "fecha": "2026-02-10",
+      "tipo": "resolucion",
+      "ementa": "Eleva el monto máximo de las ON Simples sin oferta pública a USD 10 millones. Mantiene exigencia de auditoría externa y restricción de circulación entre inversores calificados únicamente."
+    },
+    {
+      "id": "ar-cnv-2026-802",
+      "tipoDocumento": "RESGC-2026-802-APN-DIR#CNV",
+      "title": "RESGC-2026-802 · TRANSPARENCIA EN HONORARIOS DE FONDOS",
+      "fecha": "2026-02-02",
+      "tipo": "resolucion",
+      "ementa": "Obligación de divulgar la totalidad de costos (comisiones, gastos, retrocesiones) de Fondos Comunes en porcentaje TER. Comparación obligatoria con benchmarks del mercado."
+    },
+    {
+      "id": "ar-cnv-2026-778",
+      "tipoDocumento": "RESGC-2026-778-APN-DIR#CNV",
+      "title": "RESGC-2026-778 · FACTURAS DE CRÉDITO ELECTRÓNICAS · PYMES",
+      "fecha": "2026-01-26",
+      "tipo": "resolucion",
+      "ementa": "Reglamentación operativa de la negociación de Facturas de Crédito Electrónicas en el mercado de capitales. Acortamiento del proceso de cobro de PYMES, reducción de tasas y simplificación documental."
+    },
+    {
+      "id": "ar-cnv-2026-752",
+      "tipoDocumento": "RESGC-2026-752-APN-DIR#CNV",
+      "title": "RESGC-2026-752 · BONOS VINCULADOS A LA SOSTENIBILIDAD (SLB)",
+      "fecha": "2026-01-18",
+      "tipo": "resolucion",
+      "ementa": "Régimen de Bonos Vinculados a la Sostenibilidad. La tasa varía según el cumplimiento de KPIs ESG verificables (emisiones GEI, paridad de género, etc.). Reporting trimestral obligatorio."
+    }
+  ]
+}

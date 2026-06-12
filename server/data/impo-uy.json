@@ -1,0 +1,142 @@
+{
+  "fuente": "IMPO Uruguay · Decretos del Poder Ejecutivo vigentes",
+  "url": "https://www.impo.com.uy",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "uy-decreto-2026-128",
+      "tipoDocumento": "Decreto 128/26",
+      "title": "Decreto 128/26 · REGLAMENTACIÓN LEY DE INTELIGENCIA ARTIFICIAL",
+      "fecha": "2026-04-28",
+      "ministerio": "Ministerio de Industria, Energía y Minería",
+      "tipo": "decreto",
+      "ementa": "Reglamentación de la Ley 20.388 de Inteligencia Artificial. Establece organismos competentes, plazos de adecuación para entes públicos (180 días) y privados (1 año), y procedimientos de evaluación de algoritmos."
+    },
+    {
+      "id": "uy-decreto-2026-152",
+      "tipoDocumento": "Decreto 152/26",
+      "title": "Decreto 152/26 · TARIFAS DE ENERGÍA ELÉCTRICA · ACTUALIZACIÓN",
+      "fecha": "2026-04-22",
+      "ministerio": "Ministerio de Industria, Energía y Minería",
+      "tipo": "decreto",
+      "ementa": "Aprobación de nueva estructura tarifaria de UTE para el período mayo-octubre 2026. Establece tarifa social con descuento del 40% para hogares con consumo inferior a 100 kWh mensuales."
+    },
+    {
+      "id": "uy-decreto-2026-167",
+      "tipoDocumento": "Decreto 167/26",
+      "title": "Decreto 167/26 · RÉGIMEN ESPECIAL ZONAS FRONTERIZAS",
+      "fecha": "2026-04-15",
+      "ministerio": "Ministerio de Economía y Finanzas",
+      "tipo": "decreto",
+      "ementa": "Reglamenta la Ley 20.419 sobre régimen especial de comercio de frontera. Define las zonas francas comerciales, productos exentos del IVA y procedimientos aduaneros simplificados con Argentina y Brasil."
+    },
+    {
+      "id": "uy-decreto-2026-189",
+      "tipoDocumento": "Decreto 189/26",
+      "title": "Decreto 189/26 · CONVENIO COLECTIVO LABORAL · ATCO",
+      "fecha": "2026-04-10",
+      "ministerio": "Ministerio de Trabajo y Seguridad Social",
+      "tipo": "decreto",
+      "ementa": "Homologación del convenio colectivo de trabajadores de comercio (ATCO) para el período 2026-2028. Incremento salarial del 12% anual + ajuste por inflación, y nuevo régimen de licencias por cuidados."
+    },
+    {
+      "id": "uy-decreto-2026-203",
+      "tipoDocumento": "Decreto 203/26",
+      "title": "Decreto 203/26 · PROTECCIÓN DE DATOS PERSONALES · SECTOR FINANCIERO",
+      "fecha": "2026-04-05",
+      "ministerio": "Presidencia de la República",
+      "tipo": "decreto",
+      "ementa": "Adecuación del sector financiero uruguayo a la Ley 18.331 de Protección de Datos. Establece obligaciones de auditoría anual, designación de DPO en bancos e instituciones financieras."
+    },
+    {
+      "id": "uy-decreto-2026-225",
+      "tipoDocumento": "Decreto 225/26",
+      "title": "Decreto 225/26 · BENEFICIOS FISCALES INDUSTRIA DEL CONOCIMIENTO",
+      "fecha": "2026-03-28",
+      "ministerio": "Ministerio de Economía y Finanzas",
+      "tipo": "decreto",
+      "ementa": "Beneficios fiscales para empresas del software, biotecnología y nanotecnología. Exoneración total del Impuesto a las Rentas (IRAE) por 7 años para empresas que exporten más del 70% de su producción."
+    },
+    {
+      "id": "uy-decreto-2026-247",
+      "tipoDocumento": "Decreto 247/26",
+      "title": "Decreto 247/26 · POLÍTICA NACIONAL DE TRANSICIÓN ENERGÉTICA",
+      "fecha": "2026-03-22",
+      "ministerio": "Ministerio de Industria, Energía y Minería",
+      "tipo": "decreto",
+      "ementa": "Aprobación del Plan Nacional de Transición Energética 2026-2040. Meta: 100% generación renovable en matriz eléctrica para 2030, electrificación del transporte y producción de hidrógeno verde."
+    },
+    {
+      "id": "uy-decreto-2026-265",
+      "tipoDocumento": "Decreto 265/26",
+      "title": "Decreto 265/26 · LEY DE EDUCACIÓN · REFORMA REGLAMENTARIA",
+      "fecha": "2026-03-18",
+      "ministerio": "Ministerio de Educación y Cultura",
+      "tipo": "decreto",
+      "ementa": "Reforma del decreto reglamentario de la Ley General de Educación 18.437. Modifica el artículo 12 sobre formación docente y artículo 28 sobre evaluación de aprendizajes."
+    },
+    {
+      "id": "uy-decreto-2026-289",
+      "tipoDocumento": "Decreto 289/26",
+      "title": "Decreto 289/26 · CRÉDITOS BLANDOS PARA PYMES EXPORTADORAS",
+      "fecha": "2026-03-12",
+      "ministerio": "Ministerio de Industria, Energía y Minería",
+      "tipo": "decreto",
+      "ementa": "Línea de financiamiento del BROU para PYMES exportadoras. Tasas subsidiadas del 4% anual a 10 años para inversiones en capital de trabajo, equipos y certificaciones de calidad."
+    },
+    {
+      "id": "uy-decreto-2026-312",
+      "tipoDocumento": "Decreto 312/26",
+      "title": "Decreto 312/26 · POLÍTICA NACIONAL DE CUIDADOS · SISTEMA UNIFICADO",
+      "fecha": "2026-03-08",
+      "ministerio": "Ministerio de Desarrollo Social",
+      "tipo": "decreto",
+      "ementa": "Implementación del Sistema Nacional Integrado de Cuidados. Servicios de cuidado infantil, personas mayores y con discapacidad. Asignación presupuestaria de USD 80 millones anuales."
+    },
+    {
+      "id": "uy-decreto-2026-334",
+      "tipoDocumento": "Decreto 334/26",
+      "title": "Decreto 334/26 · MERCOSUR · ARANCEL EXTERNO COMÚN ACTUALIZADO",
+      "fecha": "2026-03-02",
+      "ministerio": "Ministerio de Relaciones Exteriores",
+      "tipo": "decreto",
+      "ementa": "Adecuación al nuevo Arancel Externo Común del MERCOSUR vigente desde abril 2026. Modificaciones en posiciones arancelarias del Capítulo 84 (maquinaria) y Capítulo 85 (electrónica)."
+    },
+    {
+      "id": "uy-decreto-2026-355",
+      "tipoDocumento": "Decreto 355/26",
+      "title": "Decreto 355/26 · SALUD MENTAL · IMPLEMENTACIÓN LEY 19.529",
+      "fecha": "2026-02-26",
+      "ministerio": "Ministerio de Salud Pública",
+      "tipo": "decreto",
+      "ementa": "Reglamentación de la Ley de Salud Mental 19.529. Crea Red de Servicios Comunitarios, establece estándares mínimos en hospitales públicos y plan de desinstitucionalización a 5 años."
+    },
+    {
+      "id": "uy-decreto-2026-378",
+      "tipoDocumento": "Decreto 378/26",
+      "title": "Decreto 378/26 · PESCA INDUSTRIAL · CUOTAS SOSTENIBLES",
+      "fecha": "2026-02-20",
+      "ministerio": "Ministerio de Ganadería, Agricultura y Pesca",
+      "tipo": "decreto",
+      "ementa": "Establece cuotas anuales de pesca por especie en aguas uruguayas. Reduce captura de merluza en 15% por agotamiento del recurso, crea zona de veda en mar territorial sur."
+    },
+    {
+      "id": "uy-decreto-2026-401",
+      "tipoDocumento": "Decreto 401/26",
+      "title": "Decreto 401/26 · TURISMO RECEPTIVO · INCENTIVOS TEMPORADA ALTA",
+      "fecha": "2026-02-15",
+      "ministerio": "Ministerio de Turismo",
+      "tipo": "decreto",
+      "ementa": "Beneficios para hoteles, restaurantes y turismo en Punta del Este, Colonia y Salto. Reducción IVA al 9% para servicios turísticos durante temporada alta diciembre-marzo."
+    },
+    {
+      "id": "uy-decreto-2026-423",
+      "tipoDocumento": "Decreto 423/26",
+      "title": "Decreto 423/26 · DESARROLLO SOSTENIBLE · ZONAS COSTERAS",
+      "fecha": "2026-02-08",
+      "ministerio": "Ministerio de Vivienda y Ordenamiento Territorial",
+      "tipo": "decreto",
+      "ementa": "Plan de manejo integrado de zonas costeras del Uruguay. Restricciones a construcción en faja costera de 250 metros, plan de adaptación al cambio climático para Maldonado y Rocha."
+    }
+  ]
+}

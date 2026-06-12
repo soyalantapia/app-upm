@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import compress from '@fastify/compress'
 import cors from '@fastify/cors'
 import type { Config } from './config.js'
 import type { Db } from './db/client.js'
@@ -11,6 +12,9 @@ import { assistantRoutes } from './routes/assistant.js'
 // build del server exportable (tests usan app.inject() sin levantar puerto)
 export async function buildApp(config: Config, db: Db) {
   const app = Fastify({ logger: config.isProd ? true : { level: 'warn' } })
+
+  // gzip/brotli: /feed pesa ~1.3MB en JSON plano → ~10x menos comprimido
+  await app.register(compress, { global: true })
 
   await app.register(cors, {
     origin: config.allowedOrigins,

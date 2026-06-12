@@ -15,10 +15,12 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sync-data": "rm -rf data && cp -r ../client/public/data ./data"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@fastify/compress": "^9.0.0",
     "@fastify/cors": "^10.0.1",
     "drizzle-orm": "^0.38.3",
     "fastify": "^5.2.0",

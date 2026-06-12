@@ -1,0 +1,182 @@
+{
+  "fuente": "Datos abiertos · Cámara de Diputados AR + Senado AR + Câmara BR + Parlamento UY",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "ar-massa-sergio",
+      "name": "MASSA SERGIO TOMÁS",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "Unión por la Patria",
+      "bloque": "Frente Renovador",
+      "provincia": "Buenos Aires",
+      "bio": "Diputado nacional. Ex Ministro de Economía y ex Presidente de la Cámara de Diputados. Autor de leyes sobre economía, tributación y desarrollo productivo."
+    },
+    {
+      "id": "ar-bullrich-patricia",
+      "name": "BULLRICH PATRICIA",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "PRO",
+      "bloque": "Juntos por el Cambio",
+      "provincia": "CABA",
+      "bio": "Ministra de Seguridad. Ex diputada nacional con trabajo en agenda de seguridad y orden público."
+    },
+    {
+      "id": "ar-michetti-gabriela",
+      "name": "MICHETTI GABRIELA",
+      "country": "AR",
+      "camara": "Senadores",
+      "partido": "PRO",
+      "bloque": "Juntos por el Cambio",
+      "provincia": "CABA",
+      "bio": "Ex Vicepresidenta. Senadora nacional con agenda de discapacidad e inclusión."
+    },
+    {
+      "id": "ar-vidal-maria-eugenia",
+      "name": "VIDAL MARÍA EUGENIA",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "PRO",
+      "bloque": "Juntos por el Cambio",
+      "provincia": "CABA",
+      "bio": "Ex Gobernadora bonaerense. Diputada nacional con foco en política social y educativa."
+    },
+    {
+      "id": "ar-pichetto-miguel",
+      "name": "PICHETTO MIGUEL ÁNGEL",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "Hacemos Coalición Federal",
+      "bloque": "Encuentro Federal",
+      "provincia": "Río Negro",
+      "bio": "Veterano legislador. Auditor General de la Nación. Especialista en derecho parlamentario y federalismo."
+    },
+    {
+      "id": "ar-de-la-sota-natalia",
+      "name": "DE LA SOTA NATALIA",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "Hacemos Coalición Federal",
+      "bloque": "Córdoba Federal",
+      "provincia": "Córdoba",
+      "bio": "Diputada nacional cordobesa. Activa en agenda federal, productiva y social."
+    },
+    {
+      "id": "ar-tetaz-martin",
+      "name": "TETAZ MARTÍN",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "Evolución Radical",
+      "bloque": "UCR",
+      "provincia": "CABA",
+      "bio": "Economista y diputado nacional. Foco en presupuesto, política fiscal y modernización del Estado."
+    },
+    {
+      "id": "ar-grosso-leo",
+      "name": "GROSSO LEONARDO",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "Unión por la Patria",
+      "bloque": "Frente Patria Grande",
+      "provincia": "Buenos Aires",
+      "bio": "Diputado nacional. Foco en derechos humanos, vivienda, movimientos sociales y economía popular."
+    },
+    {
+      "id": "ar-cobos-julio",
+      "name": "COBOS JULIO",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "UCR",
+      "bloque": "Juntos por el Cambio",
+      "provincia": "Mendoza",
+      "bio": "Ex Vicepresidente. Senador y diputado nacional. Agenda energética, productiva y federal."
+    },
+    {
+      "id": "ar-lousteau-martin",
+      "name": "LOUSTEAU MARTÍN",
+      "country": "AR",
+      "camara": "Senadores",
+      "partido": "Evolución Radical",
+      "bloque": "UCR",
+      "provincia": "CABA",
+      "bio": "Senador nacional. Economista. Ex Embajador en EEUU y ex Ministro de Economía bonaerense."
+    },
+    {
+      "id": "ar-snopek-guillermo",
+      "name": "SNOPEK GUILLERMO",
+      "country": "AR",
+      "camara": "Senadores",
+      "partido": "Unión por la Patria",
+      "bloque": "FdT",
+      "provincia": "Jujuy",
+      "bio": "Senador nacional jujeño. Especializado en política tributaria y federalismo fiscal."
+    },
+    {
+      "id": "ar-massot-nicolas",
+      "name": "MASSOT NICOLÁS",
+      "country": "AR",
+      "camara": "Diputados",
+      "partido": "Hacemos Coalición Federal",
+      "bloque": "Encuentro Federal",
+      "provincia": "Córdoba",
+      "bio": "Diputado nacional. Agenda económica, productiva y de modernización."
+    },
+    {
+      "id": "br-lira-arthur",
+      "name": "Arthur Lira",
+      "country": "BR",
+      "camara": "Câmara",
+      "partido": "PP",
+      "provincia": "Alagoas",
+      "bio": "Ex Presidente de la Câmara dos Deputados. Liderazgo del Centrão brasileño."
+    },
+    {
+      "id": "br-pacheco-rodrigo",
+      "name": "Rodrigo Pacheco",
+      "country": "BR",
+      "camara": "Senado Federal",
+      "partido": "PSD",
+      "provincia": "Minas Gerais",
+      "bio": "Ex Presidente do Senado Federal. Trabajos sobre código penal y reformas estructurales."
+    },
+    {
+      "id": "br-rebelo-aldo",
+      "name": "Aldo Rebelo",
+      "country": "BR",
+      "camara": "Câmara",
+      "partido": "PSB",
+      "provincia": "São Paulo",
+      "bio": "Veterano deputado federal. Ex Presidente da Câmara y ex Ministro."
+    },
+    {
+      "id": "uy-bordaberry-pedro",
+      "name": "Pedro Bordaberry",
+      "country": "UY",
+      "camara": "Senadores",
+      "partido": "Partido Colorado",
+      "provincia": "Montevideo",
+      "bio": "Ex Senador colorado. Trabajo en agenda económica y de relaciones internacionales."
+    },
+    {
+      "id": "uy-topolansky-lucia",
+      "name": "Lucía Topolansky",
+      "country": "UY",
+      "camara": "Senadores",
+      "partido": "Frente Amplio",
+      "bloque": "MPP",
+      "provincia": "Montevideo",
+      "bio": "Ex Vicepresidenta del Uruguay. Senadora del Frente Amplio."
+    },
+    {
+      "id": "uy-mujica-jose",
+      "name": "José Mujica",
+      "country": "UY",
+      "camara": "Senadores",
+      "partido": "Frente Amplio",
+      "bloque": "MPP",
+      "provincia": "Montevideo",
+      "bio": "Ex Presidente del Uruguay. Senador del Frente Amplio."
+    }
+  ]
+}

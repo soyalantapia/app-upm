@@ -5,7 +5,10 @@ import * as schema from './schema.js'
 export type Db = ReturnType<typeof createDb>['db']
 
 export function createDb(databaseUrl: string) {
-  const needsSsl = /railway|rlwy\.net|proxy/.test(databaseUrl) && !/sslmode=disable/.test(databaseUrl)
+  // SSL solo para el proxy público de Railway; la red interna
+  // (postgres.railway.internal) NO soporta SSL.
+  const isInternal = /\.railway\.internal/.test(databaseUrl)
+  const needsSsl = !isInternal && /rlwy\.net|sslmode=require/.test(databaseUrl) && !/sslmode=disable/.test(databaseUrl)
   const pool = new pg.Pool({
     connectionString: databaseUrl,
     max: 10,

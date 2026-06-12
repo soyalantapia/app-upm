@@ -1,0 +1,103 @@
+{
+  "fuente": "Cámara de Senadores de la República del Paraguay",
+  "url": "https://www.senado.gov.py",
+  "fetchedAt": "2026-05-23T00:00:00Z",
+  "items": [
+    {
+      "id": "senado-py-001",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley que aprueba el Convenio Marco del Corredor Bioceánico Vial Paranacuê",
+      "fecha": "2026-05-20",
+      "comision": "Relaciones Exteriores",
+      "ementa": "Aprueba el Convenio Marco suscripto entre las Repúblicas del Paraguay, Argentina, Brasil y Uruguay sobre el desarrollo del Corredor Bioceánico Vial Paranacuê. Establece el marco institucional del Comité Ejecutivo Intergubernamental, criterios de financiamiento compartido y plazos de implementación para las obras de infraestructura vial necesarias para la conexión entre los puertos del Pacífico y el Atlántico. El corredor tiene una extensión de 4.200 km y conectará los puertos de Antofagasta y Iquique en Chile con Santos en Brasil, atravesando territorio paraguayo por los departamentos de Boquerón y Alto Paraguay."
+    },
+    {
+      "id": "senado-py-002",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Uso Racional y Eficiente de la Energía Eléctrica proveniente de ITAIPU y YACYRETÁ",
+      "fecha": "2026-05-18",
+      "comision": "Energía y Minas",
+      "ementa": "Establece un régimen de uso racional y eficiente de la energía eléctrica generada por las binacionales ITAIPU y YACYRETÁ. Crea el Fondo Nacional de Desarrollo Energético Sostenible (FONDES) con recursos provenientes de la cesión de energía no utilizada. Fija metas de reducción del consumo energético en 15% para el sector público y regula la tarifa social eléctrica para usuarios de bajos ingresos. Establece incentivos fiscales para la instalación de sistemas de energía solar en industrias y comercios."
+    },
+    {
+      "id": "senado-py-003",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 7.345/2026 de Protección de la Cuenca del Río Paraguay y Humedales del Pantanal",
+      "fecha": "2026-05-15",
+      "comision": "Ambiente y Recursos Naturales",
+      "ementa": "Declara de interés nacional y de utilidad pública la protección de la cuenca hidrográfica del Río Paraguay y los humedales del Pantanal en territorio paraguayo. Prohíbe el desmonte, quema y actividades extractivas en una franja de 10 kilómetros a ambas márgenes del río. Crea el Sistema de Áreas Protegidas del Chaco Húmedo y establece el Fondo Ambiental del Pantanal con aportes del Estado y cooperación internacional. La ley responde a compromisos asumidos en el Acuerdo de Escazú y la Agenda 2030 de la ONU."
+    },
+    {
+      "id": "senado-py-004",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Economía del Conocimiento e Industrias Creativas",
+      "fecha": "2026-05-14",
+      "comision": "Hacienda y Presupuesto",
+      "ementa": "Crea el régimen de promoción de la economía del conocimiento, las industrias creativas y la tecnología de la información en la República del Paraguay. Otorga exenciones impositivas del 80% sobre el Impuesto a la Renta Empresarial (IRE) por 10 años a empresas de software, inteligencia artificial, biotecnología y diseño industrial. Establece el Programa Paraguay Innova con financiamiento del BID y el FONACIDE para becas de formación tecnológica. Fomenta la creación de parques tecnológicos en Asunción, Ciudad del Este y Encarnación."
+    },
+    {
+      "id": "senado-py-005",
+      "tipoDocumento": "RESOLUCION",
+      "title": "Resolución del Senado sobre la situación de seguridad en la Triple Frontera y el narcotráfico internacional",
+      "fecha": "2026-05-12",
+      "comision": "Defensa Nacional y Seguridad Interna",
+      "ementa": "El Senado de la República del Paraguay, en el ejercicio de sus facultades constitucionales, resuelve: expresar su preocupación ante el recrudecimiento de las actividades de organizaciones criminales transnacionales en la zona de la Triple Frontera; instar al Poder Ejecutivo a presentar ante el PARLASUR una propuesta de creación de una Agencia Mercosur de Inteligencia Criminal; solicitar la convocatoria de una cumbre de presidentes del Mercosur dedicada exclusivamente a la seguridad regional; y aprobar la adhesión de Paraguay al Tratado Interamericano sobre Crimen Organizado Transnacional."
+    },
+    {
+      "id": "senado-py-006",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Paridad de Género en Listas Electorales y Organismos Públicos",
+      "fecha": "2026-05-10",
+      "comision": "Equidad Social y Género",
+      "ementa": "Establece la obligatoriedad de la paridad de género en la conformación de listas electorales para cargos legislativos nacionales y departamentales, con alternancia entre candidatos de diferente género. Dispone que los cargos de dirección en organismos del Estado, empresas públicas y binacionales deberán estar ocupados en al menos un 40% por mujeres en un plazo de 3 años. Crea el Observatorio Nacional de Género con capacidad de auditoría y sanción. Se enmarca en los compromisos del Paraguay ante la CEDAW y los ODS de la Agenda 2030."
+    },
+    {
+      "id": "senado-py-007",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 7.340/2026 de Modernización del Sistema Aduanero y Facilitación del Comercio Mercosur",
+      "fecha": "2026-05-08",
+      "comision": "Relaciones Exteriores",
+      "ementa": "Aprueba el régimen de modernización del sistema aduanero paraguayo en conformidad con las Directrices de Facilitación del Comercio del Mercosur y la Organización Mundial de Aduanas. Crea la Ventanilla Única de Comercio Exterior (VUCE) que unifica 14 trámites aduaneros en una plataforma digital. Establece el Operador Económico Autorizado (OEA) como categoría especial para empresas exportadoras con historial de cumplimiento. Prevé la creación de zonas aduaneras especiales en los puntos de entrada del corredor bioceánico."
+    },
+    {
+      "id": "senado-py-008",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Regulación de la Soja Transgénica y Agroquímicos en Zonas Rurales",
+      "fecha": "2026-05-06",
+      "comision": "Agricultura y Ganadería",
+      "ementa": "Regula el uso de agroquímicos en cultivos de soja transgénica estableciendo zonas de exclusión de 500 metros alrededor de comunidades campesinas e indígenas, cursos de agua y escuelas rurales. Crea el Registro Nacional de Fumigaciones con geolocalización satelital y notificación obligatoria a las comunidades afectadas con 48 horas de anticipación. Establece sanciones económicas y penales para las infracciones y crea un fondo de compensación para víctimas de contaminación agroquímica. Revisa el paquete tecnológico autorizado para OGM."
+    },
+    {
+      "id": "senado-py-009",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 7.332/2026 de Infraestructura Vial Nacional y Redes de Conectividad Regional",
+      "fecha": "2026-05-02",
+      "comision": "Obras Públicas y Comunicaciones",
+      "ementa": "Aprueba el Plan Nacional de Infraestructura Vial 2026-2030 con una inversión de USD 2.800 millones. Prioriza la pavimentación de 3.200 km de rutas en el Chaco Occidental como parte del eje del Corredor Bioceánico, la construcción del Puente de la Integración sobre el Río Pilcomayo con Argentina y el mejoramiento del corredor Norte-Sur. Establece el Contrato de Concesión Vial por Desempeño como modalidad preferente de contratación con fondos del BID y el CAF. Crea el Fondo de Integración Vial Regional (FIVIR) financiado con peajes."
+    },
+    {
+      "id": "senado-py-010",
+      "tipoDocumento": "DECLARACION",
+      "title": "Declaración del Senado sobre la XLIII Reunión del Consejo del Mercado Común y posición negociadora del Paraguay",
+      "fecha": "2026-04-28",
+      "comision": "Relaciones Exteriores",
+      "ementa": "El Senado de la República instruye al Poder Ejecutivo a sostener en la próxima reunión del CMC la posición paraguaya respecto a: (1) el reconocimiento de la asimetría como principio rector del Mercosur; (2) la eliminación del doble cobro del Arancel Externo Común para bienes de capital importados por Paraguay; (3) la aprobación del protocolo de compras gubernamentales del Mercosur; (4) el inicio de negociaciones del bloque con Canadá y Corea del Sur; y (5) la incorporación de Venezuela al protocolo de Ushuaia II sobre democracia."
+    },
+    {
+      "id": "senado-py-011",
+      "tipoDocumento": "PL",
+      "title": "Proyecto de Ley de Regulación de la Inteligencia Artificial y Protección de Datos Personales",
+      "fecha": "2026-04-25",
+      "comision": "Tecnología",
+      "ementa": "Establece el marco regulatorio para el desarrollo, comercialización y uso de sistemas de inteligencia artificial en el Paraguay. Adopta un enfoque de regulación por niveles de riesgo similar al AI Act europeo. Crea la Autoridad Nacional de Protección de Datos e Inteligencia Artificial (ANPDIA) con autonomía funcional y presupuestaria. Prohíbe el uso de IA para vigilancia masiva, puntuación social y discriminación en servicios esenciales. Regula el uso de deepfakes, la transparencia algorítmica y la responsabilidad civil por daños causados por sistemas de IA."
+    },
+    {
+      "id": "senado-py-012",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 7.321/2026 de Pueblos Indígenas y Territorio: Reconocimiento de Comunidades del Chaco",
+      "fecha": "2026-04-22",
+      "comision": "Derechos Humanos",
+      "ementa": "Reconoce la titularidad de 87.000 hectáreas del Chaco Occidental a las comunidades indígenas ayoreo, nivaclé y qom. Establece el registro de tierras indígenas comunitarias con carácter inembargable e imprescriptible. Crea el Fondo Nacional de Tierras Indígenas con recursos del INFONA para la adquisición de tierras privadas en zonas de conflicto territorial. Ratifica el Convenio 169 de la OIT sobre pueblos indígenas y tribales e incorpora el derecho a la consulta previa, libre e informada como requisito para proyectos de infraestructura en territorios indígenas."
+    }
+  ]
+}

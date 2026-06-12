@@ -33,6 +33,28 @@ const SUGGESTIONS = [
   '¿Qué revisar antes de la sesión?',
 ]
 
+// Backend con LLM real (POST /assistant) si hay API configurada.
+// 503 / error / sin URL → null y el caller cae al flujo local (RAG TF-IDF → patrones).
+const API_URL = (import.meta.env.VITE_UPM_API_URL ?? '').toString().replace(/\/$/, '')
+
+async function tryBackendAssistant(history: ChatMessage[]): Promise<ChatMessage | null> {
+  if (!API_URL) return null
+  try {
+    const res = await fetch(`${API_URL}/assistant`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history }),
+      signal: AbortSignal.timeout(45_000),
+    })
+    if (!res.ok) return null
+    const json = (await res.json()) as { message?: ChatMessage }
+    if (!json.message?.content) return null
+    return json.message
+  } catch {
+    return null
+  }
+}
+
 const CAPABILITIES: { icon: typeof PenLine; label: string; desc: string }[] = [
   { icon: PenLine, label: 'Redactá', desc: 'Discursos, comunicados, mensajes institucionales' },
   { icon: ListChecks, label: 'Prepará', desc: 'Briefs de reunión, preguntas para comisión' },
@@ -105,9 +127,18 @@ export function AssistantPage() {
     const now = Date.now()
     if (now - lastSubmitRef.current < 500) return
     lastSubmitRef.current = now
-    setMessages(prev => [...prev, userMessage(value)])
+    const userMsg = userMessage(value)
+    setMessages(prev => [...prev, userMsg])
     setInput('')
     setThinking(true)
+    // 1) Backend con Claude real (si hay VITE_UPM_API_URL y responde 200)
+    const backendReply = await tryBackendAssistant([...messages, userMsg])
+    if (backendReply) {
+      setMessages(prev => [...prev, backendReply])
+      setThinking(false)
+      return
+    }
+    // 2) Flujo local actual, intacto: RAG TF-IDF → patrones
     try {
       const reply = await generateRAGAnswer(value)
       // Si el RAG retorna 0 sources (sin coincidencias), caer al pattern matcher
