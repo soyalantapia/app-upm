@@ -34,6 +34,8 @@ import { fetchConveniosAR } from './convenios-ar'
 import { fetchCnvAR } from './cnv-ar'
 import { fetchParlasur } from './parlasur'
 import { fetchDefensoriaAR } from './defensoria-ar'
+import { fetchCsjnAR } from './csjn-ar'
+import { fetchLeyesDestacadasAR } from './leyes-destacadas-ar'
 import { fetchTcuBR } from './tcu-br'
 import { fetchCorteConstitucionalColombia } from './corte-constitucional-co'
 import { fetchSentenciasCorteCO } from './sentencias-corte-co'
@@ -153,6 +155,10 @@ type Fetcher = {
 }
 
 const FETCHERS: Fetcher[] = [
+  // AR curadas PRIMERO · ganan el dedup keep-first (datos verificados, títulos
+  // limpios y topics correctos vs. el dump en mayúsculas de otras fuentes).
+  { id: 'leyes-destacadas-ar', label: 'Congreso de la Nación · Leyes Nacionales Destacadas (AR)', country: 'AR', fn: ({ signal }) => fetchLeyesDestacadasAR({ limit: 120, signal }) },
+  { id: 'csjn-ar', label: 'Corte Suprema de Justicia de la Nación · Argentina', country: 'AR', fn: ({ signal }) => fetchCsjnAR({ limit: 30, signal }) },
   { id: 'senado-br', label: 'Senado Federal Brasil', country: 'BR', fn: ({ signal }) => fetchSenadoBR({ limit: 30, signal }) },
   { id: 'camara-br', label: 'Câmara dos Deputados', country: 'BR', fn: ({ signal }) => fetchCamaraProposicoes({ limit: 30, signal }) },
   { id: 'votacoes-camara-br', label: 'Câmara BR · Votaciones recientes', country: 'BR', fn: ({ signal }) => fetchVotacoesCamaraBR({ limit: 20, signal }) },
