@@ -13,6 +13,15 @@ const EnvSchema = z.object({
   STATIC_DATA_BASE: z.string().default('https://soyalantapia.github.io/app-upm/data'),
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.string().default('development'),
+  // Auth real (login por código OTP enviado por email vía SMTP).
+  JWT_TTL: z.string().default('7d'),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  SMTP_FROM: z.string().optional(), // ej. "App UPM <noreply@tudominio.com>"
+  // Allowlist opcional: si está, SOLO estos emails pueden pedir código (coma-separados).
+  ALLOWED_EMAILS: z.string().optional(),
 })
 
 export type Config = ReturnType<typeof loadConfig>
@@ -27,6 +36,11 @@ export function loadConfig() {
   return {
     ...env,
     allowedOrigins: env.ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean),
+    allowedEmails: (env.ALLOWED_EMAILS ?? '')
+      .split(',')
+      .map(s => s.trim().toLowerCase())
+      .filter(Boolean),
+    smtpConfigured: Boolean(env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS),
     isProd: env.NODE_ENV === 'production',
   }
 }

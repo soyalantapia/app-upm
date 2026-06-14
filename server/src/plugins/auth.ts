@@ -3,11 +3,11 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 
 const ALG = 'HS256'
 
-export async function signToken(email: string, secret: string): Promise<string> {
+export async function signToken(email: string, secret: string, ttl = '7d'): Promise<string> {
   return new SignJWT({ sub: email })
     .setProtectedHeader({ alg: ALG })
     .setIssuedAt()
-    .setExpirationTime('30d')
+    .setExpirationTime(ttl)
     .sign(new TextEncoder().encode(secret))
 }
 

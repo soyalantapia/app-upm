@@ -25,7 +25,7 @@ export async function buildApp(config: Config, db: Db) {
 
   healthRoutes(app, db)
   feedRoutes(app, db)
-  authRoutes(app, db, config.JWT_SECRET)
+  authRoutes(app, db, config)
   meRoutes(app, db, config.JWT_SECRET)
   assistantRoutes(app, db, getLlm(config))
 
