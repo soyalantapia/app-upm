@@ -47,6 +47,8 @@ function anthropicLlm(apiKey: string): Llm {
   }
 }
 
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
+
 function geminiLlm(apiKey: string, model: string): Llm {
   const provider = `gemini:${model}`
   return {
@@ -61,13 +63,24 @@ function geminiLlm(apiKey: string, model: string): Llm {
         })),
         generationConfig: { maxOutputTokens: maxTokens, temperature: 0.3 },
       }
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
-        body: JSON.stringify(body),
-      })
-      if (!res.ok) {
-        throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 300)}`)
+      // El free tier devuelve 429 (RESOURCE_EXHAUSTED) de forma intermitente y
+      // 503 cuando el modelo está saturado. Reintentamos con backoff para que el
+      // uso normal (1 pregunta cada varios seg) sea confiable. Respeta retryDelay
+      // si Gemini lo sugiere. Tras agotar reintentos, lanza → ruta 502 → front mock.
+      let res!: Response
+      const BACKOFF = [1500, 4000, 8000]
+      for (let attempt = 0; ; attempt++) {
+        res = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
+          body: JSON.stringify(body),
+        })
+        if (res.ok) break
+        const retriable = res.status === 429 || res.status === 503 || res.status === 500
+        if (!retriable || attempt >= BACKOFF.length) {
+          throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 300)}`)
+        }
+        await sleep(BACKOFF[attempt])
       }
       const json = (await res.json()) as {
         candidates?: { content?: { parts?: { text?: string }[] } }[]
