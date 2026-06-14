@@ -7,6 +7,9 @@ const EnvSchema = z.object({
     .default('https://soyalantapia.github.io,http://localhost:5188,http://127.0.0.1:5188'),
   JWT_SECRET: z.string().min(16, 'JWT_SECRET muy corto (mín 16 chars)'),
   ANTHROPIC_API_KEY: z.string().optional(),
+  // IA gratuita pluggable (free tier). Si no hay ANTHROPIC, se usa Gemini.
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
   STATIC_DATA_BASE: z.string().default('https://soyalantapia.github.io/app-upm/data'),
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.string().default('development'),

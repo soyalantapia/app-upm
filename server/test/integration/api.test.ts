@@ -11,6 +11,8 @@ for (const line of readFileSync(path.resolve(HERE, '../../.env'), 'utf8').split(
   if (m && !process.env[m[1]]) process.env[m[1]] = m[2]
 }
 delete process.env.ANTHROPIC_API_KEY // forzar la rama 503 del asistente
+delete process.env.GEMINI_API_KEY // sin ningún proveedor LLM → 503
+delete process.env.OPENAI_API_KEY
 process.env.SEMANTIC_SEARCH = 'off' // /search en FTS puro durante tests (no cargar el modelo)
 
 const { loadConfig } = await import('../../src/config.js')

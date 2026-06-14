@@ -1,9 +1,9 @@
 import type { FastifyInstance } from 'fastify'
-import Anthropic from '@anthropic-ai/sdk'
 import { sql } from 'drizzle-orm'
 import { z } from 'zod'
 import type { Db } from '../db/client.js'
 import { normas } from '../db/schema.js'
+import type { Llm } from '../llm.js'
 
 const SYSTEM_PROMPT =
   'Sos el asistente legislativo de App UPM para legisladores latinoamericanos. ' +
@@ -24,9 +24,9 @@ const Body = z.object({
   messages: z.array(MessageSchema).min(1),
 })
 
-export function assistantRoutes(app: FastifyInstance, db: Db, anthropicKey: string | undefined) {
+export function assistantRoutes(app: FastifyInstance, db: Db, llm: Llm | null) {
   app.post('/assistant', async (req, reply) => {
-    if (!anthropicKey) {
+    if (!llm) {
       return reply.code(503).send({ error: 'assistant unavailable' })
     }
     const parsed = Body.safeParse(req.body)
@@ -54,17 +54,12 @@ export function assistantRoutes(app: FastifyInstance, db: Db, anthropicKey: stri
       .join('\n\n---\n\n')
 
     try {
-      const client = new Anthropic({ apiKey: anthropicKey })
-      const resp = await client.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
-        system: `${SYSTEM_PROMPT}\n\n## Normas disponibles (contexto)\n\n${contextBlock}`,
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
-      })
-      const content = resp.content
-        .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-        .map(b => b.text)
-        .join('\n')
+      const result = await llm.complete(
+        `${SYSTEM_PROMPT}\n\n## Normas disponibles (contexto)\n\n${contextBlock}`,
+        messages.map(m => ({ role: m.role, content: m.content })),
+        1500,
+      )
+      const content = result.text
 
       // sources: normas del contexto que el modelo efectivamente citó (por id)
       const cited = context.filter(n => content.includes(n.id))
@@ -82,10 +77,11 @@ export function assistantRoutes(app: FastifyInstance, db: Db, anthropicKey: stri
           sources: sourcesOut,
           createdAt: new Date().toISOString(),
         },
-        usage: { input_tokens: resp.usage.input_tokens, output_tokens: resp.usage.output_tokens },
+        usage: result.usage,
+        provider: result.provider,
       }
     } catch (err) {
-      req.log.error({ err }, 'anthropic call failed')
+      req.log.error({ err }, `llm call failed (${llm.provider})`)
       return reply.code(502).send({ error: 'assistant upstream error' })
     }
   })

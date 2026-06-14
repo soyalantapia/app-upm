@@ -8,6 +8,7 @@ import { feedRoutes } from './routes/feed.js'
 import { authRoutes } from './routes/auth.js'
 import { meRoutes } from './routes/me.js'
 import { assistantRoutes } from './routes/assistant.js'
+import { getLlm } from './llm.js'
 
 // build del server exportable (tests usan app.inject() sin levantar puerto)
 export async function buildApp(config: Config, db: Db) {
@@ -26,7 +27,7 @@ export async function buildApp(config: Config, db: Db) {
   feedRoutes(app, db)
   authRoutes(app, db, config.JWT_SECRET)
   meRoutes(app, db, config.JWT_SECRET)
-  assistantRoutes(app, db, config.ANTHROPIC_API_KEY)
+  assistantRoutes(app, db, getLlm(config))
 
   return app
 }
