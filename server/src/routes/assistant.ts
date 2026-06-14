@@ -4,6 +4,13 @@ import { z } from 'zod'
 import type { Db } from '../db/client.js'
 import { normas } from '../db/schema.js'
 import type { Llm } from '../llm.js'
+import { rowToItem, noiseFilter } from './feed.js'
+
+// Intención de RECENCIA: la pregunta es sobre novedades/fecha ("qué salió hoy",
+// "esta semana", "lo último", "novedades", "reciente"). El RAG semántico NO
+// ordena por fecha, así que ante esto traemos también las normas más nuevas.
+const RECENCY_RE =
+  /\b(hoy|ayer|recient\w*|novedad\w*|últim\w*|nuev[oa]s?|de la semana|esta semana|este mes|del? d[ií]a|sali[óo]\w*|salieron|public[óo]\w*|sancion\w*|acab\w* de|al d[ií]a|lo último)\b/i
 
 const SYSTEM_PROMPT =
   'Sos el asistente legislativo de App UPM para legisladores latinoamericanos. ' +
@@ -50,14 +57,33 @@ export function assistantRoutes(app: FastifyInstance, db: Db, llm: Llm | null) {
       .join(' ')
 
     // RAG: top-6 normas relevantes vía búsqueda HÍBRIDA (semántica + FTS).
-    // 6 (no 8) + excerpts recortados → ~3x menos tokens de input por llamada:
-    // más barato/rápido y rinde mucho más el cupo por-minuto del free tier.
+    // 6 (no 8) + excerpts recortados → ~3x menos tokens de input por llamada.
     const { hybridSearch } = await import('../search.js')
     let context = (await hybridSearch(db, retrievalQuery, 6)).items
+
+    // Recencia: si preguntan por novedades/fecha, ANTEPONEMOS las normas más
+    // nuevas por fecha (sin ruido procesal). Así "¿qué salió hoy?" responde con
+    // lo realmente reciente, no con lo semánticamente parecido a "hoy".
+    if (RECENCY_RE.test(retrievalQuery)) {
+      const recentRows = await db
+        .select()
+        .from(normas)
+        .where(noiseFilter)
+        .orderBy(sql`${normas.date} DESC`, sql`case ${normas.relevance} when 'alta' then 0 when 'media' then 1 else 2 end`)
+        .limit(8)
+      const recent = recentRows.map(rowToItem)
+      const seen = new Set<string>()
+      context = [...recent, ...context].filter(n => (seen.has(n.id) ? false : (seen.add(n.id), true))).slice(0, 10)
+    }
+
     if (context.length === 0) {
       // Sin match: dar contexto reciente para no responder en vacío.
-      const recent = await db.select().from(normas).orderBy(sql`${normas.date} DESC`).limit(6)
-      const { rowToItem } = await import('./feed.js')
+      const recent = await db
+        .select()
+        .from(normas)
+        .where(noiseFilter)
+        .orderBy(sql`${normas.date} DESC`)
+        .limit(6)
       context = recent.map(rowToItem)
     }
 
@@ -73,8 +99,9 @@ export function assistantRoutes(app: FastifyInstance, db: Db, llm: Llm | null) {
       .join('\n\n---\n\n')
 
     try {
+      const today = new Date().toISOString().slice(0, 10)
       const result = await llm.complete(
-        `${SYSTEM_PROMPT}\n\n## Normas disponibles (contexto)\n\n${contextBlock}`,
+        `${SYSTEM_PROMPT}\nLa fecha de HOY es ${today}. Cuando pregunten por novedades ("hoy", "esta semana", "lo último"), guiate por el campo Fecha de cada norma y priorizá las más recientes; si ninguna coincide con la fecha pedida, decilo.\n\n## Normas disponibles (contexto)\n\n${contextBlock}`,
         messages.map(m => ({ role: m.role, content: m.content })),
         1500,
       )
