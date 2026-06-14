@@ -1,16 +1,7 @@
 import type { CountryCode, NewsItem } from "../types.js"
-import { fetchSenadoAR } from "./fetchers/senado-ar.js"
-import { fetchDefensoriaAR } from "./fetchers/defensoria-ar.js"
-import { fetchCnvAR } from "./fetchers/cnv-ar.js"
-import { fetchConveniosAR } from "./fetchers/convenios-ar.js"
 import { fetchHcdnArgentina } from "./fetchers/hcdn-ar.js"
 import { fetchExpedientesHCDN } from "./fetchers/expedientes-hcdn.js"
 import { fetchLeyesInfolegArgentina, fetchDecretosInfolegArgentina, fetchDecisionesAdminInfolegArgentina, fetchResolucionesInfolegArgentina, fetchDisposicionesInfolegArgentina, fetchComunicacionesInfolegArgentina, fetchAcordadasInfolegArgentina, fetchDirectivasInfolegArgentina, fetchCircularesInfolegArgentina, fetchMercosurComercioAR, fetchBCRAArgentina, fetchSaludArgentina, fetchEconomiaArgentina, fetchSeguridadArgentina, fetchEnergiaArgentina, fetchComunicacionesARorg } from "./fetchers/infoleg-ar.js"
-import { fetchParlasur } from "./fetchers/parlasur.js"
-import { fetchSenadoPY } from "./fetchers/senado-py.js"
-import { fetchDiputadosPY } from "./fetchers/diputados-py.js"
-import { fetchAsambleaBO } from "./fetchers/asamblea-bo.js"
-import { fetchCongresoCL } from "./fetchers/congreso-cl.js"
 import { fetchImpoUY } from "./fetchers/impo-uy.js"
 import { fetchLeyesUruguay } from "./fetchers/leyes-uy.js"
 import { fetchProyectosColombia, fetchLeyesColombia } from "./fetchers/socrata-co.js"
@@ -47,10 +38,6 @@ export const FETCHERS: IngestFetcher[] = [
   // Live BR (portadas del worker)
   { id: "camara-br", label: "Câmara dos Deputados", country: "BR", fn: () => fetchCamaraBR() },
   { id: "senado-br", label: "Senado Federal Brasil", country: "BR", fn: () => fetchSenadoBR() },
-  { id: "senado-ar", label: "Honorable Senado de la Nación · Argentina", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchSenadoAR(staticBase) },
-  { id: "defensoria-ar", label: "Defensoría del Pueblo · Argentina", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchDefensoriaAR(staticBase) },
-  { id: "cnv-ar", label: "Comisión Nacional de Valores · Argentina", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchCnvAR(staticBase) },
-  { id: "convenios-ar", label: "Ministerio de Trabajo AR · Convenios Colectivos", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchConveniosAR(staticBase) },
   { id: "hcdn-ar", label: "HCDN Argentina · Leyes Nacionales", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchHcdnArgentina(staticBase) },
   { id: "expedientes-hcdn-ar", label: "Cámara de Diputados AR · Expedientes históricos", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchExpedientesHCDN(staticBase) },
   { id: "leyes-infoleg-ar", label: "Argentina · Leyes Nacionales (BO)", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchLeyesInfolegArgentina(staticBase) },
@@ -69,11 +56,6 @@ export const FETCHERS: IngestFetcher[] = [
   { id: "seguridad-ar", label: "Argentina · Seguridad e Interior", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchSeguridadArgentina(staticBase) },
   { id: "energia-ar", label: "Argentina · Energía (Sec. Energía + ENRE/ENARGAS)", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchEnergiaArgentina(staticBase) },
   { id: "enacom-ar", label: "Argentina · ENACOM Comunicaciones", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchComunicacionesARorg(staticBase) },
-  { id: "parlasur", label: "Parlamento del Mercosur (Parlasur) · Actos supranacionales", country: "AR" as CountryCode, fn: ({ staticBase }) => fetchParlasur(staticBase) },
-  { id: "senado-py", label: "Senado de la República del Paraguay", country: "PY" as CountryCode, fn: ({ staticBase }) => fetchSenadoPY(staticBase) },
-  { id: "diputados-py", label: "Cámara de Diputados del Paraguay", country: "PY" as CountryCode, fn: ({ staticBase }) => fetchDiputadosPY(staticBase) },
-  { id: "asamblea-bo", label: "Asamblea Legislativa Plurinacional de Bolivia", country: "BO" as CountryCode, fn: ({ staticBase }) => fetchAsambleaBO(staticBase) },
-  { id: "congreso-cl", label: "Congreso Nacional de Chile (BCN)", country: "CL" as CountryCode, fn: ({ staticBase }) => fetchCongresoCL(staticBase) },
   { id: "impo-uy", label: "IMPO Uruguay · Decretos del Poder Ejecutivo", country: "UY" as CountryCode, fn: ({ staticBase }) => fetchImpoUY(staticBase) },
   { id: "leyes-uy", label: "Leyes Promulgadas Uruguay", country: "UY" as CountryCode, fn: ({ staticBase }) => fetchLeyesUruguay(staticBase) },
   { id: "senado-co", label: "Senado Colombia", country: "CO" as CountryCode, fn: () => fetchProyectosColombia() },

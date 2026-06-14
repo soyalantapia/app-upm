@@ -78,6 +78,9 @@ export function createRestAdapter(baseUrl: string): SyncAdapter {
   let token: string | null = null
   const timers = new Map<string, ReturnType<typeof setTimeout>>()
 
+  // El JWT lo emite /auth/verify (login por OTP) y lo guarda auth.tsx en TOKEN_KEY.
+  // Acá solo lo leemos: sin token → no sincronizamos (queda en localStorage).
+  // Ya NO hay /auth/login (login "con cualquier email") — eso era el demo.
   async function ensureToken(): Promise<string | null> {
     if (token) return token
     const cached = localStorageAdapter.read(TOKEN_KEY)
@@ -85,25 +88,7 @@ export function createRestAdapter(baseUrl: string): SyncAdapter {
       token = cached
       return token
     }
-    // El login demo del backend acepta cualquier email → usar el del operator local.
-    const operator = localStorageAdapter.read('upm.app.operator') as { email?: string } | null
-    if (!operator?.email) return null
-    try {
-      const res = await fetch(`${base}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: operator.email }),
-        signal: AbortSignal.timeout(10_000),
-      })
-      if (!res.ok) return null
-      const json = (await res.json()) as { token?: string }
-      if (!json.token) return null
-      token = json.token
-      localStorageAdapter.write(TOKEN_KEY, token)
-      return token
-    } catch {
-      return null
-    }
+    return null
   }
 
   async function put(path: string, body: unknown, retry = true): Promise<void> {

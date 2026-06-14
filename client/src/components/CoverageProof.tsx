@@ -1,5 +1,4 @@
 import { CountUp } from '@/components/CountUp'
-import { COUNTRIES } from '@/lib/data'
 import { cn } from '@/lib/cn'
 
 // Números honestos del corpus.
@@ -7,8 +6,10 @@ import { cn } from '@/lib/cn'
 //  · Fuentes oficiales = entradas del registro en lib/sources/index.ts (45 al hoy).
 //    Se deja como constante para NO arrastrar los 45 adaptadores (fetch) al
 //    chunk del login; si cambia el registro, actualizar acá.
-const PAISES = COUNTRIES.length
-const FUENTES_OFICIALES = 45
+// Números REALES de producción: 4 países con corpus (AR/CO/UY/BR) y 39 fuentes
+// activas (registry, tras sacar las 9 fuentes sintéticas).
+const PAISES = 4
+const FUENTES_OFICIALES = 39
 
 type Tone = 'dark' | 'light'
 

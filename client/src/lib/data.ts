@@ -367,15 +367,9 @@ export const FORUMS: Forum[] = [
   { id: 'fo6', title: 'Foro de Relaciones Internacionales', topic: 'rrii', members: 12, documents: 9, upcoming: '2026-06-10', description: 'Coordinación de tratados y agenda exterior parlamentaria.' },
 ]
 
-export const DEMO_OPERATOR = {
-  email: 'martin.pereira@upm.org',
-  name: 'Dr. Martín Pereira',
-  cargo: 'Legislador',
-  pais: 'UY' as CountryCode,
-}
-
 export const DEFAULT_PREFS = {
-  countries: ['AR', 'BR', 'UY', 'PY', 'BO', 'CL'] as CountryCode[],
+  // Países con corpus real (PY/BO/CL eran datos sintéticos, removidos).
+  countries: ['AR', 'CO', 'UY', 'BR'] as CountryCode[],
   topics: ['ambiente', 'integracion-regional', 'corredores-bioceanicos', 'mercosur'] as Topic[],
   frequency: 'diario' as const,
   language: 'es' as const,

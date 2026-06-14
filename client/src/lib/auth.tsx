@@ -1,17 +1,19 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import type { CountryCode, Operator } from './types'
-import { DEMO_OPERATOR } from './data'
+import type { Operator } from './types'
 
 type AuthContextValue = {
   operator: Operator | null
   ready: boolean
-  signIn: (email: string) => Operator
+  signIn: (operator: Operator, token?: string) => Operator
   signOut: () => void
   updateOperator: (patch: Partial<Operator>) => void
 }
 
 const AUTH_KEY = 'upm.app.operator'
+// Misma key que usa el sync (lib/sync.ts) para el JWT → al loguear por OTP
+// guardamos acá el token y el sync lo usa sin pedir un login extra.
+const SYNC_TOKEN_KEY = 'upm.sync.token.v1'
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
@@ -24,17 +26,6 @@ function readOperator(): Operator | null {
   } catch {
     return null
   }
-}
-
-function deriveName(email: string): { name: string; cargo: string; pais: CountryCode } {
-  if (!email) return { name: DEMO_OPERATOR.name, cargo: DEMO_OPERATOR.cargo, pais: DEMO_OPERATOR.pais }
-  if (email.toLowerCase().includes('martin') || email.toLowerCase().includes('pereira')) {
-    return { name: DEMO_OPERATOR.name, cargo: DEMO_OPERATOR.cargo, pais: DEMO_OPERATOR.pais }
-  }
-  const handle = email.split('@')[0] ?? ''
-  const parts = handle.split(/[.\-_]+/).filter(Boolean)
-  const name = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ') || 'Legislador'
-  return { name: `Dr. ${name}`, cargo: 'Legislador', pais: 'UY' }
 }
 
 // Detecta si localStorage está bloqueado (modo incógnito, cuota llena, etc).
@@ -91,22 +82,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
   }
 
-  const signIn = useCallback((email: string) => {
-    const { name, cargo, pais } = deriveName(email)
-    const op: Operator = {
-      email: email || DEMO_OPERATOR.email,
-      name,
-      cargo,
-      pais,
-      loggedAt: new Date().toISOString(),
-    }
-    window.localStorage.setItem(AUTH_KEY, JSON.stringify(op))
-    setOperator(op)
-    return op
+  // Login real: el operador y el JWT vienen del backend (/auth/verify por OTP).
+  const signIn = useCallback((op: Operator, token?: string) => {
+    const stored: Operator = { ...op, loggedAt: op.loggedAt || new Date().toISOString() }
+    window.localStorage.setItem(AUTH_KEY, JSON.stringify(stored))
+    if (token) window.localStorage.setItem(SYNC_TOKEN_KEY, token)
+    setOperator(stored)
+    return stored
   }, [])
 
   const signOut = useCallback(() => {
     window.localStorage.removeItem(AUTH_KEY)
+    window.localStorage.removeItem(SYNC_TOKEN_KEY)
     setOperator(null)
   }, [])
 
