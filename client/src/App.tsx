@@ -11,9 +11,6 @@ import { Toasts } from '@/components/Toasts'
 
 // Páginas pequeñas · carga sincrónica (login flow)
 import { LoginPage } from '@/pages/Login'
-import { SignupPage } from '@/pages/Signup'
-import { CheckoutPage } from '@/pages/Checkout'
-import { AccountActivatedPage } from '@/pages/AccountActivated'
 import { OnboardingPage } from '@/pages/Onboarding'
 
 // Páginas pesadas · lazy chunks (code split por ruta)
@@ -57,9 +54,6 @@ export default function App() {
           <PWAUpdateBanner />
           <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/registro" element={<SignupPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/cuenta-activada" element={<AccountActivatedPage />} />
           <Route
             path="/onboarding"
             element={

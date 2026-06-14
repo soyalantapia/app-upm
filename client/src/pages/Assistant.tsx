@@ -19,8 +19,6 @@ import { Badge, Button, Card, Eyebrow, PageHeader } from '@/components/ui'
 import { OverflowActions } from '@/components/OverflowActions'
 import { StreamingMarkdown } from '@/components/StreamingMarkdown'
 import { SourceCard } from '@/components/SourceCard'
-import { generateAssistantResponse } from '@/lib/respond'
-import { generateRAGAnswer } from '@/lib/rag'
 import { store, useStore } from '@/lib/store'
 import { LAUNCH } from '@/lib/launch'
 import { copyToClipboard, shareLink } from '@/lib/share'
@@ -34,8 +32,20 @@ const SUGGESTIONS = [
 ]
 
 // Backend con LLM real (POST /assistant) si hay API configurada.
-// 503 / error / sin URL → null y el caller cae al flujo local (RAG TF-IDF → patrones).
+// 503 / error / sin URL → null. En producción NO simulamos respuestas: si el
+// backend no responde, mostramos un mensaje honesto (ver unavailableMessage).
 const API_URL = (import.meta.env.VITE_UPM_API_URL ?? '').toString().replace(/\/$/, '')
+
+function unavailableMessage(): ChatMessage {
+  return {
+    id: 'a-' + Math.random().toString(36).slice(2, 10),
+    role: 'assistant',
+    content:
+      'El asistente no está disponible en este momento. Reintentá en unos segundos.\n\n' +
+      'Solo respondo con el modelo real sobre el corpus normativo: no genero respuestas sin conexión para no darte información sin verificar.',
+    createdAt: new Date().toISOString(),
+  }
+}
 
 async function tryBackendAssistant(history: ChatMessage[]): Promise<ChatMessage | null> {
   if (!API_URL) return null
@@ -138,40 +148,29 @@ export function AssistantPage() {
       setThinking(false)
       return
     }
-    // 2) Flujo local actual, intacto: RAG TF-IDF → patrones
-    try {
-      const reply = await generateRAGAnswer(value)
-      // Si el RAG retorna 0 sources (sin coincidencias), caer al pattern matcher
-      const finalReply = reply.sources && reply.sources.length > 0
-        ? reply
-        : generateAssistantResponse(value)
-      setMessages(prev => [...prev, finalReply])
-    } catch {
-      const fallback = generateAssistantResponse(value)
-      setMessages(prev => [...prev, fallback])
-    }
+    // 2) Sin backend → mensaje honesto. NO simulamos respuestas: el asistente
+    //    solo contesta con el LLM real sobre el corpus (groundeado y verificable).
+    setMessages(prev => [...prev, unavailableMessage()])
     setThinking(false)
   }
 
   const regenerate = async () => {
     if (thinking) return
-    const lastUser = [...messages].reverse().find(m => m.role === 'user')
-    if (!lastUser) return
+    const lastUserIdx = messages.map(m => m.role).lastIndexOf('user')
+    if (lastUserIdx === -1) return
     setThinking(true)
-    try {
-      const reply = await generateRAGAnswer(lastUser.content)
-      const finalReply = reply.sources && reply.sources.length > 0
-        ? reply
-        : generateAssistantResponse(lastUser.content)
-      setMessages(prev => {
-        const idx = [...prev].reverse().findIndex(m => m.role === 'assistant')
-        if (idx === -1) return [...prev, finalReply]
-        const realIdx = prev.length - 1 - idx
-        return [...prev.slice(0, realIdx), finalReply, ...prev.slice(realIdx + 1)]
-      })
-      store.pushToast('info', 'Respuesta regenerada con corpus actualizado')
-    } catch {
-      // ignore
+    const history = messages.slice(0, lastUserIdx + 1)
+    const reply = (await tryBackendAssistant(history)) ?? unavailableMessage()
+    setMessages(prev => {
+      const idx = [...prev].reverse().findIndex(m => m.role === 'assistant')
+      if (idx === -1) return [...prev, reply]
+      const realIdx = prev.length - 1 - idx
+      return [...prev.slice(0, realIdx), reply, ...prev.slice(realIdx + 1)]
+    })
+    if (reply.content.startsWith('El asistente no está disponible')) {
+      // no toast de éxito si fue fallback honesto
+    } else {
+      store.pushToast('info', 'Respuesta regenerada')
     }
     setThinking(false)
   }
