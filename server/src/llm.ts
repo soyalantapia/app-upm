@@ -49,59 +49,71 @@ function anthropicLlm(apiKey: string): Llm {
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
-function geminiLlm(apiKey: string, model: string): Llm {
-  const provider = `gemini:${model}`
+// Cadena de modelos para FALLBACK. El free tier de Gemini limita por
+// REQUESTS/DÍA POR MODELO (cada modelo tiene su balde propio): si el primario
+// se agota (429), rotamos al siguiente que tenga cupo. Esto multiplica el cupo
+// gratis sin pagar nada. El primario se elige por GEMINI_MODEL.
+function modelChain(primary: string): string[] {
+  const fallbacks = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-flash-latest', 'gemini-2.0-flash-lite']
+  return [...new Set([primary, ...fallbacks])]
+}
+
+async function callGemini(model: string, apiKey: string, system: string, messages: LlmMessage[], maxTokens: number): Promise<Response> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
+  const body = {
+    systemInstruction: { parts: [{ text: system }] },
+    contents: messages.map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }],
+    })),
+    generationConfig: {
+      maxOutputTokens: maxTokens,
+      temperature: 0.3,
+      // thinkingBudget:0 desactiva el "thinking" de los 2.5 → más rápido y barato.
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  }
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
+    body: JSON.stringify(body),
+  })
+}
+
+function geminiLlm(apiKey: string, primaryModel: string): Llm {
+  const chain = modelChain(primaryModel)
   return {
-    provider,
+    provider: `gemini:${primaryModel}`,
     async complete(system, messages, maxTokens) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
-      const body = {
-        systemInstruction: { parts: [{ text: system }] },
-        contents: messages.map(m => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: m.content }],
-        })),
-        generationConfig: {
-          maxOutputTokens: maxTokens,
-          temperature: 0.3,
-          // thinkingBudget:0 desactiva el "thinking" de los modelos 2.5 → más
-          // rápido y barato (no gasta tokens de razonamiento) para resumir+citar.
-          thinkingConfig: { thinkingBudget: 0 },
-        },
-      }
-      // El free tier devuelve 429 (RESOURCE_EXHAUSTED) de forma intermitente y
-      // 503 cuando el modelo está saturado. Reintentamos con backoff para que el
-      // uso normal (1 pregunta cada varios seg) sea confiable. Respeta retryDelay
-      // si Gemini lo sugiere. Tras agotar reintentos, lanza → ruta 502 → front mock.
-      let res!: Response
-      const BACKOFF = [1500, 4000]
-      for (let attempt = 0; ; attempt++) {
-        res = await fetch(url, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
-          body: JSON.stringify(body),
-        })
-        if (res.ok) break
-        const retriable = res.status === 429 || res.status === 503 || res.status === 500
-        if (!retriable || attempt >= BACKOFF.length) {
-          throw new Error(`gemini ${res.status}: ${(await res.text()).slice(0, 300)}`)
+      let lastDetail = ''
+      // Ronda 1: rotar por todos los modelos (cada 429/503 → siguiente al toque).
+      // Ronda 2: un único backoff sobre el primario por si fue per-minuto pasajero.
+      for (let round = 0; round < 2; round++) {
+        for (const model of chain) {
+          const res = await callGemini(model, apiKey, system, messages, maxTokens)
+          if (res.ok) {
+            const json = (await res.json()) as {
+              candidates?: { content?: { parts?: { text?: string }[] } }[]
+              usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number }
+            }
+            const text = (json.candidates?.[0]?.content?.parts ?? []).map(p => p.text ?? '').join('')
+            const um = json.usageMetadata ?? {}
+            return {
+              text,
+              usage: { input_tokens: um.promptTokenCount ?? 0, output_tokens: um.candidatesTokenCount ?? 0 },
+              provider: `gemini:${model}`,
+            }
+          }
+          lastDetail = `gemini ${model} ${res.status}: ${(await res.text()).slice(0, 200)}`
+          // 429/503 → probar el próximo modelo. Otro error → cortar (no es de cupo).
+          if (res.status !== 429 && res.status !== 503 && res.status !== 500) {
+            throw new Error(lastDetail)
+          }
+          if (round === 1) break // en la 2da ronda solo reintentamos el primario
         }
-        await sleep(BACKOFF[attempt])
+        if (round === 0) await sleep(3000)
       }
-      const json = (await res.json()) as {
-        candidates?: { content?: { parts?: { text?: string }[] } }[]
-        usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number }
-      }
-      const text = (json.candidates?.[0]?.content?.parts ?? []).map(p => p.text ?? '').join('')
-      const um = json.usageMetadata ?? {}
-      return {
-        text,
-        usage: {
-          input_tokens: um.promptTokenCount ?? 0,
-          output_tokens: um.candidatesTokenCount ?? 0,
-        },
-        provider,
-      }
+      throw new Error(`todos los modelos Gemini sin cupo. último: ${lastDetail}`)
     },
   }
 }
