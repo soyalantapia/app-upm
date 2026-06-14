@@ -34,11 +34,19 @@ export function assistantRoutes(app: FastifyInstance, db: Db, llm: Llm | null) {
       return reply.code(400).send({ error: 'invalid body' })
     }
     const messages = parsed.data.messages
-    const question = messages.at(-1)!.content
+
+    // RAG consciente de la conversación: la query de recuperación combina los
+    // últimos turnos del usuario (no solo el último), así un follow-up corto
+    // ("¿y qué año es?") sigue recuperando el contexto de la norma en discusión.
+    const retrievalQuery = messages
+      .filter(m => m.role === 'user')
+      .slice(-3)
+      .map(m => m.content)
+      .join(' ')
 
     // RAG: top-8 normas relevantes vía búsqueda HÍBRIDA (semántica + FTS).
     const { hybridSearch } = await import('../search.js')
-    let context = (await hybridSearch(db, question, 8)).items
+    let context = (await hybridSearch(db, retrievalQuery, 8)).items
     if (context.length === 0) {
       // Sin match: dar contexto reciente para no responder en vacío.
       const recent = await db.select().from(normas).orderBy(sql`${normas.date} DESC`).limit(8)
