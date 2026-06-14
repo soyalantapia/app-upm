@@ -64,56 +64,9 @@ type State = {
   toasts: Toast[]
 }
 
-const SEED_NOTIFICATIONS: Notification[] = [
-  {
-    id: 'nt-1',
-    title: 'Nueva alerta de Ambiente',
-    description: 'Brasil publicó un decreto con impacto regional. Relevancia alta.',
-    type: 'novedad',
-    unread: true,
-    createdAt: '2026-05-06T08:30:00Z',
-    ref: 'n1',
-  },
-  {
-    id: 'nt-2',
-    title: 'Documento agregado a la Biblioteca',
-    description: 'Convenio de cooperación legislativa regional fue publicado como Oficial UPM.',
-    type: 'documento',
-    unread: true,
-    createdAt: '2026-05-05T16:10:00Z',
-    ref: 'd3',
-  },
-  {
-    id: 'nt-3',
-    title: 'Foro de Corredores Bioceánicos',
-    description: 'Agenda preliminar disponible. Próxima reunión: 19 de mayo.',
-    type: 'foro',
-    unread: true,
-    createdAt: '2026-05-05T11:42:00Z',
-  },
-  {
-    id: 'nt-4',
-    title: 'Tu Radar fue actualizado',
-    description: '5 nuevas novedades coinciden con tus temas prioritarios.',
-    type: 'sistema',
-    unread: false,
-    createdAt: '2026-05-04T09:00:00Z',
-  },
-  {
-    id: 'nt-5',
-    title: 'Minuta publicada',
-    description: 'Foro UPM de Medio Ambiente publicó la minuta de la última reunión.',
-    type: 'foro',
-    unread: false,
-    createdAt: '2026-05-03T13:25:00Z',
-  },
-]
+const SEED_NOTIFICATIONS: Notification[] = []
 
-const SEED_ALERTS: Alert[] = [
-  { id: 'al-1', keyword: 'corredor bioceánico', countries: [], topics: ['corredores-bioceanicos'], active: true, createdAt: '2026-05-01T00:00:00Z', matchCount: 0 },
-  { id: 'al-2', keyword: 'ITAIPU', countries: ['PY', 'BR'], topics: [], active: true, createdAt: '2026-05-01T00:00:00Z', matchCount: 0 },
-  { id: 'al-3', keyword: 'Mercosur arancel', countries: [], topics: ['mercosur', 'integracion-regional'], active: false, createdAt: '2026-04-15T00:00:00Z', matchCount: 0 },
-]
+const SEED_ALERTS: Alert[] = []
 
 const initial: State = {
   prefs: null,

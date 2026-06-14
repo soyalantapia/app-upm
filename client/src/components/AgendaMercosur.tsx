@@ -19,72 +19,9 @@ type MercosurEvent = {
 
 // Agenda institucional del MERCOSUR y organismos asociados.
 // Actualizable por los editores de UPM.
-const AGENDA: MercosurEvent[] = [
-  {
-    id: 'ev-001',
-    date: '2026-06-05',
-    title: 'Reunión del Grupo Mercado Común (GMC) · XC Reunión Ordinaria',
-    type: 'reunion',
-    countries: ['🇧🇷', '🇦🇷', '🇺🇾', '🇵🇾'],
-    description: 'Agenda: protocolo de compras gubernamentales, asimetrías y AEC para bienes de capital.',
-  },
-  {
-    id: 'ev-002',
-    date: '2026-06-12',
-    title: 'Sesión Plenaria del PARLASUR · Mayo-Junio 2026',
-    type: 'sesion',
-    countries: ['🇧🇷', '🇦🇷', '🇺🇾', '🇵🇾'],
-    description: 'Tratamiento de normas sobre corredores bioceánicos, género y seguridad regional.',
-  },
-  {
-    id: 'ev-003',
-    date: '2026-06-18',
-    title: 'Cumbre MERCOSUR-UE · Ratificación del Acuerdo de Asociación',
-    type: 'cumbre',
-    countries: ['🇧🇷', '🇦🇷', '🇺🇾', '🇵🇾', '🇪🇺'],
-    description: 'Firma y ratificación del Acuerdo de Asociación MERCOSUR-Unión Europea, 25 años de negociaciones.',
-  },
-  {
-    id: 'ev-004',
-    date: '2026-06-25',
-    title: 'Plazo: presentación de informes de cumplimiento del Acuerdo de Escazú',
-    type: 'plazo',
-    countries: ['🇦🇷', '🇺🇾', '🇨🇴'],
-    description: 'Vencimiento del plazo para presentar informes nacionales de cumplimiento ante la COP de Escazú.',
-  },
-  {
-    id: 'ev-005',
-    date: '2026-07-07',
-    title: 'Foro Parlamentario sobre el Corredor Bioceánico · Asunción',
-    type: 'foro',
-    countries: ['🇵🇾', '🇦🇷', '🇧🇷', '🇺🇾', '🇨🇱'],
-    description: 'Debate de la Declaración de Asunción sobre infraestructura, financiamiento y soberanía en el corredor.',
-  },
-  {
-    id: 'ev-006',
-    date: '2026-07-15',
-    title: 'Reunión del Consejo del Mercado Común (CMC) · XLIII Reunión',
-    type: 'reunion',
-    countries: ['🇧🇷', '🇦🇷', '🇺🇾', '🇵🇾'],
-    description: 'Decisiones sobre libre circulación de personas, Venezuela y negociaciones con Canadá y Corea.',
-  },
-  {
-    id: 'ev-007',
-    date: '2026-07-28',
-    title: 'Cumbre de Presidentes del MERCOSUR · Presidencia Pro Témpore Brasil 2026',
-    type: 'cumbre',
-    countries: ['🇧🇷', '🇦🇷', '🇺🇾', '🇵🇾'],
-    description: 'Cumbre semestral bajo presidencia pro témpore de Brasil. Agenda: seguridad, integración productiva y clima.',
-  },
-  {
-    id: 'ev-008',
-    date: '2026-08-10',
-    title: 'Sesión Ordinaria del Senado de la República del Uruguay · Presupuesto quinquenal',
-    type: 'sesion',
-    countries: ['🇺🇾'],
-    description: 'Debate y votación del Presupuesto Quinquenal 2025-2030 en primera lectura.',
-  },
-]
+// Agenda institucional vacía en producción: solo se muestran eventos REALES
+// derivados del feed (convocatorias/audiencias/sesiones agendadas).
+const AGENDA: MercosurEvent[] = []
 
 const TYPE_META: Record<MercosurEvent['type'], { label: string; color: string }> = {
   cumbre: { label: 'Cumbre', color: 'bg-upm-600 text-white' },
