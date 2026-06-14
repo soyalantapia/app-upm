@@ -90,17 +90,20 @@ describe('GET /laws y /search', () => {
   })
 })
 
-describe('auth + /me round-trip', () => {
+describe('auth OTP + /me round-trip', () => {
   const email = `vitest.${process.pid}@upm.org`
 
-  it('login → token → PUT/GET prefs → 401 sin token', async () => {
-    const login = await app.inject({
-      method: 'POST',
-      url: '/auth/login',
-      payload: { email },
-    })
-    expect(login.statusCode).toBe(200)
-    const { token, operator } = login.json()
+  it('request-code (in-proc) → verify → token → PUT/GET prefs → 401 sin token', async () => {
+    // Generamos el código en proceso (mismo store en memoria que /auth/verify),
+    // sin depender de SMTP.
+    const { issueCode } = await import('../../src/lib/otp.js')
+    const issued = issueCode(email)
+    expect(issued.ok).toBe(true)
+    const code = issued.ok ? issued.code : ''
+
+    const verify = await app.inject({ method: 'POST', url: '/auth/verify', payload: { email, code } })
+    expect(verify.statusCode).toBe(200)
+    const { token, operator } = verify.json()
     expect(operator.email).toBe(email)
     expect(operator.cargo).toBe('Legislador')
 
@@ -123,9 +126,9 @@ describe('auth + /me round-trip', () => {
     expect((await app.inject({ method: 'GET', url: '/me/prefs' })).statusCode).toBe(401)
   })
 
-  it('login 400 con email inválido', async () => {
-    const res = await app.inject({ method: 'POST', url: '/auth/login', payload: { email: 'no-es-email' } })
-    expect(res.statusCode).toBe(400)
+  it('verify con código inválido → 401', async () => {
+    const res = await app.inject({ method: 'POST', url: '/auth/verify', payload: { email: 'x@y.org', code: '000000' } })
+    expect(res.statusCode).toBe(401)
   })
 })
 

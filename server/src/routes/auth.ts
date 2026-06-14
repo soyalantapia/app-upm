@@ -30,7 +30,6 @@ async function upsertOperator(db: Db, email: string, config: Config) {
 
 const EmailBody = z.object({ email: z.string().email() })
 const VerifyBody = z.object({ email: z.string().email(), code: z.string().regex(/^\d{6}$/) })
-const LoginBody = z.object({ email: z.string().email(), password: z.string().optional() })
 
 export function authRoutes(app: FastifyInstance, db: Db, config: Config) {
   const allowed = (email: string) =>
@@ -68,14 +67,5 @@ export function authRoutes(app: FastifyInstance, db: Db, config: Config) {
       return reply.code(map[result] ?? 401).send({ error: result })
     }
     return upsertOperator(db, email, config)
-  })
-
-  // 3) Login legacy (email→token, SIN código). DEPRECADO: solo back-compat del
-  //    sync mientras el front migra a OTP. En prod real se quita (no validar nada
-  //    es inseguro). No usa persona demo.
-  app.post('/auth/login', async (req, reply) => {
-    const parsed = LoginBody.safeParse(req.body)
-    if (!parsed.success) return reply.code(400).send({ error: 'invalid body', details: parsed.error.issues })
-    return upsertOperator(db, parsed.data.email.toLowerCase(), config)
   })
 }
