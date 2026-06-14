@@ -61,14 +61,20 @@ function geminiLlm(apiKey: string, model: string): Llm {
           role: m.role === 'assistant' ? 'model' : 'user',
           parts: [{ text: m.content }],
         })),
-        generationConfig: { maxOutputTokens: maxTokens, temperature: 0.3 },
+        generationConfig: {
+          maxOutputTokens: maxTokens,
+          temperature: 0.3,
+          // thinkingBudget:0 desactiva el "thinking" de los modelos 2.5 → más
+          // rápido y barato (no gasta tokens de razonamiento) para resumir+citar.
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }
       // El free tier devuelve 429 (RESOURCE_EXHAUSTED) de forma intermitente y
       // 503 cuando el modelo está saturado. Reintentamos con backoff para que el
       // uso normal (1 pregunta cada varios seg) sea confiable. Respeta retryDelay
       // si Gemini lo sugiere. Tras agotar reintentos, lanza → ruta 502 → front mock.
       let res!: Response
-      const BACKOFF = [1500, 4000, 8000]
+      const BACKOFF = [1500, 4000]
       for (let attempt = 0; ; attempt++) {
         res = await fetch(url, {
           method: 'POST',
