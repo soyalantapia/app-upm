@@ -1,5 +1,7 @@
 // Anotaciones personales del legislador sobre cada norma.
-// Persisten 100% client-side en localStorage.
+// Persisten via facade sync: localStorage por default; con backend
+// (VITE_UPM_API_URL) además se espejan en PUT /me/notes.
+import { sync } from './sync'
 
 const STORAGE_KEY = 'upm.notes.v1'
 
@@ -14,9 +16,7 @@ export type Note = {
 
 function readAll(): Note[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return []
-    return JSON.parse(raw) as Note[]
+    return sync.read<Note[]>(STORAGE_KEY) ?? []
   } catch {
     return []
   }
@@ -24,7 +24,7 @@ function readAll(): Note[] {
 
 function writeAll(notes: Note[]): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes))
+    sync.write(STORAGE_KEY, notes)
   } catch {
     // localStorage lleno o deshabilitado
   }

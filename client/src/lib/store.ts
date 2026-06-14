@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { sync } from './sync'
 import { DEFAULT_PREFS, FOLDERS } from './data'
 import type { ChatMessage, CountryCode, Preferences, Folder, Topic } from './types'
 
@@ -128,9 +129,8 @@ const initial: State = {
 function load(): State {
   if (typeof window === 'undefined') return initial
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) return initial
-    const parsed = JSON.parse(raw) as Partial<State>
+    const parsed = sync.read<Partial<State>>(STORAGE_KEY)
+    if (!parsed) return initial
     return {
       ...initial,
       ...parsed,
@@ -153,7 +153,9 @@ function persist(s: State) {
   try {
     const { toasts: _t, ...rest } = s
     void _t
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(rest))
+    // Facade sync: localStorage por default; con backend (VITE_UPM_API_URL)
+    // además espeja prefs/saved en /me/* (write-through, debounced).
+    sync.write(STORAGE_KEY, rest)
   } catch {
     // ignore
   }

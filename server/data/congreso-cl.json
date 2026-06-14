@@ -1,0 +1,71 @@
+{
+  "fuente": "Biblioteca del Congreso Nacional de Chile / Senado de Chile",
+  "url": "https://www.bcn.cl",
+  "fetchedAt": "2026-05-23T00:00:00Z",
+  "items": [
+    {
+      "id": "congreso-cl-001",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 21.789 Marco de Transición Energética y Descarbonización de la Matriz Eléctrica",
+      "fecha": "2026-05-20",
+      "organo": "Ministerio de Energía",
+      "ementa": "Establece el marco legal para la transición energética de Chile hacia una matriz 100% renovable al año 2050. Fija metas intermedias: 60% de energía renovable en 2030 y 80% en 2040. Crea el Fondo de Transición Energética Justa (FOTEJ) para reconvertir trabajadores del sector del carbón. Establece el cronograma de cierre de centrales termoeléctricas de carbón, siendo el norte el primero en descarbonizarse. Regula el almacenamiento de energía con baterías y los contratos de compraventa a largo plazo (PPA) entre generadoras renovables y distribuidoras. Chile ya produce el 57% de su electricidad con renovables."
+    },
+    {
+      "id": "congreso-cl-002",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 21.784 del Litio: Estrategia Nacional y Empresa Nacional del Litio",
+      "fecha": "2026-05-18",
+      "organo": "Ministerio de Minería",
+      "ementa": "Crea la Empresa Nacional del Litio (ENL) como sociedad del Estado encargada de explotar, industrializar y comercializar los yacimientos de litio en el Salar de Atacama y otros salares del norte chileno. Chile posee el 36% de las reservas mundiales de litio. Establece que el Estado tendrá el 51% de participación en todos los nuevos contratos de explotación con privados. Crea el Consejo de Recursos de Litio con participación de comunidades atacameñas. Fija el porcentaje del 10% de los ingresos para el Fondo Soberano de Litio. Regula el uso del agua en los salares para proteger los ecosistemas altoandinos."
+    },
+    {
+      "id": "congreso-cl-003",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 21.779 de Corredores Bioceánicos: Marco de Integración con Argentina y Bolivia",
+      "fecha": "2026-05-16",
+      "organo": "Ministerio de Obras Públicas",
+      "ementa": "Establece el marco legal para la participación de Chile en los corredores bioceánicos que conectan el Pacífico con el Atlántico a través del territorio sudamericano. Declara de interés nacional las rutas nacionales 31 y 51 que conforman el Paso Jama y el Paso de Sico en la región de Antofagasta, nodos clave para el corredor que conecta con Bolivia, Paraguay, Argentina y Brasil. Crea el Fondo de Conectividad Binacional con Argentina. Regula los contratos de concesión vial para el tramo chileno del corredor. Establece protocolos de cruce fronterizo ágil para el comercio regional."
+    },
+    {
+      "id": "congreso-cl-004",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 21.771 de Derechos de los Pueblos Indígenas y Consulta Libre, Previa e Informada",
+      "fecha": "2026-05-13",
+      "organo": "Ministerio de Desarrollo Social",
+      "ementa": "Ratifica el Convenio 169 de la OIT en su dimensión legislativa y establece el procedimiento de Consulta Libre, Previa e Informada (CLPI) para medidas legislativas y administrativas que afecten a los pueblos indígenas chilenos: mapuche, aimara, rapa nui, atacameño, quechua, yagán, kawésqar y otros. Crea el Consejo Nacional de Pueblos Indígenas como órgano autónomo de representación. Establece la participación de comunidades indígenas en el directorio de empresas del Estado que exploten recursos en sus territorios. Establece estándares de consentimiento para proyectos de minería, energía y agua en tierras indígenas."
+    },
+    {
+      "id": "congreso-cl-005",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 21.765 Acuerdo de Asociación Chile-Mercosur: Adhesión como Estado Asociado",
+      "fecha": "2026-05-11",
+      "organo": "Ministerio de Relaciones Exteriores",
+      "ementa": "Aprueba el Protocolo de Adhesión de Chile como Estado Asociado al Mercosur con voz en el Consejo del Mercado Común y el Grupo Mercado Común para los temas de infraestructura, comercio y ambiente. Chile mantiene su independencia para negociar acuerdos comerciales bilaterales. Establece la participación de parlamentarios chilenos como observadores en el PARLASUR. Dispone la armonización gradual de las normas fitosanitarias, fytotécnicas y de transporte con el bloque. Ratifica el Acuerdo de Complementación Económica N° 35 con los cuatro socios plenos del Mercosur."
+    },
+    {
+      "id": "congreso-cl-006",
+      "tipoDocumento": "DECRETO",
+      "title": "Decreto N° 842 Zona Especial de Desarrollo Económico para el Corredor Bioceánico en Antofagasta",
+      "fecha": "2026-05-08",
+      "organo": "Ministerio de Economía",
+      "ementa": "Crea la Zona Especial de Desarrollo Económico del Corredor Bioceánico (ZEDC-Bio) en la Región de Antofagasta como plataforma logística para el comercio interoceánico. Otorga beneficios tributarios del 50% del Impuesto de Primera Categoría para empresas que se instalen en la zona por 15 años. Establece el Puerto Logístico de Mejillones como nodo central de la ZEDC-Bio. Crea el Consorcio Público-Privado Puerto Mejillones con participación de CORFO, la Municipalidad de Antofagasta y privados. Meta: convertir a Antofagasta en el puerto del Pacífico para el corredor."
+    },
+    {
+      "id": "congreso-cl-007",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 21.759 de Paridad de Género en Cargos Directivos del Sector Público y Empresas del Estado",
+      "fecha": "2026-05-05",
+      "organo": "Ministerio de la Mujer",
+      "ementa": "Establece la paridad de género (50/50) en los cargos directivos del servicio público de grado 1 a 6 del Escalafón Único de Sueldos. Fija un plazo de 3 años para alcanzar la paridad en juntas directivas de empresas del Estado (CODELCO, TVN, EFE, etc.). Crea el Observatorio de Paridad en el Servicio Civil con informes anuales. Establece el Programa de Mentorías para Mujeres en Alta Dirección Pública. Incorpora cláusulas de paridad en los contratos de concesión de obra pública. Chile fue el primer país de América Latina en incorporar paridad en su nueva Constitución (2022)."
+    },
+    {
+      "id": "congreso-cl-008",
+      "tipoDocumento": "LEY",
+      "title": "Ley N° 21.754 de Protección de los Glaciares y Recursos Hídricos Altoandinos",
+      "fecha": "2026-05-02",
+      "organo": "Ministerio del Medio Ambiente",
+      "ementa": "Establece la protección legal de los glaciares chilenos como reservas estratégicas de agua dulce ante el cambio climático. Crea el Inventario Nacional de Glaciares con actualización bianual a cargo del CEAZA y el IANIGLA argentino (en colaboración bilateral). Prohíbe cualquier actividad minera o industrial a menos de 5 km de glaciares y periglaciares. Establece el Fondo de Restauración Glaciar con recursos del impuesto al carbono. Fija sanciones penales de hasta 10 años para el daño intencional a glaciares. Chile perdió el 70% del área glaciar en la Región Metropolitana en los últimos 50 años. Avanza en coordinación con Argentina."
+    }
+  ]
+}

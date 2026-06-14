@@ -30,7 +30,7 @@ export function QuickFilterPills({
   counts?: Partial<Record<FilterPresetId, number>>
 }) {
   return (
-    <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="mt-4 flex flex-wrap gap-1.5">
       {PRESETS.map(preset => {
         const Icon = preset.icon
         const isActive = active === preset.id

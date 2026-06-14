@@ -1,0 +1,142 @@
+{
+  "fuente": "Ministerio de Trabajo de la Nación · Convenios Colectivos de Trabajo",
+  "url": "https://www.argentina.gob.ar/trabajo/convenios-colectivos",
+  "fetchedAt": "2026-05-10",
+  "items": [
+    {
+      "id": "ar-cct-2026-340",
+      "tipoDocumento": "CCT 340/2026",
+      "title": "CCT 340/2026 · COMERCIO · UPDATE PARITARIA Q2 2026",
+      "fecha": "2026-04-25",
+      "sindicato": "Federación Argentina de Empleados de Comercio y Servicios (FAECYS)",
+      "camara": "CAC, UDECA y CAME",
+      "ementa": "Homologación del acuerdo paritario de empleados de comercio para el segundo trimestre 2026. Incremento salarial del 8% en mayo + 6% en julio sobre haberes vigentes. Adicional zona desfavorable mantiene 30%."
+    },
+    {
+      "id": "ar-cct-2026-381",
+      "tipoDocumento": "CCT 381/2026",
+      "title": "CCT 381/2026 · UOM · INDUSTRIA METALÚRGICA · INCREMENTO PARITARIO",
+      "fecha": "2026-04-22",
+      "sindicato": "Unión Obrera Metalúrgica (UOM)",
+      "camara": "ADIMRA - Asociación de Industriales Metalúrgicos de la República Argentina",
+      "ementa": "Acuerdo paritario de la industria metalúrgica. Aumento salarial trimestral del 10% acumulado al 31/05/2026, cláusula gatillo por inflación, presentismo del 8% no remunerativo."
+    },
+    {
+      "id": "ar-cct-2026-422",
+      "tipoDocumento": "CCT 422/2026",
+      "title": "CCT 422/2026 · UOCRA · CONSTRUCCIÓN · ACUERDO ANUAL",
+      "fecha": "2026-04-15",
+      "sindicato": "Unión Obrera de la Construcción de la República Argentina (UOCRA)",
+      "camara": "CAC - Cámara Argentina de la Construcción",
+      "ementa": "Acuerdo anual del sector construcción. Aumento salarial del 38% en cuatro tramos trimestrales, mejora en aporte al Fondo de Cese Laboral, capacitación obligatoria en seguridad."
+    },
+    {
+      "id": "ar-cct-2026-456",
+      "tipoDocumento": "CCT 456/2026",
+      "title": "CCT 456/2026 · CAMIONEROS · LOGÍSTICA · NUEVA ESCALA",
+      "fecha": "2026-04-08",
+      "sindicato": "Federación Nacional de Trabajadores Camioneros (FATC)",
+      "camara": "CEDOL, CATAC, FADEEAC",
+      "ementa": "Convenio del sector transporte y logística. Nueva escala salarial con piso de $620.000 para choferes de larga distancia. Régimen de descanso obligatorio cada 4 horas de conducción."
+    },
+    {
+      "id": "ar-cct-2026-489",
+      "tipoDocumento": "CCT 489/2026",
+      "title": "CCT 489/2026 · SMATA · INDUSTRIA AUTOMOTRIZ · INNOVACIÓN",
+      "fecha": "2026-04-02",
+      "sindicato": "Sindicato de Mecánicos y Afines del Transporte Automotor (SMATA)",
+      "camara": "ADEFA - Asociación de Fábricas de Automotores",
+      "ementa": "Convenio de la industria automotriz. Inversión en formación profesional, transición a electromovilidad y reentrenamiento. Bonus por productividad ligado a indicadores ESG."
+    },
+    {
+      "id": "ar-cct-2026-512",
+      "tipoDocumento": "CCT 512/2026",
+      "title": "CCT 512/2026 · LA BANCARIA · SECTOR FINANCIERO · TELETRABAJO",
+      "fecha": "2026-03-28",
+      "sindicato": "La Bancaria · Asociación Bancaria",
+      "camara": "ABA, ADEBA, ABAPPRA",
+      "ementa": "Convenio del sector bancario y financiero. Derecho a la desconexión digital, regulación del teletrabajo, jornada flexible, garantía de equipo y conectividad para trabajo remoto."
+    },
+    {
+      "id": "ar-cct-2026-534",
+      "tipoDocumento": "CCT 534/2026",
+      "title": "CCT 534/2026 · UPCN · ADMINISTRACIÓN PÚBLICA · LICENCIAS PARENTALES",
+      "fecha": "2026-03-22",
+      "sindicato": "Unión del Personal Civil de la Nación (UPCN)",
+      "camara": "Estado Nacional · Jefatura de Gabinete",
+      "ementa": "Convenio para personal de la administración pública nacional. Licencia parental ampliada a 90 días (madres) y 30 días (padres), licencias por violencia de género y por estudio."
+    },
+    {
+      "id": "ar-cct-2026-556",
+      "tipoDocumento": "CCT 556/2026",
+      "title": "CCT 556/2026 · FATSA · SANIDAD · GUARDIAS Y RECARGOS",
+      "fecha": "2026-03-15",
+      "sindicato": "Federación de Asociaciones de Trabajadores de la Sanidad Argentina (FATSA)",
+      "camara": "ADECRA, CECLA, ADIBA",
+      "ementa": "Convenio del sector salud privado. Aumento del 15% para guardias nocturnas y feriados. Recargo 100% por trabajo en pandemia, plus por especialización médica."
+    },
+    {
+      "id": "ar-cct-2026-578",
+      "tipoDocumento": "CCT 578/2026",
+      "title": "CCT 578/2026 · CTERA · DOCENTES · PARITARIA FEDERAL",
+      "fecha": "2026-03-10",
+      "sindicato": "Confederación de Trabajadores de la Educación de la República Argentina (CTERA)",
+      "camara": "Consejo Federal de Educación · CFE",
+      "ementa": "Paritaria docente nacional. Piso salarial federal de $830.000 para maestros con título terciario y antigüedad mínima. Fondo de compensación salarial provincial."
+    },
+    {
+      "id": "ar-cct-2026-601",
+      "tipoDocumento": "CCT 601/2026",
+      "title": "CCT 601/2026 · LUZ Y FUERZA · ENERGÍA · TRANSICIÓN JUSTA",
+      "fecha": "2026-03-05",
+      "sindicato": "Federación Argentina de Trabajadores de Luz y Fuerza (FATLYF)",
+      "camara": "ADEERA - Asociación de Distribuidoras de Electricidad",
+      "ementa": "Convenio del sector eléctrico. Programa de transición justa para trabajadores de centrales térmicas hacia energías renovables. Recapacitación obligatoria con salario garantizado por 2 años."
+    },
+    {
+      "id": "ar-cct-2026-623",
+      "tipoDocumento": "CCT 623/2026",
+      "title": "CCT 623/2026 · APUBA · UNIVERSIDADES NACIONALES · INVESTIGACIÓN",
+      "fecha": "2026-02-28",
+      "sindicato": "Asociación del Personal de la Universidad de Buenos Aires (APUBA) y FEDUN",
+      "camara": "CIN - Consejo Interuniversitario Nacional",
+      "ementa": "Convenio para personal no docente de universidades nacionales. Dedicación exclusiva con sueldo de investigador asistente $1.450.000, becas doctorales y posdoctorales, movilidad académica."
+    },
+    {
+      "id": "ar-cct-2026-645",
+      "tipoDocumento": "CCT 645/2026",
+      "title": "CCT 645/2026 · AOMA · MINERÍA · ZONAS DE ALTURA",
+      "fecha": "2026-02-22",
+      "sindicato": "Asociación Obrera Minera Argentina (AOMA)",
+      "camara": "CAEM - Cámara Argentina de Empresarios Mineros",
+      "ementa": "Convenio del sector minero. Adicional de altura (zona ≥3000m) del 80%, jornada reducida a 6 horas en altura, programa de salud laboral y monitoreo médico semestral obligatorio."
+    },
+    {
+      "id": "ar-cct-2026-667",
+      "tipoDocumento": "CCT 667/2026",
+      "title": "CCT 667/2026 · FOETRA · TELECOMUNICACIONES · NEUTRALIDAD DE RED",
+      "fecha": "2026-02-15",
+      "sindicato": "Federación de Obreros y Empleados Telefónicos de la República Argentina (FOETRA)",
+      "camara": "CICOMRA - Cámara de Informática y Comunicaciones",
+      "ementa": "Convenio del sector telecomunicaciones. Garantías laborales en empresas con neutralidad de red, capacitación en redes 5G y fibra óptica, plus por trabajo en alturas y zonas de difícil acceso."
+    },
+    {
+      "id": "ar-cct-2026-689",
+      "tipoDocumento": "CCT 689/2026",
+      "title": "CCT 689/2026 · UATRE · TRABAJADORES RURALES · ZAFRA DE COSECHA",
+      "fecha": "2026-02-08",
+      "sindicato": "Unión Argentina de Trabajadores Rurales y Estibadores (UATRE)",
+      "camara": "Sociedad Rural Argentina, CRA, FAA, CONINAGRO",
+      "ementa": "Convenio para trabajadores rurales. Salario mínimo de zafra $580.000 quincenal, condiciones de hospedaje y traslado, protección por riesgo agrotóxico, fondo de cese laboral."
+    },
+    {
+      "id": "ar-cct-2026-712",
+      "tipoDocumento": "CCT 712/2026",
+      "title": "CCT 712/2026 · UTA · TRANSPORTE URBANO · PARITARIA TRIMESTRAL",
+      "fecha": "2026-02-02",
+      "sindicato": "Unión Tranviarios Automotor (UTA)",
+      "camara": "AAETA, FATAP, CEAP",
+      "ementa": "Convenio del transporte automotor de pasajeros. Aumento del 18% trimestral, mejora del régimen de feriados, capacitación obligatoria en seguridad vial, plus por línea metropolitana."
+    }
+  ]
+}

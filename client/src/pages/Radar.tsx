@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ArrowDownUp,
@@ -74,8 +74,22 @@ export function RadarPage() {
   const [preset, setPreset] = useState<FilterPresetId>('all')
   const [density] = useState<'comfortable' | 'compact'>('comfortable')
   // Paginación incremental · Radar tiene 1700+ items, montar todo crashea perf.
-  // Empezamos con 50, agregamos 50 cada "Ver más".
+  // Empezamos con 50 y sumamos 100 por scroll infinito (sentinel + IO).
   const [visibleCount, setVisibleCount] = useState(50)
+  // Scroll infinito · el sentinel al final de la lista, al entrar en viewport
+  // (con 600px de prefetch), carga 100 más automáticamente. Sin botón.
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const loadMoreRef = useCallback((node: HTMLDivElement | null) => {
+    observerRef.current?.disconnect()
+    if (!node) return
+    observerRef.current = new IntersectionObserver(
+      entries => {
+        if (entries[0]?.isIntersecting) setVisibleCount(v => v + 100)
+      },
+      { rootMargin: '600px 0px' },
+    )
+    observerRef.current.observe(node)
+  }, [])
   // Grafo de citas para smart cards + clusters
   const { graph: citationGraph } = useCitationGraph()
 
@@ -457,19 +471,6 @@ export function RadarPage() {
         )}
       </div>
 
-      {/* Conteo de resultados · slim */}
-      <div className="flex items-center gap-2 px-1 text-[12.5px] font-semibold text-ink-600">
-        {loading || isLoadingInitial ? (
-          <>
-            <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
-            {isLoadingInitial ? 'Trayendo novedades en vivo…' : 'Filtrando…'}
-          </>
-        ) : (
-          <span>
-            <span className="font-bold text-upm-800 tabular-nums">{filtered.length}</span> novedades
-          </span>
-        )}
-      </div>
 
       {/* Resultados */}
       {loading || isLoadingInitial ? (
@@ -537,13 +538,14 @@ export function RadarPage() {
             ))}
           </div>
           {filtered.length > visibleCount && (
-            <div className="flex flex-col items-center gap-2 py-3">
-              <button
-                onClick={() => setVisibleCount(v => v + 100)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-upm-700 px-5 py-2 text-[12.5px] font-bold text-white shadow-cta hover:-translate-y-0.5"
-              >
-                Cargar 100 más
-              </button>
+            <div
+              ref={loadMoreRef}
+              className="flex items-center justify-center py-6 text-[12px] font-semibold text-ink-400"
+            >
+              <span className="inline-flex items-center gap-2">
+                <span className="inline-block h-2 w-2 animate-pulse-soft rounded-full bg-upm-400" />
+                Cargando más novedades…
+              </span>
             </div>
           )}
         </>

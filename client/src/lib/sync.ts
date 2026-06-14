@@ -62,36 +62,115 @@ export function createMemoryAdapter(): SyncAdapter {
   }
 }
 
-// === Backend REST-ready (stub) ===
-// Implementación futura cuando exista API:
+// === Backend REST (upm-api · /me/*) ===
+// Write-through: localStorage SIEMPRE (fuente de verdad offline) + push
+// debounced al backend con JWT demo. Cualquier fallo de red es silencioso:
+// la app funciona idéntica sin backend (modo demo intacto).
 //
-// export function createRestAdapter(baseUrl: string, token: string): SyncAdapter {
-//   const cache = new Map<string, unknown>()
-//   return {
-//     name: 'rest',
-//     read(key) {
-//       // Sync-only · este adapter haría background sync via fetch + cache
-//       return cache.get(key) ?? localStorageAdapter.read(key)
-//     },
-//     write(key, value) {
-//       cache.set(key, value)
-//       localStorageAdapter.write(key, value)  // mantener offline
-//       fetch(`${baseUrl}/sync/${key}`, {
-//         method: 'PUT',
-//         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-//         body: JSON.stringify(value),
-//       }).catch(() => { /* offline · queda en localStorage */ })
-//     },
-//     clear(key) {
-//       cache.delete(key)
-//       localStorageAdapter.clear(key)
-//       fetch(`${baseUrl}/sync/${key}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }).catch(() => {})
-//     },
-//   }
-// }
+// Mapeo de keys → endpoints:
+//   upm.app.state  → PUT /me/prefs (subdoc prefs) + PUT /me/saved ({saved, folders})
+//   upm.notes.v1   → PUT /me/notes ({notes: <array>})
+
+const TOKEN_KEY = 'upm.sync.token.v1'
+
+export function createRestAdapter(baseUrl: string): SyncAdapter {
+  const base = baseUrl.replace(/\/$/, '')
+  let token: string | null = null
+  const timers = new Map<string, ReturnType<typeof setTimeout>>()
+
+  async function ensureToken(): Promise<string | null> {
+    if (token) return token
+    const cached = localStorageAdapter.read(TOKEN_KEY)
+    if (typeof cached === 'string' && cached) {
+      token = cached
+      return token
+    }
+    // El login demo del backend acepta cualquier email → usar el del operator local.
+    const operator = localStorageAdapter.read('upm.app.operator') as { email?: string } | null
+    if (!operator?.email) return null
+    try {
+      const res = await fetch(`${base}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: operator.email }),
+        signal: AbortSignal.timeout(10_000),
+      })
+      if (!res.ok) return null
+      const json = (await res.json()) as { token?: string }
+      if (!json.token) return null
+      token = json.token
+      localStorageAdapter.write(TOKEN_KEY, token)
+      return token
+    } catch {
+      return null
+    }
+  }
+
+  async function put(path: string, body: unknown, retry = true): Promise<void> {
+    const t = await ensureToken()
+    if (!t) return
+    try {
+      const res = await fetch(`${base}${path}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${t}` },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(10_000),
+      })
+      if (res.status === 401 && retry) {
+        // token vencido → re-login una vez
+        token = null
+        localStorageAdapter.clear(TOKEN_KEY)
+        await put(path, body, false)
+      }
+    } catch {
+      // offline · queda en localStorage
+    }
+  }
+
+  function pushKey(key: string, value: unknown): void {
+    if (key === 'upm.app.state') {
+      const s = value as { prefs?: unknown; saved?: unknown[]; folders?: unknown[] } | null
+      if (s?.prefs) void put('/me/prefs', s.prefs)
+      if (s && (s.saved || s.folders)) void put('/me/saved', { saved: s.saved ?? [], folders: s.folders ?? [] })
+    } else if (key === 'upm.notes.v1') {
+      void put('/me/notes', { notes: Array.isArray(value) ? value : [] })
+    }
+  }
+
+  return {
+    name: 'rest',
+    read(key) {
+      return localStorageAdapter.read(key)
+    },
+    write(key, value) {
+      localStorageAdapter.write(key, value) // offline-first, siempre
+      // Push en background, debounced por key (el store escribe seguido)
+      const prev = timers.get(key)
+      if (prev) clearTimeout(prev)
+      timers.set(key, setTimeout(() => {
+        timers.delete(key)
+        pushKey(key, value)
+      }, 1500))
+    },
+    clear(key) {
+      localStorageAdapter.clear(key)
+    },
+  }
+}
 
 // === Active adapter (intercambiable) ===
 let activeAdapter: SyncAdapter = localStorageAdapter
+
+// Autoactivación: si el build trae VITE_UPM_API_URL (backend upm-api), el
+// estado del usuario se espeja server-side. Sin la var → localStorage puro
+// (modo demo idéntico a siempre). sync.ts ya se importa en el boot (store.ts).
+// OJO: sin optional chaining — Vite solo estatiza el patrón exacto
+// `import.meta.env.VITE_X`; con `env?.` el define no aplica y rollup
+// elimina todo el adapter por dead-code.
+const UPM_API_URL = (import.meta.env.VITE_UPM_API_URL ?? '').toString().replace(/\/$/, '')
+if (typeof window !== 'undefined' && UPM_API_URL) {
+  activeAdapter = createRestAdapter(UPM_API_URL)
+}
 
 export function setSyncAdapter(adapter: SyncAdapter): void {
   activeAdapter = adapter
