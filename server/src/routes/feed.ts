@@ -14,7 +14,7 @@ const FeedQuery = z.object({
 type NormaRow = typeof normas.$inferSelect
 
 // DB row → NewsItem del contrato: los opcionales null se OMITEN (no null).
-function rowToItem(r: NormaRow): NewsItem {
+export function rowToItem(r: NormaRow): NewsItem {
   const item: NewsItem = {
     id: r.id,
     title: r.title,
@@ -99,15 +99,11 @@ export function feedRoutes(app: FastifyInstance, db: Db) {
     if (q.length < 2) {
       return reply.code(400).send({ error: 'invalid query', details: 'q requiere al menos 2 caracteres' })
     }
-    const tsv = sql`to_tsvector('spanish', ${normas.title} || ' ' || ${normas.excerpt} || ' ' || coalesce(${normas.fullText}, ''))`
-    const tsq = sql`plainto_tsquery('spanish', ${q})`
-    const rows = await db
-      .select()
-      .from(normas)
-      .where(sql`${tsv} @@ ${tsq}`)
-      .orderBy(sql`ts_rank(${tsv}, ${tsq}) DESC`)
-      .limit(50)
-    return feedEnvelope(db, rows.map(rowToItem))
+    // Búsqueda híbrida (semántica pgvector + FTS, fusión RRF). Cae a FTS si no
+    // hay embedding de query. El envelope incluye `mode` para observabilidad.
+    const { hybridSearch } = await import('../search.js')
+    const { items, mode } = await hybridSearch(db, q, 50)
+    return { ...(await feedEnvelope(db, items)), mode }
   })
 
   app.get('/sources', async () => {

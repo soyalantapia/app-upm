@@ -36,18 +36,14 @@ export function assistantRoutes(app: FastifyInstance, db: Db, anthropicKey: stri
     const messages = parsed.data.messages
     const question = messages.at(-1)!.content
 
-    // RAG: top-8 normas relevantes vía FTS sobre la pregunta.
-    const tsv = sql`to_tsvector('spanish', ${normas.title} || ' ' || ${normas.excerpt} || ' ' || coalesce(${normas.fullText}, ''))`
-    const tsq = sql`plainto_tsquery('spanish', ${question})`
-    let context = await db
-      .select()
-      .from(normas)
-      .where(sql`${tsv} @@ ${tsq}`)
-      .orderBy(sql`ts_rank(${tsv}, ${tsq}) DESC`)
-      .limit(8)
+    // RAG: top-8 normas relevantes vía búsqueda HÍBRIDA (semántica + FTS).
+    const { hybridSearch } = await import('../search.js')
+    let context = (await hybridSearch(db, question, 8)).items
     if (context.length === 0) {
-      // Sin match FTS: dar igual algo de contexto reciente para no responder en vacío.
-      context = await db.select().from(normas).orderBy(sql`${normas.date} DESC`).limit(8)
+      // Sin match: dar contexto reciente para no responder en vacío.
+      const recent = await db.select().from(normas).orderBy(sql`${normas.date} DESC`).limit(8)
+      const { rowToItem } = await import('./feed.js')
+      context = recent.map(rowToItem)
     }
 
     const contextBlock = context
