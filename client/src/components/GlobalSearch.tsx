@@ -9,8 +9,8 @@ import { useUI } from '@/lib/ui-provider'
 import { cn } from '@/lib/cn'
 import { useLiveFeed } from '@/lib/use-live-feed'
 import { getAllLegisladores, type Legislador } from '@/lib/legisladores'
-import { matchesQuery } from '@/lib/synonyms'
 import { useDebounced } from '@/lib/use-debounced'
+import { useSemanticSearch } from '@/lib/use-semantic-search'
 
 const ROUTES = [
   { label: 'Asistente AI', path: '/asistente', desc: 'Chat con respaldo institucional' },
@@ -53,6 +53,10 @@ export function GlobalSearch({
     return feed?.items?.length ? feed.items : MOCK_NEWS
   }, [feed])
 
+  // Normas: búsqueda SEMÁNTICA contra el backend (significado, no solo keyword),
+  // con fallback local. Los demás grupos siguen filtrando en cliente (baratos).
+  const semantic = useSemanticSearch(debouncedQ, { fallback: allNews })
+
   const matches = useMemo(() => {
     const term = debouncedQ.trim()
     if (!term) {
@@ -65,12 +69,12 @@ export function GlobalSearch({
     }
     const lower = term.toLowerCase()
     return {
-      news: allNews.filter(n => matchesQuery(`${n.title} ${n.excerpt ?? ''} ${n.tipoDocumento ?? ''}`, term)).slice(0, 8),
+      news: semantic.items.slice(0, 8),
       docs: DOCUMENTS.filter(d => (d.title + ' ' + d.excerpt).toLowerCase().includes(lower)).slice(0, 4),
       legs: legisladores.filter(l => l.name.toLowerCase().includes(lower) || (l.partido ?? '').toLowerCase().includes(lower)).slice(0, 6),
       routes: ROUTES.filter(r => r.label.toLowerCase().includes(lower) || r.desc.toLowerCase().includes(lower)),
     }
-  }, [debouncedQ, allNews, legisladores])
+  }, [debouncedQ, allNews, legisladores, semantic.items])
 
   const total = matches.news.length + matches.docs.length + matches.legs.length + matches.routes.length
 
@@ -93,7 +97,7 @@ export function GlobalSearch({
             ref={inputRef}
             value={q}
             onChange={e => setQ(e.target.value)}
-            placeholder="Probá: 'corredores', 'ambiente', 'mercosur'…"
+            placeholder="Buscá en lenguaje natural: 'agua de las montañas'…"
             className="flex-1 bg-transparent text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
           />
           <span className="hidden rounded-md bg-white px-1.5 py-0.5 text-[10px] font-bold text-ink-500 ring-1 ring-ink-100 sm:block">
@@ -125,7 +129,18 @@ export function GlobalSearch({
             )}
 
             {matches.news.length > 0 && (
-              <Section title={`Normas del corpus (${matches.news.length})`}>
+              <Section
+                title={
+                  <span className="flex items-center gap-1.5">
+                    Normas del corpus ({matches.news.length})
+                    {semantic.mode === 'hybrid' && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-upm-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-upm-600 ring-1 ring-upm-100">
+                        <Sparkles size={9} /> IA · por significado
+                      </span>
+                    )}
+                  </span>
+                }
+              >
                 {matches.news.map(n => {
                   const c = countryByCode(n.country)
                   return (
@@ -191,7 +206,7 @@ export function GlobalSearch({
   )
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
   return (
     <div>
       <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">{title}</div>
