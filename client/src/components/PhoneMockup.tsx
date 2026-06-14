@@ -30,7 +30,7 @@ export function PhoneMockup() {
           {/* Hero */}
           <div className="mx-3 mt-3 overflow-hidden rounded-2xl bg-gradient-to-br from-upm-700 via-upm-800 to-upm-900 p-3 text-white shadow-floating">
             <div className="text-[7.5px] font-bold uppercase tracking-[0.2em] text-white/70">Tablero</div>
-            <div className="mt-0.5 text-[12px] font-bold leading-tight">Buenos días, Pereira</div>
+            <div className="mt-0.5 text-[12px] font-bold leading-tight">Buenos días</div>
             <div className="mt-1 text-[8.5px] leading-tight text-white/70">10 novedades · 1 alerta prioritaria</div>
             <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[8px] font-bold ring-1 ring-white/15">
               <Sparkles size={8} /> Preguntar al Asistente
