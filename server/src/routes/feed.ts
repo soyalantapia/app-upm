@@ -11,6 +11,12 @@ const FeedQuery = z.object({
   tema: z.enum(TOPICS).optional(),
 })
 
+// Filtro de RUIDO procesal: excluye registros de Brasil sin contenido legislativo
+// (votaciones repetidas "Votación aprobada…" y eventos de agenda br-evento).
+// Reversible (no borra datos); se aplica a /feed, /laws, /search y al RAG.
+// NO toca leyes reales (incl. las AR con título genérico "· DISPOSICIONES").
+export const noiseFilter = sql`${normas.id} not like 'br-votacao%' and ${normas.id} not like 'br-evento%'`
+
 type NormaRow = typeof normas.$inferSelect
 
 // DB row → NewsItem del contrato: los opcionales null se OMITEN (no null).
@@ -72,6 +78,7 @@ export function feedRoutes(app: FastifyInstance, db: Db) {
     }
     const { pais, tema } = parsed.data
     const where = and(
+      noiseFilter,
       pais ? eq(normas.country, pais) : undefined,
       tema ? eq(normas.topic, tema) : undefined,
     )
@@ -86,6 +93,7 @@ export function feedRoutes(app: FastifyInstance, db: Db) {
     }
     const { pais, tema } = parsed.data
     const where = and(
+      noiseFilter,
       inArray(normas.type, ['ley', 'decreto', 'reglamento', 'informe']),
       pais ? eq(normas.country, pais) : undefined,
       tema ? eq(normas.topic, tema) : undefined,

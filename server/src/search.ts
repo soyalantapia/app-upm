@@ -1,8 +1,11 @@
-import { inArray, sql } from 'drizzle-orm'
+import { and, inArray, sql } from 'drizzle-orm'
 import type { Db } from './db/client.js'
 import { normas } from './db/schema.js'
 import type { NewsItem } from './types.js'
-import { rowToItem } from './routes/feed.js'
+import { rowToItem, noiseFilter } from './routes/feed.js'
+
+// Versión raw del filtro de ruido para inyectar en los CTE crudos (mismo predicado).
+const NOISE_SQL = "id not like 'br-votacao%' and id not like 'br-evento%'"
 
 // Búsqueda HÍBRIDA: combina similitud semántica (pgvector / embeddings e5) con
 // full-text search (FTS español), fusionadas con Reciprocal Rank Fusion (RRF).
@@ -49,7 +52,7 @@ export async function hybridSearch(
     const rows = await db
       .select({ id: normas.id })
       .from(normas)
-      .where(sql`${FTS} @@ ${tsq}`)
+      .where(and(sql`${FTS} @@ ${tsq}`, noiseFilter))
       .orderBy(sql`ts_rank(${FTS}, ${tsq}) DESC`)
       .limit(limit)
     return { items: await fetchOrdered(db, rows.map(r => r.id)), mode: 'fts' }
@@ -60,12 +63,12 @@ export async function hybridSearch(
   const fused = await db.execute(sql`
     with vec as (
       select id, row_number() over (order by embedding <=> ${vecLit}) as rnk
-      from normas where embedding is not null
+      from normas where embedding is not null and ${sql.raw(NOISE_SQL)}
       order by embedding <=> ${vecLit} limit 40
     ),
     fts as (
       select id, row_number() over (order by ts_rank(${FTS}, ${tsq}) desc) as rnk
-      from normas where ${FTS} @@ ${tsq} limit 40
+      from normas where ${FTS} @@ ${tsq} and ${sql.raw(NOISE_SQL)} limit 40
     ),
     fused as (
       select id, sum(score) as score from (
