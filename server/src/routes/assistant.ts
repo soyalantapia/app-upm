@@ -49,20 +49,26 @@ export function assistantRoutes(app: FastifyInstance, db: Db, llm: Llm | null) {
       .map(m => m.content)
       .join(' ')
 
-    // RAG: top-8 normas relevantes vía búsqueda HÍBRIDA (semántica + FTS).
+    // RAG: top-6 normas relevantes vía búsqueda HÍBRIDA (semántica + FTS).
+    // 6 (no 8) + excerpts recortados → ~3x menos tokens de input por llamada:
+    // más barato/rápido y rinde mucho más el cupo por-minuto del free tier.
     const { hybridSearch } = await import('../search.js')
-    let context = (await hybridSearch(db, retrievalQuery, 8)).items
+    let context = (await hybridSearch(db, retrievalQuery, 6)).items
     if (context.length === 0) {
       // Sin match: dar contexto reciente para no responder en vacío.
-      const recent = await db.select().from(normas).orderBy(sql`${normas.date} DESC`).limit(8)
+      const recent = await db.select().from(normas).orderBy(sql`${normas.date} DESC`).limit(6)
       const { rowToItem } = await import('./feed.js')
       context = recent.map(rowToItem)
     }
 
+    const clip = (s: string | undefined, max = 360) => {
+      const t = (s ?? '').replace(/\s+/g, ' ').trim()
+      return t.length > max ? t.slice(0, max) + '…' : t
+    }
     const contextBlock = context
       .map(
         n =>
-          `[${n.id}] ${n.title}\nPaís: ${n.country} · Tipo: ${n.type} · Fecha: ${n.date} · Tema: ${n.topic}\n${n.excerpt}`,
+          `[${n.id}] ${n.title}\nPaís: ${n.country} · Tipo: ${n.type} · Fecha: ${n.date} · Tema: ${n.topic}\n${clip(n.excerpt)}`,
       )
       .join('\n\n---\n\n')
 
