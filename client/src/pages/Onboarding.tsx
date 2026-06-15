@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowRight, BellRing, CalendarCheck, ChevronLeft, MapPin, Sparkles, Tag } from 'lucide-react'
 import { FullBleedShell } from '@/layouts/AppShell'
 import { Button, Chip } from '@/components/ui'
-import { COUNTRIES, TOPICS } from '@/lib/data'
+import { ACTIVE_COUNTRIES, TOPICS } from '@/lib/data'
 import type { CountryCode, Frequency, Topic } from '@/lib/types'
 import { store } from '@/lib/store'
 import { useAuth } from '@/lib/auth'
@@ -37,7 +37,7 @@ export function OnboardingPage() {
   // después en /perfil.
   const skip = () => {
     store.setDefaults()
-    store.pushToast('info', 'Configuramos defaults · podés ajustar en Perfil')
+    store.pushToast('info', 'Aplicamos una configuración inicial · podés ajustarla en Perfil')
     navigate('/', { replace: true })
   }
 
@@ -87,7 +87,7 @@ export function OnboardingPage() {
 
         {step === 0 && (
           <div className="flex flex-wrap gap-2">
-            {COUNTRIES.map(c => (
+            {ACTIVE_COUNTRIES.map(c => (
               <Chip key={c.code} active={countries.includes(c.code)} onClick={() => toggleCountry(c.code)}>
                 <span aria-hidden>{c.flag}</span>
                 {c.name}

@@ -67,7 +67,7 @@ export function HomeTour() {
   // Chip cerrado · invita a abrir el tour
   if (!open) {
     return createPortal(
-      <div className="fixed bottom-20 left-1/2 z-30 -translate-x-1/2 md:bottom-6 md:left-6 md:translate-x-0">
+      <div className="fixed bottom-32 left-1/2 z-50 -translate-x-1/2 md:bottom-6 md:left-6 md:translate-x-0">
         <div className="flex items-center gap-1 rounded-full bg-upm-700 px-1 py-1 shadow-floating ring-1 ring-upm-800">
           <button
             onClick={() => setOpen(true)}

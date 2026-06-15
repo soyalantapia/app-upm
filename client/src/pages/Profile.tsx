@@ -22,7 +22,7 @@ import { PreferencesDrawer } from '@/components/PreferencesDrawer'
 import { useAuth } from '@/lib/auth'
 import { roleOf, roleLabel } from '@/lib/permissions'
 import { useStore, store, type Alert } from '@/lib/store'
-import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
+import { ACTIVE_COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, Topic } from '@/lib/types'
 
 const CARGOS = ['Legislador', 'Senador', 'Diputado', 'Coordinador de foro', 'Secretaría UPM', 'Asesor parlamentario']
@@ -114,7 +114,6 @@ export function ProfilePage() {
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   <Badge tone="success"><BadgeCheck size={11} /> Miembro UPM</Badge>
-                  <Badge tone="brand">Plan Premium · Activo</Badge>
                 </div>
               </div>
               <Button size="sm" variant="secondary" onClick={openEdit}>
@@ -139,7 +138,7 @@ export function ProfilePage() {
                   })}
                   <Chip size="sm" onClick={() => setPrefsOpen(true)}>+ Editar</Chip>
                 </div>
-                <div className="mt-1 text-[11px] text-ink-500">Disponibles: {COUNTRIES.length}</div>
+                <div className="mt-1 text-[11px] text-ink-500">Disponibles: {ACTIVE_COUNTRIES.length}</div>
               </div>
 
               <div>
@@ -265,7 +264,7 @@ export function ProfilePage() {
               onChange={e => setEditPais(e.target.value as CountryCode)}
               className="w-full appearance-none rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 focus:outline-none focus:ring-2 focus:ring-upm-400"
             >
-              {COUNTRIES.map(c => (
+              {ACTIVE_COUNTRIES.map(c => (
                 <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
               ))}
             </select>
@@ -408,7 +407,7 @@ function AlertasPanel({ alerts }: { alerts: Alert[] }) {
               Países (vacío = todos)
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {COUNTRIES.map(c => (
+              {ACTIVE_COUNTRIES.map(c => (
                 <button
                   key={c.code}
                   type="button"

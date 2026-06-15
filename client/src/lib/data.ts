@@ -37,6 +37,14 @@ export const TOPICS: TopicMeta[] = [
   { id: 'economia-regional', label: 'Economía regional', shortLabel: 'Economía' },
 ]
 
+// Países con corpus real en producción: los ÚNICOS seleccionables en la UI
+// (Onboarding, Preferencias, Perfil, filtros del Radar). El resto de COUNTRIES
+// queda solo como tabla de lookup para countryByCode. Ampliar cuando haya corpus.
+export const ACTIVE_COUNTRY_CODES: CountryCode[] = ['AR', 'CO', 'UY', 'BR']
+export const ACTIVE_COUNTRIES: Country[] = ACTIVE_COUNTRY_CODES
+  .map(code => COUNTRIES.find(c => c.code === code))
+  .filter((c): c is Country => Boolean(c))
+
 export const countryByCode = (code: CountryCode): Country =>
   COUNTRIES.find(c => c.code === code) ?? COUNTRIES[0]
 

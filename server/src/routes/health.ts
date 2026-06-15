@@ -9,7 +9,7 @@ export function healthRoutes(app: FastifyInstance, db: Db) {
   app.get('/', async () => ({
     ok: true,
     service: 'upm-api',
-    endpoints: ['/feed', '/laws', '/search', '/sources', '/health', '/auth/login', '/me', '/assistant'],
+    endpoints: ['/feed', '/laws', '/search', '/sources', '/health', '/auth/request-code', '/auth/verify', '/me', '/assistant'],
   }))
 
   app.get('/health', async (_req, reply) => {

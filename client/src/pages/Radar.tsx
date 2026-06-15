@@ -11,7 +11,7 @@ import {
   X,
 } from 'lucide-react'
 import { Button, Chip, EmptyState } from '@/components/ui'
-import { COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
+import { ACTIVE_COUNTRIES, TOPICS, countryByCode, topicById } from '@/lib/data'
 import type { CountryCode, DocType, Relevance, Topic } from '@/lib/types'
 import { useStore } from '@/lib/store'
 import { useLiveFeed } from '@/lib/use-live-feed'
@@ -70,8 +70,14 @@ export function RadarPage() {
   const [loading, setLoading] = useState(true)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [sourcesOpen, setSourcesOpen] = useState(false)
-  // Tier 1+2 features state
-  const [preset, setPreset] = useState<FilterPresetId>('all')
+  // Tier 1+2 features state · el preset se hidrata desde la URL (igual que `q`),
+  // así los accesos del Home (/radar?preset=hot|with-tramite|mi-comision) abren
+  // el Radar ya filtrado en vez de caer en el feed completo.
+  const [preset, setPreset] = useState<FilterPresetId>(() => {
+    const p = searchParams.get('preset')
+    const valid: FilterPresetId[] = ['all', 'mi-comision', 'hot', 'recent-sancionadas', 'crossborder', 'this-week', 'with-tramite']
+    return p && (valid as string[]).includes(p) ? (p as FilterPresetId) : 'all'
+  })
   const [density] = useState<'comfortable' | 'compact'>('comfortable')
   // Paginación incremental · Radar tiene 1700+ items, montar todo crashea perf.
   // Empezamos con 50 y sumamos 100 por scroll infinito (sentinel + IO).
@@ -413,7 +419,7 @@ export function RadarPage() {
           <div className="animate-fade-in flex flex-col gap-2.5 border-t border-ink-100 pt-3">
             <FilterRow label="País">
               <Chip active={country === 'all'} onClick={() => setCountry('all')} size="sm">Todos</Chip>
-              {COUNTRIES.map(c => (
+              {ACTIVE_COUNTRIES.map(c => (
                 <Chip key={c.code} active={country === c.code} onClick={() => setCountry(c.code)} size="sm">
                   <span aria-hidden>{c.flag}</span> {c.name}
                 </Chip>
