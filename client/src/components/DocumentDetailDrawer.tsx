@@ -17,14 +17,7 @@ import { store, useStore } from '@/lib/store'
 import { shareLink } from '@/lib/share'
 import type { Document } from '@/lib/types'
 
-const SAMPLE_ARTICLES = [
-  { n: 1, title: 'Objeto y alcance', body: 'Establece el marco regional, define principios generales y delimita el alcance territorial sobre actividades con impacto ambiental significativo.' },
-  { n: 2, title: 'Obligaciones de reporte', body: 'Las autoridades competentes deberán informar periódicamente los indicadores definidos por el Comité Técnico.' },
-  { n: 3, title: 'Coordinación institucional', body: 'Mecanismo entre organismos nacionales, provinciales y de zonas fronterizas con atribuciones específicas en monitoreo y respuesta.' },
-  { n: 4, title: 'Plazos de cumplimiento', body: 'Las autoridades dispondrán de hasta 12 meses para la primera adecuación operativa.' },
-]
-
-type Tab = 'resumen' | 'articulos' | 'acciones'
+type Tab = 'resumen' | 'acciones'
 
 export function DocumentDetailDrawer({
   doc,
@@ -81,7 +74,6 @@ export function DocumentDetailDrawer({
       <div className="flex flex-wrap gap-1 rounded-2xl bg-white p-1 ring-1 ring-ink-100 shadow-card">
         {[
           { id: 'resumen' as Tab, label: 'Resumen' },
-          { id: 'articulos' as Tab, label: 'Artículos' },
           { id: 'acciones' as Tab, label: 'Acciones' },
         ].map(t => (
           <button
@@ -103,19 +95,7 @@ export function DocumentDetailDrawer({
         {tab === 'resumen' && (
           <>
             <Eyebrow icon={<Sparkles size={11} />}>Resumen ejecutivo</Eyebrow>
-            <Markdown
-              content={
-                `**${doc.title}**\n\n${doc.excerpt}\n\n` +
-                '**Puntos clave**\n\n' +
-                '- Marco institucional con respaldo regional.\n' +
-                '- Obligaciones de reporte y coordinación.\n' +
-                '- Aplicable a zonas fronterizas y articulación binacional.\n\n' +
-                '**Próximos pasos sugeridos**\n\n' +
-                '- Convocar minuta interna.\n' +
-                '- Compartir con tu equipo de comisión.\n' +
-                '- Hablar con el documento desde el Asistente.'
-              }
-            />
+            <Markdown content={`**${doc.title}**\n\n${doc.excerpt}`} />
             <div className="rounded-2xl bg-upm-50/60 p-4 ring-1 ring-upm-100">
               <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-upm-700">Tema y foro asociado</div>
               <div className="mt-1 text-[13px] text-ink-700">
@@ -128,20 +108,6 @@ export function DocumentDetailDrawer({
               </div>
             </div>
           </>
-        )}
-
-        {tab === 'articulos' && (
-          <div className="flex flex-col gap-2.5">
-            {SAMPLE_ARTICLES.map(a => (
-              <div key={a.n} className="rounded-2xl bg-white p-4 ring-1 ring-ink-100 shadow-card">
-                <div className="flex items-center gap-2">
-                  <Badge tone="brand">Art. {a.n}</Badge>
-                  <span className="text-[13px] font-bold text-ink-900">{a.title}</span>
-                </div>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-ink-700">{a.body}</p>
-              </div>
-            ))}
-          </div>
         )}
 
         {tab === 'acciones' && (

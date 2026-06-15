@@ -12,7 +12,6 @@ import {
   LogOut,
   Pencil,
   Plus,
-  Sparkles,
   Tag,
   Trash2,
   Wrench,
@@ -197,39 +196,13 @@ export function ProfilePage() {
           </div>
         </div>
 
-        {/* Membresía */}
+        {/* Datos institucionales (reales, derivados de las preferencias) */}
         <div className="flex flex-col gap-4">
-          <Card className="bg-gradient-to-br from-upm-700 to-upm-900 text-white ring-white/10">
-            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-upm-200">Membresía</div>
-            <div className="mt-2 text-[22px] font-bold tracking-tight">UPM Premium</div>
-            <div className="mt-1 text-[12.5px] text-white/70">Activo · renovación 2026-12-31</div>
-
-            <ul className="mt-4 flex flex-col gap-1.5 text-[13px] text-white/85">
-              {[
-                'Asistente AI ilimitado',
-                'Radar normativo regional',
-                'Biblioteca UPM completa',
-                'Dossiers y briefs reutilizables',
-                'Foros UPM por tema',
-              ].map(b => (
-                <li key={b} className="flex items-start gap-1.5">
-                  <Sparkles size={12} className="mt-0.5 text-upm-200" />
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Button size="sm" variant="secondary" className="mt-4 w-full" onClick={() => store.pushToast('info', 'Plan 2026 · Renovación automática')}>
-              Ver plan
-            </Button>
-          </Card>
-
           <Card>
             <div className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-ink-500">Datos institucionales</div>
             <div className="mt-2 flex flex-col gap-1.5 text-[12.5px] text-ink-700">
               <div><span className="font-semibold text-ink-900">Temas prioritarios:</span> {prefs?.topics?.length ? prefs.topics.map(t => topicById(t)?.label ?? t).join(', ') : 'Configurá tus temas en Preferencias'}</div>
               <div><span className="font-semibold text-ink-900">Institución:</span> {INSTITUTION_BY_COUNTRY[operator?.pais ?? 'UY'] ?? 'Parlamento'} · {countryByCode(operator?.pais ?? 'UY').name}</div>
-              <div><span className="font-semibold text-ink-900">Acreditación:</span> Miembro UPM · 2026</div>
             </div>
           </Card>
         </div>

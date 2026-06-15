@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Bookmark,
@@ -25,29 +25,6 @@ import { Markdown } from '@/components/Markdown'
 import { cleanTitle } from '@/lib/pt-es'
 import { cn } from '@/lib/cn'
 
-const SEED: { id: string; type: SavedType; title: string; ref?: string; body?: string }[] = [
-  { id: 'seed-1', type: 'novedad', title: 'Nueva reglamentación ambiental en Brasil', ref: 'n1' },
-  { id: 'seed-2', type: 'documento', title: 'Convenio de cooperación legislativa regional', ref: 'd3' },
-  {
-    id: 'seed-3',
-    type: 'respuesta',
-    title: 'Resumen ejecutivo · Corredores bioceánicos',
-    body: '## Corredores bioceánicos · resumen ejecutivo\n\n**Qué es:** la red vial y ferroviaria que conecta puertos del Atlántico y del Pacífico atravesando el MERCOSUR.\n\n**Por qué importa:**\n- Reduce costos logísticos del comercio regional con Asia.\n- Argentina, Brasil, Paraguay y Chile tienen tramos en distintas etapas.\n\n**Estado:** en tramitación en varias legislaturas; sin marco normativo único.\n\n> Generado por el Asistente AI UPM a partir del corpus regional.',
-  },
-  {
-    id: 'seed-4',
-    type: 'brief',
-    title: 'Brief de reunión bilateral Argentina-Brasil',
-    body: '## Brief · reunión bilateral Argentina–Brasil\n\n**Objetivo:** alinear posiciones sobre integración energética y ambiental.\n\n**3 puntos clave:**\n1. Coordinación de agendas en el Parlasur.\n2. Marco común para infraestructura de integración física.\n3. Compromisos ambientales sobre la cuenca compartida.\n\n**Próximo paso:** acordar fecha de comisión conjunta.',
-  },
-  {
-    id: 'seed-5',
-    type: 'minuta',
-    title: 'Minuta: Foro de Medio Ambiente',
-    body: '## Minuta · Foro de Medio Ambiente\n\n**Asistentes:** delegaciones de AR, BR, UY, PY.\n\n**Temas tratados:**\n- Estado del Acuerdo de Escazú en la región.\n- Monitoreo de la cuenca del Pantanal.\n\n**Acuerdos:** elevar un informe conjunto a las comisiones de ambiente de cada país.',
-  },
-]
-
 const TYPE_META: Record<SavedType, { label: string; icon: LucideIcon; tone: string }> = {
   novedad: { label: 'Novedad', icon: Newspaper, tone: 'bg-warning-bg text-warning-fg' },
   documento: { label: 'Documento', icon: FileText, tone: 'bg-info-bg text-info-fg' },
@@ -67,12 +44,6 @@ export function FoldersPage() {
   const [moveTarget, setMoveTarget] = useState<SavedItem | null>(null)
   const [readItem, setReadItem] = useState<SavedItem | null>(null)
 
-  useEffect(() => {
-    if (saved.length === 0) {
-      SEED.forEach(s => store.saveItem({ id: s.id, type: s.type, title: s.title, ref: s.ref, body: s.body }))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const create = () => {
     if (!name.trim()) return
