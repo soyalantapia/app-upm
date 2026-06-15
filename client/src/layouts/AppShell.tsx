@@ -63,9 +63,11 @@ export function AppShell() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // Scroll-to-top on route change
+  // Scroll-to-top + cerrar el buscador ⌘K en cada cambio de ruta (que nunca
+  // quede el modal abierto al navegar).
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+    setSearchOpen(false)
   }, [location.pathname])
 
   return (
