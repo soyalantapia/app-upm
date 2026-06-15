@@ -26,7 +26,7 @@ export function BrandLockup({ className, compact = false }: { className?: string
         <span className="text-[15px] font-bold tracking-tight text-upm-800">Asistente AI UPM</span>
         {!compact && (
           <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-ink-500">
-            Legislador · Demo
+            Acceso institucional
           </span>
         )}
       </div>

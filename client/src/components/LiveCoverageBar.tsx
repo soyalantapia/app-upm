@@ -35,7 +35,10 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
       hwByCountry.current[code] = Math.max(hwByCountry.current[code] ?? 0, by[code])
     }
     hwFuentes.current = Math.max(hwFuentes.current, feed.sources?.length ?? 0)
-    hwNormas.current = Math.max(hwNormas.current, feed.items?.length ?? 0)
+    // Corpus REAL = suma de los conteos por fuente del backend (no feed.items.length,
+    // que está capado por el LIMIT del /feed). Así el número refleja la DB completa.
+    const totalFromSources = (feed.sources ?? []).reduce((a, s) => a + (s.count ?? 0), 0)
+    hwNormas.current = Math.max(hwNormas.current, totalFromSources, feed.items?.length ?? 0)
   }
   const f = lastRef.current
 
@@ -43,10 +46,9 @@ export function LiveCoverageBar({ feed }: { feed: AggregatedFeed | null }) {
     .map(c => ({ code: c.code as CountryCode, flag: c.flag, name: c.name, count: hwByCountry.current[c.code] ?? 0 }))
     .filter(c => c.count > 0)
     .sort((a, b) => b.count - a.count)
-  // Países = amplitud del corpus (lo que UPM monitorea), estable y coherente
-  // con el login y Estadísticas. El "Pulso regional" de abajo muestra los que
-  // tuvieron actividad (puede ser menos: otra métrica, otra etiqueta).
-  const paises = COUNTRIES.length
+  // Países = los que REALMENTE tienen normas en el corpus (no la lista completa
+  // de países posibles). Coherente con el Pulso regional de abajo y con la DB.
+  const paises = porPais.length
   const fuentes = hwFuentes.current
   const totalNormas = hwNormas.current
 
