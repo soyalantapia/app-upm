@@ -27,13 +27,8 @@ import {
   fetchComunicacionesARorg,
 } from './infoleg-ar'
 import { fetchExpedientesHCDN } from './expedientes-hcdn'
-import { fetchSenadoAR } from './senado-ar'
 import { fetchImpoUY } from './impo-uy'
 import { fetchMateriasSenadoBR } from './materias-senado-br'
-import { fetchConveniosAR } from './convenios-ar'
-import { fetchCnvAR } from './cnv-ar'
-import { fetchParlasur } from './parlasur'
-import { fetchDefensoriaAR } from './defensoria-ar'
 import { fetchCsjnAR } from './csjn-ar'
 import { fetchLeyesDestacadasAR } from './leyes-destacadas-ar'
 import { fetchTcuBR } from './tcu-br'
@@ -42,10 +37,6 @@ import { fetchSentenciasCorteCO } from './sentencias-corte-co'
 import { fetchVotacoesCamaraBR } from './votacoes-br'
 import { fetchVotacoesSenadoBR } from './votacoes-senado-br'
 import { fetchEventosCamaraBR } from './eventos-br'
-import { fetchSenadoPY } from './senado-py'
-import { fetchDiputadosPY } from './diputados-py'
-import { fetchAsambleaBO } from './asamblea-bo'
-import { fetchCongresoCL } from './congreso-cl'
 
 export type SourceStatus = 'live' | 'mock' | 'mixed'
 
@@ -175,13 +166,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'directivas-ar', label: 'Argentina · Directivas', country: 'AR', fn: ({ signal }) => fetchDirectivasInfolegArgentina({ limit: 50, signal }) },
   { id: 'circulares-ar', label: 'Argentina · Circulares (BCRA, AFIP)', country: 'AR', fn: ({ signal }) => fetchCircularesInfolegArgentina({ limit: 30, signal }) },
   { id: 'expedientes-hcdn-ar', label: 'Cámara de Diputados AR · Expedientes históricos', country: 'AR', fn: ({ signal }) => fetchExpedientesHCDN({ limit: 80, signal }) },
-  { id: 'senado-ar', label: 'Honorable Senado de la Nación · Argentina', country: 'AR', fn: ({ signal }) => fetchSenadoAR({ limit: 30, signal }) },
   { id: 'impo-uy', label: 'IMPO Uruguay · Decretos del Poder Ejecutivo', country: 'UY', fn: ({ signal }) => fetchImpoUY({ limit: 30, signal }) },
   { id: 'materias-senado-br', label: 'Senado Federal Brasil · Matérias legislativas', country: 'BR', fn: ({ signal }) => fetchMateriasSenadoBR({ limit: 30, signal }) },
-  { id: 'convenios-ar', label: 'Ministerio de Trabajo AR · Convenios Colectivos', country: 'AR', fn: ({ signal }) => fetchConveniosAR({ limit: 30, signal }) },
-  { id: 'cnv-ar', label: 'Comisión Nacional de Valores · Argentina', country: 'AR', fn: ({ signal }) => fetchCnvAR({ limit: 30, signal }) },
-  { id: 'parlasur', label: 'Parlamento del Mercosur (Parlasur) · Actos supranacionales', country: 'AR', fn: ({ signal }) => fetchParlasur({ limit: 30, signal }) },
-  { id: 'defensoria-ar', label: 'Defensoría del Pueblo · Argentina', country: 'AR', fn: ({ signal }) => fetchDefensoriaAR({ limit: 30, signal }) },
   { id: 'tcu-br', label: 'Tribunal de Contas da União · Brasil', country: 'BR', fn: ({ signal }) => fetchTcuBR({ limit: 30, signal }) },
   // Fuentes AR por organismo · todas tiran del mismo JSON Infoleg con filtro por emisor
   { id: 'mercosur-comercio-ar', label: 'Argentina · Comisión de Comercio del MERCOSUR', country: 'AR', fn: ({ signal }) => fetchMercosurComercioAR({ limit: 60, signal }) },
@@ -203,12 +189,8 @@ const FETCHERS: Fetcher[] = [
   { id: 'parlamento-uy', label: 'Parlamento del Uruguay', country: 'UY', fn: ({ signal }) => fetchParlamentoUY({ limit: 25, signal }) },
   { id: 'leyes-uy', label: 'Leyes Promulgadas Uruguay', country: 'UY', fn: ({ signal }) => fetchLeyesUruguay({ limit: 80, signal }) },
   // Paraguay · Cámara de Senadores + Diputados
-  { id: 'senado-py', label: 'Senado de la República del Paraguay', country: 'PY', fn: ({ signal }) => fetchSenadoPY({ limit: 30, signal }) },
-  { id: 'diputados-py', label: 'Cámara de Diputados del Paraguay', country: 'PY', fn: ({ signal }) => fetchDiputadosPY({ limit: 30, signal }) },
   // Bolivia · Asamblea Legislativa Plurinacional
-  { id: 'asamblea-bo', label: 'Asamblea Legislativa Plurinacional de Bolivia', country: 'BO', fn: ({ signal }) => fetchAsambleaBO({ limit: 30, signal }) },
   // Chile · Biblioteca del Congreso Nacional
-  { id: 'congreso-cl', label: 'Congreso Nacional de Chile (BCN)', country: 'CL', fn: ({ signal }) => fetchCongresoCL({ limit: 30, signal }) },
 ]
 
 // Si hay un Worker desplegado (variable VITE_UPM_API_URL), preferirlo.
@@ -254,6 +236,22 @@ export async function fetchLiveFeed(opts?: {
     fromWorker.items = rank(dedupe(fromWorker.items), opts?.prefs)
     writeCache(fromWorker)
     return fromWorker
+  }
+
+  // PRODUCCIÓN: si hay backend configurado (VITE_UPM_API_URL) pero falló, NO
+  // caemos a los fetchers cliente — devolvemos feed vacío (EmptyState honesto).
+  // Garantiza que en prod el 100% de los datos venga del backend (la DB), nunca
+  // de fuentes scrapeadas del lado del cliente. Los fetchers cliente quedan solo
+  // para dev/demo sin backend (WORKER_URL vacío).
+  if (WORKER_URL) {
+    const empty: AggregatedFeed = {
+      items: [],
+      status: 'live',
+      fetchedAt: new Date().toISOString(),
+      sources: [],
+      byCountry: {} as Record<CountryCode, number>,
+    }
+    return empty
   }
 
   // Render progresivo: cada fetcher emite por separado y se actualiza el feed.
