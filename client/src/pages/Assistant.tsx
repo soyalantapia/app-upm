@@ -363,19 +363,25 @@ export function AssistantPage() {
             <OverflowActions visibleCount={4}>
               {[
                 <QuickButton key="copy" icon={Copy} label="Copiar" onClick={copyLastAssistant} />,
-                ...(LAUNCH.saveToFolder ? [<QuickButton key="save" icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />] : []),
-                <QuickButton
-                  key="brief"
-                  icon={FileStack}
-                  label="Brief"
-                  onClick={() => openCreateBrief({ title: `Brief: ${lastAssistantTitle}`, body: lastAssistantBody })}
-                />,
-                <QuickButton
-                  key="minuta"
-                  icon={ScrollText}
-                  label="Minuta"
-                  onClick={() => openCreateMinuta({ title: `Minuta: ${lastAssistantTitle}`, body: lastAssistantBody })}
-                />,
+                // Guardar/Brief/Minuta persisten en "Mi carpeta" (oculta en el
+                // lanzamiento) → sin destino visible, gatean con el mismo flag.
+                ...(LAUNCH.saveToFolder
+                  ? [
+                      <QuickButton key="save" icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />,
+                      <QuickButton
+                        key="brief"
+                        icon={FileStack}
+                        label="Brief"
+                        onClick={() => openCreateBrief({ title: `Brief: ${lastAssistantTitle}`, body: lastAssistantBody })}
+                      />,
+                      <QuickButton
+                        key="minuta"
+                        icon={ScrollText}
+                        label="Minuta"
+                        onClick={() => openCreateMinuta({ title: `Minuta: ${lastAssistantTitle}`, body: lastAssistantBody })}
+                      />,
+                    ]
+                  : []),
                 <QuickButton key="share" icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />,
                 <QuickButton key="regen" icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />,
                 <QuickButton key="new" icon={Plus} label="Nueva" onClick={newConversation} />,

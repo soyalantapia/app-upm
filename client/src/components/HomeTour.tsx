@@ -19,19 +19,19 @@ const STEPS: Step[] = [
   {
     icon: Sparkles,
     title: 'Bienvenido a UPM',
-    body: 'Es tu dashboard para ver qué pasó importante hoy. Las 3 cards de arriba responden: ¿qué alta relevancia?, ¿qué se vota?, ¿qué audiencias hay próximas?',
+    body: 'Este es tu tablero de inicio: ves lo más relevante del día de un vistazo. Las 3 tarjetas de arriba responden: ¿qué es de alta relevancia?, ¿qué se vota?, ¿qué audiencias hay próximas?',
     cta: 'Mostrame el Radar',
   },
   {
     icon: Radar,
     title: 'Radar en vivo',
-    body: 'El Radar trae normativa de 47 fuentes oficiales del MERCOSUR. Usá "Mi comisión" para ver solo lo de tu tema, o tipeá un número de ley en el search.',
+    body: 'El Radar reúne normativa de las fuentes oficiales del MERCOSUR. Usá "Mi comisión" para ver solo lo de tu tema, o escribí un número de ley en el buscador.',
     cta: 'Ver agenda',
   },
   {
     icon: Calendar,
-    title: 'Agenda y briefings',
-    body: 'La Agenda MERCOSUR mezcla eventos institucionales con convocatorias detectadas del feed. Para sesiones, tocá "Pre-sesión" abajo y armás un briefing en 30 segundos.',
+    title: 'Agenda regional',
+    body: 'La Agenda MERCOSUR combina eventos institucionales con convocatorias detectadas del feed, así no se te pasa ninguna sesión.',
     cta: 'Empezar a usar',
   },
 ]
