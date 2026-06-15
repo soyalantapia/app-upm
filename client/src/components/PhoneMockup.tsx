@@ -31,36 +31,37 @@ export function PhoneMockup() {
           <div className="mx-3 mt-3 overflow-hidden rounded-2xl bg-gradient-to-br from-upm-700 via-upm-800 to-upm-900 p-3 text-white shadow-floating">
             <div className="text-[7.5px] font-bold uppercase tracking-[0.2em] text-white/70">Tablero</div>
             <div className="mt-0.5 text-[12px] font-bold leading-tight">Buenos días</div>
-            <div className="mt-1 text-[8.5px] leading-tight text-white/70">10 novedades · 1 alerta prioritaria</div>
+            <div className="mt-1 text-[8.5px] leading-tight text-white/70">Tu radar normativo, al día</div>
             <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[8px] font-bold ring-1 ring-white/15">
               <Sparkles size={8} /> Preguntar al Asistente
             </div>
           </div>
 
-          {/* Stats */}
+          {/* Stats · placeholders abstractos (no datos fabricados) */}
           <div className="mx-3 mt-3 grid grid-cols-2 gap-1.5">
             <div className="rounded-xl bg-white p-2 ring-1 ring-ink-100">
               <div className="text-[7px] font-bold uppercase tracking-[0.16em] text-ink-500">Novedades</div>
-              <div className="text-[14px] font-bold tabular-nums text-ink-900">10</div>
+              <div className="mt-1.5 h-2.5 w-7 rounded bg-ink-100" />
             </div>
             <div className="rounded-xl bg-white p-2 ring-1 ring-ink-100">
               <div className="text-[7px] font-bold uppercase tracking-[0.16em] text-ink-500">Alta relevancia</div>
-              <div className="text-[14px] font-bold tabular-nums text-ink-900">4</div>
+              <div className="mt-1.5 h-2.5 w-5 rounded bg-ink-100" />
             </div>
           </div>
 
-          {/* News card */}
+          {/* News card · esqueleto (sin titular fabricado) */}
           <div className="mx-3 mt-2.5 rounded-2xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">
             <div className="flex items-start gap-1.5">
               <div className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-upm-50 text-upm-700">
                 <ScrollText size={11} />
               </div>
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-1">
-                  <span className="rounded-full bg-upm-50 px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-[0.14em] text-upm-700">🇧🇷 Brasil</span>
-                  <span className="rounded-full bg-danger-bg px-1.5 py-0.5 text-[7px] font-bold uppercase tracking-[0.14em] text-danger-fg">Alta</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1">
+                  <span className="h-2 w-7 rounded bg-upm-100" />
+                  <span className="h-2 w-5 rounded bg-danger-bg" />
                 </div>
-                <div className="mt-1 text-[9px] font-bold leading-tight text-ink-900">Nueva reglamentación ambiental en Brasil</div>
+                <div className="mt-1.5 h-1.5 w-full rounded bg-ink-100" />
+                <div className="mt-1 h-1.5 w-2/3 rounded bg-ink-100" />
               </div>
             </div>
           </div>
