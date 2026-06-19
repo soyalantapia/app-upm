@@ -70,6 +70,36 @@ async function feedEnvelope(db: Db, items: NewsItem[]) {
   }
 }
 
+// Tope por país en el feed BALANCEADO. Un date-sort global capeado a 500 dejaba
+// que un país de alto volumen (Brasil · Câmara, ~150 proposiciones/día) tapara a
+// los de corpus histórico (AR/CO/UY) y los empujara fuera del payload → un
+// legislador argentino veía casi puro Brasil. Con esto, CADA país aporta sus N
+// más recientes y el cliente rankea según las preferencias del legislador.
+const FEED_LIMIT = 500
+const PER_COUNTRY = 130
+
+async function balancedRows(db: Db, extra: ReturnType<typeof and>) {
+  const countryRows = await db
+    .select({ c: normas.country })
+    .from(normas)
+    .where(noiseFilter)
+    .groupBy(normas.country)
+  const perCountry = await Promise.all(
+    countryRows.map(({ c }) =>
+      db
+        .select()
+        .from(normas)
+        .where(and(noiseFilter, eq(normas.country, c), extra))
+        .orderBy(desc(normas.date))
+        .limit(PER_COUNTRY),
+    ),
+  )
+  return perCountry
+    .flat()
+    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+    .slice(0, FEED_LIMIT)
+}
+
 export function feedRoutes(app: FastifyInstance, db: Db) {
   app.get('/feed', async (req, reply) => {
     const parsed = FeedQuery.safeParse(req.query)
@@ -77,12 +107,16 @@ export function feedRoutes(app: FastifyInstance, db: Db) {
       return reply.code(400).send({ error: 'invalid query', details: parsed.error.issues })
     }
     const { pais, tema } = parsed.data
-    const where = and(
-      noiseFilter,
-      pais ? eq(normas.country, pais) : undefined,
-      tema ? eq(normas.topic, tema) : undefined,
-    )
-    const rows = await db.select().from(normas).where(where).orderBy(desc(normas.date)).limit(500)
+    const temaWhere = tema ? eq(normas.topic, tema) : undefined
+    // Con país explícito → ese país (filtro server-side). Sin país → balanceado.
+    const rows = pais
+      ? await db
+          .select()
+          .from(normas)
+          .where(and(noiseFilter, eq(normas.country, pais), temaWhere))
+          .orderBy(desc(normas.date))
+          .limit(FEED_LIMIT)
+      : await balancedRows(db, temaWhere)
     return feedEnvelope(db, rows.map(rowToItem))
   })
 
@@ -92,13 +126,16 @@ export function feedRoutes(app: FastifyInstance, db: Db) {
       return reply.code(400).send({ error: 'invalid query', details: parsed.error.issues })
     }
     const { pais, tema } = parsed.data
-    const where = and(
-      noiseFilter,
-      inArray(normas.type, ['ley', 'decreto', 'reglamento', 'informe']),
-      pais ? eq(normas.country, pais) : undefined,
-      tema ? eq(normas.topic, tema) : undefined,
-    )
-    const rows = await db.select().from(normas).where(where).orderBy(desc(normas.date)).limit(500)
+    const typeWhere = inArray(normas.type, ['ley', 'decreto', 'reglamento', 'informe'])
+    const temaWhere = tema ? eq(normas.topic, tema) : undefined
+    const rows = pais
+      ? await db
+          .select()
+          .from(normas)
+          .where(and(noiseFilter, typeWhere, eq(normas.country, pais), temaWhere))
+          .orderBy(desc(normas.date))
+          .limit(FEED_LIMIT)
+      : await balancedRows(db, and(typeWhere, temaWhere))
     return feedEnvelope(db, rows.map(rowToItem))
   })
 
