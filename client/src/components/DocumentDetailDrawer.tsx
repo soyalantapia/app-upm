@@ -61,7 +61,7 @@ export function DocumentDetailDrawer({
       title={doc.title}
       description={
         <span className="flex flex-wrap items-center gap-1.5">
-          <Badge tone="brand">{doc.type}</Badge>
+          <Badge tone="brand">{doc.type.charAt(0).toUpperCase() + doc.type.slice(1)}</Badge>
           {doc.status === 'oficial' && <Badge tone="success">Oficial UPM</Badge>}
           {doc.status === 'curado' && <Badge tone="info">Curado por UPM</Badge>}
           {doc.status === 'aporte' && <Badge tone="warning">Aporte de foro</Badge>}

@@ -21,7 +21,7 @@ import { StreamingMarkdown } from '@/components/StreamingMarkdown'
 import { SourceCard } from '@/components/SourceCard'
 import { store, useStore } from '@/lib/store'
 import { LAUNCH } from '@/lib/launch'
-import { copyToClipboard, shareLink } from '@/lib/share'
+import { copyToClipboard } from '@/lib/share'
 import { useUI } from '@/lib/ui-provider'
 import type { ChatMessage } from '@/lib/types'
 
@@ -108,6 +108,7 @@ export function AssistantPage() {
   // Timestamp del último submit · para prevenir double-click rapidísimo
   const lastSubmitRef = useRef<number>(0)
   const scrollerRef = useRef<HTMLDivElement>(null)
+  const taRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     scrollerRef.current?.scrollTo({ top: scrollerRef.current.scrollHeight, behavior: 'smooth' })
@@ -140,6 +141,7 @@ export function AssistantPage() {
     const userMsg = userMessage(value)
     setMessages(prev => [...prev, userMsg])
     setInput('')
+    if (taRef.current) taRef.current.style.height = 'auto'
     setThinking(true)
     // 1) Backend con Claude real (si hay VITE_UPM_API_URL y responde 200)
     const backendReply = await tryBackendAssistant([...messages, userMsg])
@@ -167,15 +169,14 @@ export function AssistantPage() {
       const realIdx = prev.length - 1 - idx
       return [...prev.slice(0, realIdx), reply, ...prev.slice(realIdx + 1)]
     })
-    if (reply.content.startsWith('El asistente no está disponible')) {
-      // no toast de éxito si fue fallback honesto
-    } else {
+    if (!reply.content.startsWith('El asistente no está disponible')) {
       store.pushToast('info', 'Respuesta regenerada')
     }
     setThinking(false)
   }
 
   const newConversation = () => {
+    if (thinking) return
     if (messages.length > 1) {
       store.saveConversation(deriveTitle(messages), messages)
       store.pushToast('success', 'Conversación guardada')
@@ -184,6 +185,7 @@ export function AssistantPage() {
   }
 
   const loadConversation = (id: string) => {
+    if (thinking) return
     const c = conversations.find(x => x.id === id)
     if (!c) return
     if (messages.length > 1) {
@@ -290,7 +292,7 @@ export function AssistantPage() {
               message={m}
               onCopy={async () => {
                 const ok = await copyToClipboard(m.content)
-                if (ok) store.pushToast('success', 'Copiado al portapapeles')
+                store.pushToast(ok ? 'success' : 'warning', ok ? 'Copiado al portapapeles' : 'No pudimos copiar al portapapeles')
               }}
               onOpenSource={openDocument}
             />
@@ -382,7 +384,7 @@ export function AssistantPage() {
                       />,
                     ]
                   : []),
-                <QuickButton key="share" icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />,
+                <QuickButton key="share" icon={Share2} label="Compartir" onClick={async () => { const ok = await copyToClipboard(lastAssistantBody); store.pushToast(ok ? 'success' : 'warning', ok ? 'Respuesta copiada · pegala donde quieras' : 'No pudimos copiar la respuesta') }} />,
                 <QuickButton key="regen" icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />,
                 <QuickButton key="new" icon={Plus} label="Nueva" onClick={newConversation} />,
               ]}
@@ -400,9 +402,15 @@ export function AssistantPage() {
             className="flex items-end gap-2"
           >
             <textarea
+              ref={taRef}
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={e => {
+                setInput(e.target.value)
+                e.target.style.height = 'auto'
+                e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px'
+              }}
               onKeyDown={e => {
+                if (e.nativeEvent.isComposing) return
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
                   send()

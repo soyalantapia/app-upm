@@ -95,7 +95,7 @@ export function ProfilePage() {
           <Card>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="grid h-20 w-20 place-items-center rounded-3xl bg-gradient-to-br from-upm-500 to-upm-800 text-2xl font-bold text-white shadow-cta">
-                {operator?.name.split(' ').slice(-1)[0]?.charAt(0) ?? 'L'}
+                {operator?.name.trim().charAt(0).toUpperCase() || 'L'}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-upm-700">
@@ -338,6 +338,7 @@ function AlertasPanel({ alerts }: { alerts: Alert[] }) {
                 a.active ? 'bg-upm-50 text-upm-600' : 'bg-ink-50 text-ink-500'
               }`}
               title={a.active ? 'Desactivar alerta' : 'Activar alerta'}
+              aria-label={a.active ? 'Desactivar alerta' : 'Activar alerta'}
             >
               {a.active ? <BellRing size={14} /> : <BellOff size={14} />}
             </button>
@@ -373,6 +374,7 @@ function AlertasPanel({ alerts }: { alerts: Alert[] }) {
               }}
               className="shrink-0 p-1.5 text-ink-300 hover:text-danger transition-colors"
               title="Eliminar alerta"
+              aria-label="Eliminar alerta"
             >
               <Trash2 size={14} />
             </button>

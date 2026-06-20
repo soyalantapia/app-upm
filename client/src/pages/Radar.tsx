@@ -21,7 +21,7 @@ import { matchesQuery } from '@/lib/synonyms'
 import { useDebounced } from '@/lib/use-debounced'
 import { RadarSmartCard } from '@/components/RadarSmartCard'
 import { QuickFilterPills, type FilterPresetId } from '@/components/QuickFilterPills'
-import { PulseToday } from '@/components/PulseToday'
+import { PulseToday, OTHER_COUNTRIES } from '@/components/PulseToday'
 
 const TYPE_OPTIONS: { id: DocType; label: string }[] = [
   { id: 'ley', label: 'Ley' },
@@ -46,6 +46,18 @@ const SORT_OPTIONS: { id: Sort; label: string }[] = [
   { id: 'relevancia', label: 'Mayor relevancia' },
 ]
 
+// Etiquetas legibles de los presets que NO tienen pill propio (vienen del Pulso o
+// del Home), para mostrar una "vista activa" removible y no dejar el filtro invisible.
+const PRESET_LABELS: Record<FilterPresetId, string> = {
+  all: 'Todas',
+  'mi-comision': 'Mi comisión',
+  hot: 'Alta relevancia',
+  'recent-sancionadas': 'Recién sancionadas',
+  crossborder: 'Cuestiones cruzadas MERCOSUR',
+  'this-week': 'Esta semana',
+  'with-tramite': 'Por votar / en trámite',
+}
+
 export function RadarPage() {
   const navigate = useNavigate()
   const saved = useStore(s => s.saved)
@@ -67,7 +79,6 @@ export function RadarPage() {
   const [relevance, setRelevance] = useState<Relevance | 'all'>('all')
   const [organismo, setOrganismo] = useState<string>('all')
   const [sort, setSort] = useState<Sort>('fecha-desc')
-  const [loading, setLoading] = useState(true)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [sourcesOpen, setSourcesOpen] = useState(false)
   // Tier 1+2 features state · el preset se hidrata desde la URL (igual que `q`),
@@ -131,10 +142,9 @@ export function RadarPage() {
   }
 
   useEffect(() => {
-    setLoading(true)
-    setVisibleCount(50) // resetear paginación al cambiar filtros
-    const id = setTimeout(() => setLoading(false), 200)
-    return () => clearTimeout(id)
+    // El filtrado es local y síncrono (useMemo) → no hace falta un skeleton
+    // artificial de 200ms en cada cambio de filtro; solo reseteamos la paginación.
+    setVisibleCount(50)
   }, [country, topic, type, relevance, organismo, debouncedQ, sort, preset])
 
   // Snapshot de visita: cada vez que el usuario abre Radar y el feed está cargado,
@@ -199,19 +209,24 @@ export function RadarPage() {
           (userCountries.size === 0 || userCountries.has(n.country)) &&
           n.relevance !== 'baja',
         )
+      } else {
+        // Sin prefs configuradas → vaciar para disparar el empty state
+        // "Tu comisión no está configurada" (antes mostraba TODO el feed en silencio).
+        items = []
       }
     } else if (preset === 'hot') {
       items = items.filter(n => n.relevance === 'alta')
     } else if (preset === 'recent-sancionadas') {
       const monthAgo = now - 30 * 24 * 60 * 60 * 1000
       items = items.filter(n => {
-        const isLey = /^(?:ar|uy)-ley-/.test(n.id) || /sancion|promulgad/i.test(n.status ?? '')
-        const d = new Date(n.date ?? '').getTime()
+        // Mismo criterio que PulseToday (incluye CO + dataPublicacao) para que el
+        // contador de la card coincida con los resultados.
+        const isLey = /^(?:ar|uy|co)-ley-/.test(n.id) || /sancion|promulgad|aprobad/i.test(n.status ?? '')
+        const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
         return isLey && !Number.isNaN(d) && d >= monthAgo
       })
     } else if (preset === 'crossborder') {
-      const otrosPaises = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|MERCOSUR|MERCOSUL)\b/i
-      items = items.filter(n => otrosPaises.test((n.fullText ?? '') + ' ' + (n.title ?? '')))
+      items = items.filter(n => OTHER_COUNTRIES.test((n.fullText ?? '') + ' ' + (n.title ?? '')))
     } else if (preset === 'this-week') {
       const weekAgo = now - 7 * 24 * 60 * 60 * 1000
       items = items.filter(n => {
@@ -223,7 +238,7 @@ export function RadarPage() {
     }
     if (sort === 'fecha-desc') items = [...items].sort((a, b) => b.date.localeCompare(a.date))
     if (sort === 'fecha-asc') items = [...items].sort((a, b) => a.date.localeCompare(b.date))
-    if (sort === 'relevancia') items = [...items].sort((a, b) => RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight)
+    if (sort === 'relevancia') items = [...items].sort((a, b) => (RELEVANCE[b.relevance].weight - RELEVANCE[a.relevance].weight) || b.date.localeCompare(a.date))
     return items
   }, [NEWS, debouncedQ, country, topic, type, relevance, organismo, sort, preset, prefs])
 
@@ -239,7 +254,6 @@ export function RadarPage() {
     )
     const monthAgo = now - 30 * 24 * 60 * 60 * 1000
     const weekAgo = now - 7 * 24 * 60 * 60 * 1000
-    const otrosPaises = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|MERCOSUR|MERCOSUL)\b/i
     const userTopics = new Set(prefs?.topics ?? [])
     const userCountries = new Set(prefs?.countries ?? [])
     return {
@@ -249,14 +263,14 @@ export function RadarPage() {
             (userCountries.size === 0 || userCountries.has(n.country)) &&
             n.relevance !== 'baja',
           ).length
-        : baseFiltered.length,
+        : 0,
       hot: baseFiltered.filter(n => n.relevance === 'alta').length,
       'recent-sancionadas': baseFiltered.filter(n => {
-        const isLey = /^(?:ar|uy)-ley-/.test(n.id) || /sancion|promulgad/i.test(n.status ?? '')
-        const d = new Date(n.date ?? '').getTime()
+        const isLey = /^(?:ar|uy|co)-ley-/.test(n.id) || /sancion|promulgad|aprobad/i.test(n.status ?? '')
+        const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
         return isLey && !Number.isNaN(d) && d >= monthAgo
       }).length,
-      crossborder: baseFiltered.filter(n => otrosPaises.test((n.fullText ?? '') + ' ' + (n.title ?? ''))).length,
+      crossborder: baseFiltered.filter(n => OTHER_COUNTRIES.test((n.fullText ?? '') + ' ' + (n.title ?? ''))).length,
       'this-week': baseFiltered.filter(n => {
         const d = new Date(n.dataPublicacao ?? n.date ?? '').getTime()
         return !Number.isNaN(d) && d >= weekAgo
@@ -277,6 +291,17 @@ export function RadarPage() {
             Novedades en vivo
           </h1>
         </div>
+        {liveSources.length > 0 && (
+          <button
+            onClick={() => setSourcesOpen(v => !v)}
+            className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[11.5px] font-semibold text-ink-700 ring-1 ring-ink-100 hover:bg-upm-50 hover:text-upm-800"
+            aria-expanded={sourcesOpen}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse-soft" />
+            {liveSources.filter(s => s.ok).length}/{liveSources.length} fuentes
+            <ChevronDown size={12} className={'transition ' + (sourcesOpen ? 'rotate-180' : '')} />
+          </button>
+        )}
       </div>
 
       {/* Stats por fuente · colapsado por defecto para no ocupar tanto espacio */}
@@ -340,6 +365,20 @@ export function RadarPage() {
         <QuickFilterPills active={preset} onChange={setPreset} counts={presetCounts} />
       )}
 
+      {/* Vista activa para presets que no tienen pill propio (vienen del Pulso o
+          del Home) → así el filtro nunca queda invisible y se puede quitar. */}
+      {!isLoadingInitial && (preset === 'with-tramite' || preset === 'crossborder' || preset === 'this-week') && (
+        <div className="-mt-2 flex items-center gap-2">
+          <span className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-500">Vista</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-upm-700 px-3 py-1 text-[11.5px] font-bold text-white shadow-cta">
+            {PRESET_LABELS[preset]}
+            <button onClick={() => setPreset('all')} className="rounded-full p-0.5 hover:bg-white/20" aria-label="Quitar vista">
+              <X size={11} />
+            </button>
+          </span>
+        </div>
+      )}
+
       {/* Buscar + Filtros + Orden */}
       <div className="flex flex-col gap-2.5 rounded-3xl bg-white p-2.5 ring-1 ring-ink-100 shadow-card">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -348,9 +387,20 @@ export function RadarPage() {
             <input
               value={q}
               onChange={e => setQ(e.target.value)}
+              aria-label="Buscar normativa"
               placeholder="Buscar por palabra…"
               className="min-w-0 flex-1 bg-transparent text-[13.5px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
             />
+            {q && (
+              <button
+                type="button"
+                onClick={() => setQ('')}
+                aria-label="Limpiar búsqueda"
+                className="shrink-0 rounded-full p-0.5 text-ink-400 hover:bg-ink-50 hover:text-ink-700"
+              >
+                <X size={13} />
+              </button>
+            )}
           </label>
 
           <div className="flex items-center gap-2">
@@ -401,10 +451,13 @@ export function RadarPage() {
               <ActiveChip label={topicById(topic).label} onRemove={() => setTopic('all')} />
             )}
             {type !== 'all' && (
-              <ActiveChip label={type} onRemove={() => setType('all')} />
+              <ActiveChip label={TYPE_OPTIONS.find(o => o.id === type)?.label ?? type} onRemove={() => setType('all')} />
             )}
             {relevance !== 'all' && (
               <ActiveChip label={`Relevancia ${RELEVANCE[relevance].label}`} onRemove={() => setRelevance('all')} />
+            )}
+            {organismo !== 'all' && (
+              <ActiveChip label={organismo.length > 32 ? organismo.slice(0, 30) + '…' : organismo} onRemove={() => setOrganismo('all')} />
             )}
             <button
               onClick={clearFilters}
@@ -479,7 +532,7 @@ export function RadarPage() {
 
 
       {/* Resultados */}
-      {loading || isLoadingInitial ? (
+      {isLoadingInitial ? (
         <div className="flex flex-col gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="rounded-3xl bg-white p-5 ring-1 ring-ink-100 shadow-card">
@@ -504,7 +557,7 @@ export function RadarPage() {
               description="Configurá tus países y temas de interés en Perfil para ver solo lo que te importa."
               action={
                 <Button size="md" variant="secondary" onClick={() => navigate('/perfil')}>
-                  Ir a Preferencias
+                  Ir a Perfil
                 </Button>
               }
             />

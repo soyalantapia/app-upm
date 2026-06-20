@@ -27,7 +27,7 @@
   --color-ink-500: #6b7280;  /* AA · 5.1:1 · MÍNIMO LEGIBLE para texto */
   --color-ink-400: #9ca3af;  /* solo iconos · 3.7:1 NO AA para texto */
   --color-ink-300: #d1d5db;  /* placeholder / disabled · 2.5:1 */
-  --color-ink-200: #d1d5db;
+  --color-ink-200: #dadee3;  /* escalón propio entre ink-100 e ink-300 */
   --color-ink-100: #e5e7eb;
   --color-ink-50: #f3f4f6;
 

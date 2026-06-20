@@ -96,7 +96,7 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
           value={searchValue}
           onChange={e => setSearchValue(e.target.value)}
           placeholder="Buscar normativa, ley, tema o número…"
-          className="w-full rounded-2xl bg-white px-12 py-3.5 text-[14px] text-ink-900 ring-1 ring-ink-100 shadow-card placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-500"
+          className="w-full rounded-2xl bg-white px-12 py-3.5 text-[16px] text-ink-900 ring-1 ring-ink-100 shadow-card placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-500"
         />
       </form>
 
@@ -105,6 +105,7 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => navigate('/radar?preset=hot')}
+            title="Normas de alta relevancia detectadas en los últimos días en los países de tu Radar"
             className="group flex flex-col gap-1.5 rounded-2xl bg-white p-3 ring-1 ring-danger/20 shadow-card transition hover:-translate-y-0.5 hover:shadow-floating hover:ring-danger/40"
           >
             <div className="flex items-center gap-1.5">
@@ -141,7 +142,8 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
           </button>
 
           <button
-            onClick={() => navigate('/radar')}
+            onClick={() => navigate('/radar?q=audiencia')}
+            title="Audiencias y sesiones agendadas en las próximas dos semanas"
             className="group flex flex-col gap-1.5 rounded-2xl bg-white p-3 ring-1 ring-upm-200 shadow-card transition hover:-translate-y-0.5 hover:shadow-floating hover:ring-upm-400"
           >
             <div className="flex items-center gap-1.5">
@@ -154,7 +156,7 @@ export function HomeHero({ items, userName, feed, loading }: { items: NewsItem[]
               Audiencias / sesiones
             </div>
             <div className="text-[10px] leading-tight text-ink-500">
-              Próximos 7 días
+              Próximas 2 semanas
             </div>
           </button>
         </div>

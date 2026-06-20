@@ -244,6 +244,9 @@ export const store = {
       ...s,
       alerts: [{ id, createdAt: new Date().toISOString(), matchCount: 0, ...alert }, ...s.alerts],
     }))
+    // Forzar re-evaluación en el próximo ciclo del feed (si no, una alerta nueva
+    // no se evalúa hasta recargar la app).
+    if (typeof window !== 'undefined') window.sessionStorage.removeItem('upm.alerts.evaluated')
     return id
   },
   toggleAlert(id: string) {
@@ -251,6 +254,7 @@ export const store = {
       ...s,
       alerts: s.alerts.map(a => (a.id === id ? { ...a, active: !a.active } : a)),
     }))
+    if (typeof window !== 'undefined') window.sessionStorage.removeItem('upm.alerts.evaluated')
   },
   removeAlert(id: string) {
     update(s => ({
@@ -258,11 +262,11 @@ export const store = {
       alerts: s.alerts.filter(a => a.id !== id),
     }))
   },
-  updateAlertMatchCount(id: string, lastMatchAt: string) {
+  updateAlertMatchCount(id: string, lastMatchAt: string, count: number) {
     update(s => ({
       ...s,
       alerts: s.alerts.map(a =>
-        a.id === id ? { ...a, matchCount: a.matchCount + 1, lastMatchAt } : a,
+        a.id === id ? { ...a, matchCount: count, lastMatchAt } : a,
       ),
     }))
   },

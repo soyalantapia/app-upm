@@ -1,6 +1,7 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { useFocusTrap } from '@/lib/use-focus-trap'
 
 export function Modal({
   open,
@@ -19,6 +20,11 @@ export function Modal({
   footer?: ReactNode
   size?: 'sm' | 'md' | 'lg'
 }) {
+  // Focus-trap (Escape + ciclo de Tab dentro del diálogo), igual que Drawer, para
+  // que el foco no se escape detrás del overlay.
+  const panelRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(panelRef, open, onClose)
+
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -44,6 +50,7 @@ export function Modal({
         className="animate-fade-in absolute inset-0 bg-upm-900/65 backdrop-blur"
       />
       <div
+        ref={panelRef}
         className={cn(
           'animate-toast-in relative flex max-h-[90vh] w-full flex-col rounded-3xl bg-white shadow-toast ring-1 ring-ink-100',
           sizeCls,

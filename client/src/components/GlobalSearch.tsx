@@ -97,7 +97,7 @@ export function GlobalSearch({
             ref={inputRef}
             value={q}
             onChange={e => setQ(e.target.value)}
-            placeholder="Buscá en lenguaje natural: 'agua de las montañas'…"
+            placeholder="Buscá normas, legisladores o secciones…"
             className="flex-1 bg-transparent text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
           />
           <span className="hidden rounded-md bg-white px-1.5 py-0.5 text-[10px] font-bold text-ink-500 ring-1 ring-ink-100 sm:block">
@@ -194,7 +194,7 @@ export function GlobalSearch({
                       setTimeout(() => openDocument(d), 80)
                     }}
                   >
-                    <Badge tone="brand">Library</Badge>
+                    <Badge tone="brand">Biblioteca</Badge>
                   </ResultItem>
                 ))}
               </Section>

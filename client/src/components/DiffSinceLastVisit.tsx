@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Bell, ArrowUpRight, CheckCircle2 } from 'lucide-react'
 import { computeDiff, writeSnapshot } from '@/lib/visit-tracker'
@@ -9,10 +10,11 @@ import type { CountryCode, NewsItem } from '@/lib/types'
 // y al menos 1 ítem nuevo.
 export function DiffSinceLastVisit({ items }: { items: NewsItem[] }) {
   const navigate = useNavigate()
+  const [dismissed, setDismissed] = useState(false)
   const { newItems, sinceTs, hadSnapshot } = computeDiff(items)
 
   // Sin snapshot previo · primer uso, no mostrar nada (la app aún no se conoce)
-  if (!hadSnapshot || newItems.length === 0) return null
+  if (dismissed || !hadSnapshot || newItems.length === 0) return null
 
   // Distribución por país de los nuevos
   const countryDist = new Map<CountryCode, number>()
@@ -40,9 +42,8 @@ export function DiffSinceLastVisit({ items }: { items: NewsItem[] }) {
 
   const handleMarkRead = () => {
     writeSnapshot(items)
-    // Forzar re-render del Home; el snapshot cambió y el componente desaparecerá.
-    // Hack simple: navegar al mismo path para refrescar.
-    navigate(0)
+    // Ocultar el banner vía estado (re-render local), sin recargar toda la app.
+    setDismissed(true)
   }
 
   return (

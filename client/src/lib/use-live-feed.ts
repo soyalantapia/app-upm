@@ -124,7 +124,7 @@ function evaluateAlerts(feed: AggregatedFeed) {
     })
     if (matches.length > 0) {
       const best = matches[0]
-      store.updateAlertMatchCount(alert.id, best.date)
+      store.updateAlertMatchCount(alert.id, best.date, matches.length)
       store.pushNotification({
         title: `Alerta: "${alert.keyword}"`,
         description: `${matches.length} coincidencia${matches.length > 1 ? 's' : ''} en el Radar · ${best.title.slice(0, 80)}${best.title.length > 80 ? '…' : ''}`,

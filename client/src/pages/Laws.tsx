@@ -356,7 +356,7 @@ export function LawsPage() {
                         : 'bg-white text-ink-600 ring-ink-100 hover:bg-upm-50')
                     }
                   >
-                    {v === 'all' ? 'Todas' : v === 'activa' ? '🟢 Activas' : v === 'latente' ? '🟡 Latentes' : v === 'en-revision' ? '🟠 En revisión' : '⚫ Derogadas'}
+                    {v === 'all' ? 'Todas' : v === 'activa' ? 'Activas' : v === 'latente' ? 'Latentes' : v === 'en-revision' ? 'En revisión' : 'Derogadas'}
                   </button>
                 ))}
               </div>

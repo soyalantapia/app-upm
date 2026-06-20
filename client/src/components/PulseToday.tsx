@@ -11,7 +11,9 @@ import type { FilterPresetId } from './QuickFilterPills'
 // 3 cards: (1) Sancionadas reciente · (2) Por votar · (3) Cruzadas MERCOSUR.
 // Click → aplica el preset correspondiente al Radar.
 
-const OTHER_COUNTRIES = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|Colombia|MERCOSUR|MERCOSUL)\b/i
+// Exportado para que el preset 'crossborder' del Radar use EXACTAMENTE el mismo
+// criterio (incluye Colombia) → el contador del Pulso coincide con los resultados.
+export const OTHER_COUNTRIES = /\b(Brasil|Uruguay|Argentina|Paraguay|Chile|Bolivia|Colombia|MERCOSUR|MERCOSUL)\b/i
 
 type Stats = {
   sancionadas: { count: number; example?: NewsItem }

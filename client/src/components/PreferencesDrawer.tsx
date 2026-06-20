@@ -24,7 +24,7 @@ export function PreferencesDrawer({
 }) {
   const prefs = useStore(s => s.prefs)
 
-  const [countries, setCountries] = useState<CountryCode[]>(prefs?.countries ?? ['AR', 'BR', 'UY'])
+  const [countries, setCountries] = useState<CountryCode[]>(prefs?.countries ?? ['AR', 'CO', 'UY', 'BR'])
   const [topics, setTopics] = useState<Topic[]>(prefs?.topics ?? [])
   const [frequency, setFrequency] = useState<Frequency>(prefs?.frequency ?? 'diario')
 
@@ -52,7 +52,7 @@ export function PreferencesDrawer({
   // Sincronizar con prefs actuales cada vez que el drawer se abre
   useEffect(() => {
     if (!open) return
-    setCountries(prefs?.countries ?? ['AR', 'BR', 'UY'])
+    setCountries(prefs?.countries ?? ['AR', 'CO', 'UY', 'BR'])
     setTopics(prefs?.topics ?? [])
     setFrequency(prefs?.frequency ?? 'diario')
   }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
