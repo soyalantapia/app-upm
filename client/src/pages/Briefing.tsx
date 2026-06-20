@@ -421,7 +421,7 @@ export function BriefingPage() {
         <footer className="mt-2 border-t border-ink-100 pt-3 text-[10.5px] text-ink-500">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span>
-              Generado por <span className="font-bold text-ink-700">Asistente AI UPM</span> · Datos en vivo de fuentes
+              Generado por <span className="font-bold text-ink-700">Asistente IA UPM</span> · Datos en vivo de fuentes
               oficiales · {selected.length} normas analizadas en el corpus.
             </span>
             <span className="tabular-nums">{fechaHoy}</span>

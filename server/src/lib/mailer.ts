@@ -60,7 +60,7 @@ function otpEmailHtml(code: string, year: number): string {
 </tr></table></td>
 <td valign="middle" style="padding-left:14px;font-family:${FONT};">
 <div style="font-size:16px;line-height:20px;font-weight:700;color:#0F172A;letter-spacing:0.2px;">App UPM</div>
-<div style="font-size:13px;line-height:18px;color:#64748B;">Asistente AI del Legislador</div>
+<div style="font-size:13px;line-height:18px;color:#64748B;">Asistente IA del Legislador</div>
 </td></tr></table>
 </td></tr>
 <tr><td class="px" style="padding:28px 48px 0 48px;font-family:${FONT};">
@@ -103,7 +103,7 @@ export async function sendOtpEmail(config: Config, to: string, code: string): Pr
     from,
     to,
     subject: `${code} es tu código de acceso a App UPM`,
-    text: `App UPM — Asistente AI del Legislador\n\nTu código de acceso\n\nUsá este código para ingresar a App UPM:\n\n    ${code}\n\nVence en 10 minutos.\n\nSi no pediste este código, ignorá este mensaje. Tu cuenta sigue protegida.\n\n—\nApp UPM · Acceso institucional · ${year}`,
+    text: `App UPM — Asistente IA del Legislador\n\nTu código de acceso\n\nUsá este código para ingresar a App UPM:\n\n    ${code}\n\nVence en 10 minutos.\n\nSi no pediste este código, ignorá este mensaje. Tu cuenta sigue protegida.\n\n—\nApp UPM · Acceso institucional · ${year}`,
     html: otpEmailHtml(code, year),
   })
 }

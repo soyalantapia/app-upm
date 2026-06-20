@@ -253,7 +253,7 @@ export function ProfilePage() {
               onChange={e => setEditCargo(e.target.value)}
               className="w-full appearance-none rounded-2xl bg-white px-4 py-3 text-[14.5px] ring-1 ring-ink-100 focus:outline-none focus:ring-2 focus:ring-upm-400"
             >
-              {CARGOS.map(c => (
+              {(CARGOS.includes(editCargo) ? CARGOS : [editCargo, ...CARGOS]).map(c => (
                 <option key={c}>{c}</option>
               ))}
             </select>

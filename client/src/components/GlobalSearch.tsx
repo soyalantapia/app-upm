@@ -13,7 +13,7 @@ import { useDebounced } from '@/lib/use-debounced'
 import { useSemanticSearch } from '@/lib/use-semantic-search'
 
 const ROUTES = [
-  { label: 'Asistente AI', path: '/asistente', desc: 'Chat con respaldo institucional' },
+  { label: 'Asistente IA', path: '/asistente', desc: 'Chat con respaldo institucional' },
   { label: 'Radar normativo', path: '/radar', desc: 'Novedades por país y tema' },
   { label: 'Hablar con leyes', path: '/leyes', desc: 'Consultá artículos directos' },
   { label: 'Perfil', path: '/perfil', desc: 'Preferencias y membresía' },

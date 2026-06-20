@@ -112,10 +112,17 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
 
       <ul className="mt-3 flex flex-col gap-2">
         {upcoming.map(ev => {
-          const d = new Date(ev.date)
-          const daysUntil = Math.ceil((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+          // Parseo LOCAL de 'YYYY-MM-DD' (new Date(iso) lo toma como UTC y en
+          // AR/-3 retrocede un día). Día y mes se derivan por separado: es-AR
+          // formatea 'short' con guión ('19-jun'), así que split(' ') fallaba.
+          const dp = ev.date.slice(0, 10).split('-').map(Number)
+          const d = new Date(dp[0], (dp[1] || 1) - 1, dp[2] || 1)
+          const todayMid = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+          const daysUntil = Math.round((d.getTime() - todayMid.getTime()) / (1000 * 60 * 60 * 24))
           const typeMeta = TYPE_META[ev.type]
-          const dayLabel = d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })
+          const dia = d.toLocaleDateString('es-AR', { day: '2-digit' })
+          const mes = d.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')
+          const whenLabel = daysUntil <= 0 ? 'Hoy' : daysUntil === 1 ? 'Mañana' : `en ${daysUntil}d`
 
           const clickable = !!ev.itemId
           return (
@@ -130,10 +137,10 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
               {/* Fecha */}
               <div className="flex w-10 shrink-0 flex-col items-center rounded-xl bg-upm-50 p-1.5 ring-1 ring-upm-100">
                 <span className="text-[9px] font-bold uppercase tracking-wide text-upm-500">
-                  {dayLabel.split(' ')[1]}
+                  {mes}
                 </span>
                 <span className="text-[16px] font-bold leading-none text-upm-800">
-                  {dayLabel.split(' ')[0]}
+                  {dia}
                 </span>
               </div>
 
@@ -147,13 +154,13 @@ export function AgendaMercosur({ items }: { items?: NewsItem[] } = {}) {
                   )}
                   <span className={cn(
                     'ml-auto text-[10px] font-bold tabular-nums',
-                    daysUntil <= 7 ? 'text-danger' : daysUntil <= 14 ? 'text-warning-dark' : 'text-ink-500',
+                    daysUntil <= 1 ? 'text-danger' : daysUntil <= 7 ? 'text-warning-dark' : 'text-ink-500',
                   )}>
-                    en {daysUntil}d
+                    {whenLabel}
                   </span>
                 </div>
                 <p className="mt-0.5 text-[12.5px] font-semibold leading-snug text-ink-800">{ev.title}</p>
-                <p className="mt-0.5 line-clamp-1 text-[11px] text-ink-500">{ev.description}</p>
+                {ev.description && <p className="mt-0.5 line-clamp-1 text-[11px] text-ink-500">{ev.description}</p>}
               </div>
             </li>
           )

@@ -222,7 +222,7 @@ export function AssistantPage() {
   return (
     <div className="animate-fade-up mx-auto flex h-full w-full max-w-[860px] flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
-        eyebrow={<Eyebrow icon={<Sparkles size={11} />}>Asistente AI UPM</Eyebrow>}
+        eyebrow={<Eyebrow icon={<Sparkles size={11} />}>Asistente IA UPM</Eyebrow>}
         title="Asistente del Legislador"
         actions={
           <>
@@ -410,7 +410,7 @@ export function AssistantPage() {
               }}
               rows={1}
               placeholder="Pregunta, redactá, resumí, preparate una reunión…"
-              aria-label="Mensaje para el Asistente AI"
+              aria-label="Mensaje para el Asistente IA"
               className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl bg-upm-50/40 px-4 py-3 text-[14.5px] text-ink-900 ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
             />
             <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3" aria-label="Enviar mensaje">

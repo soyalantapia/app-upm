@@ -223,7 +223,7 @@ export function FullBleedShell({ children }: { children: React.ReactNode }) {
         <div className="flex items-center gap-2.5 text-white">
           <BrandMark size={36} />
           <div className="flex flex-col leading-tight">
-            <span className="text-[15px] font-bold tracking-tight">Asistente AI UPM</span>
+            <span className="text-[15px] font-bold tracking-tight">Asistente IA UPM</span>
             <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">Acceso institucional</span>
           </div>
         </div>

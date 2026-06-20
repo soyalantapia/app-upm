@@ -34,8 +34,7 @@ export function LoginPage() {
 
   if (operator) return <Navigate to={postAuthTarget} replace />
 
-  async function requestCode(e: FormEvent) {
-    e.preventDefault()
+  async function sendCode() {
     setError(null)
     if (!API_BASE) {
       setError('El servicio de acceso no está disponible en este momento.')
@@ -55,6 +54,8 @@ export function LoginPage() {
         setError('El acceso por email todavía no está habilitado. Escribinos a soporte@upm.org.')
       } else if (res.status === 429) {
         setError('Recién pediste un código. Esperá un minuto antes de reintentar.')
+      } else if (res.status === 502) {
+        setError('Tuvimos un problema al enviar el email. Esperá unos minutos y reintentá; si sigue, escribinos a soporte@upm.org.')
       } else {
         setError('No pudimos enviar el código. Revisá el email e intentá de nuevo.')
       }
@@ -65,9 +66,18 @@ export function LoginPage() {
     }
   }
 
+  function requestCode(e: FormEvent) {
+    e.preventDefault()
+    void sendCode()
+  }
+
   async function verify(e: FormEvent) {
     e.preventDefault()
     setError(null)
+    if (!API_BASE) {
+      setError('El servicio de acceso no está disponible en este momento.')
+      return
+    }
     setLoading(true)
     try {
       const res = await fetch(`${API_BASE}/auth/verify`, {
@@ -100,13 +110,13 @@ export function LoginPage() {
         <div className="hidden flex-col gap-7 text-white lg:flex">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/80 ring-1 ring-white/20">
-              <Sparkles size={13} /> Asesor AI 24 horas
+              <Sparkles size={13} /> Asesor IA 24 horas
             </div>
             <h1 className="text-[40px] font-bold leading-[1.05] tracking-tight">
               Una plataforma que <span className="text-upm-200">informa, ordena y prepara</span> el trabajo del legislador.
             </h1>
             <p className="max-w-md text-[14.5px] leading-relaxed text-white/75">
-              Radar normativo regional, biblioteca institucional y un asistente AI que convierte cada tema en un brief listo para usar, con fuentes verificables.
+              Radar normativo regional, biblioteca institucional y un asistente IA que convierte cada tema en un brief listo para usar, con fuentes verificables.
             </p>
           </div>
 
@@ -152,7 +162,7 @@ export function LoginPage() {
           <div className="flex items-center gap-3">
             <BrandMark size={42} />
             <div>
-              <div className="text-[15px] font-bold tracking-tight text-upm-800">Asistente AI UPM</div>
+              <div className="text-[15px] font-bold tracking-tight text-upm-800">Asistente IA UPM</div>
               <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-ink-500">Acceso institucional</div>
             </div>
           </div>
@@ -171,6 +181,8 @@ export function LoginPage() {
                 <span className="text-[12px] font-bold uppercase tracking-[0.16em] text-ink-500">Email institucional</span>
                 <input
                   type="email"
+                  name="email"
+                  autoComplete="email"
                   required
                   autoFocus
                   value={email}
@@ -179,7 +191,7 @@ export function LoginPage() {
                   className="w-full rounded-2xl bg-white px-4 py-3 text-[15px] ring-1 ring-ink-100 shadow-card placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-upm-400"
                 />
               </label>
-              {error && <p className="text-[12.5px] font-medium text-danger">{error}</p>}
+              {error && <p role="alert" aria-live="assertive" className="text-[12.5px] font-medium text-danger">{error}</p>}
               <Button type="submit" size="lg" disabled={loading} className="w-full">
                 {loading ? 'Enviando código…' : (<><MailCheck size={17} /> Enviarme el código <ArrowRight size={16} /></>)}
               </Button>
@@ -207,17 +219,28 @@ export function LoginPage() {
                   className="w-full rounded-2xl bg-white px-4 py-3 text-center text-[24px] font-bold tracking-[10px] ring-1 ring-ink-100 shadow-card placeholder:tracking-normal placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-upm-400"
                 />
               </label>
-              {error && <p className="text-[12.5px] font-medium text-danger">{error}</p>}
+              {error && <p role="alert" aria-live="assertive" className="text-[12.5px] font-medium text-danger">{error}</p>}
               <Button type="submit" size="lg" disabled={loading || code.length !== 6} className="w-full">
                 {loading ? 'Verificando…' : (<><KeyRound size={16} /> Ingresar</>)}
               </Button>
-              <button
-                type="button"
-                onClick={() => { setStep('email'); setCode(''); setError(null) }}
-                className="flex items-center justify-center gap-1 text-[12px] font-semibold text-upm-700 hover:text-upm-800"
-              >
-                <ArrowLeft size={13} /> Usar otro email o reenviar
-              </button>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => void sendCode()}
+                  disabled={loading}
+                  className="text-[12px] font-semibold text-upm-700 hover:text-upm-800 disabled:opacity-50"
+                >
+                  Reenviar código
+                </button>
+                <span className="text-ink-300" aria-hidden>·</span>
+                <button
+                  type="button"
+                  onClick={() => { setStep('email'); setCode(''); setError(null) }}
+                  className="flex items-center gap-1 text-[12px] font-semibold text-ink-500 hover:text-ink-700"
+                >
+                  <ArrowLeft size={13} /> Usar otro email
+                </button>
+              </div>
             </>
           )}
 
