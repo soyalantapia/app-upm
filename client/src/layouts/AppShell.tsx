@@ -130,7 +130,7 @@ export function AppShell() {
 
           <div className="mt-3 flex items-center gap-3 rounded-2xl bg-upm-50/60 p-3 ring-1 ring-upm-100">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-upm-500 to-upm-700 text-[12px] font-bold text-white">
-              {operator?.name.split(' ').slice(-1)[0]?.charAt(0) ?? 'L'}
+              {operator?.name.trim().charAt(0).toUpperCase() || 'L'}
             </div>
             <div className="min-w-0 flex-1">
               <div className="truncate text-[12.5px] font-semibold text-ink-900">{operator?.name}</div>

@@ -86,7 +86,7 @@ export function MultiComparator({ source, onClose }: { source: NewsItem; onClose
                 <ComparatorCol key={country} item={item} role="match" />
               ))}
               {matches.size === 0 && (
-                <div className="col-span-3 rounded-2xl bg-white p-8 text-center text-[13px] text-ink-500 ring-1 ring-ink-100">
+                <div className="col-span-full rounded-2xl bg-white p-8 text-center text-[13px] text-ink-500 ring-1 ring-ink-100">
                   No se encontraron contrapartes en otros países con score suficiente.
                 </div>
               )}
@@ -114,7 +114,7 @@ function ComparatorCol({ item, role }: { item: NewsItem; role: 'source' | 'match
           {country.flag} {country.code}
           {role === 'source' && <span className="ml-0.5 text-[8.5px] opacity-80">(origen)</span>}
         </span>
-        <span className="text-[10px] tabular-nums text-ink-500">{formatDate(item.date)}</span>
+        <span className="text-[10px] tabular-nums text-ink-500">{formatDate(item.dataPublicacao ?? item.date)}</span>
       </div>
       <h3 className="text-[12.5px] font-bold leading-snug text-ink-900 line-clamp-3">{item.title}</h3>
       <div className="flex flex-wrap items-center gap-1 text-[9.5px]">

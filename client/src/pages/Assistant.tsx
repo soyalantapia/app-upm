@@ -504,7 +504,7 @@ function ChatBubble({
                 setCopied(true)
                 setTimeout(() => setCopied(false), 1500)
               }}
-              className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-1 text-[10.5px] font-bold text-upm-800 ring-1 ring-upm-100 opacity-0 transition group-hover:opacity-100 hover:bg-upm-50"
+              className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-1 text-[10.5px] font-bold text-upm-800 ring-1 ring-upm-100 opacity-100 transition hover:bg-upm-50 sm:opacity-0 sm:group-hover:opacity-100"
             >
               {copied ? <Check size={11} /> : <Copy size={11} />}
               {copied ? 'Copiado' : 'Copiar'}

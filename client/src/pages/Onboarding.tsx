@@ -56,7 +56,7 @@ export function OnboardingPage() {
           </div>
           {step > 0 && (
             <button
-              onClick={() => setStep(prev => (prev - 1) as 0 | 1)}
+              onClick={() => setStep(prev => Math.max(0, prev - 1) as 0 | 1)}
               className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-[12px] font-semibold text-ink-500 hover:bg-ink-50 hover:text-ink-900"
             >
               <ChevronLeft size={14} /> Atrás
@@ -174,7 +174,7 @@ export function OnboardingPage() {
           {step < 2 ? (
             <Button
               size="lg"
-              onClick={() => setStep(prev => (prev + 1) as 1 | 2)}
+              onClick={() => setStep(prev => Math.min(2, prev + 1) as 1 | 2)}
               disabled={(step === 0 && !countries.length) || (step === 1 && !topics.length)}
             >
               Siguiente <ArrowRight size={17} />

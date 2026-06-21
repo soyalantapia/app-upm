@@ -109,7 +109,7 @@ export function LawComparator({
                   Otras opciones de comparación
                 </div>
                 <ul className="mt-2 flex flex-wrap gap-1.5">
-                  {alternatives.map(alt => {
+                  {alternatives.filter(alt => alt.id !== counterpart?.id).map(alt => {
                     const c = countryByCode(alt.country)
                     return (
                       <li key={alt.id}>
@@ -143,7 +143,7 @@ function CompareCol({ item, side }: { item: NewsItem; side: 'A' | 'B' }) {
         <span className="inline-flex items-center gap-1 rounded-md bg-upm-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-upm-700 ring-1 ring-upm-100">
           {country.flag} {country.name}
         </span>
-        <span className="text-[10.5px] tabular-nums text-ink-500">{formatDate(item.date)}</span>
+        <span className="text-[10.5px] tabular-nums text-ink-500">{formatDate(item.dataPublicacao ?? item.date)}</span>
       </div>
       <h3 className="text-[14px] font-bold leading-snug text-ink-900">{item.title}</h3>
       <div className="flex flex-wrap items-center gap-1 text-[10.5px]">

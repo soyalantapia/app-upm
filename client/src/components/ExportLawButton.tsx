@@ -13,11 +13,14 @@ export function ExportLawButton({ item, variant = 'default' }: { item: NewsItem;
     setBusy(true)
     try {
       const md = await exportLawToMarkdown(item, graph)
-      const safeTitle = item.title
+      const slug = item.title
         .toLowerCase()
         .normalize('NFD').replace(/[̀-ͯ]/g, '')
         .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
         .slice(0, 60)
+      // Fallback si el título no deja caracteres válidos → evita un archivo ".md" sin nombre.
+      const safeTitle = slug || ('ley-' + item.id)
       downloadMarkdown(`${safeTitle}.md`, md)
       store.pushToast('success', 'Mapa de la Ley exportado en Markdown')
     } catch (e) {

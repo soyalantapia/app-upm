@@ -163,8 +163,8 @@ export function LawsPage() {
     // (ej. "27541" debe poner Ley 27541 antes que Ley 27562 que también la cita).
     if (/^\d{4,5}$/.test(term)) {
       return matched.sort((a, b) => {
-        const aExact = a.id === `ar-ley-${term}` || a.id === `uy-ley-${term}` || a.id === `ar-ley-infoleg-${term}`
-        const bExact = b.id === `ar-ley-${term}` || b.id === `uy-ley-${term}` || b.id === `ar-ley-infoleg-${term}`
+        const aExact = a.id === `ar-ley-${term}` || a.id === `uy-ley-${term}` || a.id === `co-ley-${term}` || a.id === `ar-ley-infoleg-${term}`
+        const bExact = b.id === `ar-ley-${term}` || b.id === `uy-ley-${term}` || b.id === `co-ley-${term}` || b.id === `ar-ley-infoleg-${term}`
         if (aExact && !bExact) return -1
         if (!aExact && bExact) return 1
         // El título que arranca con "Ley {NUM} ·" pesa más (es la ley raíz, no
@@ -213,7 +213,7 @@ export function LawsPage() {
     } else if (filtered.length > 0 && /^\d{4,5}$/.test(q.trim())) {
       const term = q.trim()
       const exact = filtered.find(l =>
-        l.id === `ar-ley-${term}` || l.id === `uy-ley-${term}` || l.id === `ar-ley-infoleg-${term}`,
+        l.id === `ar-ley-${term}` || l.id === `uy-ley-${term}` || l.id === `co-ley-${term}` || l.id === `ar-ley-infoleg-${term}`,
       )
       if (exact && active?.id !== exact.id) setActive(exact)
     }
