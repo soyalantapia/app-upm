@@ -49,15 +49,22 @@ export async function fetchCamaraBR(): Promise<NewsItem[]> {
   return j.dados.map(p => {
     const full = SIGLA_FULL[p.siglaTipo] ?? p.siglaTipo
     const ano = p.ano && p.ano > 1900 ? p.ano : new Date().getFullYear()
+    const ementa = (p.ementa ?? '').trim().replace(/\s+/g, ' ')
+    const docLabel = `${full} ${p.numero}/${ano}`
+    // Título = la ementa (única por proposición). Antes usábamos
+    // `${sigla} ${numero}/${ano}`, que colapsaba cientos de pareceres/
+    // substitutivos al mismo título (ej. "Parecer do Relator 1/2026" ×97).
+    // La sigla/número queda en tipoDocumento.
     return {
       id: 'br-camara-' + p.id,
-      title: `${full} ${p.numero}/${ano} · Brasil`,
+      title: ementa ? (ementa.length > 110 ? ementa.slice(0, 107) + '…' : ementa) : `${docLabel} · Brasil`,
       country: 'BR' as const,
       topic: detectTopic(p.ementa + ' ' + p.siglaTipo),
       type: SIGLA_TO_TYPE[p.siglaTipo] ?? 'informe',
       date: today,
       relevance: relevanceFor(p.siglaTipo),
       excerpt: truncateExcerpt(p.ementa ?? '', 280),
+      tipoDocumento: docLabel,
       source: `Câmara dos Deputados — Brasil (${p.siglaTipo})`,
       sourceUrl: `https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=${p.id}`,
       apiDetailUrl: `https://dadosabertos.camara.leg.br/api/v2/proposicoes/${p.id}`,
