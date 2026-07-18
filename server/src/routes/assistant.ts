@@ -107,9 +107,11 @@ export function assistantRoutes(app: FastifyInstance, db: Db, llm: Llm | null) {
       )
       const content = result.text
 
-      // sources: normas del contexto que el modelo efectivamente citó (por id)
+      // sources: SOLO las normas del contexto que el modelo efectivamente citó
+      // (por id). Si no citó ninguna (rechazo, "no tengo info"), no adjuntamos
+      // tarjetas: mostrar fuentes no citadas bajo un "no encontré" confunde.
       const cited = context.filter(n => content.includes(n.id))
-      const sourcesOut = (cited.length > 0 ? cited : context.slice(0, 3)).map(n => ({
+      const sourcesOut = cited.map(n => ({
         id: n.id,
         title: n.title,
         type: n.type,
@@ -121,6 +123,9 @@ export function assistantRoutes(app: FastifyInstance, db: Db, llm: Llm | null) {
           role: 'assistant',
           content,
           sources: sourcesOut,
+          // Respuesta institucional cuando citó normas del corpus → habilita el
+          // badge "Con fuentes UPM" + el contador "N fuentes" en el front.
+          isInstitutional: sourcesOut.length > 0,
           createdAt: new Date().toISOString(),
         },
         usage: result.usage,

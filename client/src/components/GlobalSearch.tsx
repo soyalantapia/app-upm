@@ -13,7 +13,7 @@ import { useDebounced } from '@/lib/use-debounced'
 import { useSemanticSearch } from '@/lib/use-semantic-search'
 
 const ROUTES = [
-  { label: 'Asistente AI', path: '/asistente', desc: 'Chat con respaldo institucional' },
+  { label: 'Asistente IA', path: '/asistente', desc: 'Chat con respaldo institucional' },
   { label: 'Radar normativo', path: '/radar', desc: 'Novedades por país y tema' },
   { label: 'Hablar con leyes', path: '/leyes', desc: 'Consultá artículos directos' },
   { label: 'Perfil', path: '/perfil', desc: 'Preferencias y membresía' },
@@ -78,6 +78,23 @@ export function GlobalSearch({
 
   const total = matches.news.length + matches.docs.length + matches.legs.length + matches.routes.length
 
+  // Navegación por teclado (command-palette): flechas + Enter sobre la lista plana
+  // en orden de render (rutas → normas → legisladores → biblioteca).
+  const [activeIndex, setActiveIndex] = useState(0)
+  useEffect(() => { setActiveIndex(0) }, [debouncedQ, total])
+  const flatActions = useMemo(() => {
+    const acts: (() => void)[] = []
+    for (const r of matches.routes) acts.push(() => { navigate(r.path); onClose() })
+    for (const n of matches.news) acts.push(() => { navigate(`/radar/${n.id}${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`); onClose() })
+    for (const l of matches.legs) acts.push(() => { navigate(`/legislador/${l.id}`); onClose() })
+    for (const d of matches.docs) acts.push(() => { onClose(); setTimeout(() => openDocument(d), 80) })
+    return acts
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matches, q])
+  const newsOffset = matches.routes.length
+  const legsOffset = newsOffset + matches.news.length
+  const docsOffset = legsOffset + matches.legs.length
+
   return (
     <Modal
       open={open}
@@ -97,7 +114,12 @@ export function GlobalSearch({
             ref={inputRef}
             value={q}
             onChange={e => setQ(e.target.value)}
-            placeholder="Buscá en lenguaje natural: 'agua de las montañas'…"
+            onKeyDown={e => {
+              if (e.key === 'ArrowDown') { e.preventDefault(); setActiveIndex(i => Math.min(total - 1, i + 1)) }
+              else if (e.key === 'ArrowUp') { e.preventDefault(); setActiveIndex(i => Math.max(0, i - 1)) }
+              else if (e.key === 'Enter') { e.preventDefault(); flatActions[activeIndex]?.() }
+            }}
+            placeholder="Buscá normas, legisladores o secciones…"
             className="flex-1 bg-transparent text-[14.5px] text-ink-900 placeholder:text-ink-400 focus:outline-none"
           />
           <span className="hidden rounded-md bg-white px-1.5 py-0.5 text-[10px] font-bold text-ink-500 ring-1 ring-ink-100 sm:block">
@@ -113,9 +135,10 @@ export function GlobalSearch({
           <>
             {matches.routes.length > 0 && (
               <Section title="Ir a">
-                {matches.routes.map(r => (
+                {matches.routes.map((r, i) => (
                   <ResultItem
                     key={r.path}
+                    active={activeIndex === i}
                     icon={<Sparkles size={14} className="text-upm-600" />}
                     title={r.label}
                     desc={r.desc}
@@ -141,11 +164,12 @@ export function GlobalSearch({
                   </span>
                 }
               >
-                {matches.news.map(n => {
+                {matches.news.map((n, i) => {
                   const c = countryByCode(n.country)
                   return (
                     <ResultItem
                       key={n.id}
+                      active={activeIndex === newsOffset + i}
                       icon={<Newspaper size={14} className="text-warning" />}
                       title={cleanTitle(n.title)}
                       desc={`${c.flag} ${c.name} · ${topicById(n.topic).shortLabel}${n.tipoDocumento ? ` · ${n.tipoDocumento}` : ''}`}
@@ -163,11 +187,12 @@ export function GlobalSearch({
 
             {matches.legs.length > 0 && (
               <Section title={`Legisladores (${matches.legs.length})`}>
-                {matches.legs.map(l => {
+                {matches.legs.map((l, i) => {
                   const c = countryByCode(l.country)
                   return (
                     <ResultItem
                       key={l.id}
+                      active={activeIndex === legsOffset + i}
                       icon={<User size={14} className="text-upm-600" />}
                       title={l.name}
                       desc={`${c.flag} ${l.camara} · ${l.partido}${l.provincia ? ` (${l.provincia})` : ''}`}
@@ -183,9 +208,10 @@ export function GlobalSearch({
 
             {matches.docs.length > 0 && (
               <Section title="Biblioteca UPM">
-                {matches.docs.map(d => (
+                {matches.docs.map((d, i) => (
                   <ResultItem
                     key={d.id}
+                    active={activeIndex === docsOffset + i}
                     icon={<FileText size={14} className="text-upm-600" />}
                     title={d.title}
                     desc={`${d.type} · ${d.status === 'oficial' ? 'Oficial UPM' : d.status === 'curado' ? 'Curado' : 'Aporte'}`}
@@ -194,7 +220,7 @@ export function GlobalSearch({
                       setTimeout(() => openDocument(d), 80)
                     }}
                   >
-                    <Badge tone="brand">Library</Badge>
+                    <Badge tone="brand">Biblioteca</Badge>
                   </ResultItem>
                 ))}
               </Section>
@@ -221,6 +247,7 @@ function ResultItem({
   desc,
   onClick,
   tone,
+  active,
   children,
 }: {
   icon: React.ReactNode
@@ -228,14 +255,19 @@ function ResultItem({
   desc: string
   onClick: () => void
   tone?: 'news'
+  active?: boolean
   children?: React.ReactNode
 }) {
+  const ref = useRef<HTMLButtonElement>(null)
+  useEffect(() => { if (active) ref.current?.scrollIntoView({ block: 'nearest' }) }, [active])
   return (
     <button
+      ref={ref}
       onClick={onClick}
       className={cn(
         'group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left transition-colors hover:bg-upm-50',
         tone === 'news' && 'bg-white ring-1 ring-warning-bg/60',
+        active && 'bg-upm-50 ring-1 ring-upm-200',
       )}
     >
       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-upm-50">{icon}</span>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Bell, BellOff } from 'lucide-react'
+import { Bell, BellRing } from 'lucide-react'
 import { isWatched, watch, unwatch } from '@/lib/watchlist'
 import { useCitationGraph, getCitationCount } from '@/lib/use-citations'
 import { store } from '@/lib/store'
@@ -37,7 +37,7 @@ export function WatchToggleButton({ item, variant = 'default' }: { item: NewsIte
         }
         title={watched ? 'Dejar de seguir' : 'Seguir esta norma'}
       >
-        {watched ? <Bell size={12} /> : <BellOff size={12} />}
+        {watched ? <BellRing size={12} /> : <Bell size={12} />}
         {watched ? 'Siguiendo' : 'Seguir'}
       </button>
     )
@@ -53,7 +53,7 @@ export function WatchToggleButton({ item, variant = 'default' }: { item: NewsIte
           : 'bg-upm-50 text-upm-700 ring-1 ring-upm-100 hover:bg-upm-100')
       }
     >
-      {watched ? <Bell size={13} /> : <BellOff size={13} />}
+      {watched ? <BellRing size={13} /> : <Bell size={13} />}
       {watched ? 'Siguiendo · te avisamos cuando cambie' : 'Seguir esta norma'}
     </button>
   )

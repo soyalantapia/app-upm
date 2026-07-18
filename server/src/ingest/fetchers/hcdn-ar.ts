@@ -78,6 +78,50 @@ function detectRelevanceLey(titulo: string): 'alta' | 'media' | 'baja' {
 // Límite de la última entrada 'hcdn-ar' del FETCHERS del cliente ({ limit: 200 }).
 const LEYES_AR_LIMIT = 200
 
+// Las leyes nacionales argentinas se numeran de forma SECUENCIAL en el tiempo,
+// así que el número de ley es la señal temporal real (el dataset curado no trae
+// fecha estructurada). Derivamos el año de sanción interpolando linealmente
+// entre anclas verificadas (nº de ley ↔ año de sanción real). Es muchísimo más
+// honesto que estampar la fecha de ingesta (today), que hacía que "¿qué ley
+// salió hoy?" reportara leyes viejas como sancionadas hoy.
+const AR_LEY_ANCHORS: ReadonlyArray<readonly [number, number]> = [
+  [19550, 1972], // Ley de Sociedades
+  [22421, 1981],
+  [23551, 1988], // Asociaciones Sindicales
+  [24240, 1993], // Defensa del Consumidor
+  [25326, 2000], // Datos Personales
+  [25675, 2002], // Ley General del Ambiente
+  [26061, 2005], // Protección de Niñas, Niños y Adolescentes
+  [26485, 2009], // Protección Integral a las Mujeres
+  [26994, 2014], // Código Civil y Comercial
+  [27275, 2016], // Acceso a la Información Pública
+  [27350, 2017], // Cannabis medicinal
+  [27499, 2018], // Ley Micaela
+  [27541, 2019], // Solidaridad Social
+  [27610, 2020], // Acceso a la IVE
+  [27701, 2022], // Presupuesto 2023
+]
+
+// Año fraccional → fecha YYYY-MM-DD (el día dentro del año conserva el orden por
+// número de ley, sin inventar precisión de día específica más allá de eso).
+export function deriveLeyDate(leyNum: string | undefined): string | null {
+  const n = Number((leyNum ?? '').replace(/\D/g, ''))
+  if (!Number.isFinite(n) || n <= 0) return null
+  const A = AR_LEY_ANCHORS
+  let lo = 0
+  if (n >= A[A.length - 1][0]) lo = A.length - 2
+  else { while (lo < A.length - 2 && n > A[lo + 1][0]) lo++ }
+  const [n0, y0] = A[lo]
+  const [n1, y1] = A[lo + 1]
+  const yFloat = y0 + ((n - n0) * (y1 - y0)) / (n1 - n0)
+  const nowYear = new Date().getUTCFullYear()
+  const year = Math.min(Math.max(Math.floor(yFloat), 1900), nowYear)
+  const dayOfYear = Math.max(0, Math.min(364, Math.round((yFloat - Math.floor(yFloat)) * 364)))
+  const d = new Date(Date.UTC(year, 0, 1))
+  d.setUTCDate(d.getUTCDate() + dayOfYear)
+  return d.toISOString().slice(0, 10)
+}
+
 export async function fetchHcdnArgentina(staticBase: string): Promise<NewsItem[]> {
   const data = await loadStaticJson<LeySumario[]>('leyes-ar', staticBase)
   if (!Array.isArray(data)) return []
@@ -90,9 +134,10 @@ function mapLey(r: LeySumario): NewsItem | null {
   const sumario = (r.sumario ?? '').trim().replace(/^"|"$/g, '')
   const referencias = (r.referencias ?? '').trim()
   if (!titulo && !sumario) return null
-  // Fecha: las leyes argentinas en este dataset no incluyen fecha estructurada,
-  // usamos la fecha del feed (snapshot)
-  const today = new Date().toISOString().slice(0, 10)
+  // Fecha de sanción derivada del número de ley (ver deriveLeyDate). Si no hay
+  // número parseable, caemos a la fecha de ingesta (caso marginal de proyectos
+  // sin número).
+  const date = deriveLeyDate(leyNum) ?? new Date().toISOString().slice(0, 10)
   const keywords = referencias
     .split(/\s{2,}|·/)
     .map(k => k.trim())
@@ -105,7 +150,7 @@ function mapLey(r: LeySumario): NewsItem | null {
     country: 'AR',
     topic: detectTopicLey(titulo + ' ' + sumario + ' ' + referencias),
     type: 'ley',
-    date: today,
+    date,
     relevance: detectRelevanceLey(titulo + ' ' + sumario),
     excerpt: truncateExcerpt(sumario || titulo),
     source: leyNum

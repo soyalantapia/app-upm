@@ -46,13 +46,14 @@ function renderInline(text: string, key: string): ReactNode {
 
 export function Markdown({ content, className }: { content: string; className?: string }) {
   const lines = content.split('\n')
-  const blocks: { type: 'p' | 'h' | 'ul' | 'ol'; items: string[]; level?: number }[] = []
+  const blocks: { type: 'p' | 'h' | 'ul' | 'ol' | 'table'; items: string[]; level?: number }[] = []
   let buffer: string[] = []
-  let mode: 'p' | 'ul' | 'ol' | null = null
+  let mode: 'p' | 'ul' | 'ol' | 'table' | null = null
 
   const flush = () => {
     if (!buffer.length) return
-    if (mode === 'ul' || mode === 'ol') blocks.push({ type: mode, items: [...buffer] })
+    if (mode === 'table') blocks.push({ type: 'table', items: [...buffer] })
+    else if (mode === 'ul' || mode === 'ol') blocks.push({ type: mode, items: [...buffer] })
     else blocks.push({ type: 'p', items: [buffer.join(' ')] })
     buffer = []
     mode = null
@@ -82,6 +83,12 @@ export function Markdown({ content, className }: { content: string; className?: 
     if (/^\*\*[^*]+\*\*$/.test(line)) {
       flush()
       blocks.push({ type: 'h', items: [line.replace(/\*\*/g, '')], level: 3 })
+      continue
+    }
+    if (/^\|.*\|$/.test(line)) {
+      if (mode !== 'table') flush()
+      mode = 'table'
+      buffer.push(line)
       continue
     }
     if (line.startsWith('- ')) {
@@ -137,6 +144,36 @@ export function Markdown({ content, className }: { content: string; className?: 
                 </li>
               ))}
             </ol>
+          )
+        }
+        if (b.type === 'table') {
+          const rows = b.items.map(r => r.replace(/^\||\|$/g, '').split('|').map(c => c.trim()))
+          const isSep = (cells: string[]) => cells.every(c => /^:?-{2,}:?$/.test(c) || c === '')
+          const dataRows = rows.filter(r => !isSep(r))
+          if (dataRows.length === 0) return null
+          const head = dataRows[0]
+          const body = dataRows.slice(1)
+          return (
+            <div key={i} className="overflow-x-auto">
+              <table className="w-full border-collapse text-[13px]">
+                <thead>
+                  <tr>
+                    {head.map((c, j) => (
+                      <th key={j} className="border-b border-ink-200 px-2 py-1.5 text-left font-bold text-ink-900">{renderInline(c, `th-${i}-${j}`)}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {body.map((r, ri) => (
+                    <tr key={ri}>
+                      {r.map((c, j) => (
+                        <td key={j} className="border-b border-ink-100 px-2 py-1.5 align-top text-ink-700">{renderInline(c, `td-${i}-${ri}-${j}`)}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )
         }
         return (

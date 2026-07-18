@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+import { RefreshCw, WifiOff } from 'lucide-react'
+import { Button } from '@/components/ui'
 import { useAuth } from '@/lib/auth'
 import { useStore } from '@/lib/store'
 import { NEWS as MOCK_NEWS } from '@/lib/data'
@@ -27,7 +29,7 @@ export function HomePage() {
   const prefs = useStore(s => s.prefs)
 
   // Feed real (live) en lugar del mock estático
-  const { feed } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
+  const { feed, error, refresh } = useLiveFeed(prefs ? { countries: prefs.countries, topics: prefs.topics } : undefined)
 
   // High-water mark · el feed en vivo fluctúa (un refresh parcial reemplaza al
   // completo y vuelve a subir). Guardamos el snapshot MÁS COMPLETO visto y lo
@@ -42,6 +44,23 @@ export function HomePage() {
 
   // Apellido para el saludo
   const lastName = operator?.name.split(' ').slice(-1)[0] ?? 'Legislador'
+
+  // Error real del feed sin datos en cache → estado claro con reintento, en vez
+  // de un skeleton eterno si /feed cae.
+  if (error && loading) {
+    return (
+      <div className="mx-auto flex w-full max-w-[900px] flex-col items-center gap-4 px-4 py-20 text-center">
+        <div className="grid h-12 w-12 place-items-center rounded-2xl bg-danger-bg text-danger">
+          <WifiOff size={22} />
+        </div>
+        <div>
+          <h2 className="text-[18px] font-bold text-ink-900">No pudimos cargar las novedades</h2>
+          <p className="mt-1 text-[13.5px] text-ink-500">Hubo un problema al conectar con las fuentes. Reintentá en un momento.</p>
+        </div>
+        <Button onClick={refresh}><RefreshCw size={15} /> Reintentar</Button>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5 px-4 py-5 sm:px-6 sm:py-8">

@@ -49,13 +49,13 @@ function buildIcs(item: NewsItem): string {
     item.source ? `Fuente: ${item.source}` : '',
     item.sourceUrl ? `URL: ${item.sourceUrl}` : '',
     '',
-    'Agregado desde Asistente AI UPM',
+    'Agregado desde Asistente IA UPM',
   ].filter(Boolean).join('\n')
 
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Asistente AI UPM//ES',
+    'PRODID:-//Asistente IA UPM//ES',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',

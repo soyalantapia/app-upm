@@ -19,19 +19,19 @@ const STEPS: Step[] = [
   {
     icon: Sparkles,
     title: 'Bienvenido a UPM',
-    body: 'Es tu dashboard para ver qué pasó importante hoy. Las 3 cards de arriba responden: ¿qué alta relevancia?, ¿qué se vota?, ¿qué audiencias hay próximas?',
+    body: 'Este es tu tablero de inicio: ves lo más relevante del día de un vistazo. Las 3 tarjetas de arriba responden: ¿qué es de alta relevancia?, ¿qué se vota?, ¿qué audiencias hay próximas?',
     cta: 'Mostrame el Radar',
   },
   {
     icon: Radar,
     title: 'Radar en vivo',
-    body: 'El Radar trae normativa de 47 fuentes oficiales del MERCOSUR. Usá "Mi comisión" para ver solo lo de tu tema, o tipeá un número de ley en el search.',
+    body: 'El Radar reúne normativa de las fuentes oficiales del MERCOSUR. Usá "Mi comisión" para ver solo lo de tu tema, o escribí un número de ley en el buscador.',
     cta: 'Ver agenda',
   },
   {
     icon: Calendar,
-    title: 'Agenda y briefings',
-    body: 'La Agenda MERCOSUR mezcla eventos institucionales con convocatorias detectadas del feed. Para sesiones, tocá "Pre-sesión" abajo y armás un briefing en 30 segundos.',
+    title: 'Agenda regional',
+    body: 'La Agenda MERCOSUR combina eventos institucionales con convocatorias detectadas del feed, así no se te pasa ninguna sesión.',
     cta: 'Empezar a usar',
   },
 ]
@@ -67,7 +67,7 @@ export function HomeTour() {
   // Chip cerrado · invita a abrir el tour
   if (!open) {
     return createPortal(
-      <div className="fixed bottom-20 left-1/2 z-30 -translate-x-1/2 md:bottom-6 md:left-6 md:translate-x-0">
+      <div className="fixed bottom-32 left-1/2 z-50 -translate-x-1/2 md:bottom-6 md:left-6 md:translate-x-0">
         <div className="flex items-center gap-1 rounded-full bg-upm-700 px-1 py-1 shadow-floating ring-1 ring-upm-800">
           <button
             onClick={() => setOpen(true)}

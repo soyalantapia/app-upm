@@ -19,7 +19,7 @@ const TONE: Record<Tone, { wrap: string; num: string; label: string; divider: st
     num: 'text-white',
     label: 'text-white/60',
     divider: 'bg-white/10',
-    dot: 'bg-emerald-400',
+    dot: 'bg-success',
     live: 'text-white/85',
   },
   light: {

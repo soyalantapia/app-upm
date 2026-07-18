@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { BellRing, CalendarCheck, MapPin, Tag, Check } from 'lucide-react'
 import { Chip } from '@/components/ui'
 import { Drawer } from '@/components/Drawer'
-import { COUNTRIES, TOPICS } from '@/lib/data'
+import { ACTIVE_COUNTRIES, TOPICS } from '@/lib/data'
 import { store, useStore } from '@/lib/store'
 import type { CountryCode, Frequency, Topic } from '@/lib/types'
 
@@ -24,7 +24,7 @@ export function PreferencesDrawer({
 }) {
   const prefs = useStore(s => s.prefs)
 
-  const [countries, setCountries] = useState<CountryCode[]>(prefs?.countries ?? ['AR', 'BR', 'UY'])
+  const [countries, setCountries] = useState<CountryCode[]>(prefs?.countries ?? ['AR', 'CO', 'UY', 'BR'])
   const [topics, setTopics] = useState<Topic[]>(prefs?.topics ?? [])
   const [frequency, setFrequency] = useState<Frequency>(prefs?.frequency ?? 'diario')
 
@@ -52,7 +52,7 @@ export function PreferencesDrawer({
   // Sincronizar con prefs actuales cada vez que el drawer se abre
   useEffect(() => {
     if (!open) return
-    setCountries(prefs?.countries ?? ['AR', 'BR', 'UY'])
+    setCountries(prefs?.countries ?? ['AR', 'CO', 'UY', 'BR'])
     setTopics(prefs?.topics ?? [])
     setFrequency(prefs?.frequency ?? 'diario')
   }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -73,7 +73,7 @@ export function PreferencesDrawer({
             <span className="ml-1 rounded-full bg-upm-100 px-1.5 py-0.5 text-[10px] font-bold text-upm-700">{countries.length}</span>
           </div>
           <div className="mt-2.5 flex flex-wrap gap-1.5">
-            {COUNTRIES.map(c => (
+            {ACTIVE_COUNTRIES.map(c => (
               <Chip key={c.code} active={countries.includes(c.code)} onClick={() => toggleCountry(c.code)} size="sm">
                 <span aria-hidden>{c.flag}</span> {c.name}
               </Chip>

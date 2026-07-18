@@ -22,7 +22,7 @@ export function PhoneMockup() {
           <div className="flex items-center justify-between px-3 pt-3">
             <div className="flex items-center gap-1.5">
               <BrandMark size={22} />
-              <span className="text-[10px] font-bold tracking-tight text-upm-800">Asistente AI UPM</span>
+              <span className="text-[10px] font-bold tracking-tight text-upm-800">Asistente IA UPM</span>
             </div>
             <div className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-upm-500 to-upm-700 text-[8px] font-bold text-white">P</div>
           </div>

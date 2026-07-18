@@ -23,7 +23,7 @@ export function BrandLockup({ className, compact = false }: { className?: string
     <div className={cn('flex items-center gap-2.5', className)}>
       <BrandMark size={compact ? 32 : 38} />
       <div className="flex flex-col leading-tight">
-        <span className="text-[15px] font-bold tracking-tight text-upm-800">Asistente AI UPM</span>
+        <span className="text-[15px] font-bold tracking-tight text-upm-800">Asistente IA UPM</span>
         {!compact && (
           <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-ink-500">
             Acceso institucional

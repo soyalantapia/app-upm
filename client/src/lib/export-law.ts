@@ -5,6 +5,7 @@
 
 import type { NewsItem } from './types'
 import { extractContext } from './extract-context'
+import { isPlaceholderText } from './law-content'
 import { extractArticleModifications } from './genealogy'
 import { detectSectors, SECTOR_META } from './sectors'
 import { extractGlossary } from './glossary'
@@ -37,7 +38,7 @@ export async function exportLawToMarkdown(
 
   lines.push(`# ${item.title}`)
   lines.push('')
-  lines.push(`> Exportado por **Asistente AI UPM** · ${today}`)
+  lines.push(`> Exportado por **UPM · Mapa de la Ley** · ${today}`)
   lines.push('')
 
   // Identificación
@@ -45,7 +46,7 @@ export async function exportLawToMarkdown(
   lines.push('')
   lines.push(`- **País:** ${country.flag} ${country.name}`)
   lines.push(`- **Tema:** ${topic.label}`)
-  lines.push(`- **Tipo:** ${item.tipoDocumento ?? item.type}`)
+  lines.push(`- **Tipo:** ${item.tipoDocumento ?? (item.type.charAt(0).toUpperCase() + item.type.slice(1))}`)
   lines.push(`- **Relevancia:** ${item.relevance}`)
   lines.push(`- **Publicación:** ${formatDate(item.dataPublicacao ?? item.date)}`)
   if (item.status) lines.push(`- **Estado:** ${item.status}`)
@@ -197,8 +198,9 @@ export async function exportLawToMarkdown(
     }
   }
 
-  // Texto completo
-  if (item.fullText) {
+  // Texto completo · NO exportar si es el texto-plantilla (la UI también lo
+  // oculta con isPlaceholderText); evita pegar un placeholder como si fuera el articulado.
+  if (item.fullText && !isPlaceholderText(item.fullText)) {
     lines.push('---')
     lines.push('## Texto completo')
     lines.push('')
@@ -207,7 +209,7 @@ export async function exportLawToMarkdown(
   }
 
   lines.push('---')
-  lines.push(`*Generado por Asistente AI UPM · Datos en vivo de fuentes oficiales · ${today}*`)
+  lines.push(`*Generado con datos en vivo de fuentes oficiales · UPM · ${today}*`)
 
   return lines.join('\n')
 }

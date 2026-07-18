@@ -21,7 +21,7 @@ import { StreamingMarkdown } from '@/components/StreamingMarkdown'
 import { SourceCard } from '@/components/SourceCard'
 import { store, useStore } from '@/lib/store'
 import { LAUNCH } from '@/lib/launch'
-import { copyToClipboard, shareLink } from '@/lib/share'
+import { copyToClipboard } from '@/lib/share'
 import { useUI } from '@/lib/ui-provider'
 import type { ChatMessage } from '@/lib/types'
 
@@ -108,6 +108,7 @@ export function AssistantPage() {
   // Timestamp del último submit · para prevenir double-click rapidísimo
   const lastSubmitRef = useRef<number>(0)
   const scrollerRef = useRef<HTMLDivElement>(null)
+  const taRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     scrollerRef.current?.scrollTo({ top: scrollerRef.current.scrollHeight, behavior: 'smooth' })
@@ -140,6 +141,7 @@ export function AssistantPage() {
     const userMsg = userMessage(value)
     setMessages(prev => [...prev, userMsg])
     setInput('')
+    if (taRef.current) taRef.current.style.height = 'auto'
     setThinking(true)
     // 1) Backend con Claude real (si hay VITE_UPM_API_URL y responde 200)
     const backendReply = await tryBackendAssistant([...messages, userMsg])
@@ -167,15 +169,14 @@ export function AssistantPage() {
       const realIdx = prev.length - 1 - idx
       return [...prev.slice(0, realIdx), reply, ...prev.slice(realIdx + 1)]
     })
-    if (reply.content.startsWith('El asistente no está disponible')) {
-      // no toast de éxito si fue fallback honesto
-    } else {
+    if (!reply.content.startsWith('El asistente no está disponible')) {
       store.pushToast('info', 'Respuesta regenerada')
     }
     setThinking(false)
   }
 
   const newConversation = () => {
+    if (thinking) return
     if (messages.length > 1) {
       store.saveConversation(deriveTitle(messages), messages)
       store.pushToast('success', 'Conversación guardada')
@@ -184,6 +185,7 @@ export function AssistantPage() {
   }
 
   const loadConversation = (id: string) => {
+    if (thinking) return
     const c = conversations.find(x => x.id === id)
     if (!c) return
     if (messages.length > 1) {
@@ -222,7 +224,7 @@ export function AssistantPage() {
   return (
     <div className="animate-fade-up mx-auto flex h-full w-full max-w-[860px] flex-col gap-4 px-4 py-6 sm:px-6 sm:py-8">
       <PageHeader
-        eyebrow={<Eyebrow icon={<Sparkles size={11} />}>Asistente AI UPM</Eyebrow>}
+        eyebrow={<Eyebrow icon={<Sparkles size={11} />}>Asistente IA UPM</Eyebrow>}
         title="Asistente del Legislador"
         actions={
           <>
@@ -290,7 +292,7 @@ export function AssistantPage() {
               message={m}
               onCopy={async () => {
                 const ok = await copyToClipboard(m.content)
-                if (ok) store.pushToast('success', 'Copiado al portapapeles')
+                store.pushToast(ok ? 'success' : 'warning', ok ? 'Copiado al portapapeles' : 'No pudimos copiar al portapapeles')
               }}
               onOpenSource={openDocument}
             />
@@ -363,20 +365,26 @@ export function AssistantPage() {
             <OverflowActions visibleCount={4}>
               {[
                 <QuickButton key="copy" icon={Copy} label="Copiar" onClick={copyLastAssistant} />,
-                ...(LAUNCH.saveToFolder ? [<QuickButton key="save" icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />] : []),
-                <QuickButton
-                  key="brief"
-                  icon={FileStack}
-                  label="Brief"
-                  onClick={() => openCreateBrief({ title: `Brief: ${lastAssistantTitle}`, body: lastAssistantBody })}
-                />,
-                <QuickButton
-                  key="minuta"
-                  icon={ScrollText}
-                  label="Minuta"
-                  onClick={() => openCreateMinuta({ title: `Minuta: ${lastAssistantTitle}`, body: lastAssistantBody })}
-                />,
-                <QuickButton key="share" icon={Share2} label="Compartir" onClick={() => shareLink(lastAssistantTitle || 'Asistente UPM', '/asistente')} />,
+                // Guardar/Brief/Minuta persisten en "Mi carpeta" (oculta en el
+                // lanzamiento) → sin destino visible, gatean con el mismo flag.
+                ...(LAUNCH.saveToFolder
+                  ? [
+                      <QuickButton key="save" icon={Bookmark} label="Guardar" onClick={saveLastAssistant} />,
+                      <QuickButton
+                        key="brief"
+                        icon={FileStack}
+                        label="Brief"
+                        onClick={() => openCreateBrief({ title: `Brief: ${lastAssistantTitle}`, body: lastAssistantBody })}
+                      />,
+                      <QuickButton
+                        key="minuta"
+                        icon={ScrollText}
+                        label="Minuta"
+                        onClick={() => openCreateMinuta({ title: `Minuta: ${lastAssistantTitle}`, body: lastAssistantBody })}
+                      />,
+                    ]
+                  : []),
+                <QuickButton key="share" icon={Share2} label="Compartir" onClick={async () => { const ok = await copyToClipboard(lastAssistantBody); store.pushToast(ok ? 'success' : 'warning', ok ? 'Respuesta copiada · pegala donde quieras' : 'No pudimos copiar la respuesta') }} />,
                 <QuickButton key="regen" icon={RefreshCw} label="Regenerar" onClick={regenerate} disabled={thinking} />,
                 <QuickButton key="new" icon={Plus} label="Nueva" onClick={newConversation} />,
               ]}
@@ -394,9 +402,15 @@ export function AssistantPage() {
             className="flex items-end gap-2"
           >
             <textarea
+              ref={taRef}
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={e => {
+                setInput(e.target.value)
+                e.target.style.height = 'auto'
+                e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px'
+              }}
               onKeyDown={e => {
+                if (e.nativeEvent.isComposing) return
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
                   send()
@@ -404,7 +418,7 @@ export function AssistantPage() {
               }}
               rows={1}
               placeholder="Pregunta, redactá, resumí, preparate una reunión…"
-              aria-label="Mensaje para el Asistente AI"
+              aria-label="Mensaje para el Asistente IA"
               className="max-h-32 min-h-[44px] flex-1 resize-none rounded-2xl bg-upm-50/40 px-4 py-3 text-[14.5px] text-ink-900 ring-1 ring-upm-100 placeholder:text-ink-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-upm-400"
             />
             <Button type="submit" size="lg" disabled={!input.trim() || thinking} className="px-4 py-3" aria-label="Enviar mensaje">
@@ -490,7 +504,7 @@ function ChatBubble({
                 setCopied(true)
                 setTimeout(() => setCopied(false), 1500)
               }}
-              className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-1 text-[10.5px] font-bold text-upm-800 ring-1 ring-upm-100 opacity-0 transition group-hover:opacity-100 hover:bg-upm-50"
+              className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-1 text-[10.5px] font-bold text-upm-800 ring-1 ring-upm-100 opacity-100 transition hover:bg-upm-50 sm:opacity-0 sm:group-hover:opacity-100"
             >
               {copied ? <Check size={11} /> : <Copy size={11} />}
               {copied ? 'Copiado' : 'Copiar'}

@@ -182,7 +182,6 @@ export function FoldersPage() {
                       <div className="flex flex-wrap items-center gap-1.5">
                         <Badge tone="brand">{meta.label}</Badge>
                         {folder && <Badge tone="info">{folder.title}</Badge>}
-                        {item.id.startsWith('seed-') && <Badge tone="ghost">Ejemplo</Badge>}
                       </div>
                       <button onClick={() => handleItemClick(item)} className="mt-1.5 block text-left">
                         <div className="text-[13.5px] font-semibold leading-snug text-ink-900 hover:text-upm-700">
